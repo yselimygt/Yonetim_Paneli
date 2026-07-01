@@ -351,7 +351,7 @@
         }
         
         const totalCells = startDay + daysInMonth;
-        const targetCells = Math.max(35, Math.ceil(totalCells / 7) * 7);
+        const targetCells = 42; // Sabit 6 satır (6x7 = 42 kutucuk)
         for (let i = totalCells; i < targetCells; i++) {
             daysGrid.innerHTML += emptyCellHtml;
         }
