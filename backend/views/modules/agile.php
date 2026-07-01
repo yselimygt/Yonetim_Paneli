@@ -204,6 +204,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
                 <p style="font-size: 12px; color: var(--muted); margin: 0 0 12px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><?= View::escape($ptask['description']) ?></p>
                 <div style="display: flex; gap: 8px;">
                     <form action="<?= $appUrl ?><?= $activeSprint ? '?sprint_id='.$activeSprint['id'] : '' ?>" method="POST" style="margin:0;">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="action" value="approve_task">
                         <input type="hidden" name="task_id" value="<?= $ptask['id'] ?>">
                         <button type="submit" class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;">Onayla</button>
@@ -312,6 +313,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         </div>
         <div class="card-body" style="padding: 24px;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_sprint">
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label class="form-label" style="font-weight: 500;">Sprint Adı <span style="color:var(--danger);">*</span></label>
@@ -345,6 +347,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         </div>
         <div class="card-body" style="padding: 24px;">
             <form action="<?= $appUrl ?><?= $activeSprint ? '?sprint_id='.$activeSprint['id'] : '' ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" id="task-action" value="create_task">
                 <input type="hidden" name="task_id" id="task-id" value="">
                 <input type="hidden" name="sprint_id" value="<?= $activeSprint ? $activeSprint['id'] : '' ?>">
@@ -405,6 +408,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
             </form>
 
             <form id="delete-task-form" action="<?= $appUrl ?><?= $activeSprint ? '?sprint_id='.$activeSprint['id'] : '' ?>" method="POST" style="display:none;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="delete_task">
                 <input type="hidden" name="task_id" id="delete-task-id" value="">
             </form>
@@ -436,6 +440,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         </div>
         <div style="padding: 20px 24px; background: rgba(0,0,0,0.02); border-top: 1px solid var(--border); flex-shrink: 0;">
             <form id="comment-form" onsubmit="submitTaskComment(event)" style="margin:0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" id="view-task-id" name="task_id" value="">
                 <input type="hidden" name="action" value="add_task_comment_ajax">
                 <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: border-color 0.2s;" onfocusin="this.style.borderColor='var(--accent)'" onfocusout="this.style.borderColor='var(--border)'">
@@ -522,6 +527,7 @@ function loadTaskComments(taskId) {
     const formData = new FormData();
     formData.append('action', 'get_task_comments_ajax');
     formData.append('task_id', taskId);
+    formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
 
     fetch('<?= $appUrl ?>', {
         method: 'POST',
@@ -670,6 +676,7 @@ columns.forEach(column => {
         formData.append('action', 'update_status_ajax');
         formData.append('task_id', taskId);
         formData.append('status', newStatus);
+        formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
         
         const orderIndex = taskOrderData.findIndex(t => t.id == taskId);
         formData.append('order', orderIndex > -1 ? orderIndex : 0);
@@ -685,6 +692,7 @@ columns.forEach(column => {
                 const orderForm = new FormData();
                 orderForm.append('action', 'update_order_ajax');
                 orderForm.append('tasks', JSON.stringify(taskOrderData));
+                orderForm.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
                 fetch('<?= $appUrl ?>', {
                     method: 'POST',
                     body: orderForm,
