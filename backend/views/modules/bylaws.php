@@ -231,6 +231,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
 
                         <?php if ($activeVersion && !$activeVersion['is_published']): ?>
                             <form action="<?= $appUrl ?>" method="POST" style="margin:0;">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                 <input type="hidden" name="action" value="publish_version">
                                 <input type="hidden" name="document_id" value="<?= $activeDoc['id'] ?>">
                                 <input type="hidden" name="version_id" value="<?= $activeVersion['id'] ?>">
@@ -241,6 +242,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
                         <?php endif; ?>
 
                         <form action="<?= $appUrl ?>" method="POST" style="margin:0;" onsubmit="return confirm('Bu yönetmeliği ve tüm versiyonlarını silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="delete_document">
                             <input type="hidden" name="document_id" value="<?= $activeDoc['id'] ?>">
                             <button type="submit" class="btn btn-outline" style="padding: 10px; border-radius: 8px; color: var(--danger); border-color: transparent;">
@@ -300,6 +302,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_document">
                 
                 <div class="form-group" style="margin-bottom: 16px;">
@@ -336,6 +339,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="add_version">
                 <input type="hidden" name="document_id" value="<?= $activeDoc['id'] ?>">
                 

@@ -200,6 +200,7 @@
                 "notes" => $p["notes"]
             ]) ?>)'>Düzenle</button>
             <form method="POST" style="display:inline;" onsubmit="return confirm('Bu şifreyi silmek istediğinize emin misiniz?');">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="id" value="<?= $p['id'] ?>">
                 <button type="submit" class="btn btn-sm btn-danger">Sil</button>
@@ -221,6 +222,7 @@
             <button type="button" onclick="closePwdModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;">&times;</button>
         </div>
         <form method="POST" style="padding:20px;">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <input type="hidden" name="action" id="pwdAction" value="create">
             <input type="hidden" name="id" id="pwdId" value="">
             
