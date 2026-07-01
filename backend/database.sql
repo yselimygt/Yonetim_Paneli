@@ -27,6 +27,48 @@ CREATE TABLE users (
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- ============================
+-- Tablo: site_team_members
+-- ============================
+CREATE TABLE IF NOT EXISTS site_team_members (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    role VARCHAR(100),
+    department VARCHAR(100),
+    type ENUM('board','department','campus') DEFAULT 'department',
+    image_url VARCHAR(255),
+    linkedin_url VARCHAR(255),
+    instagram_url VARCHAR(255),
+    email VARCHAR(255),
+    quote TEXT,
+    bio TEXT,
+    join_year INT,
+    status ENUM('active','alumni') DEFAULT 'active',
+    community_history_json JSON,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================
+-- Tablo: site_events
+-- ============================
+CREATE TABLE IF NOT EXISTS site_events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    event_date DATETIME DEFAULT NULL,
+    location VARCHAR(255) DEFAULT NULL,
+    category VARCHAR(100) DEFAULT NULL,
+    tag_color VARCHAR(50) DEFAULT NULL,
+    status VARCHAR(50) DEFAULT 'upcoming',
+    image_url VARCHAR(255) DEFAULT NULL,
+    target_date DATETIME DEFAULT NULL,
+    registration_link VARCHAR(255) DEFAULT NULL,
+    speakers JSON DEFAULT NULL,
+    agenda JSON DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- -------
 -- Tablo: departments
 -- -------

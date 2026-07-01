@@ -8,21 +8,21 @@ class SiteEvent extends Model
     public function getAllActive(): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE status = 'upcoming' ORDER BY event_date ASC";
-        $stmt = $this->db->query($sql);
+        $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
 
     public function getAll(): array
     {
         $sql = "SELECT * FROM {$this->table} ORDER BY event_date DESC";
-        $stmt = $this->db->query($sql);
+        $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
 
     public function getById(int $id): ?array
     {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch();
         return $result ?: null;
@@ -34,7 +34,7 @@ class SiteEvent extends Model
         $placeholders = array_map(fn($f) => ":$f", $fields);
         
         $sql = "INSERT INTO {$this->table} (" . implode(', ', $fields) . ") VALUES (" . implode(', ', $placeholders) . ")";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         
         $params = [];
         foreach ($data as $key => $value) {
@@ -42,7 +42,7 @@ class SiteEvent extends Model
         }
         
         $stmt->execute($params);
-        return (int)$this->db->lastInsertId();
+        return (int)$this->pdo->lastInsertId();
     }
 
     public function updateById(int $id, array $data): bool
@@ -56,14 +56,14 @@ class SiteEvent extends Model
         }
         
         $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . " WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($params);
     }
 
     public function deleteById(int $id): bool
     {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':id' => $id]);
     }
 }

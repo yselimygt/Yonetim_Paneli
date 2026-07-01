@@ -56,7 +56,7 @@ class PublicApiController extends Controller
 
     public function getSiteData(): void
     {
-        $db = $this->db;
+        $db = Database::getInstance();
         
         // Settings
         $stmt = $db->query("SELECT key_name, json_value FROM site_settings");
