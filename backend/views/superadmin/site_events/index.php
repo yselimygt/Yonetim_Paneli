@@ -29,7 +29,13 @@
                 <tr>
                     <td>
                         <?php if ($e['image_url']): ?>
-                            <img src="<?= View::escape($e['image_url']) ?>" alt="Event" style="width:60px;height:40px;border-radius:6px;object-fit:cover;">
+                            <?php 
+                                $imgSrc = $e['image_url'];
+                                if (!preg_match('/^https?:\/\//', $imgSrc)) {
+                                    $imgSrc = BASE_URL . '/public/' . ltrim($imgSrc, '/');
+                                }
+                            ?>
+                            <img src="<?= View::escape($imgSrc) ?>" alt="Event" style="width:60px;height:40px;border-radius:6px;object-fit:cover;">
                         <?php else: ?>
                             <div style="width:60px;height:40px;background:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;">Görsel Yok</div>
                         <?php endif; ?>
@@ -37,6 +43,11 @@
                     <td>
                         <strong style="display:block;font-size:14px;color:var(--text);margin-bottom:4px;">
                             <?= View::escape($e['title']) ?>
+                            <?php if(!empty($e['is_bootcamp'])): ?>
+                                <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; margin-left:8px; font-size:10px; border:1px solid rgba(59,130,246,0.3);">Bootcamp</span>
+                            <?php elseif(!empty($e['is_app_event'])): ?>
+                                <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; margin-left:8px; font-size:10px; border:1px solid rgba(16,185,129,0.3);">Modül</span>
+                            <?php endif; ?>
                         </strong>
                         <div style="font-size:12px;color:var(--muted);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                             <?= View::escape($e['description'] ?? '') ?>
@@ -65,9 +76,7 @@
                     </td>
                     <td>
                         <div class="actions">
-                            <?php if(!empty($e['is_bootcamp'])): ?>
-                                <a href="<?= BASE_URL ?>/app/bootcamp" class="btn btn-outline btn-sm" style="color:var(--text); text-decoration:none;">Modüle Git</a>
-                            <?php else: ?>
+                            <?php if(empty($e['is_bootcamp']) && empty($e['is_app_event'])): ?>
                                 <button type="button" class="btn btn-outline btn-sm" onclick='editEvent(<?= json_encode($e, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
                                 <form method="POST" action="<?= BASE_URL ?>/superadmin/site-events/<?= $e['id'] ?>/delete"
                                       onsubmit="return confirm('<?= View::escape($e['title']) ?> etkinliği silinsin mi?')">

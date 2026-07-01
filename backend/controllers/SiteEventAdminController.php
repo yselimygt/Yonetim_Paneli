@@ -24,10 +24,14 @@ class SiteEventAdminController extends Controller
         
         // Fetch bootcamps
         $pdo = Database::getInstance();
-        $stmt = $pdo->query("SELECT id, title, description, start_date as event_date, location, type as category, 'blue' as tag_color, (CASE WHEN is_completed = 1 THEN 'past' ELSE 'upcoming' END) as status, image_path as image_url, 1 as is_bootcamp, 0 as is_site_event FROM app_bootcamps WHERE status = 1");
+        $stmt = $pdo->query("SELECT id, title, description, start_date as event_date, location, type as category, 'blue' as tag_color, (CASE WHEN is_completed = 1 THEN 'past' ELSE 'upcoming' END) as status, image_path as image_url, 1 as is_bootcamp, 0 as is_site_event, 0 as is_app_event FROM app_bootcamps WHERE status = 1");
         $bootcamps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch app_events (Etkinlik Modülü)
+        $stmtAppEvents = $pdo->query("SELECT id, title, description, event_date, location_or_platform as location, category, 'green' as tag_color, (CASE WHEN event_date < CURRENT_DATE() THEN 'past' ELSE 'upcoming' END) as status, image_path as image_url, 0 as is_bootcamp, 0 as is_site_event, 1 as is_app_event FROM app_events WHERE status = 1");
+        $appEvents = $stmtAppEvents->fetchAll(PDO::FETCH_ASSOC);
         
-        $events = array_merge($events, $bootcamps);
+        $events = array_merge($events, $bootcamps, $appEvents);
         
         // Sort by event date DESC
         usort($events, function($a, $b) {
