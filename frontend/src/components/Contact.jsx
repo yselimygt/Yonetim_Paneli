@@ -1,8 +1,55 @@
-import React from 'react';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, MapPin, Phone, CheckCircle2, Send } from 'lucide-react';
 import { socials } from '../data/innomisData';
+import { submitMessage } from '../services/siteApi';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      setErrorMessage('Lütfen gerekli alanları doldurun.');
+      setStatus('error');
+      return;
+    }
+
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const response = await submitMessage({
+        fullName: formData.name,
+        email: formData.email,
+        category: formData.subject || 'Genel İletişim',
+        message: formData.message,
+        type: 'contact'
+      });
+
+      if (response.success) {
+        setStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setStatus('error');
+        setErrorMessage(response.message || 'Bir hata oluştu.');
+      }
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error.message || 'Bağlantı hatası oluştu.');
+    }
+  };
+
   return (
     <section className="py-16 lg:py-24 relative" id="contact">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,23 +63,49 @@ const Contact = () => {
               <p className="text-text-secondary text-sm">Sorularınız veya iş birlikleri için aşağıdaki formu doldurabilirsiniz.</p>
             </div>
 
-            <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+            {status === 'success' ? (
+              <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-8 text-center fade-in-up">
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 className="w-8 h-8 text-green-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Mesajınız Alındı!</h3>
+                <p className="text-green-200/80">Size en kısa sürede geri dönüş yapacağız. Teşekkür ederiz.</p>
+                <button 
+                  onClick={() => setStatus('idle')}
+                  className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white transition-colors"
+                >
+                  Yeni Mesaj Gönder
+                </button>
+              </div>
+            ) : (
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {status === 'error' && (
+                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                  {errorMessage}
+                </div>
+              )}
               <div className="space-y-1.5">
-                <label htmlFor="name" className="text-sm font-medium text-text-main">Ad Soyad</label>
+                <label htmlFor="name" className="text-sm font-medium text-text-main">Ad Soyad *</label>
                 <input 
                   type="text" 
                   id="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="İsminiz" 
+                  required
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-meta focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_15px_rgba(244,159,32,0.2)] transition-all"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="email" className="text-sm font-medium text-text-main">E-posta</label>
+                <label htmlFor="email" className="text-sm font-medium text-text-main">E-posta *</label>
                 <input 
                   type="email" 
                   id="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="ornek@email.com" 
+                  required
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-meta focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_15px_rgba(244,159,32,0.2)] transition-all"
                 />
               </div>
@@ -42,25 +115,36 @@ const Contact = () => {
                 <input 
                   type="text" 
                   id="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
                   placeholder="Mesajınızın konusu" 
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-meta focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_15px_rgba(244,159,32,0.2)] transition-all"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="message" className="text-sm font-medium text-text-main">Mesaj</label>
+                <label htmlFor="message" className="text-sm font-medium text-text-main">Mesaj *</label>
                 <textarea 
                   id="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   rows={4}
+                  required
                   placeholder="Mesajınız..." 
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-meta focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_15px_rgba(244,159,32,0.2)] transition-all resize-none"
                 ></textarea>
               </div>
 
-              <button type="submit" className="w-full py-4 bg-gradient-primary text-white rounded-xl font-bold hover:-translate-y-1 shadow-[0_0_15px_rgba(244,159,32,0.3)] hover:shadow-[0_0_25px_rgba(218,44,46,0.5)] transition-all">
-                Mesajı Gönder
+              <button 
+                type="submit" 
+                disabled={status === 'loading'}
+                className={`w-full py-4 bg-gradient-primary text-white rounded-xl font-bold transition-all flex justify-center items-center gap-2 ${status === 'loading' ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 shadow-[0_0_15px_rgba(244,159,32,0.3)] hover:shadow-[0_0_25px_rgba(218,44,46,0.5)]'}`}
+              >
+                <Send className={`w-5 h-5 ${status === 'loading' ? 'animate-pulse' : ''}`} />
+                {status === 'loading' ? 'Gönderiliyor...' : 'Mesajı Gönder'}
               </button>
             </form>
+            )}
           </div>
 
           {/* Right: Info */}

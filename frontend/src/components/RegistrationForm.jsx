@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, ChevronDown } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Send } from 'lucide-react';
+import { submitMessage } from '../services/siteApi';
 
 const RegistrationForm = () => {
   const [captchaNum1, setCaptchaNum1] = useState(0);
@@ -20,6 +21,8 @@ const RegistrationForm = () => {
   });
   
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Sayfa yüklendiğinde rastgele 2 sayı belirle
   React.useEffect(() => {
@@ -35,21 +38,44 @@ const RegistrationForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate submission
     const correctAnswer = captchaNum1 + captchaNum2;
     if(parseInt(formData.securityCode) !== correctAnswer) {
-      alert(`Güvenlik kodunu (${captchaNum1} + ${captchaNum2} = ${correctAnswer}) doğru girdiğinizden emin olun.`);
+      setErrorMessage(`Güvenlik kodunu (${captchaNum1} + ${captchaNum2} = ${correctAnswer}) doğru girdiğinizden emin olun.`);
       return;
     }
     if(!formData.agreed) {
-      alert('Lütfen Üye Olma Koşullarını kabul ediniz.');
+      setErrorMessage('Lütfen Üye Olma Koşullarını kabul ediniz.');
       return;
     }
     
-    setIsSubmitted(true);
-    window.scrollTo(0, 0);
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const response = await submitMessage({
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        category: 'Üyelik Kaydı',
+        company: formData.department ? `${formData.faculty} / ${formData.department}` : formData.faculty,
+        message: `Şehir: ${formData.city}\nSınıf: ${formData.grade}\nÖğrenci No: ${formData.studentId}`,
+        type: 'membership'
+      });
+
+      if (response.success) {
+        setIsSubmitted(true);
+        setStatus('success');
+        window.scrollTo(0, 0);
+      } else {
+        setStatus('error');
+        setErrorMessage(response.message || 'Kayıt sırasında bir hata oluştu.');
+      }
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error.message || 'Bağlantı hatası oluştu.');
+    }
   };
 
   if (isSubmitted) {
@@ -95,6 +121,11 @@ const RegistrationForm = () => {
 
         {/* Form Container */}
         <div className="glass-card p-5 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl border-white/5 shadow-2xl">
+          {errorMessage && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+              {errorMessage}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-8 md:space-y-12">
             
             {/* 01 - Kişisel Bilgiler */}
@@ -233,9 +264,13 @@ const RegistrationForm = () => {
 
             {/* Submit Button */}
             <div className="pt-2 md:pt-6">
-              <button type="submit" 
-                className="w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 bg-gradient-primary text-white rounded-lg md:rounded-xl font-bold text-base md:text-lg shadow-[0_0_20px_rgba(244,159,32,0.3)] hover:shadow-[0_0_30px_rgba(218,44,46,0.5)] hover:-translate-y-1 transition-all">
-                Kaydı Tamamla &rarr;
+              <button 
+                type="submit" 
+                disabled={status === 'loading'}
+                className={`w-full py-4 md:py-5 bg-gradient-primary text-white rounded-xl md:rounded-2xl font-bold md:text-lg transition-all flex justify-center items-center gap-2 ${status === 'loading' ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 shadow-[0_0_20px_rgba(244,159,32,0.3)] hover:shadow-[0_0_30px_rgba(218,44,46,0.5)]'}`}
+              >
+                <Send className={`w-5 h-5 ${status === 'loading' ? 'animate-pulse' : ''}`} />
+                {status === 'loading' ? 'İşleniyor...' : 'Başvurumu Tamamla'}
               </button>
             </div>
 

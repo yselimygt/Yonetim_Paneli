@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { submitMessage } from '../services/siteApi';
 
 const initialFormState = {
   // General Info
@@ -44,6 +45,8 @@ const RepresentativeForm = () => {
   });
   
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setCaptchaNum1(Math.floor(Math.random() * 9) + 1);
@@ -62,22 +65,47 @@ const RepresentativeForm = () => {
     }));
   };
 
-  const handleNext = (e) => {
+  const handleNext = async (e) => {
     e.preventDefault(); 
     
     if (step === 4) {
       const correctAnswer = captchaNum1 + captchaNum2;
       if(parseInt(formData.securityCode) !== correctAnswer) {
-        alert(`Güvenlik kodunu (${captchaNum1} + ${captchaNum2} = ${correctAnswer}) doğru girdiğinizden emin olun.`);
+        setErrorMessage(`Güvenlik kodunu (${captchaNum1} + ${captchaNum2} = ${correctAnswer}) doğru girdiğinizden emin olun.`);
         return;
       }
       if(!formData.agreed) {
-        alert('Lütfen Üye Olma Koşullarını kabul ediniz.');
+        setErrorMessage('Lütfen Üye Olma Koşullarını kabul ediniz.');
         return;
       }
-      localStorage.removeItem('innomisRepForm');
-      setIsSubmitted(true);
-      window.scrollTo(0, 0);
+
+      setStatus('loading');
+      setErrorMessage('');
+
+      try {
+        const response = await submitMessage({
+          fullName: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          category: `Temsilcilik Başvurusu`,
+          company: `${formData.university} / ${formData.faculty}`,
+          message: JSON.stringify(formData, null, 2),
+          type: 'job_application'
+        });
+
+        if (response.success) {
+          localStorage.removeItem('innomisRepForm');
+          setIsSubmitted(true);
+          setStatus('success');
+          window.scrollTo(0, 0);
+        } else {
+          setStatus('error');
+          setErrorMessage(response.message || 'Bir hata oluştu.');
+        }
+      } catch (error) {
+        setStatus('error');
+        setErrorMessage(error.message || 'Bağlantı hatası.');
+      }
     } else {
       setStep(prev => prev + 1);
       window.scrollTo(0, 0);
