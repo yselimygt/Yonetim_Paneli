@@ -303,9 +303,11 @@ class FormModule extends BaseModule
         if ($membersApp) {
             $appId = $membersApp['id'];
             // Check if user exists
-            $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE app_id = ? AND (email = ? OR (student_id = ? AND student_id != ''))");
+            $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE app_id = ? AND (email = ? OR (student_id = ? AND student_id != '')) LIMIT 1");
             $stmt->execute([$appId, $memberData['email'], $memberData['student_id']]);
-            if (!$stmt->fetch()) {
+            $existing = $stmt->fetch();
+            
+            if (!$existing) {
                 $ins = $this->pdo->prepare("INSERT INTO app_members (app_id, department_id, first_name, last_name, email, student_id, university, faculty, department, grade, phone, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')");
                 $ins->execute([
                     $appId, $this->department['id'], 
@@ -314,6 +316,29 @@ class FormModule extends BaseModule
                     $memberData['university'], $memberData['faculty'], 
                     $memberData['department'], $memberData['grade'], 
                     $memberData['phone']
+                ]);
+            } else {
+                // Update existing
+                $upd = $this->pdo->prepare("UPDATE app_members SET 
+                    first_name = COALESCE(?, first_name), 
+                    last_name = COALESCE(?, last_name), 
+                    student_id = COALESCE(?, student_id), 
+                    university = COALESCE(?, university), 
+                    faculty = COALESCE(?, faculty), 
+                    department = COALESCE(?, department), 
+                    grade = COALESCE(?, grade), 
+                    phone = COALESCE(?, phone) 
+                    WHERE id = ?");
+                $upd->execute([
+                    $memberData['first_name'] ?: null, 
+                    $memberData['last_name'] ?: null, 
+                    $memberData['student_id'] ?: null,
+                    $memberData['university'] ?: null, 
+                    $memberData['faculty'] ?: null, 
+                    $memberData['department'] ?: null, 
+                    $memberData['grade'] ?: null, 
+                    $memberData['phone'] ?: null,
+                    $existing['id']
                 ]);
             }
         }
