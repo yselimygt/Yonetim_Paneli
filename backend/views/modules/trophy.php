@@ -215,6 +215,7 @@ function getTrophyBadge($type) {
                             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         </button>
                         <form action="<?= $appUrl ?>" method="POST" onsubmit="return confirm('Bu ödülü silmek istediğinize emin misiniz? (Görsel de silinecektir)');" style="margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="delete_trophy">
                             <input type="hidden" name="trophy_id" value="<?= $trophy['id'] ?>">
                             <button type="submit" class="trophy-action-btn delete" title="Ödülü Sil">
@@ -258,6 +259,7 @@ function getTrophyBadge($type) {
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" enctype="multipart/form-data" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="add_trophy">
                 
                 <div class="form-group" style="margin-bottom: 20px;">
@@ -316,6 +318,7 @@ function getTrophyBadge($type) {
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" enctype="multipart/form-data" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="edit_trophy">
                 <input type="hidden" name="trophy_id" id="edit-trophy-id">
                 
