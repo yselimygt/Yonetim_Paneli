@@ -246,7 +246,12 @@
 
     <div class="footer">
         <?= APP_NAME ?> &copy; <?= date('Y') ?><br>
-        <span style="font-size: 11px; display: inline-block; margin-top: 6px;">Powered by <a href="https://viperadev.com" target="_blank" style="color: inherit; text-decoration: none;"><strong>ViperaDev</strong></a></span>
+        <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 6px;">
+            <span>Powered by</span>
+            <a href="https://viperadev.com" target="_blank" style="display: flex; align-items: center;">
+                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 18px; opacity: 0.7; filter: brightness(0) invert(1); transition: all 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none';" onmouseout="this.style.opacity='0.7'; this.style.filter='brightness(0) invert(1)';">
+            </a>
+        </div>
     </div>
 </div>
 

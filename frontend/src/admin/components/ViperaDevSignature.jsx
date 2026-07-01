@@ -1,4 +1,4 @@
-export default function ViperaDevSignature({ asset = '/public/assets/sponsor/ViperaDev.png' }) {
+export default function ViperaDevSignature({ asset = 'https://viperadev.com/ViperaDev-Logo.png' }) {
   return (
     <div className="vipera-signature">
       <span>Powered by</span>

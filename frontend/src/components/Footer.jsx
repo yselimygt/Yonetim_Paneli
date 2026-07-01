@@ -106,7 +106,7 @@ const Footer = () => {
             <span>Powered by</span>
             <a href="https://viperadev.com" target="_blank" rel="noopener noreferrer" className="group flex items-center">
               <img 
-                src="/innomis/assets/sponsor/ViperaDev.png" 
+                src="https://viperadev.com/ViperaDev-Logo.png" 
                 alt="ViperaDev" 
                 className="h-6 sm:h-7 w-auto opacity-70 brightness-0 invert group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
               />

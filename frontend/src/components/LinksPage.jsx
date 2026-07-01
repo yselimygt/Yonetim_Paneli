@@ -193,7 +193,7 @@ export default function LinksPage() {
         <span>Powered by</span>
         <a href="https://viperadev.com" target="_blank" rel="noopener noreferrer" className="group flex items-center">
           <img
-            src="/innomis/assets/sponsor/ViperaDev.png"
+            src="https://viperadev.com/ViperaDev-Logo.png"
             alt="ViperaDev"
             className="h-5 w-auto opacity-50 brightness-0 invert group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
           />

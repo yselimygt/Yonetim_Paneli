@@ -276,7 +276,10 @@
         <button type="submit" class="submit-btn">Gönder</button>
     </form>
 
-    <div style="text-align: center; margin-top: 32px; font-size: 13px; color: var(--muted);">
-        Powered by <a href="https://viperadev.com" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">ViperaDev</a>
-    </div>
+        <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 10px; opacity: 0.8;">
+            <span>Powered by</span>
+            <a href="https://viperadev.com" target="_blank" style="display: flex; align-items: center;">
+                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 16px; opacity: 0.7; filter: grayscale(1); transition: all 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none';" onmouseout="this.style.opacity='0.7'; this.style.filter='grayscale(1)';">
+            </a>
+        </div>
 </div>

@@ -1,31 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteData } from '../context/SiteDataContext';
 
 const Hero = () => {
-  const [timeLeft, setTimeLeft] = useState({ days: '14', hours: '08', minutes: '45', seconds: '20' });
   const { siteData } = useSiteData();
   const hero = siteData?.settings?.hero || {};
   const stats = siteData?.settings?.stats || [];
   const heroStats = stats.slice(0, 3);
-
-  // Simple visual countdown effect (mocking a real countdown for visual flair)
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        let s = parseInt(prev.seconds) - 1;
-        let m = parseInt(prev.minutes);
-        if (s < 0) { s = 59; m -= 1; }
-        return {
-          ...prev,
-          minutes: m.toString().padStart(2, '0'),
-          seconds: s.toString().padStart(2, '0')
-        };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <section className="relative min-h-[90vh] flex items-center pt-10 overflow-hidden" id="hero">
@@ -61,17 +43,19 @@ const Hero = () => {
               </Link>
             </div>
             
-            <div className="flex items-center justify-center lg:justify-start gap-8 pt-6">
-              {heroStats.map((stat, idx) => (
-                <React.Fragment key={`${stat.label}-${idx}`}>
-                  {idx > 0 && <div className="w-px h-10 bg-white/10"></div>}
-                  <div>
-                    <p className="text-3xl font-display font-bold text-white">{stat.value}</p>
-                    <p className="text-text-meta text-sm font-medium">{stat.label}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
+            {heroStats.length > 0 && (
+              <div className="flex items-center justify-center lg:justify-start gap-8 pt-6">
+                {heroStats.map((stat, idx) => (
+                  <React.Fragment key={`${stat.label}-${idx}`}>
+                    {idx > 0 && <div className="w-px h-10 bg-white/10"></div>}
+                    <div>
+                      <p className="text-3xl font-display font-bold text-white">{stat.value}</p>
+                      <p className="text-text-meta text-sm font-medium">{stat.label}</p>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right Content - Mascot & Countdown */}

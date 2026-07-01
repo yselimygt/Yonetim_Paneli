@@ -24,15 +24,13 @@ export default function AnnouncementPopup() {
     const seen = localStorage.getItem(popupConfig.storageKey);
     if (seen) return;
 
-    // Delay show by 800ms for page load feel
     const show = setTimeout(() => setVisible(true), 800);
     return () => clearTimeout(show);
-  }, []);
+  }, [loading, popupConfig]);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || !popupConfig) return;
 
-    // Countdown ticker
     countRef.current = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 1) {
@@ -43,16 +41,16 @@ export default function AnnouncementPopup() {
       });
     }, 1000);
 
-    // Auto-close
     timerRef.current = setTimeout(() => handleClose(), popupConfig.autoCloseSec * 1000);
 
     return () => {
       clearTimeout(timerRef.current);
       clearInterval(countRef.current);
     };
-  }, [visible]);
+  }, [visible, popupConfig]);
 
   const handleClose = () => {
+    if (!popupConfig) return;
     setClosing(true);
     setTimeout(() => {
       setVisible(false);
@@ -64,6 +62,10 @@ export default function AnnouncementPopup() {
   if (!visible) return null;
 
   const progress = ((popupConfig.autoCloseSec - countdown) / popupConfig.autoCloseSec) * 100;
+  const primaryCta = popupConfig.cta || {};
+  const secondaryCta = popupConfig.secondaryCta || {};
+  const hasPrimaryCta = primaryCta.label && primaryCta.href;
+  const hasSecondaryCta = secondaryCta.label && secondaryCta.href;
 
   return (
     <>
@@ -148,24 +150,30 @@ export default function AnnouncementPopup() {
             </p>
 
             {/* CTA buttons */}
-            <div className="flex gap-3">
-              <Link
-                to={popupConfig.cta.href}
-                onClick={handleClose}
-                className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:brightness-110 active:scale-95"
-                style={{ background: 'linear-gradient(to right, #F49F20, #DA2C2E)' }}
-              >
-                {popupConfig.cta.label}
-              </Link>
-              <Link
-                to={popupConfig.secondaryCta.href}
-                onClick={handleClose}
-                className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:bg-white/10 active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#D4D4D8' }}
-              >
-                {popupConfig.secondaryCta.label}
-              </Link>
-            </div>
+            {(hasPrimaryCta || hasSecondaryCta) && (
+              <div className="flex gap-3">
+                {hasPrimaryCta && (
+                  <Link
+                    to={primaryCta.href}
+                    onClick={handleClose}
+                    className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:brightness-110 active:scale-95"
+                    style={{ background: 'linear-gradient(to right, #F49F20, #DA2C2E)' }}
+                  >
+                    {primaryCta.label}
+                  </Link>
+                )}
+                {hasSecondaryCta && (
+                  <Link
+                    to={secondaryCta.href}
+                    onClick={handleClose}
+                    className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:bg-white/10 active:scale-95"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#D4D4D8' }}
+                  >
+                    {secondaryCta.label}
+                  </Link>
+                )}
+              </div>
+            )}
 
             {/* Countdown hint */}
             <p className="text-center text-xs mt-4" style={{ color: '#52525B' }}>

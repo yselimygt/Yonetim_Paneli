@@ -612,8 +612,11 @@
         </div>
         <a href="<?= BASE_URL ?>/profile" class="btn-logout" style="margin-bottom:6px;">Profilim</a>
         <a href="<?= BASE_URL ?>/logout" class="btn-logout">Çıkış Yap</a>
-        <div style="font-size: 11px; text-align: center; color: var(--muted); margin-top: 12px;">
-            Powered by <a href="https://viperadev.com" target="_blank" style="color: inherit; text-decoration: none;"><strong>ViperaDev</strong></a>
+        <div style="font-size: 11px; text-align: center; color: var(--muted); margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            <span>Powered by</span>
+            <a href="https://viperadev.com" target="_blank" style="display: flex; align-items: center;">
+                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 18px; opacity: 0.7; filter: brightness(0) invert(1); transition: all 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none';" onmouseout="this.style.opacity='0.7'; this.style.filter='brightness(0) invert(1)';">
+            </a>
         </div>
     </div>
 </aside>
