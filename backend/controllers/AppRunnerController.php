@@ -120,6 +120,12 @@ class AppRunnerController extends Controller
     // POST /f/{slug}/{app}
     public function handlePublic(string $slug, string $appSlug): void
     {
+        if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+            $this->flashError('Oturumunuz zaman aşımına uğradı veya geçersiz istek. Lütfen tekrar deneyin.');
+            $this->redirect("/f/{$slug}/{$appSlug}");
+            return;
+        }
+
         $currentDept = $this->deptModel->getBySlug($slug);
         if (!$currentDept || !$currentDept['is_active']) {
             $this->flashError('Departman bulunamadı.');
@@ -154,10 +160,13 @@ class AppRunnerController extends Controller
             $this->redirect('/login');
         }
 
-        $currentDept = $this->deptModel->getById((int)$app['department_id']);
-        if (!$currentDept) {
-            $this->flashError('Bağlı departman bulunamadı.');
-            $this->redirect('/login');
+        $deptId = (int)($app['department_id'] ?? 0);
+        $currentDept = ['id' => 0, 'slug' => 'global', 'name' => 'Genel'];
+        if ($deptId > 0) {
+            $fetchedDept = $this->deptModel->getById($deptId);
+            if ($fetchedDept) {
+                $currentDept = $fetchedDept;
+            }
         }
 
         $module = $this->instantiateModule($app, $currentDept, [], 'guest');
@@ -172,9 +181,14 @@ class AppRunnerController extends Controller
         $this->view('panel/app_public_wrapper', compact('currentDept', 'app', 'moduleContent', 'pageTitle'), 'auth');
     }
 
-    // POST /f/{app}
     public function handlePublicGlobal(string $appSlug): void
     {
+        if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+            $this->flashError('Oturumunuz zaman aşımına uğradı veya geçersiz istek. Lütfen tekrar deneyin.');
+            $this->redirect("/f/{$appSlug}");
+            return;
+        }
+
         $pdo = Database::getInstance();
         $stmt = $pdo->prepare("SELECT * FROM apps WHERE slug = ? AND is_active = 1 LIMIT 1");
         $stmt->execute([$appSlug]);
@@ -185,10 +199,13 @@ class AppRunnerController extends Controller
             $this->redirect('/login');
         }
 
-        $currentDept = $this->deptModel->getById((int)$app['department_id']);
-        if (!$currentDept) {
-            $this->flashError('Bağlı departman bulunamadı.');
-            $this->redirect('/login');
+        $deptId = (int)($app['department_id'] ?? 0);
+        $currentDept = ['id' => 0, 'slug' => 'global', 'name' => 'Genel'];
+        if ($deptId > 0) {
+            $fetchedDept = $this->deptModel->getById($deptId);
+            if ($fetchedDept) {
+                $currentDept = $fetchedDept;
+            }
         }
 
         $module = $this->instantiateModule($app, $currentDept, [], 'guest');

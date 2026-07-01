@@ -19,10 +19,15 @@ class Router
         // Query string'i kaldır
         $uri = parse_url($uri, PHP_URL_PATH);
 
-        // BASE_URL prefix'ini kaldır
+        // BASE_URL veya PUBLIC_URL prefix'ini kaldır
         $basePath = parse_url(BASE_URL, PHP_URL_PATH);
         if ($basePath && str_starts_with($uri, $basePath)) {
             $uri = substr($uri, strlen($basePath));
+        } else {
+            $publicPath = parse_url(PUBLIC_URL, PHP_URL_PATH);
+            if ($publicPath && str_starts_with($uri, $publicPath)) {
+                $uri = substr($uri, strlen($publicPath));
+            }
         }
 
         $uri = '/' . ltrim($uri, '/');

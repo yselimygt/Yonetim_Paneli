@@ -187,7 +187,7 @@ class FormModule extends BaseModule
         ];
 
         if ($isPublic) {
-            header("Location: " . BASE_URL . "/f/{$this->department['slug']}/{$this->app['slug']}");
+            header("Location: " . PUBLIC_URL . "/f/{$this->app['slug']}");
         } else {
             header("Location: " . BASE_URL . "/panel/{$this->department['slug']}/apps/{$this->app['slug']}");
         }
@@ -201,7 +201,7 @@ class FormModule extends BaseModule
             'message' => $message
         ];
         if ($isPublic) {
-            header("Location: " . BASE_URL . "/f/{$this->department['slug']}/{$this->app['slug']}");
+            header("Location: " . PUBLIC_URL . "/f/{$this->app['slug']}");
         } else {
             header("Location: " . BASE_URL . "/panel/{$this->department['slug']}/apps/{$this->app['slug']}");
         }

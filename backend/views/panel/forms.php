@@ -265,7 +265,7 @@ function getBadge($isActive, $config) {
                     <?php 
                         $conf = json_decode($app['config'] ?? '{}', true) ?: [];
                         $isPublic = $conf['settings']['is_public'] ?? false;
-                        $publicLink = BASE_URL . '/f/' . View::escape($app['slug']);
+                        $publicLink = PUBLIC_URL . '/f/' . View::escape($app['slug']);
                     ?>
                     <a href="<?= $publicLink ?>" target="_blank" title="Yayına Git">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
@@ -311,7 +311,7 @@ function getBadge($isActive, $config) {
                             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </form>
-                    <a href="<?= BASE_URL ?>/f/<?= View::escape($app['slug']) ?>" target="_blank" title="Genel Form Yayına Git">
+                    <a href="<?= PUBLIC_URL ?>/f/<?= View::escape($app['slug']) ?>" target="_blank" title="Genel Form Yayına Git">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     </a>
                 </div>

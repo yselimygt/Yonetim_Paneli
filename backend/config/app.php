@@ -3,6 +3,7 @@
 define('APP_NAME',    'NexPanel');
 define('APP_VERSION', '0.1.0-alpha');
 define('BASE_URL',    'http://localhost/innomis.tr/backend');
+define('PUBLIC_URL',  str_replace('/backend', '', BASE_URL));
 
 // Oturum ayarları
 define('SESSION_LIFETIME', 7200);          // 2 saat (saniye)

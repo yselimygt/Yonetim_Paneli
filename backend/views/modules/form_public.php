@@ -176,7 +176,7 @@
         <?php endif; ?>
     </div>
 
-    <form method="POST" action="" enctype="multipart/form-data">
+    <form method="POST" action="<?= PUBLIC_URL ?>/f/<?= $app['slug'] ?>" enctype="multipart/form-data">
         <input type="hidden" name="action" value="submit">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 

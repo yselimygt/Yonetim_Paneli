@@ -412,6 +412,27 @@ class PanelController extends Controller
         $this->view('panel/forms', compact('currentDept', 'userRole', 'realForms', 'templates', 'deptApps'), 'panel');
     }
 
+    private function generateUniqueAppSlug(string $title): string
+    {
+        $baseSlug = StringUtils::slugify($title);
+        $slug = $baseSlug;
+        $counter = 1;
+        
+        $pdo = Database::getInstance();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM apps WHERE slug = ?");
+        
+        while (true) {
+            $stmt->execute([$slug]);
+            if ((int)$stmt->fetchColumn() === 0) {
+                break;
+            }
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+        
+        return $slug;
+    }
+
     // -------------------------------------------------------
     // POST /panel/{slug}/forms/create
     // -------------------------------------------------------
@@ -431,8 +452,8 @@ class PanelController extends Controller
             $this->redirect("/panel/{$slug}/forms");
         }
 
-        $appSlug = StringUtils::slugify($title) . '-' . time();
-        $config = '{}';
+        $appSlug = $this->generateUniqueAppSlug($title);
+        $config = json_encode(['settings' => ['is_public' => true]], JSON_UNESCAPED_UNICODE);
 
         // Şablondan kopyalama
         if ($templateId > 0) {
@@ -442,10 +463,14 @@ class PanelController extends Controller
             $tpl = $stmt->fetch();
             if ($tpl) {
                 $configData = json_decode($tpl['config'] ?? '{}', true) ?: [];
+                if (!isset($configData['settings'])) {
+                    $configData['settings'] = [];
+                }
                 // is_template bayrağını false yap
                 if (isset($configData['settings']['is_template'])) {
                     $configData['settings']['is_template'] = false;
                 }
+                $configData['settings']['is_public'] = true;
                 $config = json_encode($configData, JSON_UNESCAPED_UNICODE);
             }
         }

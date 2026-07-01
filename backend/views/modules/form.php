@@ -156,7 +156,7 @@ $templateStr = json_encode($config);
                 </span>
                 <?php 
                 if (!empty($settings['is_public'])): 
-                    $publicLink = BASE_URL . '/f/' . $app['slug'];
+                    $publicLink = PUBLIC_URL . '/f/' . $app['slug'];
                 ?>
                 <a href="<?= $publicLink ?>" target="_blank" class="btn btn-outline btn-sm">Public Linkini Aç</a>
                 <?php endif; ?>
