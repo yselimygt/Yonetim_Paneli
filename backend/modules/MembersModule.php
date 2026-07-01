@@ -14,8 +14,8 @@ class MembersModule extends BaseModule
     {
         $appId = $this->app['id'];
         
-        $stmt = $this->pdo->prepare("SELECT * FROM app_members WHERE app_id = ? ORDER BY id ASC");
-        $stmt->execute([$appId]);
+        $stmt = $this->pdo->prepare("SELECT * FROM app_members ORDER BY id ASC");
+        $stmt->execute();
         $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $redList = array_filter($members, fn($m) => $m['status'] === 'suspended');
@@ -61,36 +61,36 @@ class MembersModule extends BaseModule
 
                 if ($action === 'create') {
                     // Check email uniqueness
-                    $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE app_id = ? AND email = ?");
-                    $stmt->execute([$appId, $email]);
+                    $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE email = ?");
+                    $stmt->execute([$email]);
                     if ($stmt->fetch()) throw new Exception("Bu e-posta adresi zaten kayıtlı.");
 
                     $stmt = $this->pdo->prepare("INSERT INTO app_members (app_id, department_id, created_by, first_name, last_name, email, student_id, university, faculty, department, grade, phone, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')");
                     $stmt->execute([$appId, $deptId, $userId, $first_name, $last_name, $email, $student_id, $university, $faculty, $department, $grade, $phone]);
                     $_SESSION['flash_success'] = 'Üye başarıyla eklendi.';
                 } else {
-                    $stmt = $this->pdo->prepare("UPDATE app_members SET first_name=?, last_name=?, email=?, student_id=?, university=?, faculty=?, department=?, grade=?, phone=? WHERE id=? AND app_id=?");
-                    $stmt->execute([$first_name, $last_name, $email, $student_id, $university, $faculty, $department, $grade, $phone, $memberId, $appId]);
+                    $stmt = $this->pdo->prepare("UPDATE app_members SET first_name=?, last_name=?, email=?, student_id=?, university=?, faculty=?, department=?, grade=?, phone=? WHERE id=?");
+                    $stmt->execute([$first_name, $last_name, $email, $student_id, $university, $faculty, $department, $grade, $phone, $memberId]);
                     $_SESSION['flash_success'] = 'Üye güncellendi.';
                 }
             } elseif ($action === 'delete') {
                 if ($this->userRole !== 'director' && !Auth::isSuperAdmin()) throw new Exception("Yetkiniz yok.");
                 $memberId = (int)($post['member_id'] ?? 0);
-                $stmt = $this->pdo->prepare("DELETE FROM app_members WHERE id=? AND app_id=?");
-                $stmt->execute([$memberId, $appId]);
+                $stmt = $this->pdo->prepare("DELETE FROM app_members WHERE id=?");
+                $stmt->execute([$memberId]);
                 $_SESSION['flash_success'] = 'Üye silindi.';
             } elseif ($action === 'suspend') {
                 if ($this->userRole !== 'director' && !Auth::isSuperAdmin()) throw new Exception("Yetkiniz yok.");
                 $memberId = (int)($post['member_id'] ?? 0);
                 $reason = trim($post['suspend_reason'] ?? '');
-                $stmt = $this->pdo->prepare("UPDATE app_members SET status='suspended', suspend_reason=? WHERE id=? AND app_id=?");
-                $stmt->execute([$reason, $memberId, $appId]);
+                $stmt = $this->pdo->prepare("UPDATE app_members SET status='suspended', suspend_reason=? WHERE id=?");
+                $stmt->execute([$reason, $memberId]);
                 $_SESSION['flash_success'] = 'Üye kırmızı listeye eklendi.';
             } elseif ($action === 'restore') {
                 if ($this->userRole !== 'director' && !Auth::isSuperAdmin()) throw new Exception("Yetkiniz yok.");
                 $memberId = (int)($post['member_id'] ?? 0);
-                $stmt = $this->pdo->prepare("UPDATE app_members SET status='active', suspend_reason=NULL WHERE id=? AND app_id=?");
-                $stmt->execute([$memberId, $appId]);
+                $stmt = $this->pdo->prepare("UPDATE app_members SET status='active', suspend_reason=NULL WHERE id=?");
+                $stmt->execute([$memberId]);
                 $_SESSION['flash_success'] = 'Üye aktif listeye alındı.';
             } elseif ($action === 'upload_excel') {
                 $this->handleExcelUpload();
@@ -103,8 +103,8 @@ class MembersModule extends BaseModule
                 exit;
             } elseif ($action === 'export_excel') {
                 require_once __DIR__ . '/../core/SimpleXLSXGen.php';
-                $stmt = $this->pdo->prepare("SELECT id, first_name, last_name, email, student_id, university, faculty, department, grade, phone, status, created_at FROM app_members WHERE app_id = ? ORDER BY id ASC");
-                $stmt->execute([$appId]);
+                $stmt = $this->pdo->prepare("SELECT id, first_name, last_name, email, student_id, university, faculty, department, grade, phone, status, created_at FROM app_members ORDER BY id ASC");
+                $stmt->execute();
                 $membersData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 $data = [
@@ -178,8 +178,8 @@ class MembersModule extends BaseModule
                 $phone = trim($r[9] ?? '');
 
                 // Benzersizlik kontrolü
-                $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE app_id=? AND (email=? OR (student_id=? AND student_id != ''))");
-                $stmt->execute([$appId, $email, $student_id]);
+                $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE (email=? OR (student_id=? AND student_id != ''))");
+                $stmt->execute([$email, $student_id]);
                 if ($stmt->fetch()) {
                     $skipCount++;
                     continue; // Mevcut kayıt, atla
@@ -232,8 +232,8 @@ class MembersModule extends BaseModule
             }
 
             // Check email uniqueness
-            $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE app_id = ? AND email = ?");
-            $stmt->execute([$appId, $email]);
+            $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE email = ?");
+            $stmt->execute([$email]);
             if ($stmt->fetch()) throw new Exception("Bu e-posta adresi zaten kayıtlı.");
 
             $stmt = $this->pdo->prepare("INSERT INTO app_members (app_id, department_id, first_name, last_name, email, student_id, university, faculty, department, grade, phone, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')");

@@ -4,6 +4,8 @@
  * @var array $department
  * @var array $user
  * @var bool $canManage
+ * @var bool $isManagement
+ * @var array $allDepartments
  * @var array $meetings
  * @var array|null $activeMeeting
  * @var array $departmentMembers
@@ -112,8 +114,11 @@ function getMeetingStatusBadge($status) {
         <?php else: ?>
             <?php foreach ($meetings as $m): ?>
                 <a href="<?= $appUrl ?>?meeting=<?= $m['id'] ?>" class="meeting-card <?= $activeMeeting && $activeMeeting['id'] == $m['id'] ? 'active' : '' ?>">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center;">
                         <?= getMeetingStatusBadge($m['status']) ?>
+                        <?php if (isset($isManagement) && $isManagement && !empty($m['department_name'])): ?>
+                            <span style="font-size: 11px; color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border);"><?= View::escape($m['department_name']) ?></span>
+                        <?php endif; ?>
                     </div>
                     <h4 style="font-size: 15px; font-weight: 600; margin: 0 0 8px 0; color: var(--text);"><?= View::escape($m['title']) ?></h4>
                     <div style="font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px;">
@@ -182,8 +187,24 @@ function getMeetingStatusBadge($status) {
                         </h4>
                         
                         <?php if ($activeMeeting['status'] === 'completed' && $activeMeeting['decisions']): ?>
-                            <div style="font-size: 14px; line-height: 1.6; color: var(--text); background: rgba(16,185,129,0.05); padding: 16px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.2);">
-                                <?= nl2br(View::escape($activeMeeting['decisions'])) ?>
+                            <div style="font-size: 14px; line-height: 1.6; color: var(--text); background: rgba(16,185,129,0.05); padding: 16px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.2); position: relative;">
+                                <?php if ($canManage && (!isset($isFullyApproved) || !$isFullyApproved)): ?>
+                                    <button class="btn btn-sm btn-outline" style="position: absolute; top: 12px; right: 12px; font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('edit-decisions-form').style.display='block'; this.style.display='none'; document.getElementById('decisions-display').style.display='none';">Düzenle</button>
+                                <?php endif; ?>
+                                <div id="decisions-display"><?= nl2br(View::escape($activeMeeting['decisions'])) ?></div>
+                                
+                                <?php if ($canManage): ?>
+                                <div id="edit-decisions-form" style="display: none; margin-top: 16px; border-top: 1px solid rgba(16,185,129,0.2); padding-top: 16px;">
+                                    <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                                        <input type="hidden" name="action" value="complete_meeting">
+                                        <input type="hidden" name="meeting_id" value="<?= $activeMeeting['id'] ?>">
+                                        <textarea name="decisions" class="form-control" rows="6" style="padding: 12px; border-radius: 8px; margin-bottom: 12px;" required><?= View::escape($activeMeeting['decisions']) ?></textarea>
+                                        <button type="submit" class="btn btn-primary btn-sm" style="background: #10b981; border-color: #10b981;">Güncelle</button>
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('edit-decisions-form').style.display='none'; document.querySelector('#edit-decisions-form').previousElementSibling.style.display='block'; document.querySelector('#edit-decisions-form').previousElementSibling.previousElementSibling.style.display='block';">İptal</button>
+                                    </form>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         <?php else: ?>
                             <?php if ($canManage): ?>
@@ -285,6 +306,21 @@ function getMeetingStatusBadge($status) {
                     <label class="form-label" style="font-weight: 500;">Toplantı Başlığı <span style="color:var(--danger);">*</span></label>
                     <input type="text" name="title" class="form-control" placeholder="Örn: 2024 Yılı Strateji Değerlendirme" required style="padding: 10px 12px; border-radius: 8px;">
                 </div>
+                
+                <?php if (isset($isManagement) && $isManagement): ?>
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label" style="font-weight: 500;">Hedef Departman</label>
+                    <select name="target_department_id" class="form-control" style="padding: 10px 12px; border-radius: 8px;">
+                        <option value="0">Tüm Departmanlar (Ortak)</option>
+                        <option value="<?= $department['id'] ?>">Sadece Bizim Departman</option>
+                        <?php foreach($allDepartments as $dept): ?>
+                            <?php if ($dept['id'] != $department['id']): ?>
+                                <option value="<?= $dept['id'] ?>"><?= View::escape($dept['name']) ?></option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php endif; ?>
                 
                 <div class="form-row" style="display: flex; gap: 16px; margin-bottom: 16px;">
                     <div class="form-group" style="flex: 1; margin: 0;">

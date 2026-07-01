@@ -104,6 +104,7 @@
             <?php endif; ?>
 
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <div class="pf-grid-2">
                     <div class="pf-group">
                         <label class="pf-label">Adınız <span>*</span></label>
