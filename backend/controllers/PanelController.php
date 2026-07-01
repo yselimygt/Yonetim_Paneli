@@ -104,6 +104,83 @@ class PanelController extends Controller
         $stmtAnn->execute([$currentDept['id']]);
         $data['latestAnnouncements'] = $stmtAnn->fetchAll();
 
+        // Takvim verilerini hazırla (Doğum günleri + Etkinlikler)
+        $calendarData = [
+            'birthdays' => [],
+            'events' => []
+        ];
+
+        // 1. Doğum günleri
+        foreach ($members as $m) {
+            if (!empty($m['birth_date'])) {
+                $bMonth = (int)date('m', strtotime($m['birth_date']));
+                $bDay = (int)date('d', strtotime($m['birth_date']));
+                $calendarData['birthdays'][] = [
+                    'name' => $m['user_name'],
+                    'month' => $bMonth,
+                    'day' => $bDay
+                ];
+            }
+        }
+
+        // 2. Etkinlikler (app_events)
+        $stmtAppEvt = $pdo->prepare("SELECT id, title, event_date, event_time, type, category FROM app_events WHERE is_global = 1 OR department_id = ?");
+        $stmtAppEvt->execute([$currentDept['id']]);
+        $appEvents = $stmtAppEvt->fetchAll();
+        foreach ($appEvents as $e) {
+            $calendarData['events'][] = [
+                'id' => 'ae_' . $e['id'],
+                'title' => $e['title'],
+                'date' => $e['event_date'],
+                'time' => $e['event_time'],
+                'type' => $e['type'],
+                'category' => $e['category'],
+                'source' => 'app'
+            ];
+        }
+
+        // 3. Takvim Etkinlikleri (calendar_events)
+        $stmtCalEvt = $pdo->prepare("SELECT id, title, description, event_date, event_time FROM calendar_events WHERE department_id = ?");
+        $stmtCalEvt->execute([$currentDept['id']]);
+        $calEvents = $stmtCalEvt->fetchAll();
+        foreach ($calEvents as $e) {
+            $calendarData['events'][] = [
+                'id' => 'ce_' . $e['id'],
+                'title' => $e['title'],
+                'date' => $e['event_date'],
+                'time' => $e['event_time'],
+                'type' => 'calendar',
+                'category' => 'Takvim',
+                'source' => 'calendar',
+                'desc' => $e['description']
+            ];
+        }
+
+        // 4. Site Etkinlikleri (site_events)
+        try {
+            $stmtSiteEvt = $pdo->query("SELECT id, title, event_date, category FROM site_events");
+            $siteEvents = $stmtSiteEvt->fetchAll();
+            foreach ($siteEvents as $e) {
+                $dDate = $e['event_date'] ? date('Y-m-d', strtotime($e['event_date'])) : null;
+                $dTime = $e['event_date'] ? date('H:i:s', strtotime($e['event_date'])) : null;
+                if ($dDate) {
+                    $calendarData['events'][] = [
+                        'id' => 'se_' . $e['id'],
+                        'title' => $e['title'],
+                        'date' => $dDate,
+                        'time' => $dTime,
+                        'type' => 'site',
+                        'category' => $e['category'] ?: 'Genel',
+                        'source' => 'site'
+                    ];
+                }
+            }
+        } catch(PDOException $ex) {
+            // site_events table might not exist in some setups, ignore if missing.
+        }
+
+        $data['calendarData'] = json_encode($calendarData, JSON_UNESCAPED_UNICODE);
+
         $this->view('panel/dashboard', $data, 'panel');
     }
 

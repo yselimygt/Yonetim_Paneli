@@ -188,105 +188,252 @@
 </div>
 <?php endif; ?>
 
-<!-- Doğum Günü Takvimi -->
+<!-- Dinamik Takvim Modülü -->
 <div style="margin-top:28px;">
-    <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
-        Doğum Günü Takvimi (Bu Ay)
-    </div>
-    <div class="card" style="padding: 24px;">
-        <?php
-        $birthdaysThisMonth = [];
-        $currentMonth = (int)date('m');
-        foreach ($members as $m) {
-            if (!empty($m['birth_date'])) {
-                $bMonth = (int)date('m', strtotime($m['birth_date']));
-                $bDay = (int)date('d', strtotime($m['birth_date']));
-                if ($bMonth === $currentMonth) {
-                    if (!isset($birthdaysThisMonth[$bDay])) {
-                        $birthdaysThisMonth[$bDay] = [];
-                    }
-                    $birthdaysThisMonth[$bDay][] = $m['user_name'];
-                }
-            }
-        }
-        
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, (int)date('Y'));
-        $firstDayOfMonth = date('N', strtotime(date('Y-m-01'))); // 1 (Mon) to 7 (Sun)
-        ?>
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Pzt</div>
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Sal</div>
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Çar</div>
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Per</div>
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cum</div>
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cmt</div>
-            <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Paz</div>
-            
-            <?php
-            for ($i = 1; $i < $firstDayOfMonth; $i++) {
-                echo '<div></div>';
-            }
-            for ($day = 1; $day <= $daysInMonth; $day++) {
-                $hasBirthday = isset($birthdaysThisMonth[$day]);
-                $names = $hasBirthday ? implode(', ', $birthdaysThisMonth[$day]) : '';
-                $isToday = ($day == (int)date('d'));
-                
-                $bg = 'var(--bg)';
-                $color = 'var(--text)';
-                $border = '1px solid transparent';
-                $title = '';
-                $boxShadow = 'none';
-                
-                if ($isToday) {
-                    $border = '1px solid var(--accent)';
-                    $color = 'var(--accent)';
-                }
-                
-                if ($hasBirthday) {
-                    $bg = 'linear-gradient(135deg, rgba(236,72,153,0.15), rgba(219,39,119,0.05))';
-                    $color = '#ec4899';
-                    $border = '1px solid rgba(236,72,153,0.4)';
-                    $title = 'Doğum Günü: ' . htmlspecialchars($names);
-                    $boxShadow = '0 4px 10px rgba(236,72,153,0.1)';
-                }
-                
-                echo '<div title="'.$title.'" style="background:'.$bg.'; color:'.$color.'; border:'.$border.'; border-radius:10px; padding:12px 0; font-size:14px; font-weight:'.($hasBirthday ? '700' : '500').'; position:relative; box-shadow:'.$boxShadow.'; transition: transform 0.2s; cursor:'.($hasBirthday ? 'pointer' : 'default').';" '.($hasBirthday ? 'onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'translateY(0)\'"' : '').'>';
-                echo $day;
-                if ($hasBirthday) {
-                    echo '<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">🎂</div>';
-                }
-                echo '</div>';
-            }
-            ?>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
+            Takvim
         </div>
-        
-        <?php if (!empty($birthdaysThisMonth)): ?>
-        <div style="margin-top: 20px; padding: 16px; border-radius: 12px; background: rgba(236,72,153,0.05); border: 1px solid rgba(236,72,153,0.1); font-size: 14px; color: var(--text);">
-            <strong style="color:#ec4899; display:flex; align-items:center; gap:6px; margin-bottom:8px;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                Bu Ay Doğanlar
-            </strong>
-            <div style="display:flex; flex-direction:column; gap:6px;">
-            <?php
-                $trMonths = [1=>'Ocak',2=>'Şubat',3=>'Mart',4=>'Nisan',5=>'Mayıs',6=>'Haziran',7=>'Temmuz',8=>'Ağustos',9=>'Eylül',10=>'Ekim',11=>'Kasım',12=>'Aralık'];
-                $mName = $trMonths[$currentMonth];
-                
-                ksort($birthdaysThisMonth);
-                foreach ($birthdaysThisMonth as $d => $namesArr) {
-                    foreach ($namesArr as $n) {
-                        echo "<div><span style='color:var(--muted); margin-right:8px;'>{$d} {$mName}</span> {$n}</div>";
-                    }
-                }
-            ?>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <button id="cal-prev" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&larr;</button>
+            <span id="cal-month-year" style="font-size:14px; font-weight:600; color:var(--text); min-width:120px; text-align:center;"></span>
+            <button id="cal-next" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&rarr;</button>
+        </div>
+    </div>
+    
+    <div style="display:flex; gap:20px; align-items:stretch; flex-wrap:wrap;">
+        <!-- Sol Taraf: Takvim Grid -->
+        <div class="card" style="flex:1; min-width:300px; padding: 24px;">
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Pzt</div>
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Sal</div>
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Çar</div>
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Per</div>
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cum</div>
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cmt</div>
+                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Paz</div>
+            </div>
+            <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; margin-top:8px;">
+                <!-- JS ile Doldurulacak -->
             </div>
         </div>
-        <?php else: ?>
-        <div style="margin-top: 20px; font-size: 14px; color: var(--muted); text-align:center; padding:16px; background:var(--bg); border-radius:12px;">
-            Bu ay departmanda kimsenin doğum günü bulunmuyor.
+
+        <!-- Sağ Taraf: Gün Detayları -->
+        <div class="card" style="width:300px; padding: 24px; display:flex; flex-direction:column; background:rgba(16,185,129,0.03); border:1px solid rgba(16,185,129,0.1);">
+            <div style="font-weight:600; font-size:15px; color:#10b981; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span id="cal-detail-title">Gün Detayları</span>
+            </div>
+            <div id="cal-detail-content" style="flex-grow:1; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--text);">
+                <!-- JS ile Doldurulacak -->
+            </div>
         </div>
-        <?php endif; ?>
+    </div>
+    
+    <!-- Alt Taraf: Ay Özeti -->
+    <div class="card" style="margin-top:20px; padding:24px; background:rgba(236,72,153,0.03); border:1px solid rgba(236,72,153,0.1);">
+        <div style="font-weight:600; font-size:15px; color:#ec4899; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Ay Özeti
+        </div>
+        <div id="cal-month-summary" style="display:flex; flex-direction:column; gap:8px; font-size:13px; color:var(--text);">
+            <!-- JS ile Doldurulacak -->
+        </div>
     </div>
 </div>
+
+<script>
+    const calendarData = <?= $calendarData ?? '{"birthdays":[],"events":[]}' ?>;
+    const trMonths = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth(); 
+    let currentYear = currentDate.getFullYear();
+    let selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+
+    function renderCalendar() {
+        document.getElementById('cal-month-year').innerText = trMonths[currentMonth] + ' ' + currentYear;
+        
+        const daysGrid = document.getElementById('cal-days-grid');
+        daysGrid.innerHTML = '';
+        
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        
+        let startDay = firstDay === 0 ? 6 : firstDay - 1; 
+        
+        for (let i = 0; i < startDay; i++) {
+            daysGrid.innerHTML += '<div></div>';
+        }
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const hasBirthdays = calendarData.birthdays.filter(b => b.month === currentMonth + 1 && b.day === day);
+            
+            const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+            const hasEvents = calendarData.events.filter(e => e.date === dateStr);
+            
+            let bg = 'var(--bg)';
+            let color = 'var(--text)';
+            let border = '1px solid transparent';
+            let iconHtml = '';
+            
+            const isToday = (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear());
+            const isSelected = (day === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear());
+            
+            if (isToday) border = '1px solid var(--text)';
+            if (isSelected) border = '2px solid var(--accent)';
+            
+            if (hasBirthdays.length > 0 && hasEvents.length > 0) {
+                bg = 'linear-gradient(135deg, rgba(236,72,153,0.15) 50%, rgba(59,130,246,0.15) 50%)';
+                color = 'var(--text)';
+                border = isSelected ? '2px solid var(--accent)' : '1px solid rgba(236,72,153,0.4)';
+                iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:12px; display:flex; gap:2px;"><span>🎂</span><span>📅</span></div>';
+            } else if (hasBirthdays.length > 0) {
+                bg = 'linear-gradient(135deg, rgba(236,72,153,0.15), rgba(219,39,119,0.05))';
+                color = '#ec4899';
+                border = isSelected ? '2px solid #ec4899' : '1px solid rgba(236,72,153,0.4)';
+                iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">🎂</div>';
+            } else if (hasEvents.length > 0) {
+                bg = 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(37,99,235,0.05))';
+                color = '#3b82f6';
+                border = isSelected ? '2px solid #3b82f6' : '1px solid rgba(59,130,246,0.4)';
+                iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">📅</div>';
+            }
+            
+            const fontWeight = (hasBirthdays.length > 0 || hasEvents.length > 0) ? '700' : '500';
+            const cursor = 'pointer';
+            
+            const cell = document.createElement('div');
+            cell.style.cssText = `background:${bg}; color:${color}; border:${border}; border-radius:10px; aspect-ratio: 1/1; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:${fontWeight}; position:relative; transition: transform 0.2s; cursor:${cursor}; box-sizing:border-box;`;
+            cell.innerHTML = `<span>${day}</span>${iconHtml}`;
+            
+            cell.onmouseover = () => cell.style.transform = 'translateY(-2px)';
+            cell.onmouseout = () => cell.style.transform = 'translateY(0)';
+            
+            cell.onclick = () => {
+                selectedDate = new Date(currentYear, currentMonth, day);
+                renderCalendar();
+                renderDayDetails();
+            };
+            
+            daysGrid.appendChild(cell);
+        }
+        
+        renderMonthSummary();
+    }
+    
+    function renderDayDetails() {
+        const titleEl = document.getElementById('cal-detail-title');
+        const contentEl = document.getElementById('cal-detail-content');
+        
+        const day = selectedDate.getDate();
+        const month = selectedDate.getMonth();
+        const year = selectedDate.getFullYear();
+        
+        titleEl.innerText = `${day} ${trMonths[month]} ${year}`;
+        contentEl.innerHTML = '';
+        
+        const bdays = calendarData.birthdays.filter(b => b.month === month + 1 && b.day === day);
+        const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        const evts = calendarData.events.filter(e => e.date === dateStr);
+        
+        if (bdays.length === 0 && evts.length === 0) {
+            contentEl.innerHTML = '<div style="color:var(--muted); text-align:center; padding:20px 0;">Bu güne ait detay bulunmuyor.</div>';
+            return;
+        }
+        
+        if (bdays.length > 0) {
+            const block = document.createElement('div');
+            block.style.cssText = 'padding:10px; background:rgba(236,72,153,0.1); border-radius:8px; border:1px solid rgba(236,72,153,0.2);';
+            block.innerHTML = `<div style="font-weight:600; color:#ec4899; margin-bottom:6px;">🎂 Doğum Günleri</div>`;
+            bdays.forEach(b => {
+                block.innerHTML += `<div>&bull; ${b.name}</div>`;
+            });
+            contentEl.appendChild(block);
+        }
+        
+        if (evts.length > 0) {
+            const block = document.createElement('div');
+            block.style.cssText = 'padding:10px; background:rgba(59,130,246,0.1); border-radius:8px; border:1px solid rgba(59,130,246,0.2);';
+            block.innerHTML = `<div style="font-weight:600; color:#3b82f6; margin-bottom:6px;">📅 Etkinlikler</div>`;
+            evts.forEach(e => {
+                let timeStr = e.time ? e.time.substring(0,5) + ' - ' : '';
+                block.innerHTML += `<div style="margin-bottom:6px;">
+                    <div style="font-weight:600;">${timeStr}${e.title}</div>
+                    <div style="font-size:11px; color:var(--muted);">${e.category || ''}</div>
+                </div>`;
+            });
+            contentEl.appendChild(block);
+        }
+    }
+    
+    function renderMonthSummary() {
+        const summaryEl = document.getElementById('cal-month-summary');
+        summaryEl.innerHTML = '';
+        
+        const bdays = calendarData.birthdays.filter(b => b.month === currentMonth + 1);
+        const evts = calendarData.events.filter(e => {
+            if(!e.date) return false;
+            const parts = e.date.split('-');
+            return parseInt(parts[0]) === currentYear && parseInt(parts[1]) === currentMonth + 1;
+        });
+        
+        bdays.sort((a,b) => a.day - b.day);
+        evts.sort((a,b) => parseInt(a.date.split('-')[2]) - parseInt(b.date.split('-')[2]));
+        
+        if (bdays.length === 0 && evts.length === 0) {
+            summaryEl.innerHTML = '<div style="color:var(--muted);">Bu ay için özet bulunmuyor.</div>';
+            return;
+        }
+        
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px;';
+        
+        if (bdays.length > 0) {
+            const col = document.createElement('div');
+            col.innerHTML = '<div style="font-weight:600; color:#ec4899; margin-bottom:8px;">🎂 Bu Ay Doğanlar</div>';
+            const list = document.createElement('div');
+            list.style.cssText = 'display:flex; flex-direction:column; gap:6px;';
+            bdays.forEach(b => {
+                list.innerHTML += `<div><span style="color:var(--muted); margin-right:8px; display:inline-block; width:20px;">${b.day}</span> ${b.name}</div>`;
+            });
+            col.appendChild(list);
+            grid.appendChild(col);
+        }
+        
+        if (evts.length > 0) {
+            const col = document.createElement('div');
+            col.innerHTML = '<div style="font-weight:600; color:#3b82f6; margin-bottom:8px;">📅 Bu Ayki Etkinlikler</div>';
+            const list = document.createElement('div');
+            list.style.cssText = 'display:flex; flex-direction:column; gap:6px;';
+            evts.forEach(e => {
+                const day = parseInt(e.date.split('-')[2]);
+                let timeStr = e.time ? e.time.substring(0,5) + ' ' : '';
+                list.innerHTML += `<div><span style="color:var(--muted); margin-right:8px; display:inline-block; width:20px;">${day}</span> ${timeStr}<b>${e.title}</b></div>`;
+            });
+            col.appendChild(list);
+            grid.appendChild(col);
+        }
+        
+        summaryEl.appendChild(grid);
+    }
+    
+    document.getElementById('cal-prev').onclick = () => {
+        currentMonth--;
+        if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+        renderCalendar();
+    };
+    
+    document.getElementById('cal-next').onclick = () => {
+        currentMonth++;
+        if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+        renderCalendar();
+    };
+    
+    // Initial Render
+    renderCalendar();
+    renderDayDetails(); // Bugünün detayını göster
+</script>
 
 <!-- Departman Üyeleri (Direktör veya Yönetim) -->
 <?php if ($userRole === 'director' || $currentDept['is_management']): ?>
