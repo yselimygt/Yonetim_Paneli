@@ -3,9 +3,10 @@ if (!defined('BASE_URL')) exit;
 // Data $applications is provided by ApplicationsModule
 ?>
 
-<div class="row mb-4">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-        <h2 class="h4 mb-0"><i class="fas fa-file-text text-primary me-2"></i> Başvurular Modülü</h2>
+<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><i class="fas fa-file-text text-primary me-2"></i> Başvurular</h3>
+        <p style="font-size: 12px; color: var(--muted);">Temsilcilik ve Yönetim Kurulu başvurularını buradan yönetebilirsiniz.</p>
     </div>
 </div>
 
@@ -18,6 +19,7 @@ if (!defined('BASE_URL')) exit;
     min-height: 500px;
 }
 
+/* Left Pane: List */
 .app-list-pane {
     flex: 0 0 350px;
     display: flex;
@@ -44,36 +46,69 @@ if (!defined('BASE_URL')) exit;
 }
 
 .app-card {
-    padding: 12px;
+    padding: 14px 16px;
     border: 1px solid var(--border);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     background: var(--input-bg);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 .app-card:hover {
     border-color: var(--primary);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 .app-card.active {
     border-color: var(--primary);
-    background: rgba(245, 158, 11, 0.05); /* primary-alpha */
+    background: rgba(245, 158, 11, 0.05);
+    box-shadow: 0 0 0 1px var(--primary);
 }
-.app-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    text-transform: uppercase;
+.app-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
-.badge-pending { background: #eab308; color: #fff; }
-.badge-reviewing { background: #3b82f6; color: #fff; }
-.badge-approved { background: #22c55e; color: #fff; }
-.badge-rejected { background: #ef4444; color: #fff; }
+.app-sender {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+.app-date {
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+}
+.app-subject {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
+.app-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    align-self: flex-start;
+}
+.badge-pending { background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
+.badge-reviewing { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+.badge-approved { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+.badge-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Right Pane: Details */
 .app-detail-pane {
     flex: 1;
     background: var(--card);
@@ -85,18 +120,21 @@ if (!defined('BASE_URL')) exit;
 }
 
 .app-detail-header {
-    padding: 20px;
+    padding: 24px;
     border-bottom: 1px solid var(--border);
     background: var(--card-alt);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .app-detail-content {
-    padding: 20px;
     flex: 1;
     overflow-y: auto;
+    padding: 0;
+    background: var(--bg);
 }
+
 .app-empty-state {
     display: flex;
     flex-direction: column;
@@ -105,45 +143,105 @@ if (!defined('BASE_URL')) exit;
     height: 100%;
     color: var(--text-muted);
 }
-.json-field {
-    background: var(--input-bg);
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
+.app-empty-state i {
+    font-size: 48px;
     margin-bottom: 16px;
+    opacity: 0.2;
+}
+
+/* Detail Form Data Grid */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    padding: 24px;
+}
+.json-field {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+.json-field.full-width {
+    grid-column: 1 / -1;
 }
 .json-field h6 {
-    margin-bottom: 8px;
-    color: var(--text);
-    font-size: 13px;
+    margin-bottom: 10px;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 .json-field p {
     margin-bottom: 0;
-    color: var(--text-muted);
+    color: var(--text);
     font-size: 14px;
+    line-height: 1.5;
     white-space: pre-wrap;
+}
+.json-field p.highlight {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Base Info Row */
+.base-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 20px 24px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.info-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--input-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    border: 1px solid var(--border);
+}
+.info-item-text div:first-child {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+.info-item-text div:last-child {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
 }
 
 @media (max-width: 900px) {
     .app-container { flex-direction: column; height: auto; }
     .app-list-pane { flex: none; max-height: 400px; }
-    .app-detail-pane { min-height: 500px; }
+    .app-detail-pane { min-height: 600px; }
 }
+.d-none { display: none !important; }
 </style>
 
-<div class="app-container">
+<div class="app-container fade-in-up stagger-1">
     <!-- Sol Liste -->
     <div class="app-list-pane">
         <div class="app-list-header">
-            <h5 class="mb-0 fs-6 fw-bold">Başvuru Listesi</h5>
+            <h4 style="font-size: 14px; margin: 0; color: var(--text);">Gelen Başvurular (<?= count($applications) ?>)</h4>
         </div>
         <div class="app-list-content" id="appList">
             <?php if(empty($applications)): ?>
-                <div class="text-center text-muted p-4">
-                    <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i>
-                    <p class="mb-0 fs-7">Henüz başvuru bulunmuyor.</p>
+                <div style="text-align: center; padding: 30px 10px; color: var(--muted); font-size: 13px;">
+                    <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i><br>
+                    Henüz başvuru bulunmuyor.
                 </div>
             <?php else: ?>
                 <?php foreach($applications as $app): 
@@ -158,10 +256,14 @@ if (!defined('BASE_URL')) exit;
                     };
                 ?>
                     <div class="app-card" onclick='showDetails(<?= json_encode($app, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                        <div class="app-card-header">
+                            <span class="app-sender"><?= htmlspecialchars($app['full_name']) ?></span>
+                            <span class="app-date"><?= date('d.m.Y H:i', strtotime($app['created_at'])) ?></span>
+                        </div>
+                        <div class="app-subject">
+                            <i class="fas fa-briefcase opacity-50"></i> <?= $typeLabel ?>
+                        </div>
                         <span class="app-badge <?= $badgeClass ?>"><?= $statusLabel ?></span>
-                        <div class="fw-bold text-white mb-1 pe-4"><?= htmlspecialchars($app['full_name']) ?></div>
-                        <div class="fs-7 text-muted mb-1"><?= $typeLabel ?></div>
-                        <div class="fs-7 text-muted"><i class="fas fa-clock me-1"></i><?= date('d.m.Y H:i', strtotime($app['created_at'])) ?></div>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -171,11 +273,13 @@ if (!defined('BASE_URL')) exit;
     <!-- Sağ Detay -->
     <div class="app-detail-pane" id="appDetailPane">
         <div class="app-empty-state" id="emptyState">
-            <i class="fas fa-file-alt fa-3x mb-3 opacity-25"></i>
-            <h5>Başvuru Seçin</h5>
-            <p>Detayları görüntülemek için sol taraftan bir başvuru seçin.</p>
+            <i class="fas fa-file-signature"></i>
+            <h5 style="color:var(--text);">Başvuru Seçin</h5>
+            <p style="font-size:13px;">Detayları görüntülemek için sol taraftan bir başvuru seçin.</p>
         </div>
+        
         <div id="detailContent" class="d-none" style="display: flex; flex-direction: column; height: 100%;">
+            <!-- Header -->
             <div class="app-detail-header">
                 <div>
                     <h4 class="mb-1 text-white" id="d-name">-</h4>
@@ -200,28 +304,46 @@ if (!defined('BASE_URL')) exit;
                     </form>
                 </div>
             </div>
+
+            <!-- Content -->
             <div class="app-detail-content">
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                        <div class="text-muted fs-7 mb-1">E-posta</div>
-                        <div class="fw-bold" id="d-email">-</div>
+                <!-- Temel Bilgiler -->
+                <div class="base-info-row">
+                    <div class="info-item">
+                        <div class="info-item-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-item-text">
+                            <div>E-posta</div>
+                            <div id="d-email">-</div>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="text-muted fs-7 mb-1">Telefon</div>
-                        <div class="fw-bold" id="d-phone">-</div>
+                    <div class="info-item">
+                        <div class="info-item-icon"><i class="fas fa-phone"></i></div>
+                        <div class="info-item-text">
+                            <div>Telefon</div>
+                            <div id="d-phone">-</div>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="text-muted fs-7 mb-1">Üniversite</div>
-                        <div class="fw-bold" id="d-university">-</div>
+                    <div class="info-item">
+                        <div class="info-item-icon"><i class="fas fa-university"></i></div>
+                        <div class="info-item-text">
+                            <div>Üniversite</div>
+                            <div id="d-university">-</div>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="text-muted fs-7 mb-1">Fakülte / Bölüm</div>
-                        <div class="fw-bold" id="d-faculty">-</div>
+                    <div class="info-item">
+                        <div class="info-item-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="info-item-text">
+                            <div>Bölüm</div>
+                            <div id="d-faculty">-</div>
+                        </div>
                     </div>
                 </div>
 
-                <h5 class="border-bottom border-secondary pb-2 mb-3">Form Detayları</h5>
-                <div id="d-formdata">
+                <!-- Dinamik Form Detayları -->
+                <div class="px-4 pt-4 pb-2">
+                    <h6 style="color:var(--text); font-weight:600; font-size:14px; margin:0;"><i class="fas fa-list-ul me-2 text-primary"></i> Form Detayları</h6>
+                </div>
+                <div class="detail-grid" id="d-formdata">
                     <!-- JSON fields will be appended here -->
                 </div>
             </div>
@@ -231,7 +353,8 @@ if (!defined('BASE_URL')) exit;
 
 <script>
 function showDetails(app) {
-    document.getElementById('emptyState').classList.add('d-none');
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('detailContent').style.display = 'flex';
     document.getElementById('detailContent').classList.remove('d-none');
     
     document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
@@ -260,24 +383,46 @@ function showDetails(app) {
             const ignoreKeys = ['name', 'email', 'phone', 'university', 'faculty', 'agreed', 'securityCode'];
             
             let hasFields = false;
+            
+            const keyMap = {
+                'city': 'Şehir / İlçe',
+                'department': 'Okunan Bölüm',
+                'grade': 'Sınıf / Derece',
+                'studentId': 'Öğrenci Numarası',
+                'targetTeam': 'Hedef Ekip',
+                'argeTools': 'Kullandığı Araçlar / Programlar',
+                'argePastProjectsDetails': 'Geçmiş Proje Detayları',
+                'argeContribution': 'Ar-Ge Ekibine Katkısı / Beklentisi',
+                'argeTubitak': 'TÜBİTAK vb. Proje Fikri',
+                'argeWebsiteCritique': 'Web Sitesi İncelemesi / Eleştirisi',
+                'whyInnomis': 'Neden İnnOmis?',
+                'expectations': 'Beklentiler / Hedefler'
+            };
+
             for (const [key, value] of Object.entries(data)) {
-                if (ignoreKeys.includes(key)) continue;
+                if (ignoreKeys.includes(key) || !value || value.length === 0) continue;
                 
-                let formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+                let formattedKey = keyMap[key];
+                if (!formattedKey) {
+                    // Fallback to Title Case if not in map
+                    formattedKey = key.replace(/([a-z])([A-Z])/g, '$1 $2');
+                    formattedKey = formattedKey.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                }
                 
                 let displayValue = value;
                 if (Array.isArray(value)) {
                     displayValue = value.join(', ');
                 } else if (typeof value === 'boolean') {
                     displayValue = value ? 'Evet' : 'Hayır';
-                } else if (typeof value === 'object' && value !== null) {
-                    displayValue = JSON.stringify(value, null, 2);
                 }
 
+                // Make long text take full width
+                const isLongText = typeof displayValue === 'string' && displayValue.length > 60;
+                
                 const fieldHtml = `
-                    <div class="json-field">
+                    <div class="json-field ${isLongText ? 'full-width' : ''}">
                         <h6>${formattedKey}</h6>
-                        <p>${displayValue || '-'}</p>
+                        <p>${displayValue}</p>
                     </div>
                 `;
                 fdContainer.insertAdjacentHTML('beforeend', fieldHtml);
@@ -285,13 +430,13 @@ function showDetails(app) {
             }
             
             if (!hasFields) {
-                fdContainer.innerHTML = '<div class="text-muted text-center p-3 border border-secondary rounded">Ek detay bulunmuyor.</div>';
+                fdContainer.innerHTML = '<div style="grid-column: 1/-1;" class="text-muted text-center p-4 border border-secondary rounded">Görüntülenecek ek detay bulunmuyor.</div>';
             }
         } catch(e) {
-            fdContainer.innerHTML = `<pre class="text-muted">${app.form_data}</pre>`;
+            fdContainer.innerHTML = `<div style="grid-column: 1/-1;"><pre class="text-muted">${app.form_data}</pre></div>`;
         }
     } else {
-        fdContainer.innerHTML = '<div class="text-muted text-center p-3 border border-secondary rounded">Ek detay bulunmuyor.</div>';
+        fdContainer.innerHTML = '<div style="grid-column: 1/-1;" class="text-muted text-center p-4 border border-secondary rounded">Ek detay bulunmuyor.</div>';
     }
 }
 </script>
