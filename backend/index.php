@@ -71,11 +71,6 @@ $router->post('/superadmin/site-gallery',                 ['SiteGalleryAdminCont
 $router->post('/superadmin/site-gallery/{id}',            ['SiteGalleryAdminController', 'update']);
 $router->post('/superadmin/site-gallery/{id}/delete',     ['SiteGalleryAdminController', 'destroy']);
 
-$router->get('/superadmin/global-gallery',                  ['GlobalGalleryController', 'index']);
-$router->post('/superadmin/global-gallery/folder',          ['GlobalGalleryController', 'createFolder']);
-$router->post('/superadmin/global-gallery/folder/delete',   ['GlobalGalleryController', 'deleteFolder']);
-$router->post('/superadmin/global-gallery/upload',          ['GlobalGalleryController', 'uploadFiles']);
-$router->post('/superadmin/global-gallery/file/delete',     ['GlobalGalleryController', 'deleteFile']);
 
 $router->get('/superadmin/site-team',                     ['SiteTeamAdminController', 'index']);
 $router->post('/superadmin/site-team',                    ['SiteTeamAdminController', 'store']);

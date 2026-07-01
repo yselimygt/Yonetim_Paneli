@@ -217,7 +217,7 @@ class PublicApiController extends Controller
 
         // Gallery
         $stmtGal = $db->query("SELECT * FROM site_gallery ORDER BY id DESC");
-        $gallery = $stmtGal->fetchAll();
+        $gallery = array_map(fn($image) => $this->withGalleryThumbnail($image), $stmtGal->fetchAll());
 
         // History (Achievements & Awards)
         $stmtHist = $db->query("SELECT * FROM site_history ORDER BY year DESC, id DESC");
@@ -265,6 +265,48 @@ class PublicApiController extends Controller
             );
             return $member;
         }, $members);
+    }
+
+    private function withGalleryThumbnail(array $image): array
+    {
+        $image['thumb_url'] = $this->galleryThumbnailUrl($image['image_url'] ?? '');
+        return $image;
+    }
+
+    private function galleryThumbnailUrl(string $imageUrl): ?string
+    {
+        $path = parse_url($imageUrl, PHP_URL_PATH) ?: $imageUrl;
+        $marker = '/public/uploads/gallery/';
+        $position = strpos($path, $marker);
+
+        if ($position === false) {
+            return null;
+        }
+
+        $relativePath = urldecode(substr($path, $position + strlen($marker)));
+        $parts = explode('/', $relativePath, 2);
+        if (count($parts) !== 2) {
+            return null;
+        }
+
+        [$folder, $file] = $parts;
+        $sourcePath = __DIR__ . '/../public/uploads/gallery/' . $folder . '/' . $file;
+        $thumbName = pathinfo($file, PATHINFO_FILENAME) . '-thumb.' . (ImageOptimizer::canOptimizeImages() ? 'webp' : 'jpg');
+        $thumbDir = __DIR__ . '/../public/uploads/gallery_thumbs/' . $folder;
+        $thumbPath = $thumbDir . '/' . $thumbName;
+
+        if (!is_file($thumbPath) && ImageOptimizer::canResizeImages() && is_file($sourcePath)) {
+            if (!is_dir($thumbDir)) {
+                mkdir($thumbDir, 0777, true);
+            }
+            ImageOptimizer::createThumbnail($sourcePath, $thumbPath);
+        }
+
+        if (!is_file($thumbPath)) {
+            return null;
+        }
+
+        return BASE_URL . '/public/uploads/gallery_thumbs/' . rawurlencode($folder) . '/' . rawurlencode($thumbName);
     }
 
     private function buildTeamStructure(array $members): array
