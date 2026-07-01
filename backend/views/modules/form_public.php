@@ -307,6 +307,13 @@
         </div>
         <?php endforeach; ?>
 
+        <div class="public-question-card" style="margin-bottom: 24px;">
+            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 14px; color: var(--muted); line-height: 1.4;">
+                <input type="checkbox" name="kvkk_consent" value="1" required style="margin-top: 3px; cursor: pointer;">
+                <span>Kişisel verilerimin işlenmesine ve tarafımla iletişime geçilmesine dair <a href="javascript:void(0)" onclick="openKvkkModal(event)" style="color: var(--accent); text-decoration: underline; font-weight: 600;">KVKK Açık Rıza Beyanı</a>'nı okudum, onaylıyorum.</span>
+            </label>
+        </div>
+
         <button type="submit" class="submit-btn">Gönder</button>
     </form>
 
@@ -444,4 +451,39 @@
             });
         }
     }
+
+    function openKvkkModal(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        document.getElementById('kvkkPopupModal').style.display = 'flex';
+    }
+
+    function closeKvkkModal() {
+        document.getElementById('kvkkPopupModal').style.display = 'none';
+    }
 </script>
+
+<!-- KVKK Modal Element -->
+<div id="kvkkPopupModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 99999; justify-content: center; align-items: center; padding: 20px;" onclick="closeKvkkModal()">
+    <div style="background: var(--card-bg, #ffffff); color: var(--text-main, #333333); width: 100%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden;" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border, #e2e8f0); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-main, #1e293b);">KVKK Açık Rıza Metni</h3>
+            <button type="button" onclick="closeKvkkModal()" style="background: none; border: none; cursor: pointer; color: var(--muted, #64748b); font-size: 20px; padding: 4px; line-height: 1;">&times;</button>
+        </div>
+        <!-- Body -->
+        <div style="padding: 20px; overflow-y: auto; font-size: 14px; line-height: 1.6; color: var(--text-muted, #475569); max-height: 60vh;">
+            <p><strong>KİŞİSEL VERİLERİN KORUNMASI KANUNU (KVKK) KAPSAMINDA AÇIK RIZA BEYANI</strong></p>
+            <p>Bu form vasıtasıyla paylaştığınız ad, soyad, e-posta adresi, telefon numarası, öğrenci numarası ve eğitim bilgileri gibi kişisel verileriniz; topluluğumuzun (departmanımızın) faaliyetleri kapsamında üye kaydı oluşturulması, etkinlik süreçlerinin yönetilmesi ve sizinle iletişim kurulması amaçlarıyla 6698 sayılı Kişisel Verilerin Korunması Kanunu'na uygun olarak işlenmektedir.</p>
+            <p><strong>Verilerinizin İşlenme Amacı ve Aktarımı:</strong></p>
+            <p>Toplanan kişisel verileriniz, kanunun öngördüğü sınırlar dahilinde sadece topluluğumuz bünyesinde işlenecek ve üçüncü şahıslarla paylaşılmayacaktır. Verileriniz, yasal saklama süreleri boyunca güvenli bir şekilde saklanacaktır.</p>
+            <p>Onay kutusunu işaretleyerek kişisel verilerinizin yukarıda belirtilen amaçlar doğrultusunda işlenmesini ve tarafınızla iletişim kurulmasını özgür iradenizle kabul etmiş sayılmaktasınız.</p>
+        </div>
+        <!-- Footer -->
+        <div style="padding: 12px 20px; border-top: 1px solid var(--border, #e2e8f0); display: flex; justify-content: flex-end; background: rgba(var(--accent-rgb), 0.02);">
+            <button type="button" class="submit-btn" onclick="closeKvkkModal()" style="margin: 0; padding: 8px 24px; font-size: 14px; border-radius: 6px; width: auto; background: var(--accent); color: #fff; border: none; cursor: pointer;">Kapat</button>
+        </div>
+    </div>
+</div>

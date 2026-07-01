@@ -119,6 +119,10 @@ class FormModule extends BaseModule
 
     private function processFormSubmission(array $postData, bool $isPublic)
     {
+        if ($isPublic && empty($postData['kvkk_consent'])) {
+            $this->redirectBackError('KVKK Açık Rıza Beyanı\'nı onaylamanız gerekmektedir.', $isPublic);
+        }
+
         $config = $this->getConfig();
         $fields = $config['fields'] ?? [];
         $submittedData = [];
