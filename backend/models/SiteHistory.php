@@ -8,13 +8,13 @@ class SiteHistory extends Model
 
     public function getAllHistory(): array
     {
-        $stmt = $this->db->query("SELECT * FROM {$this->table} ORDER BY year DESC, id DESC");
+        $stmt = $this->pdo->query("SELECT * FROM {$this->table} ORDER BY year DESC, id DESC");
         return $stmt->fetchAll();
     }
 
     public function getHistoryById(int $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
@@ -22,7 +22,7 @@ class SiteHistory extends Model
     public function createHistory(array $data): bool
     {
         $sql = "INSERT INTO {$this->table} (year, title, description, icon, type, link) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['year'],
             $data['title'],
@@ -36,7 +36,7 @@ class SiteHistory extends Model
     public function updateHistory(int $id, array $data): bool
     {
         $sql = "UPDATE {$this->table} SET year = ?, title = ?, description = ?, icon = ?, type = ?, link = ? WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['year'],
             $data['title'],
@@ -50,7 +50,7 @@ class SiteHistory extends Model
 
     public function deleteHistory(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }

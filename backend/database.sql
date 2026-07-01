@@ -14,6 +14,7 @@ CREATE TABLE users (
     email          VARCHAR(150) UNIQUE NOT NULL,
     password       VARCHAR(255) NOT NULL,
     is_super_admin TINYINT(1) DEFAULT 0,
+    can_manage_passwords TINYINT(1) DEFAULT 0,
     is_active      TINYINT(1) DEFAULT 1,
     phone          VARCHAR(50) NULL,
     university     VARCHAR(150) NULL,
@@ -69,6 +70,55 @@ CREATE TABLE IF NOT EXISTS site_events (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ============================
+-- Tablo: site_settings
+-- ============================
+CREATE TABLE IF NOT EXISTS site_settings (
+    key_name VARCHAR(100) PRIMARY KEY,
+    json_value JSON
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================
+-- Tablo: site_projects
+-- ============================
+CREATE TABLE IF NOT EXISTS site_projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    category VARCHAR(100),
+    status VARCHAR(50),
+    tech_stack_json JSON,
+    github_link VARCHAR(255),
+    demo_link VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================
+-- Tablo: site_history
+-- ============================
+CREATE TABLE IF NOT EXISTS site_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    year VARCHAR(20),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    icon VARCHAR(100),
+    type VARCHAR(50) DEFAULT 'achievement',
+    link VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================
+-- Tablo: site_gallery
+-- ============================
+CREATE TABLE IF NOT EXISTS site_gallery (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    category VARCHAR(100) DEFAULT 'Genel',
+    title VARCHAR(255),
+    span_class VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- -------
 -- Tablo: departments
 -- -------
@@ -114,6 +164,7 @@ CREATE TABLE apps (
     sort_order    INT DEFAULT 0,
     is_active     TINYINT(1) DEFAULT 1,
     director_only TINYINT(1) DEFAULT 0,
+    is_global_module TINYINT(1) DEFAULT 0,
     config        JSON NULL,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_app_dept_slug (department_id, slug),

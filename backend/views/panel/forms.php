@@ -229,7 +229,7 @@ function getBadge($isActive, $config) {
 <div class="forms-header">
     <div class="forms-title">
         <h1>Form Yönetimi</h1>
-        <p>Başvurular, anketler ve topluluk veri havuzu.</p>
+        <p>Tüm departmanlarda ortak görünen başvurular, anketler ve topluluk veri havuzu.</p>
     </div>
     <button class="btn btn-primary" onclick="document.getElementById('createModal').style.display='flex'">
         + Yeni Form Oluştur
@@ -238,7 +238,11 @@ function getBadge($isActive, $config) {
 
 <div class="forms-tabs">
     <button class="active" onclick="switchFTab('real')">Gerçek Formlar</button>
-    <button onclick="switchFTab('tpl')">Şablonlarım</button>
+    <button onclick="switchFTab('tpl')">Global Şablonlar</button>
+</div>
+
+<div class="fm-notice">
+    <strong>Global Form Havuzu:</strong> Buradaki formlar tüm departmanlarda ortaktır. Bir departmanda oluşturulan veya düzenlenen form herkesin panelinde görünür; yanıtlar aynı form kaydında toplanır.
 </div>
 
 <div id="tab-real" class="forms-tab-content active">
@@ -261,11 +265,7 @@ function getBadge($isActive, $config) {
                     <?php 
                         $conf = json_decode($app['config'] ?? '{}', true) ?: [];
                         $isPublic = $conf['settings']['is_public'] ?? false;
-                        if ($isPublic) {
-                            $publicLink = BASE_URL . '/f/' . View::escape($app['slug']);
-                        } else {
-                            $publicLink = BASE_URL . '/f/' . View::escape($currentDept['slug']) . '/' . View::escape($app['slug']);
-                        }
+                        $publicLink = BASE_URL . '/f/' . View::escape($app['slug']);
                     ?>
                     <a href="<?= $publicLink ?>" target="_blank" title="Yayına Git">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
@@ -294,7 +294,7 @@ function getBadge($isActive, $config) {
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
         </svg>
         <h3>Henüz şablon kaydedilmedi</h3>
-        <p>Formları düzenlerken 'Şablon Olarak Kaydet' diyerek buraya ekleyebilirsiniz.</p>
+        <p>Global formları şablona çevirerek buraya ekleyebilirsiniz.</p>
     </div>
     <?php else: ?>
     <div class="forms-grid">
@@ -319,7 +319,7 @@ function getBadge($isActive, $config) {
             <div class="f-card-title"><?= View::escape($app['name']) ?></div>
             <div class="f-card-desc"><?= empty($app['description']) ? 'Açıklama belirtilmedi.' : View::escape($app['description']) ?></div>
             <div class="f-card-footer">
-                <div class="f-resp-count">0 Yanıt</div>
+                <div class="f-resp-count"><?= $app['response_count'] ?> Yanıt</div>
                 <a href="<?= BASE_URL ?>/panel/<?= View::escape($currentDept['slug']) ?>/apps/<?= View::escape($app['slug']) ?>" class="f-edit-link">Genel Formu Düzenle &rarr;</a>
             </div>
         </div>
@@ -350,7 +350,7 @@ function getBadge($isActive, $config) {
             </select>
             
             <div class="fm-notice">
-                <strong>Not:</strong> Şablon seçerseniz o taslaktaki tüm sorular otomatik kopyalanır. Yoksa ileri düzey form alanlarını bir sonraki adımda ekleyebilirsiniz.
+                <strong>Not:</strong> Oluşturulan form global havuza eklenir ve tüm departmanlarda görünür. Şablon seçerseniz o taslaktaki tüm sorular otomatik kopyalanır.
             </div>
             
             <div class="fm-footer">

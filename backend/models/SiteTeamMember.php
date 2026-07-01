@@ -8,13 +8,13 @@ class SiteTeamMember extends Model
 
     public function getAllMembers(): array
     {
-        $stmt = $this->db->query("SELECT * FROM {$this->table} ORDER BY type ASC, id ASC");
+        $stmt = $this->pdo->query("SELECT * FROM {$this->table} ORDER BY type ASC, id ASC");
         return $stmt->fetchAll();
     }
 
     public function getMemberById(int $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
@@ -26,7 +26,7 @@ class SiteTeamMember extends Model
                 
         $communityHistory = isset($data['community_history']) ? json_encode($data['community_history'], JSON_UNESCAPED_UNICODE) : '[]';
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['name'],
             $data['role'],
@@ -48,7 +48,7 @@ class SiteTeamMember extends Model
                 
         $communityHistory = isset($data['community_history']) ? json_encode($data['community_history'], JSON_UNESCAPED_UNICODE) : '[]';
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['name'],
             $data['role'],
@@ -65,7 +65,7 @@ class SiteTeamMember extends Model
 
     public function deleteMember(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }

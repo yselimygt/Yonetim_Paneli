@@ -2,7 +2,7 @@
 
 <div class="page-header">
     <h2>Web Sitesi Etkinlikleri</h2>
-    <button onclick="toggleModal('create-event-modal')" class="btn btn-primary">
+    <button onclick="openModal('create-event-modal')" class="btn btn-primary">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Yeni Etkinlik
     </button>
@@ -82,9 +82,12 @@
 </div>
 
 <!-- Create Modal -->
-<div id="create-event-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content" style="width:600px;max-width:95vw;">
-        <h3 style="font-size:18px;margin-bottom:24px;font-weight:600;">Yeni Site Etkinliği</h3>
+<div id="create-event-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Yeni Site Etkinliği</h3>
+            <button type="button" class="modal-close" onclick="closeModal('create-event-modal')">&times;</button>
+        </div>
         <form method="POST" action="<?= BASE_URL ?>/superadmin/site-events">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
@@ -135,7 +138,7 @@
             </div>
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
-                <button type="button" onclick="toggleModal('create-event-modal')" class="btn btn-outline">İptal</button>
+                <button type="button" onclick="closeModal('create-event-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Kaydet</button>
             </div>
         </form>
@@ -143,9 +146,12 @@
 </div>
 
 <!-- Edit Modal -->
-<div id="edit-event-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content" style="width:600px;max-width:95vw;">
-        <h3 style="font-size:18px;margin-bottom:24px;font-weight:600;">Etkinliği Düzenle</h3>
+<div id="edit-event-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Etkinliği Düzenle</h3>
+            <button type="button" class="modal-close" onclick="closeModal('edit-event-modal')">&times;</button>
+        </div>
         <form method="POST" id="edit-event-form" action="">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
@@ -196,32 +202,14 @@
             </div>
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
-                <button type="button" onclick="toggleModal('edit-event-modal')" class="btn btn-outline">İptal</button>
+                <button type="button" onclick="closeModal('edit-event-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Güncelle</button>
             </div>
         </form>
     </div>
 </div>
 
-<style>
-.modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-    z-index: 200; align-items: center; justify-content: center; transition: all 0.3s ease;
-}
-.modal-content {
-    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-}
-</style>
 <script>
-function toggleModal(id) {
-    const m = document.getElementById(id);
-    m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-}
 
 function editEvent(e) {
     const form = document.getElementById('edit-event-form');
@@ -240,6 +228,6 @@ function editEvent(e) {
     document.getElementById('edit_status').value = e.status || 'upcoming';
     document.getElementById('edit_image_url').value = e.image_url || '';
 
-    toggleModal('edit-event-modal');
+    openModal('edit-event-modal');
 }
 </script>

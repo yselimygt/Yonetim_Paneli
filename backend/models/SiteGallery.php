@@ -8,13 +8,13 @@ class SiteGallery extends Model
 
     public function getAllImages(): array
     {
-        $stmt = $this->db->query("SELECT * FROM {$this->table} ORDER BY id DESC");
+        $stmt = $this->pdo->query("SELECT * FROM {$this->table} ORDER BY id DESC");
         return $stmt->fetchAll();
     }
 
     public function getImageById(int $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
@@ -22,7 +22,7 @@ class SiteGallery extends Model
     public function createImage(array $data): bool
     {
         $sql = "INSERT INTO {$this->table} (image_url, category, title, span_class) VALUES (?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['image_url'],
             $data['category'] ?? 'Genel',
@@ -34,7 +34,7 @@ class SiteGallery extends Model
     public function updateImage(int $id, array $data): bool
     {
         $sql = "UPDATE {$this->table} SET image_url = ?, category = ?, title = ?, span_class = ? WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['image_url'],
             $data['category'] ?? 'Genel',
@@ -46,7 +46,7 @@ class SiteGallery extends Model
 
     public function deleteImage(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }

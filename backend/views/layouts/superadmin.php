@@ -389,6 +389,91 @@
         /* Empty state */
         .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
         .empty-state p { font-size: 13px; margin-top: 8px; }
+
+        /* Modals (Global) */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+        
+        /* Compatibility for older modal-overlay class */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(4px);
+            z-index: 1000; align-items: center; justify-content: center; transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-overlay .modal-content {
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
+
     </style>
 </head>
 <body>
@@ -564,6 +649,45 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
 }
+
+// Global Modal Functions
+function openModal(id) {
+    const m = document.getElementById(id);
+    if(m) {
+        m.style.display = 'flex';
+        // Force reflow for animation
+        m.offsetHeight; 
+        m.classList.add('show');
+    }
+}
+
+function closeModal(id) {
+    const m = document.getElementById(id);
+    if(m) {
+        m.classList.remove('show');
+        setTimeout(() => {
+            m.style.display = 'none';
+        }, 300); // Wait for transition
+    }
+}
+
+function toggleModal(id) {
+    const m = document.getElementById(id);
+    if(m) {
+        if(m.classList.contains('show') || m.style.display === 'flex') {
+            closeModal(id);
+        } else {
+            openModal(id);
+        }
+    }
+}
+
+// Close modals when clicking outside
+window.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal') || e.target.classList.contains('modal-overlay')) {
+        closeModal(e.target.id);
+    }
+});
 </script>
 </body>
 </html>

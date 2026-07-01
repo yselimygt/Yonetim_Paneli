@@ -6,17 +6,7 @@ class LinksModule extends BaseModule
 {
     public function render(): string
     {
-        $configStr = $this->app['config'];
-        if (empty($configStr) || $configStr === '[]' || $configStr === '{}') {
-            $stmt = $this->pdo->prepare("SELECT config FROM apps WHERE module_type = 'links' AND config IS NOT NULL AND config != '' AND config != '{}' LIMIT 1");
-            $stmt->execute();
-            $existing = $stmt->fetchColumn();
-            if ($existing) {
-                $configStr = $existing;
-            }
-        }
-
-        $config = json_decode($configStr ?? '{}', true) ?: [];
+        $config = $this->getGlobalLinksConfig();
         $profile = $config['profile'] ?? [
             'name' => 'Genel Bağlantılar',
             'bio' => '',
@@ -91,10 +81,7 @@ class LinksModule extends BaseModule
             }
         }
 
-        $config = json_encode(['profile' => $profile, 'links' => $links]);
-
-        $stmt = $this->pdo->prepare("UPDATE apps SET config = ? WHERE module_type = 'links'");
-        $stmt->execute([$config]);
+        $this->saveGlobalLinksConfig(['profile' => $profile, 'links' => $links]);
 
         $_SESSION['success_msg'] = "Linkler tüm departmanlar için başarıyla güncellendi.";
         header("Location: " . BASE_URL . "/panel/" . $this->department['slug'] . "/apps/" . $this->app['slug']);
@@ -108,17 +95,7 @@ class LinksModule extends BaseModule
             die("Bu sayfa aktif değil.");
         }
 
-        $configStr = $this->app['config'];
-        if (empty($configStr) || $configStr === '[]' || $configStr === '{}') {
-            $stmt = $this->pdo->prepare("SELECT config FROM apps WHERE module_type = 'links' AND config IS NOT NULL AND config != '' AND config != '{}' LIMIT 1");
-            $stmt->execute();
-            $existing = $stmt->fetchColumn();
-            if ($existing) {
-                $configStr = $existing;
-            }
-        }
-
-        $config = json_decode($configStr ?? '{}', true) ?: [];
+        $config = $this->getGlobalLinksConfig();
         $profile = $config['profile'] ?? [
             'name' => 'Genel Bağlantılar',
             'bio' => '',
@@ -131,5 +108,37 @@ class LinksModule extends BaseModule
         extract(compact('profile', 'links'));
         require __DIR__ . '/../views/modules/links_public.php';
         exit;
+    }
+
+    private function getGlobalLinksConfig(): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT config
+            FROM apps
+            WHERE module_type = 'links'
+              AND is_active = 1
+              AND config IS NOT NULL
+              AND config != ''
+              AND config != '{}'
+              AND config != '[]'
+            ORDER BY created_at DESC, id ASC
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $configStr = $stmt->fetchColumn() ?: $this->app['config'];
+
+        return json_decode($configStr ?? '{}', true) ?: [];
+    }
+
+    private function saveGlobalLinksConfig(array $config): void
+    {
+        $configJson = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $stmt = $this->pdo->prepare("
+            UPDATE apps
+            SET config = ?
+            WHERE module_type = 'links'
+              AND is_active = 1
+        ");
+        $stmt->execute([$configJson]);
     }
 }

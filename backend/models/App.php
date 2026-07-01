@@ -47,6 +47,21 @@ class App extends Model
         return $result ?: null;
     }
 
+    public function getGlobalModuleBySlug(string $slug, array $moduleTypes): ?array
+    {
+        if (empty($moduleTypes)) {
+            return null;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($moduleTypes), '?'));
+        $stmt = $this->pdo->prepare(
+            "SELECT * FROM apps WHERE slug = ? AND module_type IN ({$placeholders}) AND is_active = 1 ORDER BY created_at ASC LIMIT 1"
+        );
+        $stmt->execute(array_merge([$slug], $moduleTypes));
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
     public function getByDepartmentAndModule(int $deptId, string $moduleType): ?array
     {
         $stmt = $this->pdo->prepare(

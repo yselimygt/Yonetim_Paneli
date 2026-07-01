@@ -28,7 +28,7 @@ class AppRunnerController extends Controller
             $this->redirect('/panel');
         }
 
-        $app = $this->appModel->getBySlug($currentDept['id'], $appSlug);
+        $app = $this->resolvePanelApp($currentDept['id'], $appSlug);
         if (!$app || !$app['is_active']) {
             $this->flashError('Uygulama bulunamadı veya aktif değil.');
             $this->redirect("/panel/{$slug}");
@@ -66,7 +66,7 @@ class AppRunnerController extends Controller
             $this->redirect('/panel');
         }
 
-        $app = $this->appModel->getBySlug($currentDept['id'], $appSlug);
+        $app = $this->resolvePanelApp($currentDept['id'], $appSlug);
         if (!$app || !$app['is_active']) {
             $this->flashError('Uygulama bulunamadı.');
             $this->redirect("/panel/{$slug}");
@@ -208,6 +208,16 @@ class AppRunnerController extends Controller
             if ($d['slug'] === $slug) return $d['role'];
         }
         return 'member';
+    }
+
+    private function resolvePanelApp(int $deptId, string $appSlug): ?array
+    {
+        $app = $this->appModel->getBySlug($deptId, $appSlug);
+        if ($app) {
+            return $app;
+        }
+
+        return $this->appModel->getGlobalModuleBySlug($appSlug, ['form', 'links']);
     }
 
     private function instantiateModule(array $app, array $dept, array $user, string $userRole): BaseModule

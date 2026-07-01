@@ -7,7 +7,7 @@ class SiteSetting extends Model
 
     public function get(string $key)
     {
-        $stmt = $this->db->prepare("SELECT json_value FROM {$this->table} WHERE key_name = ?");
+        $stmt = $this->pdo->prepare("SELECT json_value FROM {$this->table} WHERE key_name = ?");
         $stmt->execute([$key]);
         $result = $stmt->fetch();
         if ($result && $result['json_value']) {
@@ -19,13 +19,13 @@ class SiteSetting extends Model
     public function set(string $key, array $value): void
     {
         $json = json_encode($value, JSON_UNESCAPED_UNICODE);
-        $stmt = $this->db->prepare("INSERT INTO {$this->table} (key_name, json_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE json_value = VALUES(json_value)");
+        $stmt = $this->pdo->prepare("INSERT INTO {$this->table} (key_name, json_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE json_value = VALUES(json_value)");
         $stmt->execute([$key, $json]);
     }
 
     public function getAllSettings(): array
     {
-        $stmt = $this->db->query("SELECT key_name, json_value FROM {$this->table}");
+        $stmt = $this->pdo->query("SELECT key_name, json_value FROM {$this->table}");
         $settings = [];
         while ($row = $stmt->fetch()) {
             $settings[$row['key_name']] = json_decode($row['json_value'], true);

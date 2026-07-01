@@ -1,210 +1,440 @@
 <?php $pageTitle = 'Site Ayarları'; ?>
 
 <div class="page-header">
-    <h2>Genel Site Ayarları</h2>
+    <div>
+        <h2>Genel Site Ayarları</h2>
+        <p style="color:var(--muted); font-size:13px; margin-top:4px;">Web sitesinin temel bileşenlerini ve içeriklerini buradan yönetebilirsiniz.</p>
+    </div>
 </div>
 
 <!-- Tabs -->
-<div style="display:flex; gap:16px; margin-bottom:24px; border-bottom: 1px solid var(--border);">
-    <button class="tab-btn active" onclick="switchTab('popup')">Duyuru Pop-up</button>
-    <button class="tab-btn" onclick="switchTab('stats')">İstatistikler</button>
-    <button class="tab-btn" onclick="switchTab('sponsors')">Sponsorlar</button>
-    <button class="tab-btn" onclick="switchTab('faqs')">Sık Sorulan Sorular</button>
+<div class="settings-tabs">
+    <button class="tab-btn active" onclick="switchTab(this, 'popup')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        Duyuru Pop-up
+    </button>
+    <button class="tab-btn" onclick="switchTab(this, 'stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        İstatistikler
+    </button>
+    <button class="tab-btn" onclick="switchTab(this, 'sponsors')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 17 22 12"/></svg>
+        Sponsorlar
+    </button>
+    <button class="tab-btn" onclick="switchTab(this, 'faqs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Sık Sorulan Sorular
+    </button>
 </div>
 
 <!-- 1. POPUP -->
 <div id="tab-popup" class="tab-content active">
     <div class="card">
-        <h3>Duyuru Pop-up Ayarları</h3>
-        <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Sitenin girişinde görünen duyuru modalını buradan yönetebilirsiniz.</p>
-        
-        <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/popup">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+        <div class="card-header">
+            Duyuru Pop-up Ayarları
+        </div>
+        <div class="card-body">
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Sitenin girişinde görünen duyuru modalını buradan yönetebilirsiniz.</p>
             
-            <div class="form-group" style="display:flex; align-items:center; gap:8px;">
-                <input type="checkbox" name="enabled" id="popup_enabled" <?= !empty($popupConfig['enabled']) ? 'checked' : '' ?> style="width:18px;height:18px;">
-                <label for="popup_enabled" style="margin:0; font-weight:600;">Duyuruyu Aktif Et</label>
-            </div>
-
-            <div class="form-row mt-3">
-                <div class="form-group">
-                    <label class="form-label">Başlık</label>
-                    <input type="text" name="title" class="form-control" value="<?= View::escape($popupConfig['title'] ?? '') ?>">
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/popup">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                
+                <div class="form-group" style="display:flex; align-items:center; gap:12px; background:var(--input-bg); padding:16px; border-radius:12px; border:1px solid var(--border);">
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="enabled" <?= !empty($popupConfig['enabled']) ? 'checked' : '' ?>>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div>
+                        <strong style="display:block; font-size:14px;">Duyuruyu Aktif Et</strong>
+                        <span style="font-size:12px; color:var(--muted);">Kullanıcılar siteye girdiğinde pop-up olarak gösterilir.</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Etiket (Badge)</label>
-                    <input type="text" name="badge" class="form-control" value="<?= View::escape($popupConfig['badge'] ?? '') ?>">
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label">Açıklama (Description)</label>
-                <textarea name="description" class="form-control" rows="3"><?= View::escape($popupConfig['description'] ?? '') ?></textarea>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">1. Buton Yazısı</label>
-                    <input type="text" name="cta_label" class="form-control" value="<?= View::escape($popupConfig['cta']['label'] ?? '') ?>">
+                <div class="form-row mt-4">
+                    <div class="form-group">
+                        <label class="form-label">Başlık</label>
+                        <input type="text" name="title" class="form-control" placeholder="Örn: Erken Kayıt Başladı!" value="<?= View::escape($popupConfig['title'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Etiket (Badge)</label>
+                        <input type="text" name="badge" class="form-control" placeholder="Örn: YENİ, DUYURU" value="<?= View::escape($popupConfig['badge'] ?? '') ?>">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">1. Buton Linki</label>
-                    <input type="text" name="cta_href" class="form-control" value="<?= View::escape($popupConfig['cta']['href'] ?? '') ?>">
-                </div>
-            </div>
 
-            <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">2. Buton Yazısı</label>
-                    <input type="text" name="secondaryCta_label" class="form-control" value="<?= View::escape($popupConfig['secondaryCta']['label'] ?? '') ?>">
+                    <label class="form-label">Açıklama (Description)</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="Pop-up içeriği buraya yazılır..."><?= View::escape($popupConfig['description'] ?? '') ?></textarea>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">2. Buton Linki</label>
-                    <input type="text" name="secondaryCta_href" class="form-control" value="<?= View::escape($popupConfig['secondaryCta']['href'] ?? '') ?>">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">1. Buton Yazısı</label>
+                        <input type="text" name="cta_label" class="form-control" placeholder="Örn: Detaylı Bilgi" value="<?= View::escape($popupConfig['cta']['label'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">1. Buton Linki</label>
+                        <input type="text" name="cta_href" class="form-control" placeholder="https://..." value="<?= View::escape($popupConfig['cta']['href'] ?? '') ?>">
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group" style="width:200px;">
-                <label class="form-label">Otomatik Kapanma (Saniye)</label>
-                <input type="number" name="autoCloseSec" class="form-control" value="<?= (int)($popupConfig['autoCloseSec'] ?? 5) ?>">
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">2. Buton Yazısı</label>
+                        <input type="text" name="secondaryCta_label" class="form-control" placeholder="İsteğe bağlı" value="<?= View::escape($popupConfig['secondaryCta']['label'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">2. Buton Linki</label>
+                        <input type="text" name="secondaryCta_href" class="form-control" placeholder="İsteğe bağlı" value="<?= View::escape($popupConfig['secondaryCta']['href'] ?? '') ?>">
+                    </div>
+                </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Pop-up Ayarlarını Kaydet</button>
-        </form>
+                <div class="form-group" style="max-width: 200px;">
+                    <label class="form-label">Otomatik Kapanma (Saniye)</label>
+                    <div style="position:relative;">
+                        <input type="number" name="autoCloseSec" class="form-control" style="padding-right:40px;" value="<?= (int)($popupConfig['autoCloseSec'] ?? 5) ?>">
+                        <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:12px;">sn</span>
+                    </div>
+                </div>
+
+                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:flex-end;">
+                    <button type="submit" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Ayarları Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <!-- 2. STATS -->
 <div id="tab-stats" class="tab-content" style="display:none;">
     <div class="card">
-        <h3>İstatistikler (Metrics)</h3>
-        <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Sitenin ana sayfasında yer alan 4 metrik alanı.</p>
-        
-        <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/stats">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+        <div class="card-header">
+            İstatistikler (Metrics)
+        </div>
+        <div class="card-body">
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Sitenin ana sayfasında yer alan 4 metrik alanı.</p>
             
-            <div id="stats-container">
-                <?php if (empty($stats)): $stats = [['label'=>'', 'value'=>'', 'desc'=>'']]; endif; ?>
-                <?php foreach ($stats as $idx => $s): ?>
-                <div class="stat-item" style="border:1px solid var(--border); padding:16px; border-radius:8px; margin-bottom:16px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <strong>Metrik #<?= $idx + 1 ?></strong>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">Sil</button>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Başlık (Örn: Aktif Üye)</label>
-                            <input type="text" name="label[]" class="form-control" value="<?= View::escape($s['label']) ?>">
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/stats">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                
+                <div id="stats-container">
+                    <?php if (empty($stats)): $stats = [['label'=>'', 'value'=>'', 'desc'=>'']]; endif; ?>
+                    <?php foreach ($stats as $idx => $s): ?>
+                    <div class="dynamic-item">
+                        <div class="item-header">
+                            <strong>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                Metrik #<?= $idx + 1 ?>
+                            </strong>
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.dynamic-item').remove()" title="Sil">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Değer (Örn: 500+)</label>
-                            <input type="text" name="value[]" class="form-control" value="<?= View::escape($s['value']) ?>">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Başlık (Örn: Aktif Üye)</label>
+                                <input type="text" name="label[]" class="form-control" value="<?= View::escape($s['label']) ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Değer (Örn: 500+)</label>
+                                <input type="text" name="value[]" class="form-control" value="<?= View::escape($s['value']) ?>">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Açıklama</label>
+                            <input type="text" name="desc[]" class="form-control" value="<?= View::escape($s['desc']) ?>">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Açıklama</label>
-                        <input type="text" name="desc[]" class="form-control" value="<?= View::escape($s['desc']) ?>">
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
-            </div>
-            
-            <div style="display:flex; gap:10px; margin-top:16px;">
-                <button type="button" class="btn btn-outline" onclick="addStat()">+ Yeni Metrik Ekle</button>
-                <button type="submit" class="btn btn-primary">İstatistikleri Kaydet</button>
-            </div>
-        </form>
+                
+                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <button type="button" class="btn btn-outline" onclick="addStat()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Yeni Metrik Ekle
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        İstatistikleri Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <!-- 3. SPONSORS -->
 <div id="tab-sponsors" class="tab-content" style="display:none;">
     <div class="card">
-        <h3>Sponsor Logoları</h3>
-        
-        <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/sponsors">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-            
-            <div id="sponsors-container">
-                <?php if (empty($sponsors)): $sponsors = ['']; endif; ?>
-                <?php foreach ($sponsors as $url): ?>
-                <div class="sponsor-item form-row" style="margin-bottom:8px;">
-                    <div class="form-group" style="flex:1;">
-                        <input type="text" name="sponsor_url[]" class="form-control" value="<?= View::escape($url) ?>" placeholder="Logo URL (Örn: /innomis/assets/...)">
+        <div class="card-header">
+            Sponsor Logoları
+        </div>
+        <div class="card-body">
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Destekçilerin ve sponsorların logolarını anasayfada gösterir.</p>
+
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/sponsors">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                
+                <div id="sponsors-container" class="sponsors-grid">
+                    <?php if (empty($sponsors)): $sponsors = ['']; endif; ?>
+                    <?php foreach ($sponsors as $url): ?>
+                    <div class="dynamic-item" style="padding:16px;">
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <div style="flex:1;">
+                                <label class="form-label">Logo URL'si</label>
+                                <input type="text" name="sponsor_url[]" class="form-control" value="<?= View::escape($url) ?>" placeholder="/assets/img/sponsor.png">
+                            </div>
+                            <button type="button" class="btn-icon btn-danger-icon" style="margin-top:20px;" onclick="this.closest('.dynamic-item').remove()" title="Sil">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove()">Sil</button>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
-            </div>
-            
-            <div style="display:flex; gap:10px; margin-top:16px;">
-                <button type="button" class="btn btn-outline" onclick="addSponsor()">+ Logo Ekle</button>
-                <button type="submit" class="btn btn-primary">Sponsorları Kaydet</button>
-            </div>
-        </form>
+                
+                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <button type="button" class="btn btn-outline" onclick="addSponsor()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Logo Ekle
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Sponsorları Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <!-- 4. FAQS -->
 <div id="tab-faqs" class="tab-content" style="display:none;">
     <div class="card">
-        <h3>Sık Sorulan Sorular (FAQ)</h3>
-        
-        <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/faqs">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-            
-            <div id="faqs-container">
-                <?php if (empty($faqs)): $faqs = [['q'=>'', 'a'=>'']]; endif; ?>
-                <?php foreach ($faqs as $f): ?>
-                <div class="faq-item" style="border:1px solid var(--border); padding:16px; border-radius:8px; margin-bottom:16px;">
-                    <div class="form-group">
-                        <label class="form-label">Soru</label>
-                        <input type="text" name="q[]" class="form-control" value="<?= View::escape($f['q']) ?>">
+        <div class="card-header">
+            Sık Sorulan Sorular (FAQ)
+        </div>
+        <div class="card-body">
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Anasayfada yer alan kullanıcı soruları ve cevapları.</p>
+
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/faqs">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                
+                <div id="faqs-container">
+                    <?php if (empty($faqs)): $faqs = [['q'=>'', 'a'=>'']]; endif; ?>
+                    <?php foreach ($faqs as $idx => $f): ?>
+                    <div class="dynamic-item">
+                        <div class="item-header">
+                            <strong>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                Soru #<?= $idx + 1 ?>
+                            </strong>
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.dynamic-item').remove()" title="Sil">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Soru</label>
+                            <input type="text" name="q[]" class="form-control" value="<?= View::escape($f['q']) ?>">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Cevap</label>
+                            <textarea name="a[]" class="form-control" rows="2"><?= View::escape($f['a']) ?></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Cevap</label>
-                        <textarea name="a[]" class="form-control" rows="2"><?= View::escape($f['a']) ?></textarea>
-                    </div>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Sil</button>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
-            </div>
-            
-            <div style="display:flex; gap:10px; margin-top:16px;">
-                <button type="button" class="btn btn-outline" onclick="addFaq()">+ Soru Ekle</button>
-                <button type="submit" class="btn btn-primary">SSS Kaydet</button>
-            </div>
-        </form>
+                
+                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <button type="button" class="btn btn-outline" onclick="addFaq()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Soru Ekle
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        SSS Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <style>
+/* Modern Tabs */
+.settings-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: var(--card);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+}
+.settings-tabs::-webkit-scrollbar { display: none; } /* Chrome */
+
 .tab-btn {
-    padding: 10px 16px; background: none; border: none; border-bottom: 2px solid transparent;
-    color: var(--muted); cursor: pointer; font-weight: 500; font-size: 15px; margin-bottom: -1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.tab-btn:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
 }
 .tab-btn.active {
-    color: var(--primary); border-bottom-color: var(--primary);
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,188,212,0.25);
 }
-.mt-3 { margin-top: 16px; }
+.tab-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+}
+.tab-btn.active svg {
+    transform: scale(1.1);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255,255,255,0.1);
+    transition: .3s;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+}
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--muted);
+    transition: .3s;
+    border-radius: 50%;
+}
+input:checked + .toggle-slider {
+    background-color: rgba(0, 188, 212, 0.2);
+    border-color: var(--accent);
+}
+input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+    background-color: var(--accent);
+}
+
+/* Dynamic Items */
+.dynamic-item {
+    background: rgba(255,255,255,0.015);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: all 0.2s;
+}
+.dynamic-item:hover {
+    border-color: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.03);
+}
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.item-header strong {
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Icon Buttons */
+.btn-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.btn-danger-icon {
+    color: var(--muted);
+}
+.btn-danger-icon:hover {
+    background: rgba(239,68,68,0.1);
+    color: var(--danger);
+}
+
+.sponsors-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+@media (max-width: 768px) {
+    .sponsors-grid { grid-template-columns: 1fr; }
+}
+
+.mt-4 { margin-top: 24px; }
 </style>
 
 <script>
-function switchTab(tabId) {
+function switchTab(btn, tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + tabId).style.display = 'block';
-    event.currentTarget.classList.add('active');
+    btn.classList.add('active');
 }
 
 function addStat() {
+    const idx = document.querySelectorAll('#stats-container .dynamic-item').length + 1;
     const html = `
-    <div class="stat-item" style="border:1px solid var(--border); padding:16px; border-radius:8px; margin-bottom:16px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-            <strong>Yeni Metrik</strong>
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">Sil</button>
+    <div class="dynamic-item">
+        <div class="item-header">
+            <strong>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Yeni Metrik
+            </strong>
+            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.dynamic-item').remove()" title="Sil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -216,7 +446,7 @@ function addStat() {
                 <input type="text" name="value[]" class="form-control">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:0;">
             <label class="form-label">Açıklama</label>
             <input type="text" name="desc[]" class="form-control">
         </div>
@@ -226,29 +456,41 @@ function addStat() {
 
 function addSponsor() {
     const html = `
-    <div class="sponsor-item form-row" style="margin-bottom:8px;">
-        <div class="form-group" style="flex:1;">
-            <input type="text" name="sponsor_url[]" class="form-control" placeholder="Logo URL">
-        </div>
-        <div>
-            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove()">Sil</button>
+    <div class="dynamic-item" style="padding:16px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+            <div style="flex:1;">
+                <label class="form-label">Logo URL'si</label>
+                <input type="text" name="sponsor_url[]" class="form-control" placeholder="/assets/img/sponsor.png">
+            </div>
+            <button type="button" class="btn-icon btn-danger-icon" style="margin-top:20px;" onclick="this.closest('.dynamic-item').remove()" title="Sil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
         </div>
     </div>`;
     document.getElementById('sponsors-container').insertAdjacentHTML('beforeend', html);
 }
 
 function addFaq() {
+    const idx = document.querySelectorAll('#faqs-container .dynamic-item').length + 1;
     const html = `
-    <div class="faq-item" style="border:1px solid var(--border); padding:16px; border-radius:8px; margin-bottom:16px;">
+    <div class="dynamic-item">
+        <div class="item-header">
+            <strong>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Yeni Soru
+            </strong>
+            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.dynamic-item').remove()" title="Sil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+        </div>
         <div class="form-group">
             <label class="form-label">Soru</label>
             <input type="text" name="q[]" class="form-control">
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:0;">
             <label class="form-label">Cevap</label>
             <textarea name="a[]" class="form-control" rows="2"></textarea>
         </div>
-        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Sil</button>
     </div>`;
     document.getElementById('faqs-container').insertAdjacentHTML('beforeend', html);
 }

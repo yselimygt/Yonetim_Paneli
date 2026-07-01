@@ -58,9 +58,12 @@
 </div>
 
 <!-- Create User Modal -->
-<div id="create-user-modal" style="display:none;position:fixed;inset:0;background:var(--modal-overlay);z-index:200;align-items:center;justify-content:center;">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;width:520px;max-width:95vw;">
-        <h3 style="font-size:15px;margin-bottom:20px;">Yeni Kullanıcı</h3>
+<div id="create-user-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Yeni Kullanıcı</h3>
+            <button class="modal-close" onclick="closeModal('create-user-modal')">&times;</button>
+        </div>
         <form method="POST" action="<?= BASE_URL ?>/superadmin/users">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
@@ -117,16 +120,11 @@
             </div>
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
-                <button type="button" onclick="toggleModal('create-user-modal')" class="btn btn-outline">İptal</button>
+                <button type="button" onclick="closeModal('create-user-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Oluştur</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-function toggleModal(id) {
-    const m = document.getElementById(id);
-    m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-}
-</script>
+

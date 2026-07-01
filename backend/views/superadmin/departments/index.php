@@ -65,9 +65,12 @@
 </div>
 
 <!-- Create Modal -->
-<div id="create-dept-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;transition:all 0.3s ease;">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;width:500px;max-width:95vw;box-shadow:0 10px 40px rgba(0,0,0,0.2);animation:modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
-        <h3 style="font-size:18px;margin-bottom:24px;font-weight:600;">Yeni Departman</h3>
+<div id="create-dept-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Yeni Departman</h3>
+            <button class="modal-close" onclick="closeModal('create-dept-modal')">&times;</button>
+        </div>
         <form method="POST" action="<?= BASE_URL ?>/superadmin/departments">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
@@ -101,22 +104,10 @@
             </div>
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
-                <button type="button" onclick="toggleModal('create-dept-modal')" class="btn btn-outline">İptal</button>
+                <button type="button" onclick="closeModal('create-dept-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Oluştur</button>
             </div>
         </form>
     </div>
 </div>
 
-<style>
-@keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-}
-</style>
-<script>
-function toggleModal(id) {
-    const m = document.getElementById(id);
-    m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-}
-</script>

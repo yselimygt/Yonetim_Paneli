@@ -292,17 +292,15 @@ class PanelController extends Controller
         $userRole    = $this->getUserRoleInDept($slug);
         
         $pdo = Database::getInstance();
-        $forms = $pdo->prepare("
+        $forms = $pdo->query("
             SELECT a.*, 
                    (SELECT COUNT(*) FROM form_entries WHERE app_id = a.id) as response_count
             FROM apps a
             WHERE a.module_type = 'form' 
               AND a.is_active = 1 
-              AND a.department_id = ?
               AND a.slug != 'form'
             ORDER BY a.created_at DESC
         ");
-        $forms->execute([$currentDept['id']]);
         $allForms = $forms->fetchAll();
 
         $realForms = [];
@@ -349,8 +347,8 @@ class PanelController extends Controller
         // Şablondan kopyalama
         if ($templateId > 0) {
             $pdo = Database::getInstance();
-            $stmt = $pdo->prepare("SELECT config FROM apps WHERE id = ? AND department_id = ?");
-            $stmt->execute([$templateId, $currentDept['id']]);
+            $stmt = $pdo->prepare("SELECT config FROM apps WHERE id = ? AND module_type = 'form'");
+            $stmt->execute([$templateId]);
             $tpl = $stmt->fetch();
             if ($tpl) {
                 $configData = json_decode($tpl['config'] ?? '{}', true) ?: [];
@@ -394,8 +392,8 @@ class PanelController extends Controller
         $isTemplate = (int)($_POST['is_template'] ?? 0);
 
         $pdo = Database::getInstance();
-        $stmt = $pdo->prepare("SELECT id, config FROM apps WHERE id = ? AND department_id = ?");
-        $stmt->execute([$appId, $currentDept['id']]);
+        $stmt = $pdo->prepare("SELECT id, config FROM apps WHERE id = ? AND module_type = 'form'");
+        $stmt->execute([$appId]);
         $app = $stmt->fetch();
 
         if ($app) {

@@ -8,13 +8,13 @@ class SiteProject extends Model
 
     public function getAllProjects(): array
     {
-        $stmt = $this->db->query("SELECT * FROM {$this->table} ORDER BY id DESC");
+        $stmt = $this->pdo->query("SELECT * FROM {$this->table} ORDER BY id DESC");
         return $stmt->fetchAll();
     }
 
     public function getProjectById(int $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
@@ -26,7 +26,7 @@ class SiteProject extends Model
         
         $techStack = isset($data['tech_stack']) ? json_encode($data['tech_stack'], JSON_UNESCAPED_UNICODE) : '[]';
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['title'],
             $data['description'],
@@ -46,7 +46,7 @@ class SiteProject extends Model
         
         $techStack = isset($data['tech_stack']) ? json_encode($data['tech_stack'], JSON_UNESCAPED_UNICODE) : '[]';
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $data['title'],
             $data['description'],
@@ -61,7 +61,7 @@ class SiteProject extends Model
 
     public function deleteProject(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }

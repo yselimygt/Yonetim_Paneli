@@ -109,7 +109,7 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
         <div>
             <h1 style="margin:0; font-size:24px;">Bağlantılarım</h1>
-            <p style="color:var(--muted); margin:4px 0 0 0;">Sosyal medya hesaplarınızı ve hızlı bağlantılarınızı yönetin.</p>
+            <p style="color:var(--muted); margin:4px 0 0 0;">Tüm departmanlarda ortak görünen sosyal medya hesaplarını ve hızlı bağlantıları yönetin.</p>
         </div>
         <a href="<?= BASE_URL ?>/f/<?= View::escape($this->app['slug']) ?>" target="_blank" class="btn btn-outline" style="border-color:var(--border); color:var(--text);">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
@@ -122,6 +122,10 @@
             <?= $_SESSION['success_msg']; unset($_SESSION['success_msg']); ?>
         </div>
     <?php endif; ?>
+
+    <div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); color:#93c5fd; padding:12px 16px; border-radius:8px; margin-bottom:24px; font-size:13px; line-height:1.5;">
+        <strong style="color:#60a5fa;">Global Linktree Havuzu:</strong> Buradaki değişiklikler tüm departmanlardaki Linktree modülüne ve public bağlantı sayfasına yansır.
+    </div>
 
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
