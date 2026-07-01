@@ -281,6 +281,18 @@ $templateStr = json_encode($config);
                     <label class="form-label">Başarı Mesajı (Form gönderildikten sonra gösterilir)</label>
                     <input type="text" id="setting-success-msg" class="form-control" value="<?= View::escape($settings['success_message'] ?? '') ?>">
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Renk Teması</label>
+                    <input type="color" id="setting-theme-color" class="form-control" value="<?= View::escape($settings['theme_color'] ?? '#6366f1') ?>" style="height: 40px; padding: 4px; cursor: pointer; width: 100px;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Başlık Resmi (Banner)</label>
+                    <input type="text" id="setting-header-image" class="form-control" value="<?= View::escape($settings['header_image'] ?? '') ?>" placeholder="Görsel URL'si...">
+                    <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
+                        <input type="file" id="setting-header-image-file" accept="image/*" class="form-control" style="padding: 6px;">
+                        <button type="button" class="btn btn-outline" onclick="uploadBannerFile()" style="white-space: nowrap;">Görseli Yükle</button>
+                    </div>
+                </div>
                 <button class="btn btn-primary" onclick="saveSettingsOnly()">Ayarları Kaydet</button>
             </div>
         </div>
@@ -537,8 +549,40 @@ function getSettings() {
     return {
         is_public: document.getElementById('setting-is-public').value == '1',
         category: document.getElementById('setting-category').value,
-        success_message: document.getElementById('setting-success-msg').value
+        success_message: document.getElementById('setting-success-msg').value,
+        theme_color: document.getElementById('setting-theme-color').value,
+        header_image: document.getElementById('setting-header-image').value
     };
+}
+
+function uploadBannerFile() {
+    const fileInput = document.getElementById('setting-header-image-file');
+    if (fileInput.files.length === 0) {
+        alert('Lütfen yüklenecek bir görsel seçin.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'upload_banner');
+    formData.append('banner', fileInput.files[0]);
+    formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
+
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('setting-header-image').value = '<?= BASE_URL ?>/' + data.url;
+            alert('Görsel yüklendi ve optimize edildi!');
+        } else {
+            alert(data.message || 'Görsel yüklenirken hata oluştu.');
+        }
+    })
+    .catch(err => {
+        alert('Görsel yüklenirken iletişim hatası oluştu.');
+    });
 }
 
 function saveConfigData(fields, settings) {

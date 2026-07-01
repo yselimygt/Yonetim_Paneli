@@ -82,6 +82,29 @@ class FormModule extends BaseModule
             exit;
         }
 
+        // Başlık Görseli Yükleme ve Optimizasyonu
+        if ($action === 'upload_banner' && $this->isDirectorOrAdmin()) {
+            if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['banner'];
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                    $uploadDir = __DIR__ . '/../uploads/forms/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $fileName = 'banner_' . uniqid() . '.' . $ext;
+                    $target = $uploadDir . $fileName;
+                    if (move_uploaded_file($file['tmp_name'], $target)) {
+                        $this->optimizeImageFile($target, $ext);
+                        echo json_encode(['success' => true, 'url' => 'uploads/forms/' . $fileName]);
+                        exit;
+                    }
+                }
+            }
+            echo json_encode(['success' => false, 'message' => 'Görsel yüklenemedi.']);
+            exit;
+        }
+
         if ($action === 'submit') {
             $this->processFormSubmission($postData, false);
         }
@@ -356,10 +379,80 @@ class FormModule extends BaseModule
         $target = $uploadDir . $fileName;
 
         if (move_uploaded_file($fileInfo['tmp_name'], $target)) {
+            if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                $this->optimizeImageFile($target, $ext);
+            }
             return 'uploads/forms/' . $fileName;
         }
 
         return false;
+    }
+
+    private function optimizeImageFile(string $filePath, string $ext): void
+    {
+        if (!function_exists('imagecreatefromjpeg')) return; // GD not installed
+
+        list($width, $height) = @getimagesize($filePath);
+        if (!$width || !$height) return;
+
+        // Resize if wider than 1200px
+        $newWidth = $width;
+        $newHeight = $height;
+        if ($width > 1200) {
+            $newWidth = 1200;
+            $newHeight = (int)(($height / $width) * 1200);
+        }
+
+        $srcImage = null;
+        switch ($ext) {
+            case 'jpg':
+            case 'jpeg':
+                $srcImage = @imagecreatefromjpeg($filePath);
+                break;
+            case 'png':
+                $srcImage = @imagecreatefrompng($filePath);
+                break;
+            case 'webp':
+                $srcImage = @imagecreatefromwebp($filePath);
+                break;
+            case 'gif':
+                $srcImage = @imagecreatefromgif($filePath);
+                break;
+        }
+
+        if (!$srcImage) return;
+
+        $dstImage = imagecreatetruecolor($newWidth, $newHeight);
+        
+        // Handle transparency for PNG/WebP/GIF
+        if ($ext === 'png' || $ext === 'webp' || $ext === 'gif') {
+            imagealphablending($dstImage, false);
+            imagesavealpha($dstImage, true);
+            $transparent = imagecolorallocatealpha($dstImage, 255, 255, 255, 127);
+            imagefilledrectangle($dstImage, 0, 0, $newWidth, $newHeight, $transparent);
+        }
+
+        imagecopyresampled($dstImage, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        // Save optimized image back
+        switch ($ext) {
+            case 'jpg':
+            case 'jpeg':
+                imagejpeg($dstImage, $filePath, 75);
+                break;
+            case 'png':
+                imagepng($dstImage, $filePath, 6);
+                break;
+            case 'webp':
+                imagewebp($dstImage, $filePath, 75);
+                break;
+            case 'gif':
+                imagegif($dstImage, $filePath);
+                break;
+        }
+
+        imagedestroy($srcImage);
+        imagedestroy($dstImage);
     }
 
     private function exportExcel(array $fields): void

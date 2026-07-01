@@ -1,8 +1,24 @@
 <?php
 // form_public.php
 // $fields, $config
+$themeColor = $app['config']['settings']['theme_color'] ?? '#6366f1';
+$headerImage = $app['config']['settings']['header_image'] ?? '';
+
+$hex = str_replace("#", "", $themeColor);
+if(strlen($hex) == 6) {
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+} else {
+    $r = 99; $g = 102; $b = 241;
+}
+$accentRgb = "$r, $g, $b";
 ?>
 <style>
+:root {
+    --accent: <?= $themeColor ?>;
+    --accent-rgb: <?= $accentRgb ?>;
+}
 /* Modern Public Form UI */
 .form-public-wrapper {
     width: 100%;
@@ -169,6 +185,12 @@
 </style>
 
 <div class="form-public-wrapper">
+    <?php if(!empty($headerImage)): ?>
+        <div class="form-header-banner" style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 24px; border: 1px solid var(--border, #2d3142);">
+            <img src="<?= View::escape($headerImage) ?>" style="width: 100%; height: auto; max-height: 250px; object-fit: cover; display: block;">
+        </div>
+    <?php endif; ?>
+
     <div class="form-public-header">
         <h1><?= View::escape($app['name']) ?></h1>
         <?php if(!empty($app['description'])): ?>
