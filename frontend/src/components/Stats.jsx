@@ -10,7 +10,7 @@ const Stats = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[200px] bg-primary/10 blur-[100px] rounded-[100%] pointer-events-none"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
+        <div className={`grid grid-cols-2 gap-3 sm:gap-8 justify-center mx-auto ${stats.length === 3 ? 'lg:grid-cols-3 max-w-5xl' : 'lg:grid-cols-4'}`}>
           {stats.map((stat, idx) => (
             <div key={idx} className="glass-card p-4 sm:p-8 text-center group hover:border-white/20 transition-all flex flex-col justify-center">
               <div className="text-3xl sm:text-5xl font-display font-extrabold text-gradient mb-1 sm:mb-3 drop-shadow-[0_0_15px_rgba(244,159,32,0.3)]">

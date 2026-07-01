@@ -135,26 +135,81 @@ class PublicApiController extends Controller
             $roundedUsers = 50;
         }
 
+        // --- Dinamik Etkinlik ve Bootcamp Sayısı Güncellemesi ---
+        // app_events, site_events ve app_bootcamps tablolarındaki toplam sayı
+        $totalEventsExact = 0;
+        try {
+            $eventCountStmt = $db->query("SELECT count(*) as total FROM app_events");
+            $totalEventsExact += (int)($eventCountStmt->fetch()['total'] ?? 0);
+            
+            $siteEventCountStmt = $db->query("SELECT count(*) as total FROM site_events");
+            $totalEventsExact += (int)($siteEventCountStmt->fetch()['total'] ?? 0);
+            
+            $bootcampCountStmt = $db->query("SELECT count(*) as total FROM app_bootcamps");
+            $totalEventsExact += (int)($bootcampCountStmt->fetch()['total'] ?? 0);
+        } catch (PDOException $e) {
+            // Tablo yoksa hata fırlatmasını engelliyoruz
+        }
+
+        // --- Dinamik Sponsor Sayısı ve Logoları Güncellemesi ---
+        $totalSponsorsExact = 0;
+        $sponsorLogos = [];
+        try {
+            $sponsorStmt = $db->query("SELECT logo_url FROM sponsors WHERE status = 'active' ORDER BY created_at DESC");
+            $sponsorsResult = $sponsorStmt->fetchAll();
+            $totalSponsorsExact = count($sponsorsResult);
+            foreach ($sponsorsResult as $sp) {
+                if (!empty($sp['logo_url'])) {
+                    // Frontend resimleri root Apache path'inden okuyabiliyor:
+                    $sponsorLogos[] = '/innomis.tr/backend/' . ltrim($sp['logo_url'], '/');
+                }
+            }
+        } catch (PDOException $e) {
+        }
+
         if (!isset($settings['stats']) || !is_array($settings['stats'])) {
             $settings['stats'] = [
                 [ 'label' => 'Aktif Üye', 'value' => $roundedUsers . '+', 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ],
-                [ 'label' => 'Etkinlik', 'value' => '25+', 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ],
-                [ 'label' => 'Eğitim Saati', 'value' => '40+', 'desc' => 'Teknoloji ve kariyer odaklı eğitim içerikleri.' ],
-                [ 'label' => 'İş Birliği', 'value' => '15+', 'desc' => 'Marka, topluluk ve sektör paydaşları.' ]
+                [ 'label' => 'Etkinlik', 'value' => (string)$totalEventsExact, 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ],
+                [ 'label' => 'İş Birliği', 'value' => (string)$totalSponsorsExact, 'desc' => 'Marka, topluluk ve sektör paydaşları.' ]
             ];
         } else {
-            $found = false;
+            // Eğitim Saati istatistiğini sistemden filtrele
+            $settings['stats'] = array_values(array_filter($settings['stats'], function($s) {
+                return $s['label'] !== 'Eğitim Saati';
+            }));
+
+            $foundMember = false;
+            $foundEvent = false;
+            $foundSponsor = false;
             foreach ($settings['stats'] as &$stat) {
                 if ($stat['label'] === 'Aktif Üye') {
                     $stat['value'] = $roundedUsers . '+';
-                    $found = true;
-                    break;
+                    $foundMember = true;
+                }
+                if ($stat['label'] === 'Etkinlik') {
+                    $stat['value'] = (string)$totalEventsExact;
+                    $foundEvent = true;
+                }
+                if ($stat['label'] === 'İş Birliği') {
+                    $stat['value'] = (string)$totalSponsorsExact;
+                    $foundSponsor = true;
                 }
             }
-            if (!$found && count($settings['stats']) > 0) {
-                $settings['stats'][0]['value'] = $roundedUsers . '+';
+            if (!$foundMember && count($settings['stats']) >= 0) {
+                array_unshift($settings['stats'], [ 'label' => 'Aktif Üye', 'value' => $roundedUsers . '+', 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ]);
+            }
+            if (!$foundEvent && count($settings['stats']) >= 0) {
+                // Sadece sonradan eklenecekse sonuna ekleyelim veya 2. sıraya
+                array_splice($settings['stats'], 1, 0, [[ 'label' => 'Etkinlik', 'value' => (string)$totalEventsExact, 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ]]);
+            }
+            if (!$foundSponsor) {
+                $settings['stats'][] = [ 'label' => 'İş Birliği', 'value' => (string)$totalSponsorsExact, 'desc' => 'Marka, topluluk ve sektör paydaşları.' ];
             }
         }
+
+        // Sponsor array'ini setting içine entegre et (ön tarafta logolar gösterilecek)
+        $settings['sponsors'] = $sponsorLogos;
 
         // Projects
         $stmtProj = $db->query("SELECT * FROM site_projects ORDER BY id DESC");
