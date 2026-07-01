@@ -19,19 +19,60 @@ $accentRgb = "$r, $g, $b";
     --accent: <?= $themeColor ?>;
     --accent-rgb: <?= $accentRgb ?>;
 }
-/* Modern Public Form UI */
+
+/* Engaging Glassmorphism Theme */
+body {
+    background: radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.3), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(var(--accent-rgb), 0.3), transparent 40%),
+                #0f172a !important; /* Slate 900 */
+    color: #f8fafc !important;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(var(--accent-rgb), 0.1) 0%, transparent 50%);
+    animation: rotate 30s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .form-public-wrapper {
     width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    
+    /* Glassmorphism Variables */
+    --card: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --input-bg: rgba(0, 0, 0, 0.2);
+    --danger: #f87171;
 }
+
 .form-public-header {
     background: var(--card);
-    border: 1px solid var(--border, #2d3142);
-    border-top: 8px solid var(--accent, #6366f1);
-    border-radius: 12px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--accent);
+    border-radius: 20px;
     padding: 32px 24px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
+
 .form-public-header h1 {
     margin: 0 0 12px 0;
     font-size: 28px;
@@ -45,17 +86,23 @@ $accentRgb = "$r, $g, $b";
 
 .public-question-card {
     background: var(--card);
-    border: 1px solid var(--border, #2d3142);
-    border-radius: 12px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
     padding: 24px;
     margin-bottom: 16px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, background 0.3s ease;
 }
-.public-question-card:focus-within {
-    border-left: 4px solid var(--accent);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+
+.public-question-card:focus-within, .public-question-card:hover {
+    border-color: rgba(var(--accent-rgb), 0.5);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(var(--accent-rgb), 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
+
 .q-title {
     font-size: 16px;
     font-weight: 500;
@@ -74,18 +121,20 @@ $accentRgb = "$r, $g, $b";
 .inp-text, .inp-textarea, .inp-select, .inp-file {
     width: 100%;
     background: var(--input-bg);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text);
-    padding: 12px 16px;
-    border-radius: 8px;
+    padding: 14px 16px;
+    border-radius: 12px;
     font-family: inherit;
     font-size: 15px;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
 }
+
 .inp-text:focus, .inp-textarea:focus, .inp-select:focus, .inp-file:focus {
     border-color: var(--accent);
     outline: none;
-    background: var(--input-bg);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.2);
 }
 
 /* Phone input group */
@@ -103,26 +152,30 @@ $accentRgb = "$r, $g, $b";
     display: flex;
     align-items: center;
     background: var(--input-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: all 0.3s ease;
 }
-.social-group:focus-within { border-color: var(--accent); }
+.social-group:focus-within {
+    border-color: var(--accent);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.2);
+}
 .social-icon {
-    padding: 12px 16px;
+    padding: 14px 16px;
     color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-right: 1px solid var(--border);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 .social-input {
     flex: 1;
     background: transparent;
     border: none;
     color: var(--text);
-    padding: 12px 16px;
+    padding: 14px 16px;
     font-size: 15px;
     outline: none;
 }
@@ -141,14 +194,16 @@ $accentRgb = "$r, $g, $b";
     height: 20px;
     border: 2px solid var(--muted);
     border-radius: 50%;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
+    background: rgba(0, 0, 0, 0.2);
 }
-.rc-item input[type="checkbox"] { border-radius: 4px; }
+.rc-item input[type="checkbox"] { border-radius: 6px; }
 .rc-item input:checked {
     border-color: var(--accent);
     background: var(--accent);
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
 }
 .rc-item input[type="radio"]:checked::after {
     content: '';
@@ -169,21 +224,123 @@ $accentRgb = "$r, $g, $b";
 }
 
 .submit-btn {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent), rgba(var(--accent-rgb), 0.7));
     color: #fff;
     border: none;
-    padding: 14px 28px;
+    padding: 16px 32px;
     font-size: 16px;
-    font-weight: 500;
-    border-radius: 8px;
+    font-weight: 600;
+    border-radius: 12px;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
+    box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
-.submit-btn:hover { opacity: 0.9; }
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.6);
+}
 
+/* Success Screen Animations & Styles */
+.success-screen-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    animation: successFadeIn 0.6s ease-out forwards;
+}
+
+.success-icon-container {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(var(--accent-rgb), 0.1);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.3);
+    animation: successBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.success-icon-container svg {
+    width: 44px;
+    height: 44px;
+    color: var(--accent);
+}
+
+@keyframes successFadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes successBounce {
+    0% { opacity: 0; transform: scale(0.5); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.success-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.success-message {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+.btn-back-home {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+.btn-back-home:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
 </style>
 
+<?php if(isset($_GET['success']) && $_GET['success'] == '1'): ?>
+<div class="form-public-wrapper">
+    <div class="public-question-card success-screen-wrapper">
+        <div class="success-icon-container">
+            <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2 class="success-title">İşlem Başarılı!</h2>
+        <p class="success-message"><?= View::escape($app['config']['settings']['success_message'] ?? 'Formunuz başarıyla gönderildi, teşekkür ederiz.') ?></p>
+        <a href="<?= PUBLIC_URL ?>/f/<?= $app['slug'] ?>" class="btn-back-home">Yeni Yanıt Gönder</a>
+    </div>
+    
+    <div style="font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 20px; opacity: 0.8;">
+        <span>Powered by</span>
+        <a href="https://viperadev.com" target="_blank" style="display: flex; align-items: center;">
+            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 16px; opacity: 0.7; filter: grayscale(1); transition: all 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none';" onmouseout="this.style.opacity='0.7'; this.style.filter='grayscale(1)';">
+        </a>
+    </div>
+</div>
+<?php else: ?>
 <div class="form-public-wrapper">
     <?php if(!empty($headerImage)): ?>
         <div class="form-header-banner" style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 24px; border: 1px solid var(--border, #2d3142);">
@@ -346,6 +503,7 @@ $accentRgb = "$r, $g, $b";
             </a>
         </div>
 </div>
+<?php endif; ?>
 
 <script>
     // Eğitim Bilgileri - Konya Üniversiteleri JS Mantığı

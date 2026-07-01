@@ -287,11 +287,22 @@ $templateStr = json_encode($config);
                 </div>
                 <div class="form-group">
                     <label class="form-label">Başlık Resmi (Banner)</label>
-                    <input type="text" id="setting-header-image" class="form-control" value="<?= View::escape($settings['header_image'] ?? '') ?>" placeholder="Görsel URL'si...">
-                    <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                        <input type="file" id="setting-header-image-file" accept="image/*" class="form-control" style="padding: 6px;">
-                        <button type="button" class="btn btn-outline" onclick="uploadBannerFile()" style="white-space: nowrap;">Görseli Yükle</button>
+                    
+                    <div id="banner-preview-container" style="margin-bottom: 12px; <?= empty($settings['header_image']) ? 'display: none;' : '' ?>">
+                        <img id="banner-preview-img" src="<?= View::escape($settings['header_image'] ?? '') ?>" style="max-width: 100%; border-radius: 8px; max-height: 200px; object-fit: cover; border: 1px solid var(--border);">
+                        <div style="margin-top: 8px;">
+                            <button type="button" class="btn btn-sm btn-outline" onclick="removeBanner()" style="color: var(--danger); border-color: var(--danger);">Görseli Kaldır</button>
+                        </div>
                     </div>
+
+                    <div id="banner-upload-area" style="border: 2px dashed var(--border); background: rgba(0,0,0,0.02); border-radius: 8px; padding: 32px 24px; text-align: center; cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('setting-header-image-file').click()" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='rgba(var(--accent-rgb), 0.05)';" onmouseout="this.style.borderColor='var(--border)'; this.style.background='rgba(0,0,0,0.02)';">
+                        <span style="font-size: 32px; color: var(--muted);">🖼️</span>
+                        <p style="margin: 12px 0 0 0; color: var(--text); font-weight: 500;">Görsel yüklemek için tıklayın</p>
+                        <p style="margin: 4px 0 0 0; color: var(--muted); font-size: 13px;">Görsel otomatik optimize edilir (Maks: 1200px)</p>
+                        <input type="file" id="setting-header-image-file" accept="image/*" style="display: none;" onchange="uploadBannerFile()">
+                    </div>
+                    
+                    <input type="hidden" id="setting-header-image" value="<?= View::escape($settings['header_image'] ?? '') ?>">
                 </div>
                 <button class="btn btn-primary" onclick="saveSettingsOnly()">Ayarları Kaydet</button>
             </div>
@@ -557,10 +568,11 @@ function getSettings() {
 
 function uploadBannerFile() {
     const fileInput = document.getElementById('setting-header-image-file');
-    if (fileInput.files.length === 0) {
-        alert('Lütfen yüklenecek bir görsel seçin.');
-        return;
-    }
+    if (fileInput.files.length === 0) return;
+
+    const uploadArea = document.getElementById('banner-upload-area');
+    uploadArea.style.opacity = '0.5';
+    uploadArea.style.pointerEvents = 'none';
 
     const formData = new FormData();
     formData.append('action', 'upload_banner');
@@ -573,16 +585,34 @@ function uploadBannerFile() {
     })
     .then(res => res.json())
     .then(data => {
+        uploadArea.style.opacity = '1';
+        uploadArea.style.pointerEvents = 'auto';
+        
         if (data.success) {
-            document.getElementById('setting-header-image').value = '<?= BASE_URL ?>/' + data.url;
-            alert('Görsel yüklendi ve optimize edildi!');
+            const imgUrl = '<?= BASE_URL ?>/' + data.url;
+            document.getElementById('setting-header-image').value = imgUrl;
+            document.getElementById('banner-preview-img').src = imgUrl;
+            document.getElementById('banner-preview-container').style.display = 'block';
+            saveSettingsOnly(); // Otomatik kaydet
         } else {
             alert(data.message || 'Görsel yüklenirken hata oluştu.');
         }
     })
     .catch(err => {
+        uploadArea.style.opacity = '1';
+        uploadArea.style.pointerEvents = 'auto';
         alert('Görsel yüklenirken iletişim hatası oluştu.');
     });
+}
+
+function removeBanner() {
+    if(confirm('Görseli kaldırmak istediğinize emin misiniz?')) {
+        document.getElementById('setting-header-image').value = '';
+        document.getElementById('banner-preview-img').src = '';
+        document.getElementById('banner-preview-container').style.display = 'none';
+        document.getElementById('setting-header-image-file').value = '';
+        saveSettingsOnly(); // Otomatik kaydet
+    }
 }
 
 function saveConfigData(fields, settings) {
