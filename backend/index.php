@@ -13,6 +13,7 @@ require_once __DIR__ . '/core/Router.php';
 require_once __DIR__ . '/core/Auth.php';
 require_once __DIR__ . '/core/Logger.php';
 require_once __DIR__ . '/core/StringUtils.php';
+require_once __DIR__ . '/core/ImageOptimizer.php';
 
 // Oturumu başlat
 Auth::start();
@@ -69,6 +70,12 @@ $router->get('/superadmin/site-gallery',                  ['SiteGalleryAdminCont
 $router->post('/superadmin/site-gallery',                 ['SiteGalleryAdminController', 'store']);
 $router->post('/superadmin/site-gallery/{id}',            ['SiteGalleryAdminController', 'update']);
 $router->post('/superadmin/site-gallery/{id}/delete',     ['SiteGalleryAdminController', 'destroy']);
+
+$router->get('/superadmin/global-gallery',                  ['GlobalGalleryController', 'index']);
+$router->post('/superadmin/global-gallery/folder',          ['GlobalGalleryController', 'createFolder']);
+$router->post('/superadmin/global-gallery/folder/delete',   ['GlobalGalleryController', 'deleteFolder']);
+$router->post('/superadmin/global-gallery/upload',          ['GlobalGalleryController', 'uploadFiles']);
+$router->post('/superadmin/global-gallery/file/delete',     ['GlobalGalleryController', 'deleteFile']);
 
 $router->get('/superadmin/site-team',                     ['SiteTeamAdminController', 'index']);
 $router->post('/superadmin/site-team',                    ['SiteTeamAdminController', 'store']);
