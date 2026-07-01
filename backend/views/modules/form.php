@@ -6,13 +6,27 @@ $templateStr = json_encode($config);
 ?>
 
 <style>
-/* Modern Google Forms Like UI */
+/* Modern Form Builder UI */
+body {
+    background-color: var(--bg);
+    /* Dot Matrix Background */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
 .form-builder-tabs {
     display: flex;
     justify-content: center;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
-    gap: 32px;
+    margin-bottom: 32px;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px;
+    border-radius: 50px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .form-builder-tabs button {
     background: transparent;
@@ -20,119 +34,238 @@ $templateStr = json_encode($config);
     color: var(--muted);
     font-size: 14px;
     font-weight: 500;
-    padding: 12px 16px;
+    padding: 10px 24px;
+    border-radius: 40px;
     cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+}
+.form-builder-tabs button:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
 }
 .form-builder-tabs button.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
+    color: #fff;
+    background: var(--accent);
+    box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.3);
 }
-.tab-content { display: none; }
+.tab-content { display: none; animation: fadeIn 0.4s ease; }
 .tab-content.active { display: block; }
 
 /* Builder Styles */
 .builder-container {
-    max-width: 800px;
+    max-width: 760px;
     margin: 0 auto;
+    padding-bottom: 120px; /* Space for mobile bottom bar */
 }
+
+/* Question Cards */
 .question-card {
     background: var(--card);
-    border: 1px solid var(--border, #2d3142);
-    border-left: 4px solid var(--accent);
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
     position: relative;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: box-shadow 0.2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    animation: slideDownFade 0.4s ease forwards;
+}
+.question-card:focus-within, .question-card:hover {
+    border-color: rgba(var(--accent-rgb), 0.4);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(var(--accent-rgb), 0.2);
+    transform: translateY(-2px);
 }
 .question-card.dragging {
     opacity: 0.5;
     border: 2px dashed var(--accent);
+    transform: scale(0.98);
 }
 .drag-handle {
     position: absolute;
-    top: 8px;
+    top: 4px;
     left: 50%;
     transform: translateX(-50%);
+    width: 40px;
+    height: 20px;
     cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--muted);
+    opacity: 0.2;
+    transition: opacity 0.2s;
 }
+.drag-handle::after {
+    content: "••••••";
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+.question-card:hover .drag-handle { opacity: 0.6; }
+
 .question-actions {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    bottom: -16px;
+    right: 24px;
     display: flex;
     gap: 8px;
+    background: var(--card);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+.question-card:hover .question-actions, .question-card:focus-within .question-actions {
+    opacity: 1;
+    transform: translateY(0);
 }
 .q-btn {
     background: transparent;
     border: none;
     color: var(--muted);
     cursor: pointer;
-    padding: 4px;
+    padding: 6px;
+    transition: color 0.2s;
 }
-.q-btn:hover { color: var(--text); }
+.q-btn:hover { color: var(--accent); }
 .q-btn.delete:hover { color: var(--danger); }
 
-/* Builder Floating Menu */
+/* Seamless Inputs */
+.seamless-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    padding: 8px 4px;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s;
+}
+.seamless-input:focus {
+    border-bottom-color: var(--accent);
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px 4px 0 0;
+}
+.seamless-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+/* Builder Floating Menu (Desktop) */
 .floating-menu {
     position: fixed;
-    right: 24px;
+    right: 32px;
     top: 50%;
     transform: translateY(-50%);
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px;
+    background: rgba(30, 33, 43, 0.85); /* rgba value of var(--card) */
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 16px 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    gap: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    z-index: 100;
 }
 .floating-menu button {
     background: transparent;
     border: none;
-    color: var(--text);
+    color: var(--muted);
     cursor: pointer;
-    width: 100%;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 12px;
-    gap: 12px;
-    transition: background 0.2s;
-    font-size: 13px;
-    white-space: nowrap;
-}
-.floating-menu button .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    font-size: 16px;
+    transition: all 0.3s;
+    position: relative;
+}
+.floating-menu button .icon {
+    font-size: 20px;
 }
 .floating-menu button:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(var(--accent-rgb), 0.15);
+    color: var(--accent);
+    transform: scale(1.05);
+}
+/* Tooltips */
+.floating-menu button::after {
+    content: attr(title);
+    position: absolute;
+    right: 56px;
+    background: var(--text);
+    color: var(--bg);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(10px);
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.floating-menu button:hover::after {
+    opacity: 1;
+    transform: translateX(0);
 }
 
-.options-list { margin-top: 12px; }
+.options-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
 .option-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 12px;
 }
-.option-item input { flex: 1; }
+.option-item .seamless-input {
+    flex: 1;
+    font-size: 14px;
+}
 
 .responses-table th, .responses-table td {
     padding: 12px;
     border-bottom: 1px solid var(--border);
     text-align: left;
+}
+
+/* Animations */
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+    .floating-menu {
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        flex-direction: row;
+        padding: 8px 16px;
+        border-radius: 40px;
+        width: max-content;
+        max-width: 95%;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+    .floating-menu::-webkit-scrollbar { display: none; }
+    .floating-menu button::after { display: none; } /* Hide tooltips on mobile */
+    .builder-container { padding: 0 16px 120px 16px; }
+    .question-card { padding: 20px 16px; }
+    .form-builder-tabs { width: 100%; justify-content: space-between; overflow-x: auto; padding: 4px; }
+    .form-builder-tabs button { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
 }
 </style>
 
@@ -177,21 +310,21 @@ $templateStr = json_encode($config);
 
     <!-- Floating Action Menu -->
     <div class="floating-menu">
-        <button onclick="addQuestion('text')" title="Kısa Metin"><span class="icon">T</span> Kısa Metin</button>
-        <button onclick="addQuestion('textarea')" title="Paragraf"><span class="icon">¶</span> Paragraf</button>
-        <button onclick="addQuestion('radio')" title="Çoktan Seçmeli"><span class="icon">◉</span> Çoktan Seçmeli</button>
-        <button onclick="addQuestion('checkbox')" title="Onay Kutuları"><span class="icon">☑</span> Onay Kutuları</button>
-        <button onclick="addQuestion('dropdown')" title="Açılır Menü"><span class="icon">▼</span> Açılır Menü</button>
-        <button onclick="addQuestion('file')" title="Dosya Yükleme"><span class="icon">📁</span> Dosya Yükleme</button>
-        <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
-        <button onclick="addTemplate('adsoyad')" title="Şablon: Ad Soyad"><span class="icon">👤</span> Ad Soyad</button>
-        <button onclick="addTemplate('tc')" title="Şablon: T.C. Kimlik"><span class="icon">🆔</span> T.C. Kimlik</button>
-        <button onclick="addTemplate('student_no')" title="Şablon: Öğrenci Numarası"><span class="icon">🔢</span> Öğrenci No</button>
-        <button onclick="addTemplate('telefon')" title="Şablon: Telefon"><span class="icon">📞</span> Telefon</button>
-        <button onclick="addTemplate('email')" title="Şablon: E-posta"><span class="icon">✉</span> E-posta</button>
-        <button onclick="addTemplate('sosyal')" title="Şablon: Sosyal Medya"><span class="icon">@</span> Sosyal Medya</button>
-        <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
-        <button onclick="addTemplate('education')" title="Şablon: Eğitim Bilgileri"><span class="icon">🎓</span> Eğitim Bilgileri</button>
+        <button onclick="addQuestion('text')" title="Kısa Metin"><span class="icon">T</span></button>
+        <button onclick="addQuestion('textarea')" title="Paragraf"><span class="icon">¶</span></button>
+        <button onclick="addQuestion('radio')" title="Çoktan Seçmeli"><span class="icon">◉</span></button>
+        <button onclick="addQuestion('checkbox')" title="Onay Kutuları"><span class="icon">☑</span></button>
+        <button onclick="addQuestion('dropdown')" title="Açılır Menü"><span class="icon">▼</span></button>
+        <button onclick="addQuestion('file')" title="Dosya Yükleme"><span class="icon">📁</span></button>
+        <div style="height: 1px; background: rgba(255,255,255,0.1); width: 100%; margin: 4px 0;"></div>
+        <button onclick="addTemplate('adsoyad')" title="Şablon: Ad Soyad"><span class="icon">👤</span></button>
+        <button onclick="addTemplate('tc')" title="Şablon: T.C. Kimlik"><span class="icon">🆔</span></button>
+        <button onclick="addTemplate('student_no')" title="Şablon: Öğrenci Numarası"><span class="icon">🔢</span></button>
+        <button onclick="addTemplate('telefon')" title="Şablon: Telefon"><span class="icon">📞</span></button>
+        <button onclick="addTemplate('email')" title="Şablon: E-posta"><span class="icon">✉</span></button>
+        <button onclick="addTemplate('sosyal')" title="Şablon: Sosyal Medya"><span class="icon">@</span></button>
+        <div style="height: 1px; background: rgba(255,255,255,0.1); width: 100%; margin: 4px 0;"></div>
+        <button onclick="addTemplate('education')" title="Şablon: Eğitim Bilgileri"><span class="icon">🎓</span></button>
     </div>
 </div>
 
@@ -358,13 +491,15 @@ function createQuestionCard(field, index) {
     card.addEventListener('dragend', handleDragEnd);
 
     let html = `
-        <div class="drag-handle" title="Sürükle bırak">≡</div>
+        <div class="drag-handle" title="Sürükle bırak"></div>
         <div class="question-actions">
-            <button class="q-btn delete" onclick="deleteQuestion(${index})">🗑️</button>
+            <button class="q-btn delete" title="Soruyu Sil" onclick="deleteQuestion(${index})">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
         </div>
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-top: 10px;">
             <div>
-                <input type="text" class="form-control" value="${escapeHtml(field.label)}" onchange="updateField(${index}, 'label', this.value)" placeholder="Soru Başlığı" style="font-size: 16px; font-weight: 500; border: none; border-bottom: 1px solid var(--border); border-radius: 0; padding: 8px 0; background: transparent; color: var(--text);">
+                <input type="text" class="seamless-input seamless-title" value="${escapeHtml(field.label)}" onchange="updateField(${index}, 'label', this.value)" placeholder="Soru Başlığı">
                 <input type="hidden" value="${field.name}">
             </div>
             <div>
@@ -393,15 +528,15 @@ function createQuestionCard(field, index) {
             html += `
                 <div class="option-item">
                     <span style="color:var(--muted);">${field.type==='radio'?'◉':(field.type==='checkbox'?'☑':'▼')}</span>
-                    <input type="text" class="form-control" value="${escapeHtml(opt)}" onchange="updateOption(${index}, ${i}, this.value)">
-                    <button class="q-btn" onclick="removeOption(${index}, ${i})">❌</button>
+                    <input type="text" class="seamless-input" value="${escapeHtml(opt)}" onchange="updateOption(${index}, ${i}, this.value)">
+                    <button class="q-btn" onclick="removeOption(${index}, ${i})"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 </div>
             `;
         });
         html += `
             <div class="option-item">
-                <span style="color:var(--muted);">${field.type==='radio'?'◉':(field.type==='checkbox'?'☑':'▼')}</span>
-                <input type="text" class="form-control" placeholder="Seçenek ekle..." onkeypress="if(event.key==='Enter'){addOption(${index}, this.value); this.value='';}">
+                <span style="color:var(--muted); opacity: 0.5;">${field.type==='radio'?'◉':(field.type==='checkbox'?'☑':'▼')}</span>
+                <input type="text" class="seamless-input" style="color: var(--muted);" placeholder="Seçenek ekle... (Enter'a basın)" onkeypress="if(event.key==='Enter'){addOption(${index}, this.value); this.value='';}">
             </div>
         </div>`;
     }
