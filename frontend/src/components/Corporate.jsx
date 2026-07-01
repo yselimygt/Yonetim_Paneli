@@ -4,10 +4,12 @@ import SponsorshipForm from './SponsorshipForm';
 import BrandIdentity from './BrandIdentity';
 import Achievements from './Achievements';
 import Awards from './Awards';
-import { sponsors } from '../data/innomisData';
+import { useSiteData } from '../context/SiteDataContext';
 
 const Corporate = () => {
   const [activeTab, setActiveTab] = useState('sponsor');
+  const { siteData } = useSiteData();
+  const sponsors = siteData?.settings?.sponsors || [];
 
   return (
     <div className="pt-12">

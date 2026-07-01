@@ -160,8 +160,8 @@ class PublicApiController extends Controller
             $totalSponsorsExact = count($sponsorsResult);
             foreach ($sponsorsResult as $sp) {
                 if (!empty($sp['logo_url'])) {
-                    // Frontend resimleri root Apache path'inden okuyabiliyor:
-                    $sponsorLogos[] = '/innomis.tr/backend/' . ltrim($sp['logo_url'], '/');
+                    // Frontend resimleri tam link ile okusun (CORS/Proxy sorunu olmaması için)
+                    $sponsorLogos[] = BASE_URL . '/' . ltrim($sp['logo_url'], '/');
                 }
             }
         } catch (PDOException $e) {
