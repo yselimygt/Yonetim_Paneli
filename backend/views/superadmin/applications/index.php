@@ -163,8 +163,8 @@
 }
 .json-field h6 {
     margin-bottom: 10px;
-    color: var(--primary);
-    font-size: 11px;
+    color: #3b82f6 !important; /* Mavi renk (kesin) */
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -195,16 +195,16 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--input-bg);
+    background: rgba(59, 130, 246, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--muted);
-    border: 1px solid var(--border);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 .info-item-text div:first-child {
     font-size: 11px;
-    color: var(--muted);
+    color: #3b82f6;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 2px;
@@ -212,7 +212,12 @@
 .info-item-text div:last-child {
     font-size: 14px;
     font-weight: 500;
-    color: var(--text);
+    color: #f3f4f6;
+}
+.status-select-custom {
+    background-color: #1f2937 !important;
+    color: #f9fafb !important;
+    border: 1px solid #4b5563 !important;
 }
 
 @media (max-width: 900px) {
@@ -274,13 +279,14 @@
             <!-- Header -->
             <div class="app-detail-header">
                 <div>
-                    <h4 class="mb-1 text-white" id="d-name">-</h4>
-                    <div class="text-muted fs-7" id="d-type-date">-</div>
+                    <h3 class="mb-1 text-white fw-bold" id="d-name" style="font-size: 20px;">-</h3>
+                    <div class="fs-6" style="color: #60a5fa;" id="d-type-date">-</div>
                 </div>
-                <div class="d-flex gap-2">
-                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/status" id="statusForm" class="d-flex gap-2">
+                <div class="d-flex gap-2 align-items-center">
+                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/status" id="statusForm" class="d-flex gap-2 align-items-center mb-0">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="id" id="status_id">
-                        <select name="status" class="form-select form-select-sm w-auto bg-dark border-secondary text-white" id="status_select">
+                        <select name="status" class="form-select form-select-sm w-auto status-select-custom" id="status_select">
                             <option value="pending">Bekliyor</option>
                             <option value="reviewing">İnceleniyor</option>
                             <option value="approved">Onaylandı</option>
@@ -288,9 +294,10 @@
                         </select>
                         <button type="submit" class="btn btn-sm btn-primary">Güncelle</button>
                     </form>
-                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/delete" onsubmit="return confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?');">
+                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/delete" onsubmit="return confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?');" class="mb-0">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="id" id="delete_id">
-                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        <button type="submit" class="btn btn-sm" style="background-color: #ef4444; border-color: #dc2626; color: white; padding: 4px 10px;"><i class="fas fa-trash me-1"></i> Sil</button>
                     </form>
                 </div>
             </div>
