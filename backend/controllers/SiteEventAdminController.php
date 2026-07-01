@@ -84,11 +84,8 @@ class SiteEventAdminController extends Controller
         Auth::requireSuperAdmin();
         $this->csrfCheck();
 
-        $event = $this->siteEvent->getById((int)$id);
-        if (!$event) {
-            $this->flashError('Etkinlik bulunamadı.');
-            $this->redirect('/superadmin/site-events');
-        }
+        $eventType = $_POST['event_type'] ?? 'site_event';
+        $pdo = Database::getInstance();
 
         $title       = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -104,20 +101,40 @@ class SiteEventAdminController extends Controller
             $this->redirect('/superadmin/site-events');
         }
 
-        $this->siteEvent->updateById((int)$id, [
-            'title'       => $title,
-            'description' => $description,
-            'event_date'  => $event_date ?: null,
-            'location'    => $location,
-            'category'    => $category,
-            'tag_color'   => $tag_color,
-            'status'      => $status,
-            'image_url'   => $image_url,
-        ]);
+        if ($eventType === 'bootcamp') {
+            $mappedStatus = ($status === 'upcoming') ? 0 : 1;
+            $stmt = $pdo->prepare("UPDATE app_bootcamps SET title = ?, description = ?, start_date = ?, location = ?, type = ?, image_path = ?, is_completed = ? WHERE id = ?");
+            if ($stmt->execute([$title, $description, $event_date, $location, $category, $image_url, $mappedStatus, $id])) {
+                $this->flashSuccess("'{$title}' bootcamp etkinliği güncellendi.");
+            }
+        } elseif ($eventType === 'app_event') {
+            $dateOnly = $event_date ? date('Y-m-d', strtotime($event_date)) : null;
+            $stmt = $pdo->prepare("UPDATE app_events SET title = ?, description = ?, event_date = ?, location_or_platform = ?, category = ?, image_path = ? WHERE id = ?");
+            if ($stmt->execute([$title, $description, $dateOnly, $location, $category, $image_url, $id])) {
+                $this->flashSuccess("'{$title}' modül etkinliği güncellendi.");
+            }
+        } else {
+            $event = $this->siteEvent->getById((int)$id);
+            if (!$event) {
+                $this->flashError('Etkinlik bulunamadı.');
+                $this->redirect('/superadmin/site-events');
+            }
 
-        Logger::log('UPDATE_SITE_EVENT', 'SiteEvent', (int)$id, ['title' => $title]);
+            $this->siteEvent->update((int)$id, [
+                'title'       => $title,
+                'description' => $description,
+                'event_date'  => $event_date ?: null,
+                'location'    => $location,
+                'category'    => $category,
+                'tag_color'   => $tag_color,
+                'status'      => $status,
+                'image_url'   => $image_url,
+            ]);
 
-        $this->flashSuccess("'{$title}' etkinliği güncellendi.");
+            Logger::log('UPDATE_SITE_EVENT', 'SiteEvent', (int)$id, ['title' => $title]);
+            $this->flashSuccess("'{$title}' etkinliği güncellendi.");
+        }
+
         $this->redirect('/superadmin/site-events');
     }
 
@@ -127,15 +144,35 @@ class SiteEventAdminController extends Controller
         Auth::requireSuperAdmin();
         $this->csrfCheck();
 
-        $event = $this->siteEvent->getById((int)$id);
-        if (!$event) {
-            $this->flashError('Etkinlik bulunamadı.');
-            $this->redirect('/superadmin/site-events');
+        $type = $_GET['type'] ?? 'site_event';
+        $pdo = Database::getInstance();
+
+        if ($type === 'bootcamp') {
+            $stmt = $pdo->prepare("DELETE FROM app_bootcamps WHERE id = ?");
+            if ($stmt->execute([$id])) {
+                $this->flashSuccess("Bootcamp etkinliği silindi.");
+            } else {
+                $this->flashError("Bootcamp silinirken hata oluştu.");
+            }
+        } elseif ($type === 'app_event') {
+            $stmt = $pdo->prepare("DELETE FROM app_events WHERE id = ?");
+            if ($stmt->execute([$id])) {
+                $this->flashSuccess("Modül etkinliği silindi.");
+            } else {
+                $this->flashError("Modül etkinliği silinirken hata oluştu.");
+            }
+        } else {
+            $event = $this->siteEvent->getById((int)$id);
+            if (!$event) {
+                $this->flashError('Etkinlik bulunamadı.');
+                $this->redirect('/superadmin/site-events');
+            }
+
+            $this->siteEvent->deleteById((int)$id);
+            Logger::log('DELETE_SITE_EVENT', 'SiteEvent', (int)$id, ['title' => $event['title']]);
+            $this->flashSuccess("'{$event['title']}' etkinliği silindi.");
         }
 
-        $this->siteEvent->deleteById((int)$id);
-        Logger::log('DELETE_SITE_EVENT', 'SiteEvent', (int)$id, ['title' => $event['title']]);
-        $this->flashSuccess("'{$event['title']}' etkinliği silindi.");
         $this->redirect('/superadmin/site-events');
     }
 }

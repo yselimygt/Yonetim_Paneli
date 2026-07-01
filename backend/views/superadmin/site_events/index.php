@@ -76,14 +76,13 @@
                     </td>
                     <td>
                         <div class="actions">
-                            <?php if(empty($e['is_bootcamp']) && empty($e['is_app_event'])): ?>
-                                <button type="button" class="btn btn-outline btn-sm" onclick='editEvent(<?= json_encode($e, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
-                                <form method="POST" action="<?= BASE_URL ?>/superadmin/site-events/<?= $e['id'] ?>/delete"
-                                      onsubmit="return confirm('<?= View::escape($e['title']) ?> etkinliği silinsin mi?')">
-                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                                </form>
-                            <?php endif; ?>
+                            <button type="button" class="btn btn-outline btn-sm" onclick='editEvent(<?= json_encode($e, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
+                            <?php $deleteType = !empty($e['is_bootcamp']) ? 'bootcamp' : (!empty($e['is_app_event']) ? 'app_event' : 'site_event'); ?>
+                            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-events/<?= $e['id'] ?>/delete?type=<?= $deleteType ?>"
+                                  onsubmit="return confirm('<?= View::escape($e['title']) ?> etkinliği silinsin mi?')">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -167,6 +166,7 @@
         </div>
         <form method="POST" id="edit-event-form" action="">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+            <input type="hidden" name="event_type" id="edit_event_type" value="site_event">
 
             <div class="form-row">
                 <div class="form-group">
@@ -227,6 +227,11 @@
 function editEvent(e) {
     const form = document.getElementById('edit-event-form');
     form.action = '<?= BASE_URL ?>/superadmin/site-events/' + e.id;
+    
+    let eventType = 'site_event';
+    if (e.is_bootcamp) eventType = 'bootcamp';
+    else if (e.is_app_event) eventType = 'app_event';
+    document.getElementById('edit_event_type').value = eventType;
     
     document.getElementById('edit_title').value = e.title || '';
     if (e.event_date) {
