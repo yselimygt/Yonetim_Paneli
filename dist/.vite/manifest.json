@@ -1,0 +1,30 @@
+{
+  "_x-nqA0s3rC.js": {
+    "file": "assets/x-nqA0s3rC.js",
+    "name": "x"
+  },
+  "index.html": {
+    "file": "assets/main-0c51FERz.js",
+    "name": "main",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_x-nqA0s3rC.js"
+    ],
+    "css": [
+      "assets/main-vsbPQ0CN.css"
+    ]
+  },
+  "src/admin/main.jsx": {
+    "file": "assets/admin-Dn4ANZuv.js",
+    "name": "admin",
+    "src": "src/admin/main.jsx",
+    "isEntry": true,
+    "imports": [
+      "_x-nqA0s3rC.js"
+    ],
+    "css": [
+      "assets/admin-D2v7FGEU.css"
+    ]
+  }
+}
