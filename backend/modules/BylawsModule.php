@@ -8,10 +8,10 @@ class BylawsModule extends BaseModule
         // Get all documents
         $stmt = $this->pdo->prepare("
             SELECT * FROM app_bylaw_documents 
-            WHERE app_id = ? AND is_active = 1 
+            WHERE is_active = 1 
             ORDER BY created_at DESC
         ");
-        $stmt->execute([$this->app['id']]);
+        $stmt->execute();
         $documents = $stmt->fetchAll();
 
         // Check if a specific document is requested
@@ -124,8 +124,8 @@ class BylawsModule extends BaseModule
             
             if ($docId && $versionNumber && $content) {
                 // Ensure doc belongs to app
-                $stmt = $this->pdo->prepare("SELECT id FROM app_bylaw_documents WHERE id = ? AND app_id = ?");
-                $stmt->execute([$docId, $this->app['id']]);
+                $stmt = $this->pdo->prepare("SELECT id FROM app_bylaw_documents WHERE id = ?");
+                $stmt->execute([$docId]);
                 if ($stmt->fetch()) {
                     // Set all previous to unpublished
                     $stmt = $this->pdo->prepare("UPDATE app_bylaw_versions SET is_published = 0 WHERE document_id = ?");
@@ -143,8 +143,8 @@ class BylawsModule extends BaseModule
             $verId = (int)($data['version_id'] ?? 0);
             
             if ($docId && $verId) {
-                $stmt = $this->pdo->prepare("SELECT id FROM app_bylaw_documents WHERE id = ? AND app_id = ?");
-                $stmt->execute([$docId, $this->app['id']]);
+                $stmt = $this->pdo->prepare("SELECT id FROM app_bylaw_documents WHERE id = ?");
+                $stmt->execute([$docId]);
                 if ($stmt->fetch()) {
                     // Unpublish all
                     $stmt = $this->pdo->prepare("UPDATE app_bylaw_versions SET is_published = 0 WHERE document_id = ?");
@@ -160,8 +160,8 @@ class BylawsModule extends BaseModule
         if ($action === 'delete_document') {
             $docId = (int)($data['document_id'] ?? 0);
             if ($docId) {
-                $stmt = $this->pdo->prepare("DELETE FROM app_bylaw_documents WHERE id = ? AND app_id = ?");
-                $stmt->execute([$docId, $this->app['id']]);
+                $stmt = $this->pdo->prepare("DELETE FROM app_bylaw_documents WHERE id = ?");
+                $stmt->execute([$docId]);
             }
             $this->redirectBack();
         }

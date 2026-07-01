@@ -153,6 +153,7 @@ function getMeetingStatusBadge($status) {
                     <?php if ($canManage): ?>
                         <div style="display: flex; gap: 8px;">
                             <form action="<?= $appUrl ?>" method="POST" style="margin:0;" onsubmit="return confirm('Bu toplantıyı silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                 <input type="hidden" name="action" value="delete_meeting">
                                 <input type="hidden" name="meeting_id" value="<?= $activeMeeting['id'] ?>">
                                 <button type="submit" class="btn btn-outline" style="padding: 8px; border-radius: 8px; color: var(--danger); border-color: transparent;">
@@ -188,6 +189,7 @@ function getMeetingStatusBadge($status) {
                             <?php if ($canManage): ?>
                                 <div style="background: rgba(245,158,11,0.05); border: 1px dashed rgba(245,158,11,0.4); padding: 20px; border-radius: 8px;">
                                     <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                         <input type="hidden" name="action" value="complete_meeting">
                                         <input type="hidden" name="meeting_id" value="<?= $activeMeeting['id'] ?>">
                                         <p style="font-size: 13px; color: #d97706; margin: 0 0 12px 0; font-weight: 500;">Toplantı tamamlandığında tutanağı/kararları aşağıya girerek onay sürecini başlatın:</p>
@@ -211,6 +213,7 @@ function getMeetingStatusBadge($status) {
                             
                             <?php if (!isset($approvals[$user['id']])): ?>
                                 <form action="<?= $appUrl ?>" method="POST" style="margin-bottom: 24px;">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                     <input type="hidden" name="action" value="approve_meeting">
                                     <input type="hidden" name="meeting_id" value="<?= $activeMeeting['id'] ?>">
                                     <button type="submit" class="btn btn-primary" style="width: 100%; background: #10b981; border-color: #10b981; padding: 12px;">
@@ -275,6 +278,7 @@ function getMeetingStatusBadge($status) {
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_meeting">
                 
                 <div class="form-group" style="margin-bottom: 16px;">
