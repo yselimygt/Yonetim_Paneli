@@ -15,7 +15,12 @@ const SponsorshipForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let val = e.target.value;
+    if (e.target.name === 'phone') {
+      let x = val.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+      val = !x[1] ? '' : (!x[2] ? '(' + x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : ''));
+    }
+    setFormData({ ...formData, [e.target.name]: val });
   };
 
   const handleSubmit = async (e) => {

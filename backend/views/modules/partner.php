@@ -417,7 +417,7 @@ function renderPartnerCard($partner, $canEdit) {
                 </div>
                 <div class="form-group" style="flex:1;">
                     <label>İletişim No</label>
-                    <input type="text" name="contact_phone" class="form-control" placeholder="05XX XXX XX XX">
+                    <input type="text" name="contact_phone" class="form-control phone-mask" placeholder="(555) 123 45 67" maxlength="15">
                 </div>
             </div>
             
@@ -428,24 +428,24 @@ function renderPartnerCard($partner, $canEdit) {
                 </div>
                 <div class="form-group" style="flex:1;">
                     <label>Harita Linki (Google Maps)</label>
-                    <input type="url" name="map_link" class="form-control" placeholder="https://maps.app.goo.gl/...">
+                    <input type="text" name="map_link" class="form-control" placeholder="Örn: https://maps.google.com/...">
                 </div>
             </div>
             
-            <div style="display:flex; gap:16px;">
-                <div class="form-group" style="flex:2;">
-                    <label>İndirim / Anlaşma Detayı</label>
-                    <textarea name="discount_detail" class="form-control" rows="3" placeholder="Örn: Tüm kahvelerde %20 indirim. Kart gösterilmesi zorunludur."></textarea>
-                </div>
-                
-                <div class="form-group" style="flex:1;">
-                    <label>Mekan Görseli / Logo</label>
-                    <input type="file" name="image" class="form-control" accept="image/*" style="padding: 10px; height: auto;">
-                    <p style="font-size:11px; color:var(--prt-muted); margin-top:6px;">Önerilen: Yatay veya kare formatta, yüksek çözünürlüklü görsel.</p>
-                </div>
+            <div class="form-group">
+                <label>Ayrıcalık / İndirim Detayı</label>
+                <textarea name="discount_detail" class="form-control" rows="3" placeholder="Örn: Tüm kahvelerde %15 indirim..."></textarea>
             </div>
             
-            <button type="submit" class="prt-btn-submit">Kaydet</button>
+            <div class="form-group">
+                <label>Görsel / Logo (Opsiyonel)</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
+            </div>
+            
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:24px;">
+                <button type="button" class="btn btn-outline" onclick="closePartnerModal()">İptal</button>
+                <button type="submit" class="btn">Kaydet</button>
+            </div>
         </form>
     </div>
 </div>
@@ -479,5 +479,19 @@ function openPartnerEditModal(prt) {
 function closePartnerModal() {
     document.getElementById('prtModal').classList.remove('active');
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const phoneInputs = document.querySelectorAll('.phone-mask');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            if (!x[1]) {
+                e.target.value = '';
+                return;
+            }
+            e.target.value = !x[2] ? '(' + x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+        });
+    });
+});
 </script>
 <?php endif; ?>

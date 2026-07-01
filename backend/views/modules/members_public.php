@@ -128,7 +128,7 @@
                 
                 <div class="pf-group">
                     <label class="pf-label">Telefon Numarası</label>
-                    <input type="text" name="phone" class="pf-control" placeholder="05XX XXX XX XX">
+                    <input type="text" name="phone" class="pf-control phone-mask" placeholder="(555) 123 45 67" maxlength="15">
                 </div>
 
                 <div class="pf-group">
@@ -169,3 +169,19 @@
     </div>
     <?php endif; ?>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const phoneInputs = document.querySelectorAll('.phone-mask');
+        phoneInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                if (!x[1]) {
+                    e.target.value = '';
+                    return;
+                }
+                e.target.value = !x[2] ? '(' + x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+            });
+        });
+    });
+</script>

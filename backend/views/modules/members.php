@@ -441,7 +441,7 @@
                     </div>
                     <div class="form-group">
                         <label>Telefon Numarası</label>
-                        <input type="text" name="phone" id="memberPhone" class="form-control" placeholder="05XX XXX XX XX">
+                        <input type="text" name="phone" id="memberPhone" class="form-control phone-mask" placeholder="(555) 000 00 00" maxlength="15">
                     </div>
                 </div>
 
@@ -539,4 +539,19 @@ window.onclick = function(event) {
         event.target.style.display = 'none';
     }
 }
+
+// Phone Mask
+document.addEventListener("DOMContentLoaded", function() {
+    const phoneInputs = document.querySelectorAll('.phone-mask');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            if (!x[1]) {
+                e.target.value = '';
+                return;
+            }
+            e.target.value = !x[2] ? '(' + x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+        });
+    });
+});
 </script>
