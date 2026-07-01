@@ -13,6 +13,7 @@ class App extends Model
         'announcement' => 'Duyuru',
         'calendar'     => 'Takvim',
         'drive'        => 'Dosya Yöneticisi',
+        'inbox'        => 'Gelen Kutusu (Inbox)',
     ];
 
     public function getAll(): array

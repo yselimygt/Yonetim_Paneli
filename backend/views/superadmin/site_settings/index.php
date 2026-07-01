@@ -25,6 +25,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         Sık Sorulan Sorular
     </button>
+    <button class="tab-btn" onclick="switchTab(this, 'routing')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        Form Yönlendirme
+    </button>
 </div>
 
 <!-- 1. POPUP -->
@@ -254,6 +258,92 @@
                     <button type="submit" class="btn btn-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         SSS Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 5. FORM ROUTING -->
+<div id="tab-routing" class="tab-content" style="display:none;">
+    <div class="card">
+        <div class="card-header">
+            Form Yönlendirmeleri (Routing)
+        </div>
+        <div class="card-body">
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Web sitesinden gelen formların hangi departmanların Gelen Kutusu'na düşeceğini ayarlayın. Bir form için birden fazla departman seçebilirsiniz.</p>
+
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/form-routing">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                
+                <div id="routing-container">
+                    <?php 
+                    // Normalize all formats to simple dept_ids array
+                    $normalizedRouting = [];
+                    foreach (($formRouting ?: []) as $type => $rule) {
+                        $deptIds = [];
+                        if (isset($rule['targets'])) {
+                            foreach ($rule['targets'] as $t) {
+                                if (!empty($t['department_id'])) $deptIds[] = (int)$t['department_id'];
+                            }
+                        } elseif (isset($rule['department_id']) && !empty($rule['department_id'])) {
+                            $deptIds[] = (int)$rule['department_id'];
+                        } elseif (is_array($rule)) {
+                            $deptIds = array_filter(array_map('intval', $rule));
+                        }
+                        $normalizedRouting[$type] = $deptIds;
+                    }
+                    if (empty($normalizedRouting)) {
+                        $normalizedRouting = ['sponsorship' => ['']];
+                    }
+                    ?>
+                    <?php foreach ($normalizedRouting as $ruleType => $deptIds): ?>
+                    <?php $ruleIdx = array_search($ruleType, array_keys($normalizedRouting)); ?>
+                    <div class="routing-rule dynamic-item" data-rule-index="<?= $ruleIdx ?>">
+                        <div class="item-header">
+                            <strong style="display:flex; align-items:center; gap:8px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><path d="M9 18l6-6-6-6"/></svg>
+                                Form Türü:
+                                <input type="text" name="rules[<?= $ruleIdx ?>][type]" class="form-control" style="width:200px; display:inline-block;" value="<?= View::escape($ruleType) ?>" placeholder="Örn: sponsorship">
+                            </strong>
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.routing-rule').remove()" title="Kuralı Sil">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+
+                        <div class="targets-container" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+                            <?php foreach (($deptIds ?: ['']) as $tIdx => $selDeptId): ?>
+                            <div class="target-row" style="display:flex; align-items:center; gap:10px;">
+                                <select name="rules[<?= $ruleIdx ?>][dept_ids][]" class="form-control">
+                                    <option value="">Departman Seçin...</option>
+                                    <?php foreach ($departments as $d): ?>
+                                    <option value="<?= $d['id'] ?>" <?= $selDeptId == $d['id'] ? 'selected' : '' ?>><?= View::escape($d['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.target-row').remove()" title="Kaldır" style="flex-shrink:0;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </button>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <button type="button" class="btn btn-outline" style="margin-top:10px; font-size:12px; padding:6px 12px;" onclick="addTarget(this, <?= $ruleIdx ?>)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            Departman Ekle
+                        </button>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                
+                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <button type="button" class="btn btn-outline" onclick="addRoutingRule()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Yeni Kural Ekle
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Ayarları Kaydet
                     </button>
                 </div>
             </form>
@@ -493,5 +583,56 @@ function addFaq() {
         </div>
     </div>`;
     document.getElementById('faqs-container').insertAdjacentHTML('beforeend', html);
+}
+
+// Build option HTML from PHP-injected JSON data
+const DEPT_OPTIONS = <?= json_encode(array_map(fn($d) => ['id' => $d['id'], 'name' => $d['name']], $departments)) ?>;
+
+function buildDeptOptions(selectedId = '') {
+    return DEPT_OPTIONS.map(d => `<option value="${d.id}" ${String(d.id) === String(selectedId) ? 'selected' : ''}>${d.name}</option>`).join('');
+}
+
+function buildTargetRow(ruleIdx) {
+    return `
+    <div class="target-row" style="display:flex; align-items:center; gap:10px;">
+        <select name="rules[${ruleIdx}][dept_ids][]" class="form-control">
+            <option value="">Departman Seçin...</option>
+            ${buildDeptOptions()}
+        </select>
+        <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.target-row').remove()" title="Kaldır" style="flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>`;
+}
+
+function addTarget(btn, ruleIdx) {
+    const container = btn.closest('.routing-rule').querySelector('.targets-container');
+    container.insertAdjacentHTML('beforeend', buildTargetRow(ruleIdx));
+}
+
+function addRoutingRule() {
+    const container = document.getElementById('routing-container');
+    const ruleIdx = container.querySelectorAll('.routing-rule').length;
+    const html = `
+    <div class="routing-rule dynamic-item" data-rule-index="${ruleIdx}">
+        <div class="item-header">
+            <strong style="display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><path d="M9 18l6-6-6-6"/></svg>
+                Form Türü:
+                <input type="text" name="rules[${ruleIdx}][type]" class="form-control" style="width:200px; display:inline-block;" placeholder="Örn: sponsorship">
+            </strong>
+            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.routing-rule').remove()" title="Kuralı Sil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+        </div>
+        <div class="targets-container" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+            ${buildTargetRow(ruleIdx)}
+        </div>
+        <button type="button" class="btn btn-outline" style="margin-top:10px; font-size:12px; padding:6px 12px;" onclick="addTarget(this, ${ruleIdx})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Departman Ekle
+        </button>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', html);
 }
 </script>

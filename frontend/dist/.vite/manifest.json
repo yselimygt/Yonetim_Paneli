@@ -1,27 +1,27 @@
 {
-  "_x-DsOinwJX.js": {
-    "file": "assets/x-DsOinwJX.js",
+  "_x-Bh-8zeuG.js": {
+    "file": "assets/x-Bh-8zeuG.js",
     "name": "x"
   },
   "index.html": {
-    "file": "assets/main-D_vaUPTF.js",
+    "file": "assets/main-_R3rUibJ.js",
     "name": "main",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_x-DsOinwJX.js"
+      "_x-Bh-8zeuG.js"
     ],
     "css": [
-      "assets/main-D-Mzu3zV.css"
+      "assets/main-B-J8kk_o.css"
     ]
   },
   "src/admin/main.jsx": {
-    "file": "assets/admin-pVLVmokA.js",
+    "file": "assets/admin-B6CDvJnX.js",
     "name": "admin",
     "src": "src/admin/main.jsx",
     "isEntry": true,
     "imports": [
-      "_x-DsOinwJX.js"
+      "_x-Bh-8zeuG.js"
     ],
     "css": [
       "assets/admin-D2v7FGEU.css"

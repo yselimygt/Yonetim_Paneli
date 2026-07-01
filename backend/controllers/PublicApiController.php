@@ -353,4 +353,90 @@ class PublicApiController extends Controller
 
         return mb_strtoupper(implode('', $letters), 'UTF-8');
     }
+
+    public function submitMessage(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $input = json_decode(file_get_contents('php://input'), true) ?: [];
+        $type = trim($input['type'] ?? '');
+        
+        if (empty($type)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Form tipi belirtilmedi.']);
+            exit;
+        }
+
+        $db = Database::getInstance();
+        
+        $stmtSettings = $db->query("SELECT json_value FROM site_settings WHERE key_name = 'form_routing'");
+        $routingSetting = $stmtSettings->fetchColumn();
+        $routing = $routingSetting ? json_decode($routingSetting, true) : [];
+        
+        if (!isset($routing[$type]) || empty($routing[$type])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Bu form türü için bir yönlendirme ayarı bulunamadı.']);
+            exit;
+        }
+
+        $rule = $routing[$type];
+
+        // Support formats: simple dept_ids array [1,2,3] OR old targets/department_id structures
+        if (isset($rule['targets'])) {
+            $deptIds = array_column($rule['targets'], 'department_id');
+        } elseif (isset($rule['department_id'])) {
+            $deptIds = [(int)$rule['department_id']];
+        } elseif (is_array($rule) && array_is_list($rule)) {
+            $deptIds = array_filter(array_map('intval', $rule));
+        } else {
+            $deptIds = [];
+        }
+
+        if (empty($deptIds)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Bu form türü için geçerli bir departman bulunamadı.']);
+            exit;
+        }
+
+        $sender_name = trim($input['fullName'] ?? '');
+        $company_name = trim($input['company'] ?? '');
+        $email = trim($input['email'] ?? '');
+        $phone = trim($input['phone'] ?? '');
+        $category = trim($input['category'] ?? '');
+        $message = trim($input['message'] ?? '');
+
+        $inserted = 0;
+        try {
+            $stmtApp = $db->prepare("SELECT id FROM apps WHERE department_id = ? AND module_type = 'inbox' AND is_active = 1 LIMIT 1");
+            $stmtInsert = $db->prepare("
+                INSERT INTO app_inbox_messages 
+                (app_id, department_id, type, sender_name, company_name, email, phone, category, message, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'unread')
+            ");
+
+            foreach ($deptIds as $deptId) {
+                $deptId = (int)$deptId;
+                if ($deptId <= 0) continue;
+
+                $stmtApp->execute([$deptId]);
+                $appId = (int)$stmtApp->fetchColumn();
+                if (!$appId) continue; // Bu departmanda inbox uygulaması yok
+
+                $stmtInsert->execute([$appId, $deptId, $type, $sender_name, $company_name, $email, $phone, $category, $message]);
+                $inserted++;
+            }
+            
+            if ($inserted === 0) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Hedef departmanlarda aktif Gelen Kutusu uygulaması bulunamadı.']);
+                exit;
+            }
+
+            echo json_encode(['success' => true, 'message' => 'Başvurunuz başarıyla alındı. Ekibimiz en kısa sürede dönüş yapacaktır.']);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Bir veritabanı hatası oluştu.']);
+        }
+        exit;
+    }
 }

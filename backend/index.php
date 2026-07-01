@@ -58,6 +58,7 @@ $router->post('/superadmin/site-settings/popup',          ['SiteSettingsAdminCon
 $router->post('/superadmin/site-settings/stats',          ['SiteSettingsAdminController', 'updateStats']);
 $router->post('/superadmin/site-settings/sponsors',       ['SiteSettingsAdminController', 'updateSponsors']);
 $router->post('/superadmin/site-settings/faqs',           ['SiteSettingsAdminController', 'updateFaqs']);
+$router->post('/superadmin/site-settings/form-routing',   ['SiteSettingsAdminController', 'updateFormRouting']);
 
 $router->get('/superadmin/site-projects',                 ['SiteProjectAdminController', 'index']);
 $router->post('/superadmin/site-projects',                ['SiteProjectAdminController', 'store']);
@@ -118,6 +119,7 @@ $router->post('/panel/{slug}/apps/{app}', ['AppRunnerController', 'handle']);
 // Kamuya Açık (Public) API Rotaları
 $router->get('/api/events', ['PublicApiController', 'getEvents']);
 $router->get('/api/site-data', ['PublicApiController', 'getSiteData']);
+$router->post('/api/submit-message', ['PublicApiController', 'submitMessage']);
 
 // Kamuya Açık (Public) Rotalar
 $router->get('/f/{slug}/{app}',  ['AppRunnerController', 'runPublic']);

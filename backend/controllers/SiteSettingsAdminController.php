@@ -21,8 +21,13 @@ class SiteSettingsAdminController extends Controller
         $stats = $allSettings['stats'] ?? [];
         $sponsors = $allSettings['sponsors'] ?? [];
         $faqs = $allSettings['faqs'] ?? [];
+        $formRouting = $allSettings['form_routing'] ?? [];
 
-        $this->view('superadmin/site_settings/index', compact('popupConfig', 'stats', 'sponsors', 'faqs'), 'superadmin');
+        $pdo = Database::getInstance();
+        $departments = $pdo->query("SELECT id, name FROM departments ORDER BY name")->fetchAll();
+        $inboxApps = $pdo->query("SELECT a.id, a.department_id, a.name, d.name AS dept_name FROM apps a JOIN departments d ON d.id = a.department_id WHERE a.module_type = 'inbox' ORDER BY a.name")->fetchAll();
+
+        $this->view('superadmin/site_settings/index', compact('popupConfig', 'stats', 'sponsors', 'faqs', 'formRouting', 'departments', 'inboxApps'), 'superadmin');
     }
 
     // POST /superadmin/site-settings/popup
@@ -127,6 +132,31 @@ class SiteSettingsAdminController extends Controller
         $this->settings->set('faqs', $faqs);
         Logger::log('UPDATE_SITE_SETTING', 'SiteSetting', null, ['key' => 'faqs']);
         $this->flashSuccess('Sık sorulan sorular güncellendi.');
+        $this->redirect('/superadmin/site-settings');
+    }
+
+    // POST /superadmin/site-settings/form-routing
+    public function updateFormRouting(): void
+    {
+        Auth::requireSuperAdmin();
+        $this->csrfCheck();
+
+        $rules = $_POST['rules'] ?? [];
+        $routing = [];
+
+        foreach ($rules as $rule) {
+            $type = trim($rule['type'] ?? '');
+            if (empty($type)) continue;
+
+            $deptIds = array_values(array_filter(array_map('intval', $rule['dept_ids'] ?? [])));
+            if (!empty($deptIds)) {
+                $routing[$type] = $deptIds;
+            }
+        }
+
+        $this->settings->set('form_routing', $routing);
+        Logger::log('UPDATE_SITE_SETTING', 'SiteSetting', null, ['key' => 'form_routing']);
+        $this->flashSuccess('Form yönlendirme ayarları güncellendi.');
         $this->redirect('/superadmin/site-settings');
     }
 }

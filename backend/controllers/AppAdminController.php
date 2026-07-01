@@ -38,7 +38,8 @@ class AppAdminController extends Controller
         'budget'       => ['name' => 'Bütçe',           'icon' => 'pie-chart'],
         'mentorship'   => ['name' => 'Mentor',          'icon' => 'navigation'],
         'social'       => ['name' => 'İçerik',          'icon' => 'share-2'],
-        'alumni'       => ['name' => 'Mezunlar',        'icon' => 'compass']
+        'alumni'       => ['name' => 'Mezunlar',        'icon' => 'compass'],
+        'inbox'        => ['name' => 'Gelen Kutusu',    'icon' => 'inbox'],
     ];
 
     public function __construct()
