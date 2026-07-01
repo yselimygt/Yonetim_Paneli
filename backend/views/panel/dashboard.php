@@ -99,16 +99,11 @@
             <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
                 Takvim
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <button id="cal-prev" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&larr;</button>
-                <span id="cal-month-year" style="font-size:14px; font-weight:600; color:var(--text); min-width:120px; text-align:center;"></span>
-                <button id="cal-next" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&rarr;</button>
-            </div>
         </div>
         
         <div style="display:flex; gap:20px; align-items:stretch; flex-wrap:wrap; flex-grow: 1;">
             <!-- Sol Taraf: Takvim Grid -->
-            <div class="card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px;">
+            <div class="card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
                 <div style="width: 100%; margin: 0 auto;">
                     <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
                         <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Pzt</div>
@@ -122,6 +117,12 @@
                     <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; margin-top:8px;">
                         <!-- JS ile Doldurulacak -->
                     </div>
+                </div>
+                
+                <div style="display:flex; gap:8px; align-items:center; justify-content: center; margin-top: 24px;">
+                    <button id="cal-prev" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&larr;</button>
+                    <span id="cal-month-year" style="font-size:14px; font-weight:600; color:var(--text); min-width:120px; text-align:center;"></span>
+                    <button id="cal-next" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&rarr;</button>
                 </div>
             </div>
 
@@ -270,8 +271,10 @@
         
         let startDay = firstDay === 0 ? 6 : firstDay - 1; 
         
+        const emptyCellHtml = '<div style="background:var(--bg); border-radius:10px; aspect-ratio: 1/1; opacity:0.3;"></div>';
+        
         for (let i = 0; i < startDay; i++) {
-            daysGrid.innerHTML += '<div></div>';
+            daysGrid.innerHTML += emptyCellHtml;
         }
         
         for (let day = 1; day <= daysInMonth; day++) {
@@ -325,6 +328,12 @@
             };
             
             daysGrid.appendChild(cell);
+        }
+        
+        const totalCells = startDay + daysInMonth;
+        const targetCells = Math.max(35, Math.ceil(totalCells / 7) * 7);
+        for (let i = totalCells; i < targetCells; i++) {
+            daysGrid.innerHTML += emptyCellHtml;
         }
         
         renderMonthSummary();
