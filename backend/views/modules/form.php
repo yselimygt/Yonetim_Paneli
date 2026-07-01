@@ -184,9 +184,12 @@ $templateStr = json_encode($config);
         <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
         <button onclick="addTemplate('adsoyad')" title="Şablon: Ad Soyad"><span class="icon">👤</span> Ad Soyad</button>
         <button onclick="addTemplate('tc')" title="Şablon: T.C. Kimlik"><span class="icon">🆔</span> T.C. Kimlik</button>
+        <button onclick="addTemplate('student_no')" title="Şablon: Öğrenci Numarası"><span class="icon">🔢</span> Öğrenci No</button>
         <button onclick="addTemplate('telefon')" title="Şablon: Telefon"><span class="icon">📞</span> Telefon</button>
         <button onclick="addTemplate('email')" title="Şablon: E-posta"><span class="icon">✉</span> E-posta</button>
         <button onclick="addTemplate('sosyal')" title="Şablon: Sosyal Medya"><span class="icon">@</span> Sosyal Medya</button>
+        <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+        <button onclick="addTemplate('education')" title="Şablon: Eğitim Bilgileri"><span class="icon">🎓</span> Eğitim Bilgileri</button>
     </div>
 </div>
 
@@ -401,6 +404,14 @@ function createQuestionCard(field, index) {
         `;
     }
 
+    if (field.type === 'education') {
+        html += `
+            <div style="margin-top: 16px; padding: 12px; background: rgba(var(--accent-rgb), 0.05); border-radius: 6px; border: 1px dashed var(--accent);">
+                <p style="font-size: 13px; color: var(--muted); margin: 0;">Bu şablon ön yüzde otomatik olarak <strong>Üniversite, Fakülte, Bölüm ve Sınıf</strong> seçimi yaptırır (Konya üniversiteleri için özel zincirleme seçim mantığı içerir).</p>
+            </div>
+        `;
+    }
+
     html += `
         <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; display: flex; justify-content: flex-end; align-items: center;">
             <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer;">
@@ -468,9 +479,11 @@ function addTemplate(tpl) {
     switch(tpl) {
         case 'adsoyad': f.label = 'Ad Soyad'; f.type = 'text'; break;
         case 'tc': f.label = 'T.C. Kimlik Numarası'; f.type = 'tc'; break;
+        case 'student_no': f.label = 'Öğrenci Numarası'; f.type = 'number'; break;
         case 'telefon': f.label = 'Telefon Numarası'; f.type = 'phone'; break;
         case 'email': f.label = 'E-posta Adresi'; f.type = 'email'; break;
         case 'sosyal': f.label = 'Sosyal Medya Hesabınız'; f.type = 'social'; f.platform = 'instagram'; break;
+        case 'education': f.label = 'Eğitim Bilgileri'; f.type = 'education'; break;
     }
     formFields.push(f);
     renderBuilder();

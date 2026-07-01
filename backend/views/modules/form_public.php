@@ -250,7 +250,7 @@
                         <option value="+44">+44 (UK)</option>
                         <option value="+49">+49 (DE)</option>
                     </select>
-                    <input type="text" name="<?= $name ?>" class="inp-text" placeholder="(555) 123 45 67" <?= $req ?>>
+                    <input type="text" name="<?= $name ?>" class="inp-text phone-mask" placeholder="(555) 123 45 67" maxlength="15" <?= $req ?>>
                 </div>
 
             <?php elseif ($type === 'social'): ?>
@@ -268,6 +268,40 @@
                     </div>
                     <input type="text" name="<?= $name ?>" class="social-input" placeholder="@kullaniciadi veya link" <?= $req ?>>
                 </div>
+
+            <?php elseif ($type === 'education'): ?>
+                <div class="education-group" id="edu-<?= $name ?>">
+                    <!-- Dropdowns -->
+                    <div id="edu-dropdowns-<?= $name ?>" style="display:flex; flex-direction:column; gap:10px;">
+                        <select name="<?= $name ?>[universite]" id="uni-<?= $name ?>" class="inp-select" <?= $req ?> onchange="uniChanged('<?= $name ?>')">
+                            <option value="">Üniversite Seçiniz...</option>
+                        </select>
+                        <select name="<?= $name ?>[fakulte]" id="fac-<?= $name ?>" class="inp-select" <?= $req ?> onchange="facChanged('<?= $name ?>')">
+                            <option value="">Önce Üniversite Seçiniz...</option>
+                        </select>
+                        <select name="<?= $name ?>[bolum]" id="dep-<?= $name ?>" class="inp-select" <?= $req ?>>
+                            <option value="">Önce Fakülte Seçiniz...</option>
+                        </select>
+                        <select name="<?= $name ?>[sinif]" class="inp-select" <?= $req ?>>
+                            <option value="">Sınıf Seçiniz...</option>
+                            <option value="Hazırlık">Hazırlık</option>
+                            <option value="1">1. Sınıf</option>
+                            <option value="2">2. Sınıf</option>
+                            <option value="3">3. Sınıf</option>
+                            <option value="4">4. Sınıf</option>
+                            <option value="Mezun">Mezun</option>
+                            <option value="Yüksek Lisans">Yüksek Lisans</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Manual Inputs for 'Diğer' -->
+                    <div id="other-<?= $name ?>" style="display:none; flex-direction:column; gap:10px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);">
+                        <input type="text" id="uni-other-<?= $name ?>" name="<?= $name ?>[universite_other]" class="inp-text" placeholder="Üniversite Adı (Örn: Boğaziçi Üniversitesi)">
+                        <input type="text" id="fac-other-<?= $name ?>" name="<?= $name ?>[fakulte_other]" class="inp-text" placeholder="Fakülte Adı (Örn: Mühendislik Fakültesi)">
+                        <input type="text" id="dep-other-<?= $name ?>" name="<?= $name ?>[bolum_other]" class="inp-text" placeholder="Bölüm Adı (Örn: Bilgisayar Mühendisliği)">
+                    </div>
+                </div>
+
             <?php endif; ?>
 
         </div>
@@ -283,3 +317,131 @@
             </a>
         </div>
 </div>
+
+<script>
+    // Eğitim Bilgileri - Konya Üniversiteleri JS Mantığı
+    const konyaUnis = {
+        "Selçuk Üniversitesi": {
+            "Mühendislik Fakültesi": ["Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği", "Makine Mühendisliği", "Endüstri Mühendisliği", "İnşaat Mühendisliği"],
+            "İletişim Fakültesi": ["Gazetecilik", "Halkla İlişkiler", "Radyo, Televizyon ve Sinema"],
+            "Fen Fakültesi": ["Matematik", "Fizik", "Kimya", "Biyoloji", "İstatistik"],
+            "Edebiyat Fakültesi": ["Türk Dili ve Edebiyatı", "Tarih", "Sosyoloji", "Psikoloji"],
+            "Hukuk Fakültesi": ["Hukuk"],
+            "Tıp Fakültesi": ["Tıp"],
+            "Diş Hekimliği Fakültesi": ["Diş Hekimliği"]
+        },
+        "Necmettin Erbakan Üniversitesi": {
+            "Mühendislik Fakültesi": ["Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği", "İnşaat Mühendisliği", "Makine Mühendisliği"],
+            "Eğitim Fakültesi": ["Sınıf Öğretmenliği", "İngilizce Öğretmenliği", "PDR"],
+            "Meram Tıp Fakültesi": ["Tıp"],
+            "İlahiyat Fakültesi": ["İlahiyat"]
+        },
+        "Konya Teknik Üniversitesi": {
+            "Mühendislik ve Doğa Bilimleri Fakültesi": ["Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği", "Makine Mühendisliği", "Endüstri Mühendisliği", "İnşaat Mühendisliği", "Yazılım Mühendisliği"],
+            "Mimarlık ve Tasarım Fakültesi": ["Mimarlık", "Şehir ve Bölge Planlama"]
+        },
+        "KTO Karatay Üniversitesi": {
+            "Mühendislik ve Doğa Bilimleri Fakültesi": ["Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği", "Mekatronik Mühendisliği"],
+            "Hukuk Fakültesi": ["Hukuk"],
+            "Tıp Fakültesi": ["Tıp"]
+        },
+        "Konya Gıda ve Tarım Üniversitesi": {
+            "Tarım ve Doğa Bilimleri Fakültesi": ["Bitkisel Üretim ve Teknolojileri"],
+            "Mühendislik ve Mimarlık Fakültesi": ["Bilgisayar Mühendisliği", "Biyomühendislik"]
+        }
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const eduGroups = document.querySelectorAll('.education-group');
+        eduGroups.forEach(group => {
+            const fieldName = group.id.replace('edu-', '');
+            const uniSelect = document.getElementById('uni-' + fieldName);
+            if (uniSelect) {
+                // Populate universities
+                for (let uni in konyaUnis) {
+                    uniSelect.options.add(new Option(uni, uni));
+                }
+                uniSelect.options.add(new Option("Diğer", "Diğer"));
+            }
+        });
+
+        // Telefon Maskeleme
+        const phoneInputs = document.querySelectorAll('.phone-mask');
+        phoneInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                if (!x[1]) {
+                    e.target.value = '';
+                    return;
+                }
+                e.target.value = !x[2] ? '(' + x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+            });
+        });
+    });
+
+    function uniChanged(fieldName) {
+        const uniVal = document.getElementById('uni-' + fieldName).value;
+        const facSelect = document.getElementById('fac-' + fieldName);
+        const depSelect = document.getElementById('dep-' + fieldName);
+        const otherDiv = document.getElementById('other-' + fieldName);
+        
+        const otherUni = document.getElementById('uni-other-' + fieldName);
+        const otherFac = document.getElementById('fac-other-' + fieldName);
+        const otherDep = document.getElementById('dep-other-' + fieldName);
+
+        if (uniVal === "Diğer") {
+            // Hide fac/dep dropdowns
+            facSelect.style.display = 'none';
+            depSelect.style.display = 'none';
+            
+            // Show custom text inputs
+            otherDiv.style.display = 'flex';
+            otherUni.required = facSelect.required;
+            otherFac.required = facSelect.required;
+            otherDep.required = facSelect.required;
+            
+            // Remove required from dropdowns
+            facSelect.required = false;
+            depSelect.required = false;
+        } else {
+            // Show fac/dep dropdowns
+            facSelect.style.display = '';
+            depSelect.style.display = '';
+            
+            // Hide custom text inputs
+            otherDiv.style.display = 'none';
+            const wasRequired = otherUni.required || facSelect.hasAttribute('required');
+            otherUni.required = false;
+            otherFac.required = false;
+            otherDep.required = false;
+            
+            if(wasRequired) {
+                facSelect.required = true;
+                depSelect.required = true;
+            }
+
+            // Populate faculties
+            facSelect.innerHTML = '<option value="">Fakülte Seçiniz...</option>';
+            depSelect.innerHTML = '<option value="">Önce Fakülte Seçiniz...</option>';
+            
+            if (uniVal && konyaUnis[uniVal]) {
+                for (let fac in konyaUnis[uniVal]) {
+                    facSelect.options.add(new Option(fac, fac));
+                }
+            }
+        }
+    }
+
+    function facChanged(fieldName) {
+        const uniVal = document.getElementById('uni-' + fieldName).value;
+        const facVal = document.getElementById('fac-' + fieldName).value;
+        const depSelect = document.getElementById('dep-' + fieldName);
+        
+        depSelect.innerHTML = '<option value="">Bölüm Seçiniz...</option>';
+        if (uniVal && facVal && konyaUnis[uniVal] && konyaUnis[uniVal][facVal]) {
+            konyaUnis[uniVal][facVal].forEach(dep => {
+                depSelect.options.add(new Option(dep, dep));
+            });
+        }
+    }
+</script>

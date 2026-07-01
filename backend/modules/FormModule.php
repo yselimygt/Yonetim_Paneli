@@ -128,7 +128,13 @@ class FormModule extends BaseModule
             $fieldType = $field['type'] ?? 'text';
             if (empty($fieldName)) continue;
 
-            $val = trim($postData[$fieldName] ?? '');
+            $rawVal = $postData[$fieldName] ?? '';
+            $val = is_array($rawVal) ? $rawVal : trim($rawVal);
+
+            if ($fieldType === 'phone') {
+                $code = $postData[$fieldName . '_code'] ?? '';
+                if (!empty($val)) $val = trim($code . ' ' . $val);
+            }
 
             // Dosya yükleme alanı
             if ($fieldType === 'file') {
@@ -142,7 +148,23 @@ class FormModule extends BaseModule
                 }
             }
 
-            if (!empty($field['required']) && empty($val)) {
+            // Education Alanı Mantığı
+            if ($fieldType === 'education' && is_array($val)) {
+                $uni = $val['universite'] ?? '';
+                if ($uni === 'Diğer') {
+                    $val['universite'] = $val['universite_other'] ?? '';
+                    $val['fakulte'] = $val['fakulte_other'] ?? '';
+                    $val['bolum'] = $val['bolum_other'] ?? '';
+                }
+                unset($val['universite_other'], $val['fakulte_other'], $val['bolum_other']);
+                
+                // Now check if required
+                if (!empty($field['required'])) {
+                    if (empty(trim($val['universite'])) || empty(trim($val['fakulte'])) || empty(trim($val['bolum'])) || empty(trim($val['sinif']))) {
+                        $this->redirectBackError(($field['label'] ?? $fieldName) . ' alanındaki eğitim bilgileri eksiksiz doldurulmalıdır.', $isPublic);
+                    }
+                }
+            } else if (!empty($field['required']) && empty($val)) {
                 $this->redirectBackError(($field['label'] ?? $fieldName) . ' alanı zorunludur.', $isPublic);
             }
 
@@ -156,7 +178,7 @@ class FormModule extends BaseModule
                 }
                 if ($fieldType === 'phone' || $fieldType === 'number') {
                     // Sadece numeric, bosluk ve + icerebilir (Phone/Number basit check)
-                    if (!preg_match('/^[0-9\s\+\-\(\)]+$/', $val)) {
+                    if (is_string($val) && !preg_match('/^[0-9\s\+\-\(\)]+$/', $val)) {
                         $this->redirectBackError(($field['label'] ?? $fieldName) . ' sadece sayısal karakterler içerebilir.', $isPublic);
                     }
                 }
@@ -182,21 +204,92 @@ class FormModule extends BaseModule
         $stmt->execute([
             $this->app['id'],
             $this->department['id'],
-            $isPublic ? null : ($this->user['id'] ?? null),
+            $this->user['id'] ?? null,
             json_encode($submittedData, JSON_UNESCAPED_UNICODE)
         ]);
 
-        $_SESSION['flash'] = [
-            'type' => 'success',
-            'message' => $config['settings']['success_message'] ?? 'Form başarıyla gönderildi.'
-        ];
-
         if ($isPublic) {
-            header("Location: " . PUBLIC_URL . "/f/{$this->app['slug']}");
+            $this->autoRegisterMember($submittedData, $fields);
+            header("Location: " . PUBLIC_URL . "/f/{$this->app['slug']}?success=1");
         } else {
+            $_SESSION['flash'] = [
+                'type' => 'success',
+                'message' => $config['settings']['success_message'] ?? 'Form başarıyla gönderildi.'
+            ];
             header("Location: " . BASE_URL . "/panel/{$this->department['slug']}/apps/{$this->app['slug']}");
         }
         exit;
+    }
+
+    private function autoRegisterMember(array $submittedData, array $fields)
+    {
+        $memberData = [
+            'first_name' => '',
+            'last_name' => '',
+            'email' => '',
+            'phone' => '',
+            'student_id' => '',
+            'university' => '',
+            'faculty' => '',
+            'department' => '',
+            'grade' => ''
+        ];
+
+        foreach ($fields as $field) {
+            $name = $field['name'] ?? '';
+            $type = $field['type'] ?? '';
+            $label = $field['label'] ?? '';
+            $val = $submittedData[$name] ?? '';
+
+            if (empty($val)) continue;
+
+            if ($type === 'text' && (stripos($label, 'Ad Soyad') !== false || stripos($label, 'İsim') !== false || stripos($label, 'Adı') !== false)) {
+                $parts = explode(' ', trim((string)$val));
+                $memberData['last_name'] = array_pop($parts);
+                $memberData['first_name'] = implode(' ', $parts);
+                if (empty($memberData['first_name'])) {
+                    $memberData['first_name'] = $memberData['last_name'];
+                    $memberData['last_name'] = '';
+                }
+            } elseif ($type === 'email') {
+                $memberData['email'] = trim((string)$val);
+            } elseif ($type === 'phone') {
+                $memberData['phone'] = trim((string)$val);
+            } elseif ($type === 'number' && stripos($label, 'Numara') !== false) {
+                $memberData['student_id'] = trim((string)$val);
+            } elseif ($type === 'education' && is_array($val)) {
+                $memberData['university'] = trim($val['universite'] ?? '');
+                $memberData['faculty'] = trim($val['fakulte'] ?? '');
+                $memberData['department'] = trim($val['bolum'] ?? '');
+                $memberData['grade'] = trim($val['sinif'] ?? '');
+            }
+        }
+
+        if (empty($memberData['email']) || empty($memberData['first_name'])) {
+            return;
+        }
+
+        $stmt = $this->pdo->prepare("SELECT id FROM apps WHERE department_id = ? AND module_type = 'members' LIMIT 1");
+        $stmt->execute([$this->department['id']]);
+        $membersApp = $stmt->fetch();
+
+        if ($membersApp) {
+            $appId = $membersApp['id'];
+            // Check if user exists
+            $stmt = $this->pdo->prepare("SELECT id FROM app_members WHERE app_id = ? AND (email = ? OR (student_id = ? AND student_id != ''))");
+            $stmt->execute([$appId, $memberData['email'], $memberData['student_id']]);
+            if (!$stmt->fetch()) {
+                $ins = $this->pdo->prepare("INSERT INTO app_members (app_id, department_id, first_name, last_name, email, student_id, university, faculty, department, grade, phone, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')");
+                $ins->execute([
+                    $appId, $this->department['id'], 
+                    $memberData['first_name'], $memberData['last_name'], 
+                    $memberData['email'], $memberData['student_id'],
+                    $memberData['university'], $memberData['faculty'], 
+                    $memberData['department'], $memberData['grade'], 
+                    $memberData['phone']
+                ]);
+            }
+        }
     }
 
     private function redirectBackError(string $message, bool $isPublic)
@@ -306,7 +399,11 @@ class FormModule extends BaseModule
                 $fname = $field['name'];
                 $val = $data[$fname] ?? '';
                 if (is_array($val)) {
-                    $val = implode(', ', $val);
+                    if (isset($val['universite'])) {
+                        $val = trim($val['universite'] . ', ' . $val['fakulte'] . ', ' . $val['bolum'] . ' (' . $val['sinif'] . ')', ' ,()');
+                    } else {
+                        $val = implode(', ', $val);
+                    }
                 }
                 echo '<td>' . htmlspecialchars((string)$val) . '</td>';
             }
@@ -357,7 +454,11 @@ class FormModule extends BaseModule
                 $fieldName = $field['name'] ?? '';
                 $val = $data[$fieldName] ?? '';
                 if (is_array($val)) {
-                    $val = implode(', ', $val); // Checkbox etc.
+                    if (isset($val['universite'])) {
+                        $val = trim($val['universite'] . ', ' . $val['fakulte'] . ', ' . $val['bolum'] . ' (' . $val['sinif'] . ')', ' ,()');
+                    } else {
+                        $val = implode(', ', $val); // Checkbox etc.
+                    }
                 }
                 $row[] = $val;
             }
