@@ -147,9 +147,11 @@ $templateStr = json_encode($config);
 <div id="tab-questions" class="tab-content active">
     <div class="builder-container" id="builder-container">
         <!-- Form Header Card -->
-        <div class="question-card" style="border-top: 8px solid var(--accent); border-left: 1px solid var(--border);">
-            <h2 style="margin: 0 0 8px 0;"><?= View::escape($app['name']) ?></h2>
-            <p style="color: var(--muted); margin: 0;"><?= View::escape($app['description'] ?? 'Açıklama yok') ?></p>
+        <div class="question-card" style="border-top: 8px solid var(--accent); border-left: 1px solid var(--border); padding-bottom: 16px;">
+            <input type="text" id="app-name-input" style="font-size: 24px; font-weight: bold; border: none; border-bottom: 1px solid transparent; padding: 4px 8px; margin-bottom: 8px; width: 100%; background: transparent; color: var(--text); outline: none; transition: border 0.3s;" value="<?= View::escape($app['name']) ?>" onfocus="this.style.borderBottomColor='var(--accent)'" onblur="this.style.borderBottomColor='transparent'" placeholder="Form Başlığı">
+            
+            <textarea id="app-desc-input" style="font-size: 14px; color: var(--text); border: none; border-bottom: 1px solid transparent; padding: 4px 8px; width: 100%; background: transparent; resize: vertical; min-height: 40px; outline: none; transition: border 0.3s;" onfocus="this.style.borderBottomColor='var(--accent)'" onblur="this.style.borderBottomColor='transparent'" placeholder="Form açıklaması..."><?= View::escape($settings['form_description'] ?? $app['description'] ?? '') ?></textarea>
+            
             <div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center;">
                 <span class="badge" style="background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
                     <span id="public-status-badge"><?= !empty($settings['is_public']) ? 'Kamuya Açık Form' : 'Sadece Üyelere Açık' ?></span>
@@ -276,6 +278,10 @@ $templateStr = json_encode($config);
                 <div class="form-group">
                     <label class="form-label">Kategori</label>
                     <input type="text" id="setting-category" class="form-control" value="<?= View::escape($settings['category'] ?? '') ?>">
+                </div>
+                <div class="form-group" style="display: none;">
+                    <label class="form-label">Form Açıklaması</label>
+                    <textarea id="setting-form-description" class="form-control" rows="3"><?= View::escape($settings['form_description'] ?? '') ?></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Başarı Mesajı (Form gönderildikten sonra gösterilir)</label>
@@ -560,6 +566,7 @@ function getSettings() {
     return {
         is_public: document.getElementById('setting-is-public').value == '1',
         category: document.getElementById('setting-category').value,
+        form_description: document.getElementById('app-desc-input').value,
         success_message: document.getElementById('setting-success-msg').value,
         theme_color: document.getElementById('setting-theme-color').value,
         header_image: document.getElementById('setting-header-image').value
@@ -620,6 +627,14 @@ function saveConfigData(fields, settings) {
     const formData = new FormData();
     formData.append('action', 'save_config');
     formData.append('config', JSON.stringify(configData));
+    
+    // Uygulama ismini ve açıklamasını da sunucuya gönderelim
+    const appNameInput = document.getElementById('app-name-input');
+    if (appNameInput) {
+        formData.append('name', appNameInput.value);
+        formData.append('description', document.getElementById('app-desc-input').value);
+    }
+
     formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
 
     fetch(window.location.href, {

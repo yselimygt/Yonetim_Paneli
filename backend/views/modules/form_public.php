@@ -350,8 +350,11 @@ body::before {
 
     <div class="form-public-header">
         <h1><?= View::escape($app['name']) ?></h1>
-        <?php if(!empty($app['description'])): ?>
-            <p><?= nl2br(View::escape($app['description'])) ?></p>
+        <?php 
+            $desc = $app['config']['settings']['form_description'] ?? $app['description'] ?? '';
+            if(!empty($desc)): 
+        ?>
+            <p><?= nl2br(View::escape($desc)) ?></p>
         <?php endif; ?>
     </div>
 

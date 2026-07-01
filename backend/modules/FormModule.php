@@ -76,8 +76,17 @@ class FormModule extends BaseModule
         // Form Ayarlarını (Builder) Kaydetme İşlemi (Phase 3'te frontend yapacak, backend şimdilik desteklesin)
         if ($action === 'save_config' && $this->isDirectorOrAdmin()) {
             $newConfig = $postData['config'] ?? '';
-            $stmt = $this->pdo->prepare("UPDATE apps SET config = ? WHERE id = ?");
-            $stmt->execute([$newConfig, $this->app['id']]);
+            $newName = $postData['name'] ?? null;
+            $newDesc = $postData['description'] ?? null;
+            
+            if ($newName !== null) {
+                $stmt = $this->pdo->prepare("UPDATE apps SET config = ?, name = ?, description = ? WHERE id = ?");
+                $stmt->execute([$newConfig, $newName, $newDesc, $this->app['id']]);
+            } else {
+                $stmt = $this->pdo->prepare("UPDATE apps SET config = ? WHERE id = ?");
+                $stmt->execute([$newConfig, $this->app['id']]);
+            }
+            
             echo json_encode(['success' => true]);
             exit;
         }
