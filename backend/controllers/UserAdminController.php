@@ -70,9 +70,11 @@ class UserAdminController extends Controller
 
         $is_super_admin = isset($_POST['is_super_admin']) ? 1 : 0;
         $can_manage_passwords = isset($_POST['can_manage_passwords']) ? 1 : 0;
+        $is_representative = isset($_POST['is_representative']) ? 1 : 0;
+        $is_alumni = isset($_POST['is_alumni']) ? 1 : 0;
         $birth_date = !empty($_POST['birth_date']) ? $_POST['birth_date'] : null;
         
-        $userId = $this->userModel->create($name, $email, $password, $is_super_admin, $can_manage_passwords);
+        $userId = $this->userModel->create($name, $email, $password, $is_super_admin, $can_manage_passwords, $is_representative, $is_alumni);
         if ($birth_date) {
             $this->userModel->updateUser($userId, ['birth_date' => $birth_date]);
         }
@@ -127,8 +129,18 @@ class UserAdminController extends Controller
         $is_active = isset($_POST['is_active']) ? 1 : 0;
         $is_super_admin = isset($_POST['is_super_admin']) ? 1 : 0;
         $can_manage_passwords = isset($_POST['can_manage_passwords']) ? 1 : 0;
+        $is_representative = isset($_POST['is_representative']) ? 1 : 0;
+        $is_alumni = isset($_POST['is_alumni']) ? 1 : 0;
 
-        $updates = ['name' => $name, 'birth_date' => $birth_date, 'is_active' => $is_active, 'is_super_admin' => $is_super_admin, 'can_manage_passwords' => $can_manage_passwords];
+        $updates = [
+            'name' => $name, 
+            'birth_date' => $birth_date, 
+            'is_active' => $is_active, 
+            'is_super_admin' => $is_super_admin, 
+            'can_manage_passwords' => $can_manage_passwords,
+            'is_representative' => $is_representative,
+            'is_alumni' => $is_alumni
+        ];
 
         // Şifre değişimi opsiyonel
         if (!empty($_POST['password'])) {

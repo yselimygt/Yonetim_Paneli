@@ -1,19 +1,51 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getSiteData } from '../services/siteApi';
+import {
+  popupConfig as defaultPopupConfig,
+  stats as defaultStats,
+  sponsors as defaultSponsors,
+  faqs as defaultFaqs
+} from '../data/innomisData';
 
 const SiteDataContext = createContext();
 
 export const useSiteData = () => useContext(SiteDataContext);
 
+const defaultSiteSettings = {
+  popupConfig: defaultPopupConfig,
+  stats: defaultStats,
+  sponsors: defaultSponsors,
+  faqs: defaultFaqs,
+  hero: {
+    titleLine1: 'Bilişimde Yeniliğe',
+    titleLine2: 'İnovasyonda Zirveye!',
+    description:
+      'InnoMIS Community; teknoloji, yapay zeka, girişimcilik ve kariyer odaklı etkinliklerle öğrencileri üretmeye, öğrenmeye ve bağlantı kurmaya davet eden yenilikçi bir öğrenci topluluğudur.',
+    primaryCta: {
+      label: 'Topluluğa Katıl',
+      href: '/kayit'
+    },
+    secondaryCta: {
+      label: 'Etkinlikleri Keşfet',
+      href: '/events'
+    }
+  }
+};
+
+const normalizeSiteData = (data = {}) => ({
+  settings: {
+    ...defaultSiteSettings,
+    ...(data.settings || {})
+  },
+  projects: data.projects || [],
+  gallery: data.gallery || [],
+  achievements: data.achievements || [],
+  awards: data.awards || [],
+  team: data.team || { board: [], departments: [], campusRepresentatives: [] }
+});
+
 export const SiteDataProvider = ({ children }) => {
-  const [siteData, setSiteData] = useState({
-    settings: {},
-    projects: [],
-    gallery: [],
-    achievements: [],
-    awards: [],
-    team: {}
-  });
+  const [siteData, setSiteData] = useState(() => normalizeSiteData());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,7 +54,7 @@ export const SiteDataProvider = ({ children }) => {
       try {
         const json = await getSiteData();
         if (json.success) {
-          setSiteData(json.data);
+          setSiteData(normalizeSiteData(json.data));
         } else {
           console.error("API error:", json);
         }

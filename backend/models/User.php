@@ -19,14 +19,16 @@ class User extends Model
         return $this->findById($id);
     }
 
-    public function create(string $name, string $email, string $password, int $is_super_admin = 0, int $can_manage_passwords = 0): int
+    public function create(string $name, string $email, string $password, int $is_super_admin = 0, int $can_manage_passwords = 0, int $is_representative = 0, int $is_alumni = 0): int
     {
         return $this->insert([
             'name'                   => $name,
             'email'                  => $email,
             'password'               => password_hash($password, PASSWORD_BCRYPT),
             'is_super_admin'         => $is_super_admin,
-            'can_manage_passwords'   => $can_manage_passwords
+            'can_manage_passwords'   => $can_manage_passwords,
+            'is_representative'      => $is_representative,
+            'is_alumni'              => $is_alumni
         ]);
     }
 

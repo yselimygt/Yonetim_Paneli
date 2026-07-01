@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSiteData } from '../context/SiteDataContext';
 
 const Hero = () => {
   const [timeLeft, setTimeLeft] = useState({ days: '14', hours: '08', minutes: '45', seconds: '20' });
+  const { siteData } = useSiteData();
+  const hero = siteData?.settings?.hero || {};
+  const stats = siteData?.settings?.stats || [];
+  const heroStats = stats.slice(0, 3);
 
   // Simple visual countdown effect (mocking a real countdown for visual flair)
   useEffect(() => {
@@ -37,40 +42,35 @@ const Hero = () => {
           {/* Left Content */}
           <div className="space-y-8 text-center lg:text-left">
             <h1 className="font-display font-extrabold text-4xl sm:text-6xl lg:text-7xl leading-[1.1] tracking-tight">
-              <span className="block text-white">Bilişimde Yeniliğe</span>
-              <span className="block text-gradient">İnovasyonda Zirveye!</span>
+              <span className="block text-white">{hero.titleLine1}</span>
+              <span className="block text-gradient">{hero.titleLine2}</span>
             </h1>
             
             <p className="text-text-secondary text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              InnoMIS Community; teknoloji, yapay zeka, girişimcilik ve kariyer odaklı etkinliklerle öğrencileri üretmeye, öğrenmeye ve bağlantı kurmaya davet eden yenilikçi bir öğrenci topluluğudur.
+              {hero.description}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-              <Link to="/kayit" className="w-full sm:w-auto px-8 py-4 bg-gradient-primary text-white rounded-xl font-bold text-lg shadow-[0_0_25px_rgba(244,159,32,0.4)] hover:shadow-[0_0_35px_rgba(218,44,46,0.6)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group">
-                Topluluğa Katıl
+              <Link to={hero.primaryCta?.href || '/kayit'} className="w-full sm:w-auto px-8 py-4 bg-gradient-primary text-white rounded-xl font-bold text-lg shadow-[0_0_25px_rgba(244,159,32,0.4)] hover:shadow-[0_0_35px_rgba(218,44,46,0.6)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group">
+                {hero.primaryCta?.label || 'Topluluğa Katıl'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/events" className="w-full sm:w-auto px-8 py-4 glass-card text-white rounded-xl font-bold text-lg hover:border-primary/50 hover:bg-white/5 transition-all flex items-center justify-center gap-2 group">
+              <Link to={hero.secondaryCta?.href || '/events'} className="w-full sm:w-auto px-8 py-4 glass-card text-white rounded-xl font-bold text-lg hover:border-primary/50 hover:bg-white/5 transition-all flex items-center justify-center gap-2 group">
                 <PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                Etkinlikleri Keşfet
+                {hero.secondaryCta?.label || 'Etkinlikleri Keşfet'}
               </Link>
             </div>
             
             <div className="flex items-center justify-center lg:justify-start gap-8 pt-6">
-              <div>
-                <p className="text-3xl font-display font-bold text-white">500+</p>
-                <p className="text-text-meta text-sm font-medium">Aktif Üye</p>
-              </div>
-              <div className="w-px h-10 bg-white/10"></div>
-              <div>
-                <p className="text-3xl font-display font-bold text-white">25+</p>
-                <p className="text-text-meta text-sm font-medium">Etkinlik</p>
-              </div>
-              <div className="w-px h-10 bg-white/10"></div>
-              <div>
-                <p className="text-3xl font-display font-bold text-white">8+</p>
-                <p className="text-text-meta text-sm font-medium">Proje Ekibi</p>
-              </div>
+              {heroStats.map((stat, idx) => (
+                <React.Fragment key={`${stat.label}-${idx}`}>
+                  {idx > 0 && <div className="w-px h-10 bg-white/10"></div>}
+                  <div>
+                    <p className="text-3xl font-display font-bold text-white">{stat.value}</p>
+                    <p className="text-text-meta text-sm font-medium">{stat.label}</p>
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
           </div>
 

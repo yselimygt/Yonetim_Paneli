@@ -118,6 +118,14 @@
                     <input type="checkbox" id="can_manage_passwords_c" name="can_manage_passwords" value="1">
                     <label for="can_manage_passwords_c" style="color:var(--accent); font-weight:600;">Şifreleri Düzenleyebilir/Silebilir</label>
                 </div>
+                <div class="check-group">
+                    <input type="checkbox" id="is_representative_c" name="is_representative" value="1">
+                    <label for="is_representative_c" style="color:#f87171; font-weight:600;">Kampüs Temsilcisi Rolü</label>
+                </div>
+                <div class="check-group">
+                    <input type="checkbox" id="is_alumni_c" name="is_alumni" value="1">
+                    <label for="is_alumni_c" style="color:#a78bfa; font-weight:600;">Mezun Rolü</label>
+                </div>
             </div>
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">

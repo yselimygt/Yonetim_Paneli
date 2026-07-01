@@ -89,6 +89,13 @@ class Auth
         $_SESSION['user_school_department'] = $user['school_department'] ?? null;
         $_SESSION['user_grade']    = $user['grade'] ?? null;
         $_SESSION['user_avatar']   = $user['avatar'] ?? null;
+        $_SESSION['user_linkedin'] = $user['linkedin'] ?? null;
+        $_SESSION['user_github'] = $user['github'] ?? null;
+        $_SESSION['user_website'] = $user['website'] ?? null;
+        $_SESSION['user_bio'] = $user['bio'] ?? null;
+        $_SESSION['user_university_logo'] = $user['university_logo'] ?? null;
+        $_SESSION['user_company_logo'] = $user['company_logo'] ?? null;
+        $_SESSION['user_community_history_json'] = $user['community_history_json'] ?? null;
         $_SESSION['is_super_admin'] = (bool) $user['is_super_admin'];
 
         // Departman atamalarını yükle
@@ -221,6 +228,13 @@ class Auth
             'school_department' => $_SESSION['user_school_department'] ?? '',
             'grade'         => $_SESSION['user_grade']    ?? '',
             'avatar'        => $_SESSION['user_avatar']   ?? '',
+            'linkedin'      => $_SESSION['user_linkedin'] ?? '',
+            'github'        => $_SESSION['user_github'] ?? '',
+            'website'       => $_SESSION['user_website'] ?? '',
+            'bio'           => $_SESSION['user_bio'] ?? '',
+            'university_logo' => $_SESSION['user_university_logo'] ?? '',
+            'company_logo'  => $_SESSION['user_company_logo'] ?? '',
+            'community_history_json' => $_SESSION['user_community_history_json'] ?? '',
             'is_super_admin'=> $_SESSION['is_super_admin'] ?? false,
         ];
     }

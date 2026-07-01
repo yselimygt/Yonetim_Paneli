@@ -33,6 +33,7 @@ class SiteTeamAdminController extends Controller
         }
 
         $this->teamModel->saveProfile($data);
+        $this->teamModel->updateUserPublicProfile((int) $data['user_id'], $data);
         Logger::log('SAVE_SITE_TEAM_PROFILE', 'User', (int) $data['user_id'], [
             'department_id' => $data['department_id'],
             'is_visible' => $data['is_visible']
@@ -81,6 +82,14 @@ class SiteTeamAdminController extends Controller
             'linkedin' => trim($_POST['linkedin'] ?? ''),
             'github' => trim($_POST['github'] ?? ''),
             'bio' => trim($_POST['bio'] ?? ''),
+            'phone' => trim($_POST['phone'] ?? ''),
+            'university' => trim($_POST['university'] ?? ''),
+            'faculty' => trim($_POST['faculty'] ?? ''),
+            'school_department' => trim($_POST['school_department'] ?? ''),
+            'grade' => trim($_POST['grade'] ?? ''),
+            'website' => trim($_POST['website'] ?? ''),
+            'university_logo' => trim($_POST['university_logo'] ?? ''),
+            'company_logo' => trim($_POST['company_logo'] ?? ''),
             'community_history' => $history,
             'is_visible' => isset($_POST['is_visible']) ? 1 : 0,
             'sort_order' => (int) ($_POST['sort_order'] ?? 0)

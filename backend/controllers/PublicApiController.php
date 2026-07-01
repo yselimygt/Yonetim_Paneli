@@ -137,7 +137,12 @@ class PublicApiController extends Controller
         return array_map(function ($member) {
             $member['linkedin'] = $member['linkedin'] ?? ($member['linkedin_url'] ?? null);
             $member['github'] = $member['github'] ?? null;
-            $member['communityHistory'] = json_decode($member['community_history_json'] ?? '[]', true) ?: [];
+            $member['initials'] = $member['initials'] ?? $this->initials($member['name'] ?? '');
+            $member['team_department'] = $member['team_department'] ?? ($member['department'] ?? 'Genel');
+            $member['communityHistory'] = $this->normalizeHistory(
+                $member['community_history_json'] ?? '[]',
+                $member['team_department'] ?? 'Genel'
+            );
             return $member;
         }, $members);
     }
@@ -155,7 +160,7 @@ class PublicApiController extends Controller
             }
 
             if ($member['type'] === 'campus') {
-                $campusName = $member['department'] ?: 'Bilinmeyen Kampüs';
+                $campusName = $member['team_department'] ?? ($member['department'] ?: 'Bilinmeyen Kampüs');
                 if (!isset($campusMap[$campusName])) {
                     $campusMap[$campusName] = ['university' => $campusName, 'logo' => null, 'representatives' => []];
                 }
@@ -164,7 +169,7 @@ class PublicApiController extends Controller
                 continue;
             }
 
-            $deptName = $member['department'] ?: 'Genel';
+            $deptName = $member['team_department'] ?? ($member['department'] ?: 'Genel');
             if (!isset($departmentsMap[$deptName])) {
                 $departmentsMap[$deptName] = ['id' => md5($deptName), 'name' => $deptName, 'director' => null, 'members' => []];
             }
@@ -194,5 +199,38 @@ class PublicApiController extends Controller
         return stripos($role, 'Direktör') !== false
             || stripos($role, 'Başkan') !== false
             || stripos($role, 'Sorumlu') !== false;
+    }
+
+    private function normalizeHistory(string $historyJson, string $department): array
+    {
+        $history = json_decode($historyJson, true) ?: [];
+
+        return array_map(function ($item) use ($department) {
+            return [
+                'title' => $item['title'] ?? ($item['role'] ?? ''),
+                'dept' => $item['dept'] ?? $department,
+                'period' => $item['period'] ?? ($item['year'] ?? ''),
+                'year' => $item['year'] ?? ($item['period'] ?? ''),
+                'role' => $item['role'] ?? ($item['title'] ?? '')
+            ];
+        }, $history);
+    }
+
+    private function initials(string $name): string
+    {
+        $parts = preg_split('/\s+/u', trim($name)) ?: [];
+        $letters = [];
+
+        foreach ($parts as $part) {
+            if ($part !== '') {
+                $letters[] = mb_substr($part, 0, 1, 'UTF-8');
+            }
+
+            if (count($letters) === 2) {
+                break;
+            }
+        }
+
+        return mb_strtoupper(implode('', $letters), 'UTF-8');
     }
 }

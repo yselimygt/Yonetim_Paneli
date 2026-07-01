@@ -12,7 +12,7 @@ const Team = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   
   const { siteData } = useSiteData();
-  const teamStructure = siteData?.team || { board: [], departments: [], campusRepresentatives: [] };
+  const teamStructure = siteData?.team?.board ? siteData.team : { board: [], departments: [], campusRepresentatives: [] };
 
   // Parse URL on mount or URL change
   useEffect(() => {

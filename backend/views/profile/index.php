@@ -1,3 +1,6 @@
+<?php
+$communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?: [];
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -55,7 +58,7 @@
             border-radius: 16px;
             padding: 32px 36px;
             width: 100%;
-            max-width: 480px;
+            max-width: 760px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.06);
             transition: box-shadow 0.3s ease;
         }
@@ -92,6 +95,14 @@
         
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .avatar-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto; }
+        .section-title { margin: 28px 0 16px; padding-top: 22px; border-top: 1px solid var(--border); }
+        .section-title h2 { font-size: 15px; font-weight: 700; color: var(--text); }
+        .section-title p { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+        .history-list { display: grid; gap: 10px; }
+        .history-item { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: center; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,.02); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-sm { width: auto; padding: 8px 12px; font-size: 12px; }
         
         .footer-links {
             display: flex;
@@ -108,6 +119,12 @@
         }
         .footer-links a:hover { color: var(--text); }
         .hint { font-size: 11px; color: var(--muted); margin-top: 4px; display: block; }
+        @media (max-width: 720px) {
+            .card { padding: 24px 20px; }
+            .form-row,
+            .history-item { grid-template-columns: 1fr; }
+            .btn-sm { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -180,6 +197,68 @@
             </div>
         </div>
 
+        <div class="section-title">
+            <h2>Web Sitesi Ekip Profili</h2>
+            <p>Bu bilgiler süper admin sizi ekip alanında görünür yaptığında web sitesindeki profil kartınızda kullanılır. Süper admin alanında girilen özel değerler varsa öncelik onlardadır.</p>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">LinkedIn URL</label>
+                <input type="url" name="linkedin" class="form-control" value="<?= View::escape($user['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/kullanici">
+            </div>
+            <div class="form-group">
+                <label class="form-label">GitHub URL</label>
+                <input type="url" name="github" class="form-control" value="<?= View::escape($user['github'] ?? '') ?>" placeholder="https://github.com/kullanici">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Web Sitesi</label>
+                <input type="text" name="website" class="form-control" value="<?= View::escape($user['website'] ?? '') ?>" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Üniversite Logo URL</label>
+                <input type="text" name="university_logo" class="form-control" value="<?= View::escape($user['university_logo'] ?? '') ?>" placeholder="/innomis/assets/uni/...">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Şirket / Kurum Logo URL</label>
+            <input type="text" name="company_logo" class="form-control" value="<?= View::escape($user['company_logo'] ?? '') ?>">
+            <span class="hint">Şirket logosu varsa ekip modalında üniversite logosunun yerine kullanılabilir.</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Kısa Biyografi</label>
+            <textarea name="bio" class="form-control" rows="3" placeholder="Kendinizi, ilgi alanlarınızı veya ekipteki odağınızı yazın."><?= View::escape($user['bio'] ?? '') ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Topluluk Kariyer Geçmişi</label>
+            <div id="historyList" class="history-list">
+                <?php if (empty($communityHistory)): ?>
+                    <div class="history-item">
+                        <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan">
+                        <input type="text" name="history_dept[]" class="form-control" placeholder="Departman / Topluluk">
+                        <input type="text" name="history_period[]" class="form-control" placeholder="Dönem">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($communityHistory as $item): ?>
+                        <div class="history-item">
+                            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
+                            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman / Topluluk" value="<?= View::escape($item['dept'] ?? '') ?>">
+                            <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="<?= View::escape($item['period'] ?? $item['year'] ?? '') ?>">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addHistoryItem()">+ Geçmiş Ekle</button>
+        </div>
+
         <div class="form-group">
             <label class="form-label">Yeni Şifre</label>
             <input type="password" name="password" class="form-control">
@@ -207,6 +286,22 @@ function toggleTheme() {
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
+}
+
+function escapeAttr(value) {
+    return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function addHistoryItem(title = '', dept = '', period = '') {
+    const html = `
+        <div class="history-item">
+            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
+            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman / Topluluk" value="${escapeAttr(dept)}">
+            <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="${escapeAttr(period)}">
+            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
+        </div>
+    `;
+    document.getElementById('historyList').insertAdjacentHTML('beforeend', html);
 }
 </script>
 </body>

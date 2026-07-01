@@ -22,6 +22,13 @@ CREATE TABLE users (
     school_department VARCHAR(150) NULL,
     grade          VARCHAR(50) NULL,
     avatar         VARCHAR(255) NULL,
+    linkedin       VARCHAR(255) NULL,
+    github         VARCHAR(255) NULL,
+    website        VARCHAR(255) NULL,
+    bio            TEXT NULL,
+    university_logo VARCHAR(255) NULL,
+    company_logo   VARCHAR(255) NULL,
+    community_history_json JSON NULL,
     birth_date     DATE NULL,
     remember_token VARCHAR(64) NULL,      -- Güvenlik: "Beni Hatırla" token hash'i (sha256)
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

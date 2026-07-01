@@ -49,6 +49,14 @@
                         <input type="checkbox" id="can_manage_passwords_u" name="can_manage_passwords" value="1" <?= !empty($user['can_manage_passwords']) ? 'checked' : '' ?>>
                         <label for="can_manage_passwords_u" style="color:var(--accent); font-weight:600;">Şifreleri Düzenleyebilir/Silebilir</label>
                     </div>
+                    <div class="check-group" style="margin-top: 10px;">
+                        <input type="checkbox" id="is_representative_u" name="is_representative" value="1" <?= !empty($user['is_representative']) ? 'checked' : '' ?>>
+                        <label for="is_representative_u" style="color:#f87171; font-weight:600;">Kampüs Temsilcisi Rolü</label>
+                    </div>
+                    <div class="check-group" style="margin-top: 10px;">
+                        <input type="checkbox" id="is_alumni_u" name="is_alumni" value="1" <?= !empty($user['is_alumni']) ? 'checked' : '' ?>>
+                        <label for="is_alumni_u" style="color:#a78bfa; font-weight:600;">Mezun Rolü</label>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Güncelle</button>

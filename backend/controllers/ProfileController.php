@@ -15,7 +15,7 @@ class ProfileController extends Controller
     {
         Auth::requireLogin();
         
-        $user = Auth::user();
+        $user = $this->userModel->getById((int) Auth::user()['id']);
         
         // Departmanları al (header/navbar'da "Ana Sayfaya Dön" yönlendirmesi veya iptal için)
         $departments = Auth::getDepartments();
@@ -41,6 +41,13 @@ class ProfileController extends Controller
         $faculty = trim($_POST['faculty'] ?? '');
         $school_department = trim($_POST['school_department'] ?? '');
         $grade = trim($_POST['grade'] ?? '');
+        $linkedin = trim($_POST['linkedin'] ?? '');
+        $github = trim($_POST['github'] ?? '');
+        $website = trim($_POST['website'] ?? '');
+        $bio = trim($_POST['bio'] ?? '');
+        $universityLogo = trim($_POST['university_logo'] ?? '');
+        $companyLogo = trim($_POST['company_logo'] ?? '');
+        $communityHistory = $this->historyFromPost();
         $birth_date = !empty($_POST['birth_date']) ? $_POST['birth_date'] : null;
 
         if (empty($name) || empty($email)) {
@@ -98,11 +105,31 @@ class ProfileController extends Controller
         // Güncelleme sorgusu
         if (!empty($password)) {
             $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?, password = ?, phone = ?, university = ?, faculty = ?, school_department = ?, grade = ?, birth_date = ?, avatar = ? WHERE id = ?");
-            $stmt->execute([$name, $email, $hashed, $phone, $university, $faculty, $school_department, $grade, $birth_date, $avatarPath, $user['id']]);
+            $stmt = $pdo->prepare("
+                UPDATE users
+                SET name = ?, email = ?, password = ?, phone = ?, university = ?, faculty = ?, school_department = ?, grade = ?,
+                    linkedin = ?, github = ?, website = ?, bio = ?, university_logo = ?, company_logo = ?, community_history_json = ?,
+                    birth_date = ?, avatar = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([
+                $name, $email, $hashed, $phone, $university, $faculty, $school_department, $grade,
+                $linkedin, $github, $website, $bio, $universityLogo, $companyLogo, json_encode($communityHistory, JSON_UNESCAPED_UNICODE),
+                $birth_date, $avatarPath, $user['id']
+            ]);
         } else {
-            $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?, phone = ?, university = ?, faculty = ?, school_department = ?, grade = ?, birth_date = ?, avatar = ? WHERE id = ?");
-            $stmt->execute([$name, $email, $phone, $university, $faculty, $school_department, $grade, $birth_date, $avatarPath, $user['id']]);
+            $stmt = $pdo->prepare("
+                UPDATE users
+                SET name = ?, email = ?, phone = ?, university = ?, faculty = ?, school_department = ?, grade = ?,
+                    linkedin = ?, github = ?, website = ?, bio = ?, university_logo = ?, company_logo = ?, community_history_json = ?,
+                    birth_date = ?, avatar = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([
+                $name, $email, $phone, $university, $faculty, $school_department, $grade,
+                $linkedin, $github, $website, $bio, $universityLogo, $companyLogo, json_encode($communityHistory, JSON_UNESCAPED_UNICODE),
+                $birth_date, $avatarPath, $user['id']
+            ]);
         }
 
         // Oturum bilgilerini güncelle
@@ -115,6 +142,13 @@ class ProfileController extends Controller
         $_SESSION['user_grade'] = $grade;
         $_SESSION['user_birth_date'] = $birth_date;
         $_SESSION['user_avatar'] = $avatarPath;
+        $_SESSION['user_linkedin'] = $linkedin;
+        $_SESSION['user_github'] = $github;
+        $_SESSION['user_website'] = $website;
+        $_SESSION['user_bio'] = $bio;
+        $_SESSION['user_university_logo'] = $universityLogo;
+        $_SESSION['user_company_logo'] = $companyLogo;
+        $_SESSION['user_community_history_json'] = json_encode($communityHistory, JSON_UNESCAPED_UNICODE);
 
         // Mezun profili varsa senkronize et
         $stmt = $pdo->prepare("UPDATE alumni_profiles SET full_name = ?, email = ?, phone = ?, university = ?, major = ?, avatar_path = ? WHERE user_id = ?");
@@ -123,5 +157,33 @@ class ProfileController extends Controller
         Logger::log('UPDATE_PROFILE', 'User', $user['id'], ['name' => $name, 'email' => $email]);
         $this->flashSuccess('Profil bilgileriniz başarıyla güncellendi.');
         $this->redirect('/profile');
+    }
+
+    private function historyFromPost(): array
+    {
+        $titles = $_POST['history_title'] ?? [];
+        $departments = $_POST['history_dept'] ?? [];
+        $periods = $_POST['history_period'] ?? [];
+        $history = [];
+
+        foreach ($titles as $i => $title) {
+            $title = trim($title);
+            $dept = trim($departments[$i] ?? '');
+            $period = trim($periods[$i] ?? '');
+
+            if ($title === '' && $dept === '' && $period === '') {
+                continue;
+            }
+
+            $history[] = [
+                'title' => $title,
+                'role' => $title,
+                'dept' => $dept,
+                'period' => $period,
+                'year' => $period
+            ];
+        }
+
+        return $history;
     }
 }

@@ -51,6 +51,34 @@ class SiteTeamProfile extends Model
         return (bool) $this->insert($payload);
     }
 
+    public function updateUserPublicProfile(int $userId, array $data): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users
+            SET phone = ?,
+                university = ?,
+                faculty = ?,
+                school_department = ?,
+                grade = ?,
+                website = ?,
+                university_logo = ?,
+                company_logo = ?
+            WHERE id = ?
+        ");
+
+        return $stmt->execute([
+            $data['phone'] ?: null,
+            $data['university'] ?: null,
+            $data['faculty'] ?: null,
+            $data['school_department'] ?: null,
+            $data['grade'] ?: null,
+            $data['website'] ?: null,
+            $data['university_logo'] ?: null,
+            $data['company_logo'] ?: null,
+            $userId
+        ]);
+    }
+
     public function getPublicTeam(): array
     {
         $stmt = $this->pdo->query("
@@ -58,7 +86,19 @@ class SiteTeamProfile extends Model
                 p.*,
                 u.name AS user_name,
                 u.email,
+                u.phone,
+                u.university,
+                u.faculty,
+                u.school_department,
+                u.grade,
                 u.avatar,
+                u.linkedin AS user_linkedin,
+                u.github AS user_github,
+                u.website AS user_website,
+                u.bio AS user_bio,
+                u.university_logo AS user_university_logo,
+                u.company_logo AS user_company_logo,
+                u.community_history_json AS user_community_history_json,
                 ud.role AS department_role,
                 d.name AS department_name
             FROM site_team_profiles p
@@ -87,7 +127,19 @@ class SiteTeamProfile extends Model
                 u.id AS user_id,
                 u.name AS user_name,
                 u.email,
+                u.phone,
+                u.university,
+                u.faculty,
+                u.school_department,
+                u.grade,
                 u.avatar,
+                u.linkedin AS user_linkedin,
+                u.github AS user_github,
+                u.website AS user_website,
+                u.bio AS user_bio,
+                u.university_logo AS user_university_logo,
+                u.company_logo AS user_company_logo,
+                u.community_history_json AS user_community_history_json,
                 u.is_super_admin,
                 ud.department_id,
                 ud.role AS department_role,
@@ -122,7 +174,19 @@ class SiteTeamProfile extends Model
                 u.id AS user_id,
                 u.name AS user_name,
                 u.email,
+                u.phone,
+                u.university,
+                u.faculty,
+                u.school_department,
+                u.grade,
                 u.avatar,
+                u.linkedin AS user_linkedin,
+                u.github AS user_github,
+                u.website AS user_website,
+                u.bio AS user_bio,
+                u.university_logo AS user_university_logo,
+                u.company_logo AS user_company_logo,
+                u.community_history_json AS user_community_history_json,
                 u.is_super_admin,
                 NULL AS department_id,
                 NULL AS department_role,
@@ -191,7 +255,13 @@ class SiteTeamProfile extends Model
         $admin['display_role'] = $admin['display_role'] ?: $this->defaultRole($admin['department_role'], (bool) $admin['is_super_admin']);
         $admin['display_department'] = $admin['display_department'] ?: ($admin['department_name'] ?? 'Yönetim');
         $admin['image_url'] = $admin['image_url'] ?: $admin['avatar'];
-        $admin['community_history_json'] = $admin['community_history_json'] ?: '[]';
+        $admin['linkedin'] = $admin['linkedin'] ?: ($admin['user_linkedin'] ?? null);
+        $admin['github'] = $admin['github'] ?: ($admin['user_github'] ?? null);
+        $admin['bio'] = $admin['bio'] ?: ($admin['user_bio'] ?? null);
+        $admin['community_history_json'] = $this->profileJsonOrUserJson(
+            $admin['community_history_json'] ?? null,
+            $admin['user_community_history_json'] ?? null
+        );
 
         return $admin;
     }
@@ -199,25 +269,95 @@ class SiteTeamProfile extends Model
     private function normalizePublicMember(array $member): array
     {
         $name = $member['display_name'] ?: $member['user_name'];
-        $department = $member['display_department'] ?: ($member['department_name'] ?? 'Yönetim');
+        $teamDepartment = $member['display_department'] ?: ($member['department_name'] ?? 'Yönetim');
         $role = $member['display_role'] ?: $this->defaultRole($member['department_role'] ?? null, false);
+        $avatar = $this->publicAssetUrl($member['image_url'] ?: $member['avatar']);
+        $historyJson = $this->profileJsonOrUserJson(
+            $member['community_history_json'] ?? null,
+            $member['user_community_history_json'] ?? null
+        );
 
         return [
             'id' => (int) $member['id'],
             'user_id' => (int) $member['user_id'],
             'name' => $name,
+            'initials' => $this->initials($name),
             'role' => $role,
-            'department' => $department,
+            'team_department' => $teamDepartment,
+            'department' => $member['school_department'],
+            'schoolDepartment' => $member['school_department'],
+            'faculty' => $member['faculty'],
+            'grade' => $member['grade'],
+            'university' => $member['university'],
+            'universityLogo' => $this->publicAssetUrl($member['user_university_logo']),
+            'companyLogo' => $this->publicAssetUrl($member['user_company_logo']),
             'type' => $member['display_type'] ?: 'department',
-            'image_url' => $member['image_url'] ?: $member['avatar'],
-            'image' => $member['image_url'] ?: $member['avatar'],
-            'linkedin' => $member['linkedin'],
-            'github' => $member['github'],
+            'image_url' => $avatar,
+            'image' => $avatar,
+            'linkedin' => $member['linkedin'] ?: $member['user_linkedin'],
+            'github' => $member['github'] ?: $member['user_github'],
+            'website' => $member['user_website'],
             'email' => $member['email'],
-            'bio' => $member['bio'],
-            'communityHistory' => json_decode($member['community_history_json'] ?: '[]', true) ?: [],
+            'phone' => $member['phone'],
+            'bio' => $member['bio'] ?: $member['user_bio'],
+            'communityHistory' => $this->normalizeHistory($historyJson, $teamDepartment),
             'sort_order' => (int) $member['sort_order']
         ];
+    }
+
+    private function profileJsonOrUserJson(?string $profileJson, ?string $userJson): string
+    {
+        if ($profileJson && trim($profileJson) !== '' && trim($profileJson) !== '[]') {
+            return $profileJson;
+        }
+
+        return $userJson && trim($userJson) !== '' ? $userJson : '[]';
+    }
+
+    private function publicAssetUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        if (preg_match('#^https?://#', $path) || str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return BASE_URL . '/public/' . ltrim($path, '/');
+    }
+
+    private function normalizeHistory(string $historyJson, string $department): array
+    {
+        $history = json_decode($historyJson, true) ?: [];
+
+        return array_map(function ($item) use ($department) {
+            return [
+                'title' => $item['title'] ?? ($item['role'] ?? ''),
+                'dept' => $item['dept'] ?? $department,
+                'period' => $item['period'] ?? ($item['year'] ?? ''),
+                'year' => $item['year'] ?? ($item['period'] ?? ''),
+                'role' => $item['role'] ?? ($item['title'] ?? '')
+            ];
+        }, $history);
+    }
+
+    private function initials(string $name): string
+    {
+        $parts = preg_split('/\s+/u', trim($name)) ?: [];
+        $letters = [];
+
+        foreach ($parts as $part) {
+            if ($part !== '') {
+                $letters[] = mb_substr($part, 0, 1, 'UTF-8');
+            }
+
+            if (count($letters) === 2) {
+                break;
+            }
+        }
+
+        return mb_strtoupper(implode('', $letters), 'UTF-8');
     }
 
     private function defaultRole(?string $departmentRole, bool $isSuperAdmin): string
