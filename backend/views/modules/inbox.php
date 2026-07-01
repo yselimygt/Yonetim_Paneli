@@ -1,3 +1,5 @@
+<?php $formTypes = defined('FORM_TYPES') ? FORM_TYPES : []; ?>
+
 <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
     <div>
         <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><?= View::escape($app['name']) ?></h3>
@@ -37,8 +39,36 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <span class="badge" style="background:var(--card-alt); border:1px solid var(--border); color:var(--text);">
-                                <?= View::escape($msg['type']) ?>
+                            <?php
+                                $typeKey   = $msg['type'] ?? '';
+                                $typeLabel = $formTypes[$typeKey] ?? $typeKey;
+                                $badgeColors = [
+                                    'sponsorship'        => '#f4a61720',
+                                    'contact'            => '#00bcd420',
+                                    'membership'         => '#7c3aed20',
+                                    'volunteer'          => '#10b98120',
+                                    'partnership'        => '#3b82f620',
+                                    'event_registration' => '#f9731620',
+                                    'job_application'    => '#ec489920',
+                                    'feedback'           => '#84cc1620',
+                                    'press'              => '#64748b20',
+                                ];
+                                $badgeBorders = [
+                                    'sponsorship'        => '#f4a61740',
+                                    'contact'            => '#00bcd440',
+                                    'membership'         => '#7c3aed40',
+                                    'volunteer'          => '#10b98140',
+                                    'partnership'        => '#3b82f640',
+                                    'event_registration' => '#f9731640',
+                                    'job_application'    => '#ec489940',
+                                    'feedback'           => '#84cc1640',
+                                    'press'              => '#64748b40',
+                                ];
+                                $bg     = $badgeColors[$typeKey]  ?? 'rgba(255,255,255,0.05)';
+                                $border = $badgeBorders[$typeKey] ?? 'var(--border)';
+                            ?>
+                            <span class="badge" style="background:<?= $bg ?>; border:1px solid <?= $border ?>; color:var(--text); white-space:nowrap;">
+                                <?= View::escape($typeLabel) ?>
                             </span>
                         </td>
                         <td><?= View::escape($msg['sender_name'] ?: '-') ?></td>
@@ -60,7 +90,10 @@
 <div id="messageModal" class="modal">
     <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
-            <h3 id="modalTitle">Mesaj Detayı</h3>
+            <h3 id="modalTitle" style="display:flex; align-items:center; gap:10px;">
+                Mesaj Detayı
+                <span id="msgTypeBadge" style="display:none; font-size:11px; font-weight:500; padding:2px 10px; border-radius:20px; background:var(--accent-bg,rgba(244,166,23,0.15)); border:1px solid var(--accent,#f4a617); color:var(--accent,#f4a617);"></span>
+            </h3>
             <button type="button" class="close-btn" onclick="closeMessageModal()">&times;</button>
         </div>
         <div class="modal-body">
@@ -122,6 +155,12 @@
 </div>
 
 <script>
+const INBOX_FORM_TYPES = <?= json_encode($formTypes) ?>;
+
+function getFormTypeLabel(key) {
+    return INBOX_FORM_TYPES[key] || key;
+}
+
 function viewMessage(msg) {
     document.getElementById('msgSender').innerText = msg.sender_name || '-';
     document.getElementById('msgCompany').innerText = msg.company_name || '-';
@@ -147,8 +186,17 @@ function viewMessage(msg) {
         phoneEl.removeAttribute('href');
     }
 
-    document.getElementById('msgCategory').innerText = msg.category || msg.type || '-';
+    document.getElementById('msgCategory').innerText = msg.category || '-';
     document.getElementById('msgText').innerText = msg.message || '-';
+
+    // Form türü etiketi
+    const typeLabel = getFormTypeLabel(msg.type || '');
+    const typeBadgeEl = document.getElementById('msgTypeBadge');
+    if (typeBadgeEl) {
+        typeBadgeEl.innerText = typeLabel;
+        typeBadgeEl.style.display = typeLabel ? 'inline-block' : 'none';
+    }
+    document.getElementById('modalTitle').innerText = 'Mesaj Detayı';
 
     document.getElementById('deleteMsgId').value = msg.id;
     document.getElementById('statusMsgId').value = msg.id;

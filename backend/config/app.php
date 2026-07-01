@@ -46,3 +46,16 @@ define('ALLOWED_MODULE_TYPES', [
     'agile', 'passwords', 'ideahub', 'bylaws', 'audit', 'trophy',
     'wiki', 'meeting', 'budget', 'mentorship', 'social', 'alumni', 'inbox'
 ]);
+
+// Web sitesi form türleri (form yönlendirme için)
+define('FORM_TYPES', [
+    'sponsorship'       => 'Sponsorluk Başvurusu',
+    'contact'           => 'İletişim Formu',
+    'membership'        => 'Üyelik Başvurusu',
+    'volunteer'         => 'Gönüllü Başvurusu',
+    'partnership'       => 'İş Birliği Talebi',
+    'event_registration'=> 'Etkinlik Kaydı',
+    'job_application'   => 'İş Başvurusu',
+    'feedback'          => 'Geri Bildirim',
+    'press'             => 'Basın & Medya Talebi',
+]);

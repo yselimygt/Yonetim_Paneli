@@ -304,8 +304,12 @@
                         <div class="item-header">
                             <strong style="display:flex; align-items:center; gap:8px;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><path d="M9 18l6-6-6-6"/></svg>
-                                Form Türü:
-                                <input type="text" name="rules[<?= $ruleIdx ?>][type]" class="form-control" style="width:200px; display:inline-block;" value="<?= View::escape($ruleType) ?>" placeholder="Örn: sponsorship">
+                                <select name="rules[<?= $ruleIdx ?>][type]" class="form-control" style="width:240px; display:inline-block;">
+                                    <option value="">Form Türü Seçin...</option>
+                                    <?php foreach (FORM_TYPES as $typeKey => $typeLabel): ?>
+                                    <option value="<?= $typeKey ?>" <?= $ruleType === $typeKey ? 'selected' : '' ?>><?= View::escape($typeLabel) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </strong>
                             <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.routing-rule').remove()" title="Kuralı Sil">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -585,7 +589,15 @@ function addFaq() {
     document.getElementById('faqs-container').insertAdjacentHTML('beforeend', html);
 }
 
-// Build option HTML from PHP-injected JSON data
+// Form Türleri
+const FORM_TYPES = <?= json_encode(FORM_TYPES) ?>;
+
+function buildFormTypeOptions(selectedKey = '') {
+    return Object.entries(FORM_TYPES)
+        .map(([key, label]) => `<option value="${key}" ${key === selectedKey ? 'selected' : ''}>${label}</option>`)
+        .join('');
+}
+
 const DEPT_OPTIONS = <?= json_encode(array_map(fn($d) => ['id' => $d['id'], 'name' => $d['name']], $departments)) ?>;
 
 function buildDeptOptions(selectedId = '') {
@@ -618,8 +630,10 @@ function addRoutingRule() {
         <div class="item-header">
             <strong style="display:flex; align-items:center; gap:8px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><path d="M9 18l6-6-6-6"/></svg>
-                Form Türü:
-                <input type="text" name="rules[${ruleIdx}][type]" class="form-control" style="width:200px; display:inline-block;" placeholder="Örn: sponsorship">
+                <select name="rules[${ruleIdx}][type]" class="form-control" style="width:240px; display:inline-block;">
+                    <option value="">Form Türü Seçin...</option>
+                    ${buildFormTypeOptions()}
+                </select>
             </strong>
             <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.routing-rule').remove()" title="Kuralı Sil">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
