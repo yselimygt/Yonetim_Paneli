@@ -121,6 +121,41 @@ class PublicApiController extends Controller
             $settings[$row['key_name']] = json_decode($row['json_value'], true);
         }
 
+        // --- Dinamik Üye Sayısı Güncellemesi ---
+        // Topluluk üyeleri "app_members" tablosunda tutuluyor, "suspended" olmayanları sayıyoruz.
+        $userCountStmt = $db->query("SELECT count(*) as total FROM app_members WHERE status != 'suspended' OR status IS NULL");
+        $userCountRow = $userCountStmt->fetch();
+        $totalUsersExact = $userCountRow['total'] ?? 0;
+        
+        // En yakın 50'nin katına yuvarlama (Örn: 124 -> 100, 126 -> 150)
+        // Eğer sayı 25'ten küçükse en azından 50 göstermesi için (opsiyonel ama mantıklı) maks fonksiyonu ile 0'ı önleyebiliriz
+        // ama tam istenen 'en yakın' olduğu için standart round kullanıyoruz. Ancak 0 çıkmaması için minimum 50 yapalım.
+        $roundedUsers = round($totalUsersExact / 50) * 50;
+        if ($roundedUsers == 0 && $totalUsersExact > 0) {
+            $roundedUsers = 50;
+        }
+
+        if (!isset($settings['stats']) || !is_array($settings['stats'])) {
+            $settings['stats'] = [
+                [ 'label' => 'Aktif Üye', 'value' => $roundedUsers . '+', 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ],
+                [ 'label' => 'Etkinlik', 'value' => '25+', 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ],
+                [ 'label' => 'Eğitim Saati', 'value' => '40+', 'desc' => 'Teknoloji ve kariyer odaklı eğitim içerikleri.' ],
+                [ 'label' => 'İş Birliği', 'value' => '15+', 'desc' => 'Marka, topluluk ve sektör paydaşları.' ]
+            ];
+        } else {
+            $found = false;
+            foreach ($settings['stats'] as &$stat) {
+                if ($stat['label'] === 'Aktif Üye') {
+                    $stat['value'] = $roundedUsers . '+';
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found && count($settings['stats']) > 0) {
+                $settings['stats'][0]['value'] = $roundedUsers . '+';
+            }
+        }
+
         // Projects
         $stmtProj = $db->query("SELECT * FROM site_projects ORDER BY id DESC");
         $projects = $stmtProj->fetchAll();
