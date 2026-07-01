@@ -49,6 +49,7 @@ define('ALLOWED_MODULE_TYPES', [
 
 // Web sitesi form türleri (form yönlendirme için)
 define('FORM_TYPES', [
+    'all'               => 'Tüm Formlar (Varsayılan)',
     'sponsorship'       => 'Sponsorluk Başvurusu',
     'contact'           => 'İletişim Formu',
     'membership'        => 'Üyelik Başvurusu',

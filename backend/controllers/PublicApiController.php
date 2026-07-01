@@ -374,12 +374,17 @@ class PublicApiController extends Controller
         $routing = $routingSetting ? json_decode($routingSetting, true) : [];
         
         if (!isset($routing[$type]) || empty($routing[$type])) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'message' => 'Bu form türü için bir yönlendirme ayarı bulunamadı.']);
-            exit;
+            // Fallback to 'all' if defined
+            if (isset($routing['all']) && !empty($routing['all'])) {
+                $rule = $routing['all'];
+            } else {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Bu form türü için bir yönlendirme ayarı bulunamadı.']);
+                exit;
+            }
+        } else {
+            $rule = $routing[$type];
         }
-
-        $rule = $routing[$type];
 
         // Support formats: simple dept_ids array [1,2,3] OR old targets/department_id structures
         if (isset($rule['targets'])) {
