@@ -151,6 +151,32 @@ CREATE TABLE user_departments (
 );
 
 -- -------
+-- Tablo: site_team_profiles
+-- -------
+CREATE TABLE IF NOT EXISTS site_team_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    department_id INT NULL,
+    display_name VARCHAR(150) NULL,
+    display_role VARCHAR(150) NULL,
+    display_department VARCHAR(150) NULL,
+    display_type ENUM('board','department','campus') DEFAULT 'department',
+    image_url VARCHAR(255) NULL,
+    linkedin VARCHAR(255) NULL,
+    github VARCHAR(255) NULL,
+    bio TEXT NULL,
+    community_history_json JSON NULL,
+    is_visible TINYINT(1) DEFAULT 0,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_site_team_user_department (user_id, department_id),
+    INDEX idx_site_team_visible (is_visible, display_type, sort_order),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE
+);
+
+-- -------
 -- Tablo: apps
 -- -------
 CREATE TABLE apps (

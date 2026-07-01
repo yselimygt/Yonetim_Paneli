@@ -71,8 +71,7 @@ $router->post('/superadmin/site-gallery/{id}/delete',     ['SiteGalleryAdminCont
 
 $router->get('/superadmin/site-team',                     ['SiteTeamAdminController', 'index']);
 $router->post('/superadmin/site-team',                    ['SiteTeamAdminController', 'store']);
-$router->post('/superadmin/site-team/{id}',               ['SiteTeamAdminController', 'update']);
-$router->post('/superadmin/site-team/{id}/delete',        ['SiteTeamAdminController', 'destroy']);
+$router->post('/superadmin/site-team/profile',            ['SiteTeamAdminController', 'saveProfile']);
 
 $router->get('/superadmin/site-history',                  ['SiteHistoryAdminController', 'index']);
 $router->post('/superadmin/site-history',                 ['SiteHistoryAdminController', 'store']);

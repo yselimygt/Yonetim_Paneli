@@ -1,40 +1,63 @@
 <?php
 
-require_once __DIR__ . '/../models/SiteTeamMember.php';
+require_once __DIR__ . '/../models/SiteTeamProfile.php';
 
 class SiteTeamAdminController extends Controller
 {
-    private SiteTeamMember $teamModel;
+    private SiteTeamProfile $teamModel;
 
     public function __construct()
     {
-        $this->teamModel = new SiteTeamMember();
+        $this->teamModel = new SiteTeamProfile();
     }
 
-    // GET /superadmin/site-team
     public function index(): void
     {
         Auth::requireSuperAdmin();
-        $members = $this->teamModel->getAllMembers();
+        $groups = $this->teamModel->getGroupedAdmins();
         
-        $this->view('superadmin/site_team/index', ['members' => $members], 'superadmin');
+        $this->view('superadmin/site_team/index', ['groups' => $groups], 'superadmin');
     }
 
-    // POST /superadmin/site-team
+    public function saveProfile(): void
+    {
+        Auth::requireSuperAdmin();
+        $this->csrfCheck();
+
+        $data = $this->profileDataFromPost();
+
+        if (empty($data['user_id'])) {
+            $this->flashError('Admin bilgisi bulunamadı.');
+            $this->redirect('/superadmin/site-team');
+            return;
+        }
+
+        $this->teamModel->saveProfile($data);
+        Logger::log('SAVE_SITE_TEAM_PROFILE', 'User', (int) $data['user_id'], [
+            'department_id' => $data['department_id'],
+            'is_visible' => $data['is_visible']
+        ]);
+
+        $this->flashSuccess('Ekip görünürlüğü güncellendi.');
+        $this->redirect('/superadmin/site-team');
+    }
+
     public function store(): void
     {
-        Auth::requireSuperAdmin();
-        $this->csrfCheck();
+        $this->saveProfile();
+    }
 
-        // Process community_history
+    private function profileDataFromPost(): array
+    {
         $historyYears = $_POST['history_year'] ?? [];
         $historyRoles = $_POST['history_role'] ?? [];
-        
         $history = [];
+
         foreach ($historyYears as $i => $year) {
             $year = trim($year);
             $role = trim($historyRoles[$i] ?? '');
-            if (!empty($year) && !empty($role)) {
+
+            if ($year !== '' && $role !== '') {
                 $history[] = [
                     'year' => $year,
                     'role' => $role
@@ -42,98 +65,25 @@ class SiteTeamAdminController extends Controller
             }
         }
 
-        $data = [
-            'name' => trim($_POST['name'] ?? ''),
-            'role' => trim($_POST['role'] ?? ''),
-            'department' => trim($_POST['department'] ?? ''),
-            'type' => trim($_POST['type'] ?? 'board'),
+        $departmentId = $_POST['department_id'] ?? null;
+        $departmentId = $departmentId === '' ? null : (int) $departmentId;
+        $displayType = $_POST['display_type'] ?? 'department';
+        $allowedTypes = ['board', 'department', 'campus'];
+
+        return [
+            'user_id' => (int) ($_POST['user_id'] ?? 0),
+            'department_id' => $departmentId,
+            'display_name' => trim($_POST['display_name'] ?? ''),
+            'display_role' => trim($_POST['display_role'] ?? ''),
+            'display_department' => trim($_POST['display_department'] ?? ''),
+            'display_type' => in_array($displayType, $allowedTypes, true) ? $displayType : 'department',
             'image_url' => trim($_POST['image_url'] ?? ''),
             'linkedin' => trim($_POST['linkedin'] ?? ''),
             'github' => trim($_POST['github'] ?? ''),
             'bio' => trim($_POST['bio'] ?? ''),
-            'community_history' => $history
+            'community_history' => $history,
+            'is_visible' => isset($_POST['is_visible']) ? 1 : 0,
+            'sort_order' => (int) ($_POST['sort_order'] ?? 0)
         ];
-
-        if (empty($data['name']) || empty($data['role'])) {
-            $this->flashError('Ad Soyad ve Görev alanları zorunludur.');
-            $this->redirect('/superadmin/site-team');
-            return;
-        }
-
-        $this->teamModel->createMember($data);
-        Logger::log('CREATE_SITE_TEAM', 'SiteTeamMember', null, ['name' => $data['name']]);
-        $this->flashSuccess('Ekip üyesi başarıyla eklendi.');
-        $this->redirect('/superadmin/site-team');
-    }
-
-    // POST /superadmin/site-team/{id}
-    public function update(int $id): void
-    {
-        Auth::requireSuperAdmin();
-        $this->csrfCheck();
-
-        $member = $this->teamModel->getMemberById($id);
-        if (!$member) {
-            $this->flashError('Üye bulunamadı.');
-            $this->redirect('/superadmin/site-team');
-            return;
-        }
-
-        // Process community_history
-        $historyYears = $_POST['history_year'] ?? [];
-        $historyRoles = $_POST['history_role'] ?? [];
-        
-        $history = [];
-        foreach ($historyYears as $i => $year) {
-            $year = trim($year);
-            $role = trim($historyRoles[$i] ?? '');
-            if (!empty($year) && !empty($role)) {
-                $history[] = [
-                    'year' => $year,
-                    'role' => $role
-                ];
-            }
-        }
-
-        $data = [
-            'name' => trim($_POST['name'] ?? ''),
-            'role' => trim($_POST['role'] ?? ''),
-            'department' => trim($_POST['department'] ?? ''),
-            'type' => trim($_POST['type'] ?? 'board'),
-            'image_url' => trim($_POST['image_url'] ?? ''),
-            'linkedin' => trim($_POST['linkedin'] ?? ''),
-            'github' => trim($_POST['github'] ?? ''),
-            'bio' => trim($_POST['bio'] ?? ''),
-            'community_history' => $history
-        ];
-
-        if (empty($data['name']) || empty($data['role'])) {
-            $this->flashError('Ad Soyad ve Görev alanları zorunludur.');
-            $this->redirect('/superadmin/site-team');
-            return;
-        }
-
-        $this->teamModel->updateMember($id, $data);
-        Logger::log('UPDATE_SITE_TEAM', 'SiteTeamMember', $id, ['name' => $data['name']]);
-        $this->flashSuccess('Ekip üyesi güncellendi.');
-        $this->redirect('/superadmin/site-team');
-    }
-
-    // POST /superadmin/site-team/{id}/delete
-    public function destroy(int $id): void
-    {
-        Auth::requireSuperAdmin();
-        $this->csrfCheck();
-
-        $member = $this->teamModel->getMemberById($id);
-        if ($member) {
-            $this->teamModel->deleteMember($id);
-            Logger::log('DELETE_SITE_TEAM', 'SiteTeamMember', $id, ['name' => $member['name']]);
-            $this->flashSuccess('Ekip üyesi silindi.');
-        } else {
-            $this->flashError('Üye bulunamadı.');
-        }
-
-        $this->redirect('/superadmin/site-team');
     }
 }

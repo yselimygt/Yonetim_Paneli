@@ -1,232 +1,210 @@
 <?php $pageTitle = 'Site Ekibi'; ?>
 
-<div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
-    <h2>Site Ekibi</h2>
-    <button class="btn btn-primary" onclick="openModal('addMemberModal')">Yeni Üye Ekle</button>
-</div>
-
-<div class="card">
-    <div style="overflow-x:auto;">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th style="width:70px;">Profil</th>
-                    <th>Ad Soyad</th>
-                    <th>Görev / Departman</th>
-                    <th>Tür</th>
-                    <th>Linkler</th>
-                    <th style="width:100px;">İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if(empty($members)): ?>
-                <tr>
-                    <td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Henüz üye eklenmemiş.</td>
-                </tr>
-                <?php else: ?>
-                    <?php foreach($members as $m): ?>
-                    <tr>
-                        <td>
-                            <?php if($m['image_url']): ?>
-                                <img src="<?= View::escape($m['image_url']) ?>" alt="Profil" style="width:40px; height:40px; object-fit:cover; border-radius:50%; border:1px solid var(--border);">
-                            <?php else: ?>
-                                <div style="width:40px; height:40px; border-radius:50%; background:var(--bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px;">Yok</div>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <strong><?= View::escape($m['name']) ?></strong>
-                            <?php if($m['bio']): ?>
-                            <div style="font-size:12px; color:var(--muted); margin-top:4px;">
-                                <?= View::escape(mb_strimwidth($m['bio'], 0, 40, '...')) ?>
-                            </div>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <div><?= View::escape($m['role']) ?></div>
-                            <?php if($m['department']): ?>
-                            <div style="font-size:11px; color:var(--muted); margin-top:2px;"><?= View::escape($m['department']) ?></div>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--text);"><?= View::escape($m['type']) ?></span>
-                        </td>
-                        <td>
-                            <div style="display:flex; gap:6px;">
-                            <?php if($m['linkedin']): ?>
-                                <a href="<?= View::escape($m['linkedin']) ?>" target="_blank" style="color:#0077b5; text-decoration:none;" title="LinkedIn">IN</a>
-                            <?php endif; ?>
-                            <?php if($m['github']): ?>
-                                <a href="<?= View::escape($m['github']) ?>" target="_blank" style="color:var(--text); text-decoration:none;" title="GitHub">GH</a>
-                            <?php endif; ?>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex; gap:8px;">
-                                <button class="btn btn-sm btn-outline" onclick='editMember(<?= json_encode($m) ?>)'>Düzenle</button>
-                                <form method="POST" action="<?= BASE_URL ?>/superadmin/site-team/<?= $m['id'] ?>/delete" onsubmit="return confirm('Üyeyi silmek istediğinize emin misiniz?');">
-                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+<div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+    <div>
+        <h2>Site Ekibi</h2>
+        <p style="margin:6px 0 0; color:var(--muted); max-width:760px;">
+            Ekip Köprüsü aktif: Web sitesindeki ekip alanı artık backend adminlerinden oluşur. Görünürlük ve site profili sadece buradan yönetilir.
+        </p>
     </div>
+    <a href="<?= BASE_URL ?>/superadmin/users" class="btn btn-outline">Adminleri Yönet</a>
 </div>
 
-<!-- Modal: Add Member -->
-<div id="addMemberModal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
-        <div class="modal-header">
-            <h3>Yeni Üye Ekle</h3>
-            <button class="modal-close" onclick="closeModal('addMemberModal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-team">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Ad Soyad</label>
-                        <input type="text" name="name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Üyelik Türü (Grup)</label>
-                        <select name="type" class="form-control" required>
-                            <option value="board">Yönetim Kurulu (Board)</option>
-                            <option value="department">Departman Üyesi</option>
-                            <option value="campus">Kampüs Temsilcisi</option>
-                            <option value="alumni">Mezun</option>
-                        </select>
-                    </div>
-                </div>
+<div class="card" style="border-left:4px solid var(--primary); margin-bottom:18px;">
+    <strong>Global ekip kaynağı</strong>
+    <p style="margin:6px 0 0; color:var(--muted);">
+        Adminler departman atamalarına göre listelenir. Bir admini sitede göstermek için satırdaki <strong>Site Profili</strong> butonundan görünürlüğü açın.
+    </p>
+</div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Görev / Ünvan</label>
-                        <input type="text" name="role" class="form-control" placeholder="Örn: Yönetim Kurulu Başkanı" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Departman (Opsiyonel)</label>
-                        <input type="text" name="department" class="form-control" placeholder="Örn: Yazılım Departmanı">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Fotoğraf URL (Opsiyonel)</label>
-                    <input type="text" name="image_url" class="form-control" placeholder="/innomis/assets/team/...">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">LinkedIn URL (Opsiyonel)</label>
-                        <input type="url" name="linkedin" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">GitHub URL (Opsiyonel)</label>
-                        <input type="url" name="github" class="form-control">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Kısa Biyografi (Opsiyonel)</label>
-                    <textarea name="bio" class="form-control" rows="2"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Topluluk Geçmişi (Yıllara göre önceki görevleri)</label>
-                    <div id="add_history_container">
-                        <div class="history-item form-row" style="margin-bottom:8px;">
-                            <input type="text" name="history_year[]" class="form-control" placeholder="Yıl (Örn: 2024-2025)" style="width:140px;">
-                            <input type="text" name="history_role[]" class="form-control" placeholder="Görev">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">X</button>
+<?php if (empty($groups)): ?>
+    <div class="card" style="text-align:center; padding:32px; color:var(--muted);">
+        Henüz aktif admin veya departman ataması bulunmuyor.
+    </div>
+<?php else: ?>
+    <div style="display:grid; gap:18px;">
+        <?php foreach ($groups as $group): ?>
+            <div class="card" style="overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px;">
+                    <div>
+                        <h3 style="margin:0;"><?= View::escape($group['name']) ?></h3>
+                        <div style="font-size:12px; color:var(--muted); margin-top:4px;">
+                            <?= count($group['members']) ?> admin
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline mt-2" onclick="addHistoryField('add_history_container')">+ Ekle</button>
+                    <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--text);">
+                        Departman Grubu
+                    </span>
                 </div>
 
-                <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('addMemberModal')">İptal</button>
-                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                <div style="overflow-x:auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:64px;">Profil</th>
+                                <th>Admin</th>
+                                <th>Panel Rolü</th>
+                                <th>Site Görünümü</th>
+                                <th style="width:110px;">Durum</th>
+                                <th style="width:120px;">Sıra</th>
+                                <th style="width:120px;">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($group['members'] as $admin): ?>
+                                <?php
+                                    $payload = [
+                                        'user_id' => (int) $admin['user_id'],
+                                        'department_id' => $admin['department_id'] === null ? '' : (int) $admin['department_id'],
+                                        'user_name' => $admin['user_name'],
+                                        'email' => $admin['email'],
+                                        'department_name' => $admin['department_name'] ?? 'Yönetim',
+                                        'display_name' => $admin['display_name'] ?? '',
+                                        'display_role' => $admin['display_role'] ?? '',
+                                        'display_department' => $admin['display_department'] ?? '',
+                                        'display_type' => $admin['display_type'] ?? 'department',
+                                        'image_url' => $admin['image_url'] ?? '',
+                                        'linkedin' => $admin['linkedin'] ?? '',
+                                        'github' => $admin['github'] ?? '',
+                                        'bio' => $admin['bio'] ?? '',
+                                        'community_history_json' => $admin['community_history_json'] ?? '[]',
+                                        'is_visible' => (int) ($admin['is_visible'] ?? 0),
+                                        'sort_order' => (int) ($admin['sort_order'] ?? 0),
+                                    ];
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php if (!empty($admin['image_url'])): ?>
+                                            <img src="<?= View::escape($admin['image_url']) ?>" alt="Profil" style="width:42px; height:42px; object-fit:cover; border-radius:50%; border:1px solid var(--border);">
+                                        <?php else: ?>
+                                            <div style="width:42px; height:42px; border-radius:50%; background:var(--bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:700;">
+                                                <?= View::escape(mb_substr($admin['user_name'], 0, 1, 'UTF-8')) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <strong><?= View::escape($admin['user_name']) ?></strong>
+                                        <div style="font-size:12px; color:var(--muted); margin-top:3px;"><?= View::escape($admin['email']) ?></div>
+                                    </td>
+                                    <td>
+                                        <?php if (!empty($admin['is_super_admin'])): ?>
+                                            <span class="badge" style="background:rgba(245,158,11,.12); color:var(--warning);">Süper Admin</span>
+                                        <?php endif; ?>
+                                        <span class="badge" style="background:var(--bg); color:var(--text); border:1px solid var(--border);">
+                                            <?= ($admin['department_role'] ?? '') === 'director' ? 'Direktör' : 'Üye' ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div><?= View::escape($admin['display_role']) ?></div>
+                                        <div style="font-size:12px; color:var(--muted); margin-top:3px;">
+                                            <?= View::escape($admin['display_department']) ?> · <?= View::escape($admin['display_type']) ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <?php if ($admin['is_visible']): ?>
+                                            <span class="badge" style="background:rgba(34,197,94,.12); color:#22c55e;">Sitede</span>
+                                        <?php else: ?>
+                                            <span class="badge" style="background:rgba(148,163,184,.12); color:var(--muted);">Gizli</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= (int) $admin['sort_order'] ?></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick='editProfile(<?= json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                                            Site Profili
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
-            </form>
-        </div>
+            </div>
+        <?php endforeach; ?>
     </div>
-</div>
+<?php endif; ?>
 
-<!-- Modal: Edit Member -->
-<div id="editMemberModal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
+<div id="profileModal" class="modal">
+    <div class="modal-content" style="max-width:680px;">
         <div class="modal-header">
-            <h3>Üyeyi Düzenle</h3>
-            <button class="modal-close" onclick="closeModal('editMemberModal')">&times;</button>
+            <div>
+                <h3 id="profileModalTitle">Site Profili</h3>
+                <div id="profileModalSubtitle" style="font-size:12px; color:var(--muted); margin-top:3px;"></div>
+            </div>
+            <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <form method="POST" id="editMemberForm">
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-team/profile">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                
+                <input type="hidden" name="user_id" id="profile_user_id">
+                <input type="hidden" name="department_id" id="profile_department_id">
+
+                <div class="form-group" style="display:flex; align-items:center; gap:10px; padding:12px; border:1px solid var(--border); border-radius:8px; background:var(--bg);">
+                    <input type="checkbox" id="profile_is_visible" name="is_visible" value="1">
+                    <label for="profile_is_visible" style="font-weight:700; margin:0;">Bu admin web sitesindeki ekip alanında görünsün</label>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Ad Soyad</label>
-                        <input type="text" name="name" id="edit_name" class="form-control" required>
+                        <label class="form-label">Görünen Ad</label>
+                        <input type="text" name="display_name" id="profile_display_name" class="form-control" placeholder="Boşsa admin adı kullanılır">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Üyelik Türü (Grup)</label>
-                        <select name="type" id="edit_type" class="form-control" required>
-                            <option value="board">Yönetim Kurulu (Board)</option>
+                        <label class="form-label">Ekip Tipi</label>
+                        <select name="display_type" id="profile_display_type" class="form-control">
+                            <option value="board">Yönetim Kurulu</option>
                             <option value="department">Departman Üyesi</option>
                             <option value="campus">Kampüs Temsilcisi</option>
-                            <option value="alumni">Mezun</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Görev / Ünvan</label>
-                        <input type="text" name="role" id="edit_role" class="form-control" required>
+                        <label class="form-label">Sitedeki Ünvan</label>
+                        <input type="text" name="display_role" id="profile_display_role" class="form-control" placeholder="Örn: Yazılım Direktörü">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Departman (Opsiyonel)</label>
-                        <input type="text" name="department" id="edit_department" class="form-control">
+                        <label class="form-label">Sitedeki Departman/Kampüs</label>
+                        <input type="text" name="display_department" id="profile_display_department" class="form-control">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Fotoğraf URL (Opsiyonel)</label>
-                    <input type="text" name="image_url" id="edit_image_url" class="form-control">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">LinkedIn URL (Opsiyonel)</label>
-                        <input type="url" name="linkedin" id="edit_linkedin" class="form-control">
+                        <label class="form-label">Fotoğraf URL</label>
+                        <input type="text" name="image_url" id="profile_image_url" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">GitHub URL (Opsiyonel)</label>
-                        <input type="url" name="github" id="edit_github" class="form-control">
+                        <label class="form-label">Sıralama</label>
+                        <input type="number" name="sort_order" id="profile_sort_order" class="form-control" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">LinkedIn URL</label>
+                        <input type="url" name="linkedin" id="profile_linkedin" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GitHub URL</label>
+                        <input type="url" name="github" id="profile_github" class="form-control">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Kısa Biyografi (Opsiyonel)</label>
-                    <textarea name="bio" id="edit_bio" class="form-control" rows="2"></textarea>
+                    <label class="form-label">Kısa Biyografi</label>
+                    <textarea name="bio" id="profile_bio" class="form-control" rows="3"></textarea>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Topluluk Geçmişi</label>
-                    <div id="edit_history_container">
-                        <!-- Populated via JS -->
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline mt-2" onclick="addHistoryField('edit_history_container')">+ Ekle</button>
+                    <div id="profile_history_container"></div>
+                    <button type="button" class="btn btn-sm btn-outline mt-2" onclick="addHistoryField('profile_history_container')">+ Geçmiş Ekle</button>
                 </div>
 
                 <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('editMemberModal')">İptal</button>
-                    <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal('profileModal')">İptal</button>
+                    <button type="submit" class="btn btn-primary">Profili Kaydet</button>
                 </div>
             </form>
         </div>
@@ -234,41 +212,51 @@
 </div>
 
 <script>
+function escapeAttr(value) {
+    return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function addHistoryField(containerId, year = '', role = '') {
     const html = `
         <div class="history-item form-row" style="margin-bottom:8px;">
-            <input type="text" name="history_year[]" class="form-control" placeholder="Yıl" value="${year}" style="width:140px;">
-            <input type="text" name="history_role[]" class="form-control" placeholder="Görev" value="${role}">
+            <input type="text" name="history_year[]" class="form-control" placeholder="Yıl" value="${escapeAttr(year)}" style="width:140px;">
+            <input type="text" name="history_role[]" class="form-control" placeholder="Görev" value="${escapeAttr(role)}">
             <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">X</button>
         </div>
     `;
     document.getElementById(containerId).insertAdjacentHTML('beforeend', html);
 }
 
-function editMember(member) {
-    document.getElementById('edit_name').value = member.name;
-    document.getElementById('edit_type').value = member.type;
-    document.getElementById('edit_role').value = member.role;
-    document.getElementById('edit_department').value = member.department || '';
-    document.getElementById('edit_image_url').value = member.image_url || '';
-    document.getElementById('edit_linkedin').value = member.linkedin || '';
-    document.getElementById('edit_github').value = member.github || '';
-    document.getElementById('edit_bio').value = member.bio || '';
+function editProfile(admin) {
+    document.getElementById('profileModalTitle').textContent = admin.user_name;
+    document.getElementById('profileModalSubtitle').textContent = `${admin.email} · ${admin.department_name}`;
+    document.getElementById('profile_user_id').value = admin.user_id;
+    document.getElementById('profile_department_id').value = admin.department_id;
+    document.getElementById('profile_is_visible').checked = Number(admin.is_visible) === 1;
+    document.getElementById('profile_display_name').value = admin.display_name || '';
+    document.getElementById('profile_display_role').value = admin.display_role || '';
+    document.getElementById('profile_display_department').value = admin.display_department || admin.department_name || '';
+    document.getElementById('profile_display_type').value = admin.display_type || 'department';
+    document.getElementById('profile_image_url').value = admin.image_url || '';
+    document.getElementById('profile_linkedin').value = admin.linkedin || '';
+    document.getElementById('profile_github').value = admin.github || '';
+    document.getElementById('profile_bio').value = admin.bio || '';
+    document.getElementById('profile_sort_order').value = admin.sort_order || 0;
 
-    const historyContainer = document.getElementById('edit_history_container');
+    const historyContainer = document.getElementById('profile_history_container');
     historyContainer.innerHTML = '';
+
     try {
-        const history = JSON.parse(member.community_history_json);
-        if(history && history.length > 0) {
-            history.forEach(h => addHistoryField('edit_history_container', h.year, h.role));
+        const history = JSON.parse(admin.community_history_json || '[]');
+        if (Array.isArray(history) && history.length > 0) {
+            history.forEach(item => addHistoryField('profile_history_container', item.year, item.role));
         } else {
-            addHistoryField('edit_history_container');
+            addHistoryField('profile_history_container');
         }
-    } catch(e) {
-        addHistoryField('edit_history_container');
+    } catch (e) {
+        addHistoryField('profile_history_container');
     }
 
-    document.getElementById('editMemberForm').action = `<?= BASE_URL ?>/superadmin/site-team/${member.id}`;
-    openModal('editMemberModal');
+    openModal('profileModal');
 }
 </script>

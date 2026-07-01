@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../models/SiteTeamProfile.php';
+
 class PublicApiController extends Controller
 {
     public function getEvents(): void
@@ -104,36 +106,11 @@ class PublicApiController extends Controller
         $achievements = array_values(array_filter($history, fn($h) => $h['type'] === 'achievement'));
         $awards = array_values(array_filter($history, fn($h) => $h['type'] === 'award'));
 
-        // Team
-        $stmtTeam = $db->query("SELECT * FROM site_team_members ORDER BY id ASC");
-        $members = $stmtTeam->fetchAll();
-        $board = [];
-        $departmentsMap = [];
-        $campusMap = [];
-
-        foreach ($members as $m) {
-            $m['communityHistory'] = json_decode($m['community_history_json'], true) ?? [];
-            if ($m['type'] === 'board') {
-                $board[] = $m;
-            } elseif ($m['type'] === 'department') {
-                $deptName = $m['department'] ?: 'Genel';
-                if (!isset($departmentsMap[$deptName])) {
-                    $departmentsMap[$deptName] = ['id' => md5($deptName), 'name' => $deptName, 'director' => null, 'members' => []];
-                }
-                
-                if (stripos($m['role'], 'Direktör') !== false || stripos($m['role'], 'Başkan') !== false) {
-                    $departmentsMap[$deptName]['director'] = $m;
-                } else {
-                    $departmentsMap[$deptName]['members'][] = $m;
-                }
-            } elseif ($m['type'] === 'campus') {
-                $uni = $m['department'] ?: 'Bilinmeyen Kampüs';
-                if (!isset($campusMap[$uni])) {
-                    $campusMap[$uni] = ['university' => $uni, 'logo' => null, 'representatives' => []];
-                }
-                $campusMap[$uni]['representatives'][] = $m;
-            }
-        }
+        $teamModel = new SiteTeamProfile();
+        $members = $teamModel->hasVisibleProfiles()
+            ? $teamModel->getPublicTeam()
+            : $this->getLegacyTeamMembers($db);
+        $team = $this->buildTeamStructure($members);
 
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -147,12 +124,75 @@ class PublicApiController extends Controller
                 'gallery' => $gallery,
                 'achievements' => $achievements,
                 'awards' => $awards,
-                'team' => [
-                    'board' => $board,
-                    'departments' => array_values($departmentsMap),
-                    'campusRepresentatives' => array_values($campusMap)
-                ]
+                'team' => $team
             ]
         ]);
+    }
+
+    private function getLegacyTeamMembers(PDO $db): array
+    {
+        $stmtTeam = $db->query("SELECT * FROM site_team_members ORDER BY sort_order ASC, id ASC");
+        $members = $stmtTeam->fetchAll();
+
+        return array_map(function ($member) {
+            $member['linkedin'] = $member['linkedin'] ?? ($member['linkedin_url'] ?? null);
+            $member['github'] = $member['github'] ?? null;
+            $member['communityHistory'] = json_decode($member['community_history_json'] ?? '[]', true) ?: [];
+            return $member;
+        }, $members);
+    }
+
+    private function buildTeamStructure(array $members): array
+    {
+        $board = [];
+        $departmentsMap = [];
+        $campusMap = [];
+
+        foreach ($members as $member) {
+            if ($member['type'] === 'board') {
+                $board[] = $member;
+                continue;
+            }
+
+            if ($member['type'] === 'campus') {
+                $campusName = $member['department'] ?: 'Bilinmeyen Kampüs';
+                if (!isset($campusMap[$campusName])) {
+                    $campusMap[$campusName] = ['university' => $campusName, 'logo' => null, 'representatives' => []];
+                }
+
+                $campusMap[$campusName]['representatives'][] = $member;
+                continue;
+            }
+
+            $deptName = $member['department'] ?: 'Genel';
+            if (!isset($departmentsMap[$deptName])) {
+                $departmentsMap[$deptName] = ['id' => md5($deptName), 'name' => $deptName, 'director' => null, 'members' => []];
+            }
+
+            if ($this->isDirectorRole($member['role'] ?? '')) {
+                $departmentsMap[$deptName]['director'] = $member;
+            } else {
+                $departmentsMap[$deptName]['members'][] = $member;
+            }
+        }
+
+        foreach ($departmentsMap as &$department) {
+            if (!$department['director'] && !empty($department['members'])) {
+                $department['director'] = array_shift($department['members']);
+            }
+        }
+
+        return [
+            'board' => $board,
+            'departments' => array_values($departmentsMap),
+            'campusRepresentatives' => array_values($campusMap)
+        ];
+    }
+
+    private function isDirectorRole(string $role): bool
+    {
+        return stripos($role, 'Direktör') !== false
+            || stripos($role, 'Başkan') !== false
+            || stripos($role, 'Sorumlu') !== false;
     }
 }

@@ -103,6 +103,7 @@
                     <label class="form-label">Rol</label>
                     <select name="role" class="form-control">
                         <option value="member">Üye</option>
+                        <option value="representative">Kampüs Temsilcisi</option>
                         <option value="director">Direktör</option>
                     </select>
                 </div>

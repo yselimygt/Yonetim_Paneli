@@ -71,8 +71,19 @@
                     <tr>
                         <td><?= View::escape($ud['dept_name']) ?></td>
                         <td>
-                            <span class="badge <?= $ud['role'] === 'director' ? 'badge-director' : 'badge-member' ?>">
-                                <?= $ud['role'] === 'director' ? 'Direktör' : 'Üye' ?>
+                            <?php 
+                                $badgeClass = 'badge-member';
+                                $roleName = 'Üye';
+                                if ($ud['role'] === 'director') {
+                                    $badgeClass = 'badge-director';
+                                    $roleName = 'Direktör';
+                                } elseif ($ud['role'] === 'representative') {
+                                    $badgeClass = 'badge-representative';
+                                    $roleName = 'Kampüs Temsilcisi';
+                                }
+                            ?>
+                            <span class="badge <?= $badgeClass ?>" <?= $ud['role'] === 'representative' ? 'style="background:rgba(239,68,68,0.15); color:#f87171;"' : '' ?>>
+                                <?= $roleName ?>
                             </span>
                         </td>
                         <td>
@@ -115,6 +126,7 @@
                         <label class="form-label">Rol</label>
                         <select name="role" class="form-control">
                             <option value="member">Üye</option>
+                            <option value="representative">Kampüs Temsilcisi</option>
                             <option value="director">Direktör</option>
                         </select>
                     </div>
