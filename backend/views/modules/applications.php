@@ -1,33 +1,6 @@
 <?php
 if (!defined('BASE_URL')) exit;
-
-$pdo = Database::getInstance();
-// Departmana özel başvuru mu yoksa tümü mü? 
-// Şimdilik hepsi gösteriliyor, ya da departman ismine (slug vs) göre filtre yapılabilir.
-$stmt = $pdo->query("SELECT * FROM app_applications ORDER BY created_at DESC");
-$applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Post işlemi var mı?
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    if ($_POST['action'] === 'status') {
-        $id = (int)($_POST['id'] ?? 0);
-        $status = $_POST['status'] ?? '';
-        if ($id > 0 && in_array($status, ['pending', 'reviewing', 'approved', 'rejected'])) {
-            $upd = $pdo->prepare("UPDATE app_applications SET status = ? WHERE id = ?");
-            $upd->execute([$status, $id]);
-        }
-    } elseif ($_POST['action'] === 'delete') {
-        $id = (int)($_POST['id'] ?? 0);
-        if ($id > 0) {
-            $del = $pdo->prepare("DELETE FROM app_applications WHERE id = ?");
-            $del->execute([$id]);
-        }
-    }
-    // Refresh
-    header("Location: " . BASE_URL . "/panel/{$department['slug']}/apps/applications");
-    exit;
-}
-
+// Data $applications is provided by ApplicationsModule
 ?>
 
 <div class="row mb-4">
