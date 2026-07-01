@@ -82,6 +82,10 @@ $router->post('/superadmin/site-history/{id}/delete',     ['SiteHistoryAdminCont
 $router->get('/superadmin/apps',              ['AppAdminController', 'index']);
 $router->post('/superadmin/apps/assign',      ['AppAdminController', 'assign']);
 
+$router->get('/superadmin/applications',            ['ApplicationController', 'index']);
+$router->post('/superadmin/applications/status',    ['ApplicationController', 'updateStatus']);
+$router->post('/superadmin/applications/delete',    ['ApplicationController', 'delete']);
+
 $router->get('/superadmin/logs',              ['LogController', 'index']);
 
 // Panel (Phase 3)
@@ -120,6 +124,7 @@ $router->post('/panel/{slug}/apps/{app}', ['AppRunnerController', 'handle']);
 $router->get('/api/events', ['PublicApiController', 'getEvents']);
 $router->get('/api/site-data', ['PublicApiController', 'getSiteData']);
 $router->post('/api/submit-message', ['PublicApiController', 'submitMessage']);
+$router->post('/api/submit-application', ['PublicApiController', 'submitApplication']);
 
 // Kamuya Açık (Public) Rotalar
 $router->get('/f/{slug}/{app}',  ['AppRunnerController', 'runPublic']);

@@ -44,3 +44,7 @@ export function getEvents() {
 export function submitMessage(data) {
   return postJson('/submit-message', data);
 }
+
+export function submitApplication(data) {
+  return postJson('/submit-application', data);
+}

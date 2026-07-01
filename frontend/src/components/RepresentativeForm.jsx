@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Check } from 'lucide-react';
-import { submitMessage } from '../services/siteApi';
+import { submitApplication } from '../services/siteApi';
 
 const initialFormState = {
   // General Info
@@ -83,14 +83,14 @@ const RepresentativeForm = () => {
       setErrorMessage('');
 
       try {
-        const response = await submitMessage({
+        const response = await submitApplication({
+          type: 'representative',
           fullName: formData.name,
           email: formData.email,
           phone: formData.phone,
-          category: `Temsilcilik Başvurusu`,
-          company: `${formData.university} / ${formData.faculty}`,
-          message: JSON.stringify(formData, null, 2),
-          type: 'job_application'
+          university: formData.university,
+          faculty: formData.faculty,
+          message: JSON.stringify(formData, null, 2)
         });
 
         if (response.success) {

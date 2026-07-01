@@ -40,6 +40,7 @@ class AppAdminController extends Controller
         'social'       => ['name' => 'İçerik',          'icon' => 'share-2'],
         'alumni'       => ['name' => 'Mezunlar',        'icon' => 'compass'],
         'inbox'        => ['name' => 'Gelen Kutusu',    'icon' => 'inbox'],
+        'applications' => ['name' => 'Başvurular',      'icon' => 'file-text'],
     ];
 
     public function __construct()

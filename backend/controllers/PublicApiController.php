@@ -445,4 +445,44 @@ class PublicApiController extends Controller
         }
         exit;
     }
+
+    public function submitApplication(): void
+    {
+        header('Content-Type: application/json');
+        
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+        $type = trim($input['type'] ?? '');
+        $fullName = trim($input['fullName'] ?? '');
+        $email = trim($input['email'] ?? '');
+        $phone = trim($input['phone'] ?? '');
+        
+        if (empty($type) || empty($fullName) || empty($email)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Lütfen zorunlu alanları (Ad Soyad, E-posta) doldurun.']);
+            exit;
+        }
+        
+        // Form details
+        $university = trim($input['university'] ?? '');
+        $faculty = trim($input['faculty'] ?? '');
+        
+        // Remove known basic keys from message to keep form_data clean
+        $formData = $input['message'] ?? '{}';
+        
+        try {
+            $db = Database::getInstance();
+            $stmt = $db->prepare("
+                INSERT INTO app_applications 
+                (type, full_name, email, phone, university, faculty, form_data, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+            ");
+            $stmt->execute([$type, $fullName, $email, $phone, $university, $faculty, $formData]);
+            
+            echo json_encode(['success' => true, 'message' => 'Başvurunuz başarıyla alındı. İlgili birimlerimiz en kısa sürede dönüş yapacaktır.']);
+        } catch (\Throwable $e) {
+            http_response_code(200);
+            echo json_encode(['success' => false, 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
+        }
+        exit;
+    }
 }
