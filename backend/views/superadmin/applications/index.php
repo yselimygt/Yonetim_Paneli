@@ -231,8 +231,13 @@
 <div class="app-container fade-in-up stagger-1">
     <!-- Sol Liste -->
     <div class="app-list-pane">
-        <div class="app-list-header">
+        <div class="app-list-header d-flex flex-column gap-3">
             <h5 class="mb-0 fs-6 fw-bold">Başvuru Listesi</h5>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-primary app-filter-btn active" data-filter="all">Tümü</button>
+                <button class="btn btn-sm btn-outline-secondary app-filter-btn" data-filter="management">Yönetim</button>
+                <button class="btn btn-sm btn-outline-secondary app-filter-btn" data-filter="representative">Temsilci</button>
+            </div>
         </div>
         <div class="app-list-content" id="appList">
             <?php if(empty($applications)): ?>
@@ -242,7 +247,9 @@
                 </div>
             <?php else: ?>
                 <?php foreach($applications as $app): 
-                    $typeLabel = $app['type'] === 'management' ? 'Yönetim Kurulu' : 'Temsilcilik';
+                    $isManagement = $app['type'] === 'management';
+                    $typeLabel = $isManagement ? 'Yönetim Kurulu' : 'Temsilcilik';
+                    $filterType = $isManagement ? 'management' : 'representative';
                     $badgeClass = 'badge-' . $app['status'];
                     $statusLabel = match($app['status']) {
                         'pending' => 'Bekliyor',
@@ -252,7 +259,7 @@
                         default => 'Bilinmiyor'
                     };
                 ?>
-                    <div class="app-card" onclick='showDetails(<?= json_encode($app, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                    <div class="app-card" data-app-type="<?= $filterType ?>" onclick='showDetails(<?= json_encode($app, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                         <div class="app-card-header">
                             <span class="app-sender"><?= htmlspecialchars($app['full_name']) ?></span>
                             <span class="app-date"><?= date('d.m.Y H:i', strtotime($app['created_at'])) ?></span>
@@ -349,6 +356,42 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const filterBtns = document.querySelectorAll('.app-filter-btn');
+    const cards = document.querySelectorAll('.app-card');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Reset buttons
+            filterBtns.forEach(b => {
+                b.classList.remove('btn-primary', 'active');
+                b.classList.add('btn-outline-secondary');
+            });
+            e.target.classList.remove('btn-outline-secondary');
+            e.target.classList.add('btn-primary', 'active');
+            
+            const filter = e.target.getAttribute('data-filter');
+            
+            // Filter cards
+            cards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-app-type') === filter) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // If active card is hidden, reset details pane
+            const activeCard = document.querySelector('.app-card.active');
+            if (activeCard && activeCard.style.display === 'none') {
+                document.getElementById('emptyState').style.display = 'flex';
+                document.getElementById('detailContent').style.display = 'none';
+                activeCard.classList.remove('active');
+            }
+        });
+    });
+});
+
 function showDetails(app) {
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('detailContent').style.display = 'flex';
