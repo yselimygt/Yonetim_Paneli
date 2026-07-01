@@ -44,7 +44,7 @@ define('ALLOWED_MODULE_TYPES', [
     'members', 'finance', 'dues', 'sponsor', 'event', 'partner',
     'bootcamp', 'certificate', 'inventory', 'links', 'qr', 'shortener',
     'agile', 'passwords', 'ideahub', 'bylaws', 'audit', 'trophy',
-    'wiki', 'meeting', 'budget', 'mentorship', 'social', 'alumni', 'inbox', 'applications'
+    'wiki', 'meeting', 'budget', 'mentorship', 'social', 'alumni', 'inbox', 'applications', 'media'
 ]);
 
 // Web sitesi form türleri (form yönlendirme için)
