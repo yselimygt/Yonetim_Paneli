@@ -5,12 +5,36 @@ class PublicApiController extends Controller
     {
         $pdo = Database::getInstance();
 
-        // Get all events, sort by date (upcoming first)
-        $stmt = $pdo->query("
-            SELECT * FROM site_events
-            ORDER BY event_date ASC
-        ");
+        // Get all site events
+        $stmt = $pdo->query("SELECT * FROM site_events ORDER BY event_date ASC");
         $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Get all bootcamps and merge them as events
+        $stmtBootcamps = $pdo->query("SELECT * FROM app_bootcamps WHERE status = 1 ORDER BY start_date ASC");
+        $bootcamps = $stmtBootcamps->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($bootcamps as $bc) {
+            $events[] = [
+                'id' => 'bc_' . $bc['id'],
+                'title' => $bc['title'],
+                'description' => $bc['description'],
+                'event_date' => $bc['start_date'],
+                'location' => $bc['location'],
+                'category' => $bc['type'] ?? 'Bootcamp',
+                'tag_color' => 'blue',
+                'status' => $bc['is_completed'] ? 'Tamamlandı' : 'Yakında',
+                'image_url' => $bc['image_path'],
+                'target_date' => $bc['start_date'],
+                'registration_link' => $bc['link'],
+                'speakers' => null,
+                'agenda' => null
+            ];
+        }
+
+        // Sort combined events by date
+        usort($events, function($a, $b) {
+            return strtotime($a['event_date']) - strtotime($b['event_date']);
+        });
 
         // Format for the frontend
         $formattedEvents = [];

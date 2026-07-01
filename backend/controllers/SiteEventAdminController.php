@@ -11,11 +11,29 @@ class SiteEventAdminController extends Controller
         $this->siteEvent = new SiteEvent();
     }
 
-    // GET /superadmin/site-events
     public function index(): void
     {
         Auth::requireSuperAdmin();
         $events = $this->siteEvent->getAll();
+        
+        // Add flag to normal events
+        foreach ($events as &$e) {
+            $e['is_bootcamp'] = 0;
+            $e['is_site_event'] = 1;
+        }
+        
+        // Fetch bootcamps
+        $pdo = Database::getInstance();
+        $stmt = $pdo->query("SELECT id, title, description, start_date as event_date, location, type as category, 'blue' as tag_color, (CASE WHEN is_completed = 1 THEN 'past' ELSE 'upcoming' END) as status, image_path as image_url, 1 as is_bootcamp, 0 as is_site_event FROM app_bootcamps WHERE status = 1");
+        $bootcamps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $events = array_merge($events, $bootcamps);
+        
+        // Sort by event date DESC
+        usort($events, function($a, $b) {
+            return strtotime($b['event_date']) - strtotime($a['event_date']);
+        });
+        
         $this->view('superadmin/site_events/index', compact('events'), 'superadmin');
     }
 

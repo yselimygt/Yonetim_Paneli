@@ -15,6 +15,46 @@ class EventModule extends BaseModule
         $stmt->execute();
         $events = $stmt->fetchAll();
 
+        // Site Etkinliklerini (site_events) de dahil et
+        $stmtSite = $this->pdo->query("SELECT * FROM site_events");
+        $siteEvents = $stmtSite->fetchAll();
+
+        foreach ($siteEvents as $se) {
+            $datePart = null;
+            $timePart = null;
+            if (!empty($se['event_date'])) {
+                $time = strtotime($se['event_date']);
+                $datePart = date('Y-m-d', $time);
+                $timePart = date('H:i:s', $time);
+            }
+            $loc = strtolower($se['location'] ?? '');
+            $type = (strpos($loc, 'online') !== false || strpos($loc, 'zoom') !== false) ? 'online' : 'physical';
+            
+            $events[] = [
+                'id' => 'se_' . $se['id'],
+                'app_id' => 0,
+                'department_id' => 0,
+                'type' => $type,
+                'title' => $se['title'],
+                'event_date' => $datePart,
+                'event_time' => $timePart,
+                'location_or_platform' => $se['location'],
+                'description' => $se['description'],
+                'link' => $se['registration_link'],
+                'image_path' => $se['image_url'],
+                'category' => $se['category'] ?? 'Genel',
+                'status' => 1,
+                'created_by' => 0,
+                'creator_name' => 'Sistem (Site Etkinliği)',
+                'is_global' => 1,
+                'is_site_event' => 1
+            ];
+        }
+
+        usort($events, function($a, $b) {
+            return strtotime($a['event_date'] ?? '0') - strtotime($b['event_date'] ?? '0');
+        });
+
         $physicalUpcoming = [];
         $physicalPast = [];
         $onlineUpcoming = [];

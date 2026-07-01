@@ -18,7 +18,8 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
     $statusText = $event['status'] ? 'Aktif' : 'Pasif';
     $opacity = $event['status'] ? '1' : '0.65';
     
-    $canModify = $canEdit;
+    $canModify = $canEdit && empty($event['is_site_event']);
+    $isSiteEvent = !empty($event['is_site_event']);
     
     $csrf = $_SESSION['csrf_token'] ?? '';
     
@@ -37,7 +38,11 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
                 <h3 class="evt-title"><?= $title ?></h3>
                 <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
                     <span class="evt-badge <?= $statusClass ?>"><?= $statusText ?></span>
-                    <span class="evt-badge" style="background:rgba(139,92,246,0.15); color:#c4b5fd; border:1px solid rgba(139,92,246,0.3);">Ortak</span>
+                    <?php if($isSiteEvent): ?>
+                        <span class="evt-badge" style="background:rgba(236,72,153,0.15); color:#f472b6; border:1px solid rgba(236,72,153,0.3);">Süper Admin (Site)</span>
+                    <?php else: ?>
+                        <span class="evt-badge" style="background:rgba(139,92,246,0.15); color:#c4b5fd; border:1px solid rgba(139,92,246,0.3);">Ortak</span>
+                    <?php endif; ?>
                 </div>
             </div>
             

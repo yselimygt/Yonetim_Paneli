@@ -65,12 +65,16 @@
                     </td>
                     <td>
                         <div class="actions">
-                            <button type="button" class="btn btn-outline btn-sm" onclick='editEvent(<?= json_encode($e, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
-                            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-events/<?= $e['id'] ?>/delete"
-                                  onsubmit="return confirm('<?= View::escape($e['title']) ?> etkinliği silinsin mi?')">
-                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                            </form>
+                            <?php if(!empty($e['is_bootcamp'])): ?>
+                                <a href="<?= BASE_URL ?>/app/bootcamp" class="btn btn-outline btn-sm" style="color:var(--text); text-decoration:none;">Modüle Git</a>
+                            <?php else: ?>
+                                <button type="button" class="btn btn-outline btn-sm" onclick='editEvent(<?= json_encode($e, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
+                                <form method="POST" action="<?= BASE_URL ?>/superadmin/site-events/<?= $e['id'] ?>/delete"
+                                      onsubmit="return confirm('<?= View::escape($e['title']) ?> etkinliği silinsin mi?')">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>

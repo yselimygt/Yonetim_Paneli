@@ -396,7 +396,7 @@ CREATE TABLE IF NOT EXISTS `app_agile_tasks` (
     `sprint_id` INT,
     `title` VARCHAR(255),
     `description` TEXT,
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `assignee_id` INT,
     `priority` VARCHAR(255),
     `created_by` VARCHAR(255),
@@ -448,7 +448,7 @@ CREATE TABLE IF NOT EXISTS `app_bootcamps` (
     `link` VARCHAR(255),
     `category` VARCHAR(255),
     `image_path` VARCHAR(255),
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `created_by` VARCHAR(255),
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -498,7 +498,7 @@ CREATE TABLE IF NOT EXISTS `app_certificate_templates` (
     `fields_json` VARCHAR(255),
     `linked_form_app_id` INT,
     `form_field_map` VARCHAR(255),
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `created_by` VARCHAR(255),
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -515,7 +515,7 @@ CREATE TABLE IF NOT EXISTS `app_certificates` (
     `issue_date` DATE,
     `expiry_date` DATE,
     `notes` VARCHAR(255),
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `created_by` VARCHAR(255),
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS `app_ideas` (
     `title` VARCHAR(255),
     `description` TEXT,
     `category` VARCHAR(255),
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -557,7 +557,7 @@ CREATE TABLE IF NOT EXISTS `app_inventory` (
     `price` VARCHAR(255),
     `location` VARCHAR(255),
     `assigned_to` VARCHAR(255),
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `purchase_date` DATE,
     `notes` VARCHAR(255),
     `image_url` VARCHAR(255),
@@ -613,7 +613,7 @@ CREATE TABLE IF NOT EXISTS `app_partners` (
     `contact_person` VARCHAR(255),
     `contact_phone` VARCHAR(255),
     `image_path` VARCHAR(255),
-    `status` TINYINT(1) DEFAULT 1,
+    `status` TINYINT(1) DEFAULT 1,`n    `is_completed` TINYINT(1) DEFAULT 0,
     `created_by` VARCHAR(255),
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
