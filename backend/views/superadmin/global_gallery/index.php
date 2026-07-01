@@ -8,70 +8,108 @@
 </div>
 
 <style>
-.gallery-layout { display: flex; gap: 20px; align-items: flex-start; }
-.folder-list { list-style: none; padding: 0; margin: 0; }
+.gallery-layout { display: flex; gap: 24px; align-items: flex-start; }
+.folder-list { list-style: none; padding: 0; margin: 0; display:flex; flex-direction:column; gap:6px; }
 .folder-item { 
     display: flex; justify-content: space-between; align-items: center; 
-    padding: 10px 15px; border-bottom: 1px solid var(--border); 
-    transition: background 0.2s;
+    padding: 12px 16px; 
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.3s ease;
     text-decoration: none; color: var(--text);
+    border: 1px solid transparent;
 }
-.folder-item:hover, .folder-item.active { background: var(--input-bg); }
-.folder-item.active { font-weight: bold; color: var(--primary); border-left: 3px solid var(--primary); }
+.folder-item:hover { background: var(--input-bg); border-color: var(--border); transform: translateX(4px); }
+.folder-item.active { 
+    background: var(--primary); color: white; 
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb, 0,0,0), 0.2);
+}
+.folder-item.active .fas { color: white !important; }
+.folder-delete-btn {
+    background: rgba(255,0,0,0.1); color: var(--danger);
+    border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer;
+    opacity: 0; transition: all 0.2s;
+}
+.folder-item:hover .folder-delete-btn { opacity: 1; }
+.folder-item.active .folder-delete-btn { background: rgba(255,255,255,0.2); color: white; }
+
 .dropzone {
     border: 2px dashed var(--border);
-    border-radius: 12px;
-    padding: 40px;
+    border-radius: 16px;
+    padding: 50px 20px;
     text-align: center;
     background: var(--bg);
     cursor: pointer;
-    transition: all 0.3s;
-    margin-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 24px;
+}
+.dropzone:hover {
+    border-color: var(--primary);
+    background: var(--input-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 .dropzone.dragover {
     border-color: var(--primary);
-    background: var(--input-bg);
+    background: rgba(var(--primary-rgb, 0,0,0), 0.05);
+    transform: scale(1.02);
 }
+.dropzone i { transition: transform 0.3s; }
+.dropzone:hover i { transform: scale(1.1) translateY(-5px); }
+
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
 }
 .image-card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     background: var(--bg);
     position: relative;
-    group: hover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border);
 }
-.image-card img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    display: block;
+.image-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
-.image-card-info {
-    padding: 8px;
-    font-size: 11px;
-    color: var(--muted);
-    text-align: center;
-    word-break: break-all;
+.image-wrapper { position: relative; width: 100%; height: 140px; overflow: hidden; }
+.image-wrapper img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
 }
+.image-card:hover .image-wrapper img { transform: scale(1.1); }
+.image-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+    backdrop-filter: blur(2px);
+}
+.image-card:hover .image-overlay { opacity: 1; }
 .delete-file-btn {
-    position: absolute;
-    top: 5px; right: 5px;
-    background: rgba(255,0,0,0.8);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 10px;
+    background: #ef4444; color: white;
+    border: none; border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s;
+    transform: scale(0.5); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
-.image-card:hover .delete-file-btn { opacity: 1; }
+.image-card:hover .delete-file-btn { transform: scale(1); }
+.delete-file-btn:hover { background: #dc2626; transform: scale(1.1) !important; }
+
+.image-card-info {
+    padding: 12px;
+    font-size: 12px;
+    color: var(--text);
+    text-align: center;
+    font-weight: 500;
+    word-break: break-all;
+    border-top: 1px solid var(--border);
+}
 </style>
 
 <div class="gallery-layout">
@@ -93,7 +131,7 @@
                         <form method="POST" action="<?= BASE_URL ?>/superadmin/global-gallery/folder/delete" style="display:inline;" onsubmit="return confirm('Bu klasörü ve içindeki tüm görselleri kalıcı olarak silmek istediğinize emin misiniz? (Site galerisinden de silinecektir.)');">
                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="folder_name" value="<?= View::escape($folder) ?>">
-                            <button type="submit" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="folder-delete-btn" title="Klasörü Sil"><i class="fas fa-trash"></i></button>
                         </form>
                     <?php endif; ?>
                 </a>
@@ -138,18 +176,22 @@
                 <?php else: ?>
                     <?php foreach($files as $file): ?>
                     <div class="image-card">
-                        <a href="<?= $file['url'] ?>" target="_blank">
+                        <div class="image-wrapper">
                             <img src="<?= $file['url'] ?>" alt="<?= View::escape($file['name']) ?>" loading="lazy">
-                        </a>
-                        <div class="image-card-info" title="<?= View::escape($file['name']) ?>">
-                            <?= View::escape(strlen($file['name']) > 15 ? substr($file['name'],0,15).'...' : $file['name']) ?>
+                            <div class="image-overlay">
+                                <form method="POST" action="<?= BASE_URL ?>/superadmin/global-gallery/file/delete" onsubmit="return confirm('Bu görseli silmek istediğinize emin misiniz?');">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                                    <input type="hidden" name="folder_name" value="<?= View::escape($selectedFolder) ?>">
+                                    <input type="hidden" name="file_name" value="<?= View::escape($file['name']) ?>">
+                                    <button type="submit" class="delete-file-btn" title="Sil"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
                         </div>
-                        <form method="POST" action="<?= BASE_URL ?>/superadmin/global-gallery/file/delete" onsubmit="return confirm('Bu görseli silmek istediğinize emin misiniz?');">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                            <input type="hidden" name="folder_name" value="<?= View::escape($selectedFolder) ?>">
-                            <input type="hidden" name="file_name" value="<?= View::escape($file['name']) ?>">
-                            <button type="submit" class="delete-file-btn"><i class="fas fa-times"></i></button>
-                        </form>
+                        <div class="image-card-info" title="<?= View::escape($file['name']) ?>">
+                            <a href="<?= $file['url'] ?>" target="_blank" style="color:inherit; text-decoration:none;">
+                                <?= View::escape(strlen($file['name']) > 15 ? substr($file['name'],0,15).'...' : $file['name']) ?>
+                            </a>
+                        </div>
                     </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -230,6 +272,7 @@ function handleFiles(files) {
     uploadStatus.innerText = 'Yükleniyor... (0/' + files.length + ')';
     
     let formData = new FormData();
+    formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
     formData.append('folder_name', '<?= addslashes($selectedFolder) ?>');
     
     for (let i = 0; i < files.length; i++) {

@@ -76,6 +76,8 @@ class MediaModule extends BaseModule
                     $_SESSION['error_msg'] = 'Bu klasör zaten var.';
                 }
             }
+            header("Location: " . BASE_URL . "/panel/" . $this->department['slug'] . "/apps/media");
+            exit;
         } 
         elseif ($action === 'upload_files') {
             // Dropzone AJAX upload
