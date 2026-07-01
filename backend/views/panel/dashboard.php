@@ -15,26 +15,46 @@
     </p>
 </div>
 
-<!-- Stat kartları -->
-<div class="stats-grid fade-in-up stagger-2">
-    <div class="stat-card">
+<!-- Stat kartları ve Departman Üyeleri -->
+<div class="fade-in-up stagger-2" style="display:flex; flex-wrap:wrap; gap:12px;">
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px;">
         <div class="value"><?= $memberCount ?></div>
         <div class="label">Üye</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px;">
         <div class="value"><?= $appCount ?></div>
         <div class="label">Uygulama</div>
     </div>
     <?php if ($currentDept['is_management']): ?>
-    <div class="stat-card" style="border-color:rgba(245,158,11,.2);">
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px; border-color:rgba(245,158,11,.2);">
         <div class="value" style="color:var(--warning)"><?= $totalUsers ?></div>
         <div class="label">Toplam Üye</div>
     </div>
-    <div class="stat-card" style="border-color:rgba(245,158,11,.2);">
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px; border-color:rgba(245,158,11,.2);">
         <div class="value" style="color:var(--warning)"><?= $totalDepts ?></div>
         <div class="label">Departman</div>
     </div>
     <?php endif; ?>
+    
+    <!-- Departman Üyeleri -->
+    <div class="stat-card" style="flex-grow: 1; min-width: 300px; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Departman Üyeleri
+        </div>
+        <div style="display:flex; align-items:center; padding-left:12px;">
+            <?php foreach (array_slice($members, 0, 10) as $idx => $mem): ?>
+                <div title="<?= View::escape($mem['user_name']) ?>" style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; border:2px solid var(--card); margin-left: <?= $idx === 0 ? '0' : '-12px' ?>; cursor:default; z-index: <?= 10 - $idx ?>; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <?= mb_strtoupper(mb_substr($mem['user_name'], 0, 1)) ?>
+                </div>
+            <?php endforeach; ?>
+            <?php if(count($members) > 10): ?>
+                <div style="width:36px; height:36px; border-radius:50%; background:var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; border:2px solid var(--card); margin-left:-12px; z-index: 0;">
+                    +<?= count($members) - 10 ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 <!-- İki Kolonlu Üst Kısım: Duyurular (Sol) & Takvim (Sağ) -->
 <div class="fade-in-up stagger-3" style="display:flex; flex-wrap:wrap; gap:24px; margin-bottom: 28px; margin-top: 28px; align-items:stretch;">
