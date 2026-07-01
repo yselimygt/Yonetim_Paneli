@@ -186,6 +186,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
                                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                 </button>
                                 <form action="<?= $appUrl ?>" method="POST" style="margin:0;" onsubmit="return confirm('Bu makaleyi silmek istediğinize emin misiniz?');">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                     <input type="hidden" name="action" value="delete_article">
                                     <input type="hidden" name="article_id" value="<?= $activeArticle['id'] ?>">
                                     <button type="submit" class="btn btn-outline" style="padding: 8px 12px; border-radius: 8px; color: var(--danger); border-color: transparent;">
@@ -212,6 +213,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
                     </div>
                     <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
                         <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="edit_article">
                             <input type="hidden" name="article_id" value="<?= $activeArticle['id'] ?>">
                             
@@ -290,6 +292,7 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_article">
                 
                 <div class="form-row" style="display: flex; gap: 16px; margin-bottom: 16px;">

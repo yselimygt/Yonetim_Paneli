@@ -279,6 +279,7 @@ if(!function_exists('getInitials')) {
                             <a href="<?= View::escape($job['apply_url']) ?>" target="_blank" class="btn btn-primary">Başvur</a>
                         <?php endif; ?>
                         <form method="POST" action="" onsubmit="return confirm('İlanı silmek istiyor musunuz?');" style="margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="delete_job">
                             <input type="hidden" name="item_id" value="<?= $job['id'] ?>">
                             <button type="submit" class="btn btn-outline" style="color:var(--danger); border-color:transparent;" title="Sil">

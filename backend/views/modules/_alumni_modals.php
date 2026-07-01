@@ -2,6 +2,7 @@
 <div class="modal-overlay" id="alumniModal">
     <div class="modal-content">
         <form method="POST" action="" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <input type="hidden" name="action" id="alumniAction" value="create_alumni">
             <input type="hidden" name="id" id="alumniId" value="">
             
@@ -87,57 +88,77 @@
 
 <!-- View Profile Modal -->
 <div class="modal-overlay" id="viewModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="vf_name">Mezun Profili</h3>
-            <div style="display:flex; gap:8px;">
-                <button type="button" class="modal-close" onclick="closeModal('viewModal')">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    <div class="modal-content" style="max-width: 500px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 24px 48px rgba(0,0,0,0.2);">
+        <div class="modal-header" style="border-bottom: none; padding: 24px 24px 0 24px; position:relative; background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
+                <div></div>
+                <button type="button" class="modal-close" onclick="closeModal('viewModal')" style="background:var(--card); border:1px solid var(--border); border-radius:50%; padding:6px; box-shadow:0 4px 12px rgba(0,0,0,0.05); z-index:10;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
         </div>
-        <div class="modal-body" style="text-align: center;">
-            <div id="vf_avatar_container" style="display:inline-block; margin-bottom:16px; position:relative;"></div>
-            <h2 id="vf_full_name" style="margin:0 0 8px 0; font-size:22px;"></h2>
-            <p id="vf_title_company" style="margin:0 0 16px 0; color:var(--muted); font-size:15px;"></p>
+        <div class="modal-body" style="padding: 0 24px 24px 24px; text-align: center;">
+            <div id="vf_avatar_container" style="display:inline-block; margin-top:-30px; margin-bottom:16px; position:relative;"></div>
             
-            <div id="vf_badges" class="alumni-meta" style="margin-bottom:24px;"></div>
+            <h2 id="vf_full_name" style="margin:0 0 4px 0; font-size:24px; font-weight:700; color:var(--text);"></h2>
+            <p id="vf_title_company" style="margin:0 0 16px 0; color:var(--muted); font-size:15px; font-weight:500;"></p>
+            
+            <div id="vf_badges" class="alumni-meta" style="margin-bottom:24px; justify-content:center; display:flex; gap:8px; flex-wrap:wrap;"></div>
 
-            <div style="text-align: left; background: var(--surface); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                <h4 style="margin:0 0 12px 0; font-size:14px; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px;">Eğitim</h4>
-                <p style="margin:0;" id="vf_education"></p>
-            </div>
-
-            <div style="text-align: left; background: var(--surface); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                <h4 style="margin:0 0 12px 0; font-size:14px; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px;">İletişim & Biyografi</h4>
-                <div style="display:flex; flex-direction:column; gap:8px;">
-                    <div id="vf_email_wrap"><strong style="display:inline-block; width:80px;">E-posta:</strong> <a id="vf_email_link" href=""></a></div>
-                    <div id="vf_phone_wrap"><strong style="display:inline-block; width:80px;">Telefon:</strong> <span id="vf_phone_text"></span></div>
-                    <div id="vf_bio_wrap" style="margin-top:12px; line-height:1.5;"></div>
-                </div>
-            </div>
-
-            <div style="display:flex; justify-content:center; gap:12px;">
-                <a href="#" id="vf_linkedin_btn" target="_blank" class="btn btn-outline" style="display:none; align-items:center; gap:8px;">
+            <div style="display:flex; justify-content:center; gap:12px; margin-bottom: 24px;">
+                <button id="vf_edit_btn" class="btn btn-primary" onclick="editCurrentAlumni()" style="border-radius: 50px; padding: 8px 24px; font-weight:600; box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);">Düzenle</button>
+                <a href="#" id="vf_linkedin_btn" target="_blank" class="btn btn-outline" style="display:none; align-items:center; gap:8px; border-radius: 50px; padding: 8px 20px; font-weight:600; background:#0077b5; color:#fff; border-color:#0077b5;">
                     <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                     LinkedIn
                 </a>
-                <button id="vf_edit_btn" class="btn btn-primary" onclick="editCurrentAlumni()">Düzenle</button>
             </div>
-            
-            <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                
+
+            <div style="text-align: left; background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text); font-weight:600;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--accent);"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                    Eğitim Bilgileri
+                </div>
+                <p style="margin:0; font-size:14px; color:var(--text); line-height:1.5;" id="vf_education"></p>
+            </div>
+
+            <div style="text-align: left; background: var(--surface); padding: 20px; border-radius: 16px; margin-bottom: 24px; border: 1px solid var(--border);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text); font-weight:600;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--accent);"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    İletişim & Biyografi
+                </div>
+                <div style="display:flex; flex-direction:column; gap:12px; font-size:14px;">
+                    <div id="vf_email_wrap" style="display:flex; gap:12px; align-items:center;">
+                        <span style="color:var(--muted); width:60px;">E-posta:</span> 
+                        <a id="vf_email_link" href="" style="color:var(--text); font-weight:500; text-decoration:none;"></a>
+                    </div>
+                    <div id="vf_phone_wrap" style="display:flex; gap:12px; align-items:center;">
+                        <span style="color:var(--muted); width:60px;">Telefon:</span> 
+                        <span id="vf_phone_text" style="color:var(--text); font-weight:500;"></span>
+                    </div>
+                    <div id="vf_bio_wrap" style="margin-top:8px; line-height:1.6; color:var(--text); padding-top:12px; border-top:1px dashed var(--border);"></div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:16px;">
                 <form method="POST" action="" style="margin:0;" id="form_spotlight">
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                     <input type="hidden" name="action" value="toggle_spotlight">
                     <input type="hidden" name="item_id" id="vf_spotlight_id" value="">
                     <input type="hidden" name="spotlight_val" id="vf_spotlight_val" value="1">
-                    <button type="submit" id="vf_spotlight_btn" class="btn btn-outline" style="color:#f59e0b; border-color:transparent;">⭐ Başarı Hikayesi Yap</button>
+                    <button type="submit" id="vf_spotlight_btn" class="btn" style="background:rgba(245, 158, 11, 0.1); color:#f59e0b; border:none; padding:8px 16px; border-radius:50px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px;">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span id="vf_spotlight_text">Başarı Hikayesi Yap</span>
+                    </button>
                 </form>
 
                 <form method="POST" action="" onsubmit="return confirm('Bu mezun kaydını silmek istediğinize emin misiniz?');" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                     <input type="hidden" name="action" value="delete_alumni">
                     <input type="hidden" name="item_id" id="vf_delete_id" value="">
-                    <button type="submit" class="btn btn-outline" style="color:var(--danger); border-color:transparent;">Profili Sil</button>
+                    <button type="submit" class="btn" style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:none; padding:8px 16px; border-radius:50px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        Profili Sil
+                    </button>
                 </form>
             </div>
         </div>
@@ -148,6 +169,7 @@
 <div class="modal-overlay" id="messageModal">
     <div class="modal-content">
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <input type="hidden" name="action" value="send_message">
             <input type="hidden" name="receiver_id" id="msg_receiver_id" value="">
             
@@ -185,6 +207,7 @@
 <div class="modal-overlay" id="jobModal">
     <div class="modal-content">
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <input type="hidden" name="action" value="create_job">
             
             <div class="modal-header">
@@ -294,16 +317,15 @@ function editAlumni(alum) {
 
 function viewAlumni(alum) {
     currentViewAlum = alum;
-    document.getElementById('vf_name').innerText = alum.full_name;
     document.getElementById('vf_full_name').innerText = alum.full_name;
     document.getElementById('vf_delete_id').value = alum.id;
     document.getElementById('vf_spotlight_id').value = alum.id;
     
     if (alum.is_spotlight == 1) {
-        document.getElementById('vf_spotlight_btn').innerHTML = '❌ Başarı Hikayelerinden Çıkar';
+        document.getElementById('vf_spotlight_text').innerText = 'Başarı Hikayelerinden Çıkar';
         document.getElementById('vf_spotlight_val').value = '0';
     } else {
-        document.getElementById('vf_spotlight_btn').innerHTML = '⭐ Başarı Hikayesi Yap';
+        document.getElementById('vf_spotlight_text').innerText = 'Başarı Hikayesi Yap';
         document.getElementById('vf_spotlight_val').value = '1';
     }
 
@@ -317,27 +339,27 @@ function viewAlumni(alum) {
 
     let avatarHtml = '';
     if (alum.avatar_path) {
-        avatarHtml = `<img src="<?= BASE_URL ?>/public/${alum.avatar_path}" alt="" style="width:100px; height:100px; border-radius:50%; object-fit:cover; box-shadow:0 8px 24px rgba(0,0,0,0.15);">`;
+        avatarHtml = `<img src="<?= BASE_URL ?>/public/${alum.avatar_path}" alt="" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border: 4px solid var(--card); box-shadow: 0 8px 24px rgba(0,0,0,0.15);">`;
     } else {
         let initials = alum.full_name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-        avatarHtml = `<div style="width:100px; height:100px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:bold; box-shadow:0 8px 24px rgba(0,0,0,0.15);">${initials}</div>`;
+        avatarHtml = `<div style="width:100px; height:100px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:bold; border: 4px solid var(--card); box-shadow: 0 8px 24px rgba(0,0,0,0.15);">${initials}</div>`;
     }
     document.getElementById('vf_avatar_container').innerHTML = avatarHtml;
 
     let badgesHtml = '';
-    if (alum.is_mentor == 1) { badgesHtml += `<span class="alumni-badge badge-mentor"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg> Mentör</span>`; }
-    if (alum.graduation_year) { badgesHtml += `<span class="alumni-badge"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg> ${alum.graduation_year}</span>`; }
-    if (alum.location) { badgesHtml += `<span class="alumni-badge"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${alum.location}</span>`; }
+    if (alum.is_mentor == 1) { badgesHtml += `<span class="alumni-badge badge-mentor" style="background:rgba(16, 185, 129, 0.1); color:#10b981; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg> Mentör</span>`; }
+    if (alum.graduation_year) { badgesHtml += `<span class="alumni-badge" style="background:var(--surface); color:var(--text); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg> ${alum.graduation_year}</span>`; }
+    if (alum.location) { badgesHtml += `<span class="alumni-badge" style="background:var(--surface); color:var(--text); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${alum.location}</span>`; }
     document.getElementById('vf_badges').innerHTML = badgesHtml;
 
     let edu = '';
     if(alum.university) edu += `<strong>${alum.university}</strong>`;
     if(alum.major) edu += ` <br><span style="color:var(--muted);">${alum.major}</span>`;
-    if(!edu) edu = '<i>Belirtilmedi</i>';
+    if(!edu) edu = '<span style="color:var(--muted); font-style:italic;">Belirtilmedi</span>';
     document.getElementById('vf_education').innerHTML = edu;
 
-    if(alum.email) { document.getElementById('vf_email_wrap').style.display = 'block'; document.getElementById('vf_email_link').href = 'mailto:'+alum.email; document.getElementById('vf_email_link').innerText = alum.email; } else { document.getElementById('vf_email_wrap').style.display = 'none'; }
-    if(alum.phone) { document.getElementById('vf_phone_wrap').style.display = 'block'; document.getElementById('vf_phone_text').innerText = alum.phone; } else { document.getElementById('vf_phone_wrap').style.display = 'none'; }
+    if(alum.email) { document.getElementById('vf_email_wrap').style.display = 'flex'; document.getElementById('vf_email_link').href = 'mailto:'+alum.email; document.getElementById('vf_email_link').innerText = alum.email; } else { document.getElementById('vf_email_wrap').style.display = 'none'; }
+    if(alum.phone) { document.getElementById('vf_phone_wrap').style.display = 'flex'; document.getElementById('vf_phone_text').innerText = alum.phone; } else { document.getElementById('vf_phone_wrap').style.display = 'none'; }
     if(alum.bio) { document.getElementById('vf_bio_wrap').style.display = 'block'; document.getElementById('vf_bio_wrap').innerText = alum.bio; } else { document.getElementById('vf_bio_wrap').style.display = 'none'; }
 
     let lnBtn = document.getElementById('vf_linkedin_btn');

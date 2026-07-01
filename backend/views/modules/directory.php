@@ -568,6 +568,7 @@ textarea.dir-form-control {
                         <svg style="width:16px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                     </button>
                     <form method="POST" style="margin:0;" onsubmit="return confirm('Bu kişiyi silmek istediğinize emin misiniz?');">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="contact_id" value="<?= $c['id'] ?>">
                         <button type="submit" class="dir-action-icon" style="color:#ef4444;" title="Sil">
@@ -655,6 +656,7 @@ textarea.dir-form-control {
         </div>
         
         <form method="POST" id="dirForm">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <div class="dir-modal-body">
                 <input type="hidden" name="action" id="dirAction" value="create">
                 <input type="hidden" name="contact_id" id="dirContactId" value="">

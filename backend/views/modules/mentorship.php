@@ -203,6 +203,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
             <?php if ($canManage): ?>
                 <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border); padding-top: 24px;">
                     <form action="<?= $appUrl ?>" method="POST" onsubmit="return confirm('Bu eşleştirmeyi tamamlandı olarak işaretlemek istediğinize emin misiniz?');">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="action" value="complete_pair">
                         <input type="hidden" name="pair_id" value="<?= $userPair['id'] ?>">
                         <button type="submit" class="btn btn-outline" style="border-color: #10b981; color: #10b981;">✅ Eşleştirmeyi Başarıyla Tamamla</button>
@@ -229,6 +230,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
         </div>
         <div class="card-body" style="padding: 24px;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_pair">
                 
                 <div class="form-group" style="margin-bottom: 20px;">
@@ -271,6 +273,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
         </div>
         <div class="card-body" style="padding: 24px;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="add_note">
                 <input type="hidden" name="pair_id" value="<?= $userPair['id'] ?>">
                 
