@@ -12,6 +12,11 @@ class FormModule extends BaseModule
             $this->exportCsv($fields);
         }
 
+        // Handle Excel Export
+        if (isset($_GET['action']) && $_GET['action'] === 'export_excel' && $this->isDirectorOrAdmin()) {
+            $this->exportExcel($fields);
+        }
+
         // Fetch entries
         if ($this->isDirectorOrAdmin()) {
             $stmt = $this->pdo->prepare("
@@ -258,6 +263,57 @@ class FormModule extends BaseModule
         }
 
         return false;
+    }
+
+    private function exportExcel(array $fields): void
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT fe.*, u.name AS user_name, u.email AS user_email 
+            FROM form_entries fe 
+            LEFT JOIN users u ON u.id = fe.user_id 
+            WHERE fe.app_id = ? 
+            ORDER BY fe.created_at DESC
+        ");
+        $stmt->execute([$this->app['id']]);
+        $entries = $stmt->fetchAll();
+
+        header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
+        header("Content-Disposition: attachment; filename=form_export_" . $this->app['slug'] . ".xls");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        echo '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>';
+        echo '<table border="1">';
+        echo '<tr>';
+        echo '<th>Tarih</th>';
+        echo '<th>Gönderen (Ad)</th>';
+        echo '<th>Gönderen (E-posta)</th>';
+        echo '<th>Kayıt Tipi</th>';
+        foreach ($fields as $field) {
+            echo '<th>' . htmlspecialchars($field['label'] ?? $field['name']) . '</th>';
+        }
+        echo '</tr>';
+
+        foreach ($entries as $entry) {
+            $data = json_decode($entry['data'], true);
+            $isGuest = empty($entry['user_id']);
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($entry['created_at']) . '</td>';
+            echo '<td>' . htmlspecialchars($isGuest ? 'Misafir' : $entry['user_name']) . '</td>';
+            echo '<td>' . htmlspecialchars($isGuest ? ($data['_meta']['ip'] ?? 'Bilinmiyor') : $entry['user_email']) . '</td>';
+            echo '<td>' . htmlspecialchars($isGuest ? 'Public' : 'Member') . '</td>';
+            foreach ($fields as $field) {
+                $fname = $field['name'];
+                $val = $data[$fname] ?? '';
+                if (is_array($val)) {
+                    $val = implode(', ', $val);
+                }
+                echo '<td>' . htmlspecialchars((string)$val) . '</td>';
+            }
+            echo '</tr>';
+        }
+        echo '</table></body></html>';
+        exit;
     }
 
     private function exportCsv(array $fields): void

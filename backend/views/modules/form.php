@@ -196,7 +196,10 @@ $templateStr = json_encode($config);
         <div class="card">
             <div class="card-header" style="display: flex; justify-content: space-between;">
                 <span><?= count($entries) ?> Yanıt</span>
-                <a href="?action=export" class="btn btn-outline btn-sm">CSV İndir</a>
+                <div>
+                    <a href="?action=export_excel" class="btn btn-outline btn-sm">Excel İndir</a>
+                    <a href="?action=export" class="btn btn-outline btn-sm">CSV İndir</a>
+                </div>
             </div>
             <div class="card-body" style="overflow-x: auto;">
                 <table class="responses-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
