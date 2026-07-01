@@ -359,3 +359,318 @@ CREATE TABLE IF NOT EXISTS system_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- ============================
+-- APP MODULE TABLES
+-- ============================
+
+CREATE TABLE IF NOT EXISTS `alumni_profiles` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `user_id` INT,
+    `full_name` VARCHAR(255),
+    `email` VARCHAR(255),
+    `phone` VARCHAR(255),
+    `university` VARCHAR(255),
+    `major` VARCHAR(255),
+    `avatar_path` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_agile_sprints` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `name` VARCHAR(255),
+    `start_date` DATE,
+    `end_date` DATE,
+    `is_active` TINYINT(1) DEFAULT 1,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_agile_tasks` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `sprint_id` INT,
+    `title` VARCHAR(255),
+    `description` TEXT,
+    `status` TINYINT(1) DEFAULT 1,
+    `assignee_id` INT,
+    `priority` VARCHAR(255),
+    `created_by` VARCHAR(255),
+    `is_approved` TINYINT(1) DEFAULT 1,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_agile_task_comments` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `task_id` INT,
+    `user_id` INT,
+    `comment` TEXT,
+    `file_path` VARCHAR(255),
+    `file_name` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_audit_reports` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `reporter_id` INT,
+    `subject` VARCHAR(255),
+    `description` TEXT,
+    `category` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_audit_notes` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `report_id` INT,
+    `user_id` INT,
+    `note` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_bootcamps` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `title` VARCHAR(255),
+    `type` VARCHAR(255),
+    `location` VARCHAR(255),
+    `description` TEXT,
+    `start_date` DATE,
+    `end_date` DATE,
+    `instructor` VARCHAR(255),
+    `quota` INT,
+    `link` VARCHAR(255),
+    `category` VARCHAR(255),
+    `image_path` VARCHAR(255),
+    `status` TINYINT(1) DEFAULT 1,
+    `created_by` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_budget_requests` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `requester_id` INT,
+    `title` VARCHAR(255),
+    `amount` INT,
+    `currency` VARCHAR(255),
+    `reason` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_bylaw_documents` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `title` VARCHAR(255),
+    `description` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_bylaw_versions` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `document_id` INT,
+    `version_number` VARCHAR(255),
+    `content` TEXT,
+    `changes_summary` TEXT,
+    `is_published` TINYINT(1) DEFAULT 1,
+    `created_by` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_certificate_templates` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `title` VARCHAR(255),
+    `description` TEXT,
+    `template_type` VARCHAR(255),
+    `background_path` VARCHAR(255),
+    `canvas_width` VARCHAR(255),
+    `canvas_height` VARCHAR(255),
+    `fields_json` VARCHAR(255),
+    `linked_form_app_id` INT,
+    `form_field_map` VARCHAR(255),
+    `status` TINYINT(1) DEFAULT 1,
+    `created_by` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_certificates` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `template_id` INT,
+    `app_id` INT,
+    `department_id` INT,
+    `recipient_name` VARCHAR(255),
+    `recipient_email` VARCHAR(255),
+    `field_values` VARCHAR(255),
+    `certificate_no` VARCHAR(255),
+    `issue_date` DATE,
+    `expiry_date` DATE,
+    `notes` VARCHAR(255),
+    `status` TINYINT(1) DEFAULT 1,
+    `created_by` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_ideas` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `user_id` INT,
+    `title` VARCHAR(255),
+    `description` TEXT,
+    `category` VARCHAR(255),
+    `status` TINYINT(1) DEFAULT 1,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_idea_votes` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `idea_id` INT,
+    `user_id` INT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_idea_comments` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `idea_id` INT,
+    `user_id` INT,
+    `comment` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_inventory` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `item_name` VARCHAR(255),
+    `category` VARCHAR(255),
+    `serial_number` VARCHAR(255),
+    `price` VARCHAR(255),
+    `location` VARCHAR(255),
+    `assigned_to` VARCHAR(255),
+    `status` TINYINT(1) DEFAULT 1,
+    `purchase_date` DATE,
+    `notes` VARCHAR(255),
+    `image_url` VARCHAR(255),
+    `created_by` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_meetings` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `created_by` VARCHAR(255),
+    `title` VARCHAR(255),
+    `meeting_date` DATE,
+    `location` VARCHAR(255),
+    `agenda` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_meeting_approvals` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `meeting_id` INT,
+    `user_id` INT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_mentorship_pairs` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `mentor_id` INT,
+    `mentee_id` INT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_mentorship_notes` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `pair_id` INT,
+    `writer_id` INT,
+    `note` TEXT,
+    `meeting_date` DATE,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_partners` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `venue_name` VARCHAR(255),
+    `address` VARCHAR(255),
+    `map_link` VARCHAR(255),
+    `discount_detail` VARCHAR(255),
+    `contact_person` VARCHAR(255),
+    `contact_phone` VARCHAR(255),
+    `image_path` VARCHAR(255),
+    `status` TINYINT(1) DEFAULT 1,
+    `created_by` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `passwords` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `department_id` INT,
+    `app_id` INT,
+    `title` VARCHAR(255),
+    `url` VARCHAR(255),
+    `username` VARCHAR(255),
+    `encrypted_password` VARCHAR(255),
+    `notes` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_social_posts` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `creator_id` INT,
+    `assigned_to` VARCHAR(255),
+    `platform` VARCHAR(255),
+    `publish_date` DATE,
+    `title` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_social_post_comments` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `post_id` INT,
+    `user_id` INT,
+    `comment` TEXT,
+    `file_path` VARCHAR(255),
+    `file_name` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_trophies` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `title` VARCHAR(255),
+    `description` TEXT,
+    `award_type` VARCHAR(255),
+    `award_date` DATE,
+    `image_path` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `app_wiki_articles` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `app_id` INT,
+    `department_id` INT,
+    `author_id` INT,
+    `title` VARCHAR(255),
+    `content` TEXT,
+    `category` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
