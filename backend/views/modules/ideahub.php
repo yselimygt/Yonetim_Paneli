@@ -104,6 +104,7 @@ function timeAgo($datetime) {
                     <div style="display: flex; gap: 8px;">
                         <!-- Upvote -->
                         <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="upvote">
                             <input type="hidden" name="idea_id" value="<?= $idea['id'] ?>">
                             <button type="submit" class="btn btn-sm <?= $idea['user_voted'] > 0 ? 'btn-primary' : 'btn-outline' ?>" style="gap: 4px; padding: 6px 12px;">
@@ -133,6 +134,7 @@ function timeAgo($datetime) {
                             <?php endif; ?>
                             
                             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;" onsubmit="return confirm('Bu fikri silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="idea_id" value="<?= $idea['id'] ?>">
                                 <button type="submit" class="btn btn-sm btn-outline" title="Sil" style="padding: 6px; border-color: transparent; color: var(--danger);">
@@ -172,6 +174,7 @@ function timeAgo($datetime) {
 
                     <!-- Add Comment Form -->
                     <form action="<?= $appUrl ?>" method="POST" style="display: flex; gap: 8px; margin: 0;">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="action" value="add_comment">
                         <input type="hidden" name="idea_id" value="<?= $idea['id'] ?>">
                         <input type="text" name="comment" class="form-control" placeholder="Yorum yazın..." required style="flex-grow: 1; padding: 8px 12px; font-size: 12px;">
@@ -192,6 +195,7 @@ function timeAgo($datetime) {
         </div>
         <div class="card-body">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create">
                 
                 <div class="form-group">
@@ -232,6 +236,7 @@ function timeAgo($datetime) {
         </div>
         <div class="card-body">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="update_status">
                 <input type="hidden" name="idea_id" id="status_idea_id" value="">
                 

@@ -257,6 +257,7 @@ function getPlatformColor($platform) {
         </div>
         <div class="card-body" style="padding: 24px;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_post">
                 
                 <div class="form-group" style="margin-bottom: 16px;">
@@ -318,6 +319,7 @@ function getPlatformColor($platform) {
             </div>
 
             <form id="edit-form" action="<?= $appUrl ?>" method="POST" enctype="multipart/form-data" style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="update_post">
                 <input type="hidden" name="post_id" id="edit-post-id" value="">
                 
@@ -355,6 +357,7 @@ function getPlatformColor($platform) {
                 <?php if ($canManage): ?>
                     <div style="margin-top: 10px;">
                         <form action="<?= $appUrl ?>" method="POST" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="delete_post">
                             <input type="hidden" name="post_id" id="delete-post-id" value="">
                             <button type="submit" class="btn btn-outline" style="border-color: var(--danger); color: var(--danger); width: 100%;">Tüm İçeriği Sil</button>
@@ -374,6 +377,7 @@ function getPlatformColor($platform) {
 
         <div style="padding: 20px 24px; background: rgba(0,0,0,0.02); border-top: 1px solid var(--border); flex-shrink: 0;">
             <form id="comment-form" onsubmit="submitPostComment(event)" style="margin:0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" id="comment-post-id" name="post_id" value="">
                 <input type="hidden" name="action" value="add_post_comment_ajax">
                 <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: border-color 0.2s;" onfocusin="this.style.borderColor='#ec4899'" onfocusout="this.style.borderColor='var(--border)'">
@@ -468,6 +472,7 @@ function getPlatformColor($platform) {
         formData.append('action', 'change_status');
         formData.append('post_id', postId);
         formData.append('new_status', newStatus);
+        formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
 
         fetch(appUrl, {
             method: 'POST',
@@ -485,6 +490,7 @@ function getPlatformColor($platform) {
         const formData = new FormData();
         formData.append('action', 'get_post_comments_ajax');
         formData.append('post_id', postId);
+        formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
 
         fetch(appUrl, {
             method: 'POST',
@@ -592,25 +598,26 @@ function getPlatformColor($platform) {
         const actionsDiv = document.getElementById('status-actions');
         let html = '';
         
+        const csrfInput = `<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">`;
         if (post.status === 'draft') {
-            html += `<form action="${appUrl}" method="POST" style="margin:0;"><input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="review"><button type="submit" class="btn btn-primary" style="background:#f59e0b; border-color:#f59e0b;">İncelemeye (Onaya) Gönder 🔍</button></form>`;
+            html += `<form action="${appUrl}" method="POST" style="margin:0;">${csrfInput}<input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="review"><button type="submit" class="btn btn-primary" style="background:#f59e0b; border-color:#f59e0b;">İncelemeye (Onaya) Gönder 🔍</button></form>`;
         }
         else if (post.status === 'review') {
-            html += `<form action="${appUrl}" method="POST" style="margin:0;"><input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="draft"><button type="submit" class="btn btn-outline" style="border-color:#94a3b8; color:#94a3b8;">Taslağa Geri Al</button></form>`;
+            html += `<form action="${appUrl}" method="POST" style="margin:0;">${csrfInput}<input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="draft"><button type="submit" class="btn btn-outline" style="border-color:#94a3b8; color:#94a3b8;">Taslağa Geri Al</button></form>`;
             
             if (canManage) {
-                html += `<form action="${appUrl}" method="POST" style="margin:0;"><input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="approved"><button type="submit" class="btn btn-primary" style="background:#3b82f6; border-color:#3b82f6;">Onayla (Yayına Hazır) ✅</button></form>`;
+                html += `<form action="${appUrl}" method="POST" style="margin:0;">${csrfInput}<input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="approved"><button type="submit" class="btn btn-primary" style="background:#3b82f6; border-color:#3b82f6;">Onayla (Yayına Hazır) ✅</button></form>`;
             }
         }
         else if (post.status === 'approved') {
             if (canManage) {
-                html += `<form action="${appUrl}" method="POST" style="margin:0;"><input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="review"><button type="submit" class="btn btn-outline" style="border-color:#f59e0b; color:#f59e0b;">Onayı İptal Et</button></form>`;
-                html += `<form action="${appUrl}" method="POST" style="margin:0;"><input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="published"><button type="submit" class="btn btn-primary" style="background:#10b981; border-color:#10b981;">Yayınlandı Olarak İşaretle 🚀</button></form>`;
+                html += `<form action="${appUrl}" method="POST" style="margin:0;">${csrfInput}<input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="review"><button type="submit" class="btn btn-outline" style="border-color:#f59e0b; color:#f59e0b;">Onayı İptal Et</button></form>`;
+                html += `<form action="${appUrl}" method="POST" style="margin:0;">${csrfInput}<input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="published"><button type="submit" class="btn btn-primary" style="background:#10b981; border-color:#10b981;">Yayınlandı Olarak İşaretle 🚀</button></form>`;
             }
         }
         else if (post.status === 'published') {
             if (canManage) {
-                html += `<form action="${appUrl}" method="POST" style="margin:0;"><input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="approved"><button type="submit" class="btn btn-outline" style="border-color:#3b82f6; color:#3b82f6;">Arşivden Çıkar</button></form>`;
+                html += `<form action="${appUrl}" method="POST" style="margin:0;">${csrfInput}<input type="hidden" name="action" value="change_status"><input type="hidden" name="post_id" value="${post.id}"><input type="hidden" name="new_status" value="approved"><button type="submit" class="btn btn-outline" style="border-color:#3b82f6; color:#3b82f6;">Arşivden Çıkar</button></form>`;
             }
         }
 
