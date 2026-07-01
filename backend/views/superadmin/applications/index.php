@@ -335,10 +335,24 @@
                         </div>
                     </div>
                     <div class="info-item">
+                        <div class="info-item-icon"><i class="fas fa-building"></i></div>
+                        <div class="info-item-text">
+                            <div>Fakülte</div>
+                            <div id="d-faculty">-</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
                         <div class="info-item-icon"><i class="fas fa-graduation-cap"></i></div>
                         <div class="info-item-text">
                             <div>Bölüm</div>
-                            <div id="d-faculty">-</div>
+                            <div id="d-department">-</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-icon"><i class="fas fa-list-ol"></i></div>
+                        <div class="info-item-text">
+                            <div>Sınıf</div>
+                            <div id="d-grade">-</div>
                         </div>
                     </div>
                 </div>
@@ -417,10 +431,20 @@ function showDetails(app) {
     const fdContainer = document.getElementById('d-formdata');
     fdContainer.innerHTML = '';
     
+    // Extract department and grade from form_data
+    let parsedDepartment = '-';
+    let parsedGrade = '-';
+
     if (app.form_data) {
         try {
             const data = JSON.parse(app.form_data);
-            const ignoreKeys = ['name', 'email', 'phone', 'university', 'faculty', 'agreed', 'securityCode'];
+            if (data.department) {
+                parsedDepartment = data.department;
+            }
+            if (data.grade) {
+                parsedGrade = data.grade;
+            }
+            const ignoreKeys = ['name', 'email', 'phone', 'university', 'faculty', 'agreed', 'securityCode', 'department', 'grade'];
             
             let hasFields = false;
             
@@ -478,5 +502,8 @@ function showDetails(app) {
     } else {
         fdContainer.innerHTML = '<div style="grid-column: 1/-1;" class="text-muted text-center p-4 border border-secondary rounded">Ek detay bulunmuyor.</div>';
     }
+
+    document.getElementById('d-department').textContent = parsedDepartment;
+    document.getElementById('d-grade').textContent = parsedGrade;
 }
 </script>

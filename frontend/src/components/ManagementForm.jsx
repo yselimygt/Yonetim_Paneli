@@ -102,8 +102,8 @@ const ManagementForm = () => {
           fullName: formData.name,
           email: formData.email,
           phone: formData.phone,
-          university: formData.faculty, 
-          faculty: formData.department,
+          university: 'Selçuk Üniversitesi', 
+          faculty: formData.faculty,
           message: JSON.stringify(formData, null, 2)
         });
 
