@@ -36,46 +36,108 @@
     </div>
     <?php endif; ?>
 </div>
-<!-- Son Duyurular -->
-<div class="fade-in-up stagger-3" style="margin-bottom: 28px; margin-top: 28px;">
-    <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
-        Son Duyurular
+<!-- İki Kolonlu Üst Kısım: Duyurular (Sol) & Takvim (Sağ) -->
+<div class="fade-in-up stagger-3" style="display:flex; flex-wrap:wrap; gap:24px; margin-bottom: 28px; margin-top: 28px; align-items:stretch;">
+    
+    <!-- Sol Kolon: Son Duyurular -->
+    <div style="flex: 1; min-width: 320px; display: flex; flex-direction: column;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+            Son Duyurular
+        </div>
+        <div class="card" style="padding:0; overflow:hidden;">
+            <?php if (empty($latestAnnouncements)): ?>
+                <div style="padding: 24px; text-align:center; color:var(--muted); font-size:14px;">
+                    Henüz yayınlanmış bir duyuru bulunmuyor.
+                </div>
+            <?php else: ?>
+                <div style="display:flex; flex-direction:column;">
+                    <?php foreach ($latestAnnouncements as $idx => $ann): ?>
+                        <div style="padding:16px 20px; border-bottom: <?= $idx === count($latestAnnouncements)-1 ? 'none' : '1px solid var(--border)' ?>; display:flex; align-items:flex-start; gap:16px;">
+                            <div style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.1); color:#f59e0b; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 000 3h20a3 3 0 000-3zM22 11H2M22 5H2"/></svg>
+                            </div>
+                            <div style="flex-grow:1;">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:600; color:var(--text);">
+                                        <?= View::escape($ann['title']) ?>
+                                    </h4>
+                                    <?php if ($ann['is_global']): ?>
+                                        <span style="background:rgba(245,158,11,.15); color:var(--warning); font-size:9px; padding:2px 6px; border-radius:4px; font-weight:700;">KÜRESEL</span>
+                                    <?php endif; ?>
+                                </div>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--muted); line-height:1.5;">
+                                    <?= nl2br(View::escape(mb_substr($ann['content'], 0, 150))) ?><?= mb_strlen($ann['content']) > 150 ? '...' : '' ?>
+                                </p>
+                                <div style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--muted);">
+                                    <span><?= View::escape($ann['author_name']) ?> &bull; <?= date('d.m.Y H:i', strtotime($ann['created_at'])) ?></span>
+                                    <?php if ($ann['app_slug']): ?>
+                                        <a href="<?= BASE_URL ?>/panel/<?= View::escape($currentDept['slug']) ?>/apps/<?= View::escape($ann['app_slug']) ?>" style="color:#3b82f6; text-decoration:none; font-weight:500;">Tümünü Gör &rarr;</a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Alt Taraf: Ay Özeti (Duyurular Altına Taşındı) -->
+        <div class="card" style="margin-top:24px; padding:24px; background:rgba(236,72,153,0.03); border:1px solid rgba(236,72,153,0.1); flex-grow: 1; display: flex; flex-direction: column;">
+            <div style="font-weight:600; font-size:15px; color:#ec4899; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Ay Özeti
+            </div>
+            <div id="cal-month-summary" style="display:flex; flex-direction:column; gap:8px; font-size:13px; color:var(--text);">
+                <!-- JS ile Doldurulacak -->
+            </div>
+        </div>
     </div>
-    <div class="card" style="padding:0; overflow:hidden;">
-        <?php if (empty($latestAnnouncements)): ?>
-            <div style="padding: 24px; text-align:center; color:var(--muted); font-size:14px;">
-                Henüz yayınlanmış bir duyuru bulunmuyor.
+
+    <!-- Sağ Kolon: Takvim -->
+    <div style="flex: 2; min-width: 500px; display: flex; flex-direction: column;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
+                Takvim
             </div>
-        <?php else: ?>
-            <div style="display:flex; flex-direction:column;">
-                <?php foreach ($latestAnnouncements as $idx => $ann): ?>
-                    <div style="padding:16px 20px; border-bottom: <?= $idx === count($latestAnnouncements)-1 ? 'none' : '1px solid var(--border)' ?>; display:flex; align-items:flex-start; gap:16px;">
-                        <div style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.1); color:#f59e0b; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 000 3h20a3 3 0 000-3zM22 11H2M22 5H2"/></svg>
-                        </div>
-                        <div style="flex-grow:1;">
-                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                                <h4 style="margin:0; font-size:15px; font-weight:600; color:var(--text);">
-                                    <?= View::escape($ann['title']) ?>
-                                </h4>
-                                <?php if ($ann['is_global']): ?>
-                                    <span style="background:rgba(245,158,11,.15); color:var(--warning); font-size:9px; padding:2px 6px; border-radius:4px; font-weight:700;">KÜRESEL</span>
-                                <?php endif; ?>
-                            </div>
-                            <p style="margin:0 0 8px 0; font-size:13px; color:var(--muted); line-height:1.5;">
-                                <?= nl2br(View::escape(mb_substr($ann['content'], 0, 150))) ?><?= mb_strlen($ann['content']) > 150 ? '...' : '' ?>
-                            </p>
-                            <div style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--muted);">
-                                <span><?= View::escape($ann['author_name']) ?> &bull; <?= date('d.m.Y H:i', strtotime($ann['created_at'])) ?></span>
-                                <?php if ($ann['app_slug']): ?>
-                                    <a href="<?= BASE_URL ?>/panel/<?= View::escape($currentDept['slug']) ?>/apps/<?= View::escape($ann['app_slug']) ?>" style="color:#3b82f6; text-decoration:none; font-weight:500;">Tümünü Gör &rarr;</a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <button id="cal-prev" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&larr;</button>
+                <span id="cal-month-year" style="font-size:14px; font-weight:600; color:var(--text); min-width:120px; text-align:center;"></span>
+                <button id="cal-next" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&rarr;</button>
+            </div>
+        </div>
+        
+        <div style="display:flex; gap:20px; align-items:stretch; flex-wrap:wrap; flex-grow: 1;">
+            <!-- Sol Taraf: Takvim Grid -->
+            <div class="card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px;">
+                <div style="width: 100%; margin: 0 auto;">
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Pzt</div>
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Sal</div>
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Çar</div>
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Per</div>
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cum</div>
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cmt</div>
+                        <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Paz</div>
                     </div>
-                <?php endforeach; ?>
+                    <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; margin-top:8px;">
+                        <!-- JS ile Doldurulacak -->
+                    </div>
+                </div>
             </div>
-        <?php endif; ?>
+
+            <!-- Sağ Taraf: Gün Detayları -->
+            <div class="card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px; display:flex; flex-direction:column; background:rgba(16,185,129,0.03); border:1px solid rgba(16,185,129,0.1);">
+                <div style="font-weight:600; font-size:15px; color:#10b981; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span id="cal-detail-title">Gün Detayları</span>
+                </div>
+                <div id="cal-detail-content" style="flex-grow:1; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--text);">
+                    <!-- JS ile Doldurulacak -->
+                </div>
+            </div>
+        </div>
+        
+        
     </div>
 </div>
 
@@ -187,60 +249,6 @@
     </div>
 </div>
 <?php endif; ?>
-
-<!-- Dinamik Takvim Modülü -->
-<div style="margin-top:28px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
-            Takvim
-        </div>
-        <div style="display:flex; gap:8px; align-items:center;">
-            <button id="cal-prev" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&larr;</button>
-            <span id="cal-month-year" style="font-size:14px; font-weight:600; color:var(--text); min-width:120px; text-align:center;"></span>
-            <button id="cal-next" style="background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:4px 8px; cursor:pointer;">&rarr;</button>
-        </div>
-    </div>
-    
-    <div style="display:flex; gap:20px; align-items:stretch; flex-wrap:wrap;">
-        <!-- Sol Taraf: Takvim Grid -->
-        <div class="card" style="flex:1; min-width:300px; padding: 24px;">
-            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Pzt</div>
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Sal</div>
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Çar</div>
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Per</div>
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cum</div>
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Cmt</div>
-                <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Paz</div>
-            </div>
-            <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; margin-top:8px;">
-                <!-- JS ile Doldurulacak -->
-            </div>
-        </div>
-
-        <!-- Sağ Taraf: Gün Detayları -->
-        <div class="card" style="width:300px; padding: 24px; display:flex; flex-direction:column; background:rgba(16,185,129,0.03); border:1px solid rgba(16,185,129,0.1);">
-            <div style="font-weight:600; font-size:15px; color:#10b981; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span id="cal-detail-title">Gün Detayları</span>
-            </div>
-            <div id="cal-detail-content" style="flex-grow:1; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--text);">
-                <!-- JS ile Doldurulacak -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Alt Taraf: Ay Özeti -->
-    <div class="card" style="margin-top:20px; padding:24px; background:rgba(236,72,153,0.03); border:1px solid rgba(236,72,153,0.1);">
-        <div style="font-weight:600; font-size:15px; color:#ec4899; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            Ay Özeti
-        </div>
-        <div id="cal-month-summary" style="display:flex; flex-direction:column; gap:8px; font-size:13px; color:var(--text);">
-            <!-- JS ile Doldurulacak -->
-        </div>
-    </div>
-</div>
 
 <script>
     const calendarData = <?= $calendarData ?? '{"birthdays":[],"events":[]}' ?>;
