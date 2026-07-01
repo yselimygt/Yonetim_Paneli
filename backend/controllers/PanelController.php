@@ -90,6 +90,19 @@ class PanelController extends Controller
             $data['totalUsers'] = 0;
             $data['totalDepts'] = 0;
         }
+        // Son Duyuruları Çek
+        $pdo = Database::getInstance();
+        $stmtAnn = $pdo->prepare("
+            SELECT a.*, u.name AS author_name, ap.slug AS app_slug 
+            FROM announcements a
+            JOIN users u ON u.id = a.author_id
+            LEFT JOIN apps ap ON ap.id = a.app_id
+            WHERE a.is_global = 1 OR a.department_id = ?
+            ORDER BY a.created_at DESC
+            LIMIT 2
+        ");
+        $stmtAnn->execute([$currentDept['id']]);
+        $data['latestAnnouncements'] = $stmtAnn->fetchAll();
 
         $this->view('panel/dashboard', $data, 'panel');
     }
