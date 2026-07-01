@@ -99,6 +99,7 @@ function getBudgetStatusBadge($status) {
                                 <!-- Director Approval -->
                                 <?php if ($req['status'] === 'pending' && $canManage): ?>
                                     <form action="<?= $appUrl ?>" method="POST" style="margin:0;">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                         <input type="hidden" name="action" value="approve_request">
                                         <input type="hidden" name="request_id" value="<?= $req['id'] ?>">
                                         <input type="hidden" name="new_status" value="director_approved">
@@ -109,6 +110,7 @@ function getBudgetStatusBadge($status) {
                                 <!-- Admin Approval -->
                                 <?php if ($req['status'] === 'director_approved' && $isSuperAdmin): ?>
                                     <form action="<?= $appUrl ?>" method="POST" style="margin:0;">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                         <input type="hidden" name="action" value="approve_request">
                                         <input type="hidden" name="request_id" value="<?= $req['id'] ?>">
                                         <input type="hidden" name="new_status" value="admin_approved">
@@ -119,6 +121,7 @@ function getBudgetStatusBadge($status) {
                                 <!-- Reject (Admin or Director) -->
                                 <?php if ($canManage || $isSuperAdmin): ?>
                                     <form action="<?= $appUrl ?>" method="POST" style="margin:0;" onsubmit="return confirm('Bu talebi reddetmek istediğinize emin misiniz?');">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                         <input type="hidden" name="action" value="reject_request">
                                         <input type="hidden" name="request_id" value="<?= $req['id'] ?>">
                                         <button type="submit" class="btn btn-outline" style="padding: 6px 12px; border-radius: 6px; border-color: #ef4444; color: #ef4444;">Reddet</button>
@@ -142,6 +145,7 @@ function getBudgetStatusBadge($status) {
         </div>
         <div class="card-body" style="padding: 24px; max-height: 80vh; overflow-y: auto;">
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="create_request">
                 
                 <div class="form-group" style="margin-bottom: 16px;">

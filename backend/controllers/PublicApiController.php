@@ -22,12 +22,35 @@ class PublicApiController extends Controller
                 'description' => $bc['description'],
                 'event_date' => $bc['start_date'],
                 'location' => $bc['location'],
-                'category' => $bc['type'] ?? 'Bootcamp',
+                'category' => $bc['category'] ?: 'Bootcamp',
                 'tag_color' => 'blue',
-                'status' => $bc['is_completed'] ? 'Tamamlandı' : 'Yakında',
+                'status' => $bc['is_completed'] ? 'past' : 'upcoming',
                 'image_url' => $bc['image_path'],
                 'target_date' => $bc['start_date'],
                 'registration_link' => $bc['link'],
+                'speakers' => null,
+                'agenda' => null
+            ];
+        }
+
+        // Get all app_events
+        $stmtAppEvents = $pdo->query("SELECT * FROM app_events WHERE status = 1 ORDER BY event_date ASC");
+        $appEvents = $stmtAppEvents->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($appEvents as $ae) {
+            $status = (strtotime($ae['event_date']) < time()) ? 'past' : 'upcoming';
+            $events[] = [
+                'id' => 'ae_' . $ae['id'],
+                'title' => $ae['title'],
+                'description' => $ae['description'],
+                'event_date' => $ae['event_date'],
+                'location' => $ae['location_or_platform'],
+                'category' => $ae['category'] ?: 'Modül',
+                'tag_color' => 'green',
+                'status' => $status,
+                'image_url' => $ae['image_path'],
+                'target_date' => $ae['event_date'],
+                'registration_link' => null,
                 'speakers' => null,
                 'agenda' => null
             ];
@@ -41,18 +64,25 @@ class PublicApiController extends Controller
         // Format for the frontend
         $formattedEvents = [];
         foreach ($events as $event) {
-            // Frontend expects specific structure for speakers and agenda
             $speakers = $event['speakers'] ? json_decode($event['speakers'], true) : [];
             $agenda = $event['agenda'] ? json_decode($event['agenda'], true) : [];
             
-            // Format date for display like "Nisan 2026" or "Yakında"
-            // For now, let's keep it simple and just send what we have, 
-            // but mapped to the frontend's expected properties.
             $dateObj = new DateTime($event['event_date']);
             $formatter = new IntlDateFormatter('tr_TR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-            $formatter->setPattern('MMMM yyyy'); // e.g. "Nisan 2026"
+            $formatter->setPattern('dd MMM yyyy, HH:mm'); 
             
             $displayDate = $formatter->format($dateObj);
+            $tagColorClass = 'bg-primary/20 text-primary border-primary/30';
+            if ($event['tag_color'] === 'blue') {
+                $tagColorClass = 'bg-blue-500/20 text-blue-500 border-blue-500/30';
+            } elseif ($event['tag_color'] === 'green') {
+                $tagColorClass = 'bg-green-500/20 text-green-500 border-green-500/30';
+            } elseif (!empty($event['tag_color'])) {
+                // If it's already a full tailwind class string
+                if (strpos($event['tag_color'], 'bg-') !== false) {
+                    $tagColorClass = $event['tag_color'];
+                }
+            }
             
             $formattedEvents[] = [
                 'id' => $event['id'],
@@ -60,14 +90,14 @@ class PublicApiController extends Controller
                 'desc' => $event['description'],
                 'date' => $displayDate,
                 'location' => $event['location'],
-                'category' => $event['category'],
-                'tagColor' => $event['tag_color'],
-                'status' => $event['status'],
-                'image' => $event['image_url'],
-                'targetDate' => $event['target_date'] ? str_replace(' ', 'T', $event['target_date']) : null,
-                'registrationLink' => $event['registration_link'],
-                'speakers' => $speakers,
-                'agenda' => $agenda,
+                'category' => $event['category'] ?: 'Genel',
+                'tagColor' => $tagColorClass,
+                'status' => strtolower($event['status'] ?? 'upcoming'),
+                'image' => $event['image_url'] ?: null,
+                'targetDate' => !empty($event['target_date']) ? str_replace(' ', 'T', $event['target_date']) : null,
+                'registrationLink' => $event['registration_link'] ?? null,
+                'speakers' => is_array($speakers) ? $speakers : [],
+                'agenda' => is_array($agenda) ? $agenda : [],
             ];
         }
 

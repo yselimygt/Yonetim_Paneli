@@ -341,6 +341,7 @@
                             <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         </button>
                         <form method="POST" style="margin:0;" onsubmit="return confirm('Bu eşyayı silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="delete_item">
                             <input type="hidden" name="item_id" value="<?= $item['id'] ?>">
                             <button type="submit" class="inv-action-btn delete" title="Sil">
@@ -360,6 +361,7 @@
 <div class="inv-modal-overlay" id="invModalOverlay" onclick="if(event.target===this) closeInvModal()">
     <div class="inv-modal">
         <form method="POST" enctype="multipart/form-data" id="invForm" style="margin:0;display:flex;flex-direction:column;max-height:90vh;">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <input type="hidden" name="action" value="save_item">
             <input type="hidden" name="item_id" id="invItemId" value="">
             <input type="hidden" name="existing_image" id="invExistingImage" value="">
