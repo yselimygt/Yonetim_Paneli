@@ -391,7 +391,7 @@ class PublicApiController extends Controller
             $deptIds = array_column($rule['targets'], 'department_id');
         } elseif (isset($rule['department_id'])) {
             $deptIds = [(int)$rule['department_id']];
-        } elseif (is_array($rule) && array_is_list($rule)) {
+        } elseif (is_array($rule) && (empty($rule) || array_keys($rule) === range(0, count($rule) - 1))) {
             $deptIds = array_filter(array_map('intval', $rule));
         } else {
             $deptIds = [];
@@ -438,9 +438,10 @@ class PublicApiController extends Controller
             }
 
             echo json_encode(['success' => true, 'message' => 'Başvurunuz başarıyla alındı. Ekibimiz en kısa sürede dönüş yapacaktır.']);
-        } catch (PDOException $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Bir veritabanı hatası oluştu.']);
+        } catch (\Throwable $e) {
+            http_response_code(200); // Prevent framework global 500 HTML override
+            echo json_encode(['success' => false, 'message' => 'Hata: ' . $e->getMessage()]);
+            exit;
         }
         exit;
     }
