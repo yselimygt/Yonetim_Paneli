@@ -6,6 +6,7 @@ const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
   const { siteData, loading } = useSiteData();
   const faqs = siteData?.settings?.faqs || [];
+  const faqMascot = siteData?.settings?.brand?.faqMascot || '/innomis/assets/innox/merak-eden-innox.svg';
 
   return (
     <section className="py-16 lg:py-24 relative bg-gray-50 dark:bg-surface/30 border-y border-white/5" id="faq">
@@ -27,7 +28,7 @@ const FAQ = () => {
             <div className="hidden lg:flex w-full max-w-xs items-center justify-center relative mt-10">
               <div className="absolute inset-0 bg-gradient-primary blur-[80px] opacity-20 rounded-full"></div>
               <img 
-                src="/innomis/assets/innox/merak-eden-innox.svg" 
+                src={faqMascot}
                 alt="Merak Eden Innox" 
                 className="w-full h-auto relative z-10 drop-shadow-[0_0_30px_rgba(218,44,46,0.2)] animate-[float_5s_ease-in-out_infinite]"
               />

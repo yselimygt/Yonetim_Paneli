@@ -2,8 +2,21 @@ import React, { useState } from 'react';
 import { Mail, MapPin, Phone, CheckCircle2, Send } from 'lucide-react';
 import { socials } from '../data/innomisData';
 import { submitMessage } from '../services/siteApi';
+import { useSiteData } from '../context/SiteDataContext';
 
 const Contact = () => {
+  const { siteData } = useSiteData();
+  const contact = siteData?.settings?.contact || {};
+  const contactSocials = contact.socials || {};
+  const socialKey = (label) => {
+    const normalized = label.toLowerCase();
+    if (normalized.startsWith('x')) return 'x';
+    return normalized;
+  };
+  const socialHref = (social) => contactSocials[socialKey(social.label)] || social.href;
+  const email = contact.email || 'info.innomis@gmail.com';
+  const phone = contact.phone || '0555 555 55 55';
+  const phoneHref = phone.replace(/\s+/g, '');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -166,7 +179,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-text-meta text-xs uppercase tracking-wider font-bold mb-1">E-posta</p>
-                  <a href="mailto:info.innomis@gmail.com" className="text-white font-medium hover:text-primary transition-colors">info.innomis@gmail.com</a>
+                  <a href={`mailto:${email}`} className="text-white font-medium hover:text-primary transition-colors">{email}</a>
                 </div>
               </div>
 
@@ -177,7 +190,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-text-meta text-xs uppercase tracking-wider font-bold mb-1">Telefon</p>
-                  <a href="tel:05555555555" className="text-white font-medium hover:text-primary transition-colors">0555 555 55 55</a>
+                  <a href={`tel:${phoneHref}`} className="text-white font-medium hover:text-primary transition-colors">{phone}</a>
                 </div>
               </div>
 
@@ -189,8 +202,8 @@ const Contact = () => {
                 <div>
                   <p className="text-text-meta text-xs uppercase tracking-wider font-bold mb-1">Konum</p>
                   <p className="text-white font-medium text-sm leading-relaxed">
-                    Dere Aşıklar, Köyceğiz Yerleşkesi Köyceğiz, Demeç Sk. No:42/3, 42005 Meram/Konya<br/>
-                    <span className="text-text-secondary">Necmettin Erbakan Üniversitesi / Uygulamalı Bilimler Fakültesi</span>
+                    {contact.address || 'Dere Aşıklar, Köyceğiz Yerleşkesi Köyceğiz, Demeç Sk. No:42/3, 42005 Meram/Konya'}<br/>
+                    <span className="text-text-secondary">{contact.addressDetail || 'Necmettin Erbakan Üniversitesi / Uygulamalı Bilimler Fakültesi'}</span>
                   </p>
                 </div>
               </div>
@@ -202,7 +215,7 @@ const Contact = () => {
                 {socials.map((social, idx) => (
                   <a 
                     key={idx} 
-                    href={social.href} 
+                    href={socialHref(social)}
                     className="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(244,159,32,0.3)] hover:-translate-y-1 transition-all duration-300"
                     aria-label={social.label}
                   >

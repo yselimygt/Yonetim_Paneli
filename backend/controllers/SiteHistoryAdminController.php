@@ -98,4 +98,94 @@ class SiteHistoryAdminController extends Controller
 
         $this->redirect('/superadmin/site-history');
     }
+
+    public function updateTrophy(int $id): void
+    {
+        Auth::requireSuperAdmin();
+        $this->csrfCheck();
+
+        $trophy = $this->historyModel->getTrophyById($id);
+        if (!$trophy) {
+            $this->flashError('Ödül kaydı bulunamadı.');
+            $this->redirect('/superadmin/site-history');
+            return;
+        }
+
+        $data = [
+            'title' => trim($_POST['title'] ?? ''),
+            'description' => trim($_POST['description'] ?? ''),
+            'award_type' => trim($_POST['award_type'] ?? 'other'),
+            'award_date' => trim($_POST['award_date'] ?? '')
+        ];
+
+        if (empty($data['title']) || empty($data['award_date'])) {
+            $this->flashError('Başlık ve tarih zorunludur.');
+            $this->redirect('/superadmin/site-history');
+            return;
+        }
+
+        $imagePath = $this->uploadTrophyImage();
+        if ($imagePath) {
+            $data['image_path'] = $imagePath;
+            $this->deleteTrophyImage($trophy['image_path'] ?? '');
+        }
+
+        $this->historyModel->updateTrophy($id, $data);
+        Logger::log('UPDATE_TROPHY_FROM_SUPERADMIN', 'AppTrophy', $id, ['title' => $data['title']]);
+        $this->flashSuccess('Ödül kaydı güncellendi.');
+        $this->redirect('/superadmin/site-history');
+    }
+
+    public function destroyTrophy(int $id): void
+    {
+        Auth::requireSuperAdmin();
+        $this->csrfCheck();
+
+        $trophy = $this->historyModel->getTrophyById($id);
+        if (!$trophy) {
+            $this->flashError('Ödül kaydı bulunamadı.');
+            $this->redirect('/superadmin/site-history');
+            return;
+        }
+
+        $this->historyModel->deleteTrophy($id);
+        $this->deleteTrophyImage($trophy['image_path'] ?? '');
+        Logger::log('DELETE_TROPHY_FROM_SUPERADMIN', 'AppTrophy', $id, ['title' => $trophy['title'] ?? '']);
+        $this->flashSuccess('Ödül kaydı silindi.');
+        $this->redirect('/superadmin/site-history');
+    }
+
+    private function uploadTrophyImage(): string
+    {
+        if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            return '';
+        }
+
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+            return '';
+        }
+
+        $uploadDir = __DIR__ . '/../public/uploads/trophies';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileName = uniqid('trophy_', true) . '.' . $ext;
+        $target = $uploadDir . '/' . $fileName;
+
+        return move_uploaded_file($_FILES['image']['tmp_name'], $target) ? $fileName : '';
+    }
+
+    private function deleteTrophyImage(string $imagePath): void
+    {
+        if ($imagePath === '') {
+            return;
+        }
+
+        $filePath = __DIR__ . '/../public/uploads/trophies/' . basename($imagePath);
+        if (is_file($filePath)) {
+            @unlink($filePath);
+        }
+    }
 }

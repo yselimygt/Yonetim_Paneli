@@ -6,6 +6,7 @@ import { useSiteData } from '../context/SiteDataContext';
 export default function AnnouncementPopup() {
   const { siteData, loading } = useSiteData();
   const popupConfig = siteData?.settings?.popupConfig;
+  const popupLogo = siteData?.settings?.brand?.popupLogo || '/innomis/assets/logo/Ana-Logo-Arma.png';
 
   const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -131,7 +132,7 @@ export default function AnnouncementPopup() {
             {/* Logo + Title */}
             <div className="flex items-start gap-4 mb-4">
               <img
-                src="/innomis/assets/logo/Ana-Logo-Arma.png"
+                src={popupLogo}
                 alt="InnoMIS"
                 className="w-14 h-14 rounded-2xl object-contain shrink-0"
                 style={{ background: '#fff', padding: '4px' }}

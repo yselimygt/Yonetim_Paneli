@@ -1,8 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { footerLinks, socials } from '../data/innomisData';
+import { useSiteData } from '../context/SiteDataContext';
 
 const Footer = () => {
+  const { siteData } = useSiteData();
+  const brand = siteData?.settings?.brand || {};
+  const contactSocials = siteData?.settings?.contact?.socials || {};
+  const socialKey = (label) => {
+    const normalized = label.toLowerCase();
+    if (normalized.startsWith('x')) return 'x';
+    return normalized;
+  };
+  const socialHref = (social) => contactSocials[socialKey(social.label)] || social.href;
+
   return (
     <footer className="border-t border-white/10 bg-gray-50 dark:bg-surface/50 pt-16 pb-8 relative overflow-hidden">
       {/* Decorative Glow */}
@@ -16,19 +27,19 @@ const Footer = () => {
           <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
               <img 
-                src="/innomis/assets/logo/Yatay-Beyaz.png" 
-                alt="InnoMIS Logo" 
+                src={brand.footerLogo || '/innomis/assets/logo/Yatay-Beyaz.png'}
+                alt={brand.brandName || 'InnoMIS Logo'}
                 className="h-12 w-auto"
               />
             </div>
             <p className="text-text-secondary leading-relaxed text-sm">
-              Teknoloji, inovasyon ve kariyer odaklı öğrenci topluluğu. Öğrenen, üreten ve paylaşan öğrencileri aynı çatı altında buluşturur.
+              {brand.footerDescription || 'Teknoloji, inovasyon ve kariyer odaklı öğrenci topluluğu. Öğrenen, üreten ve paylaşan öğrencileri aynı çatı altında buluşturur.'}
             </p>
             <div className="flex items-center space-x-4">
               {socials.map((social, idx) => (
                 <a 
                   key={idx} 
-                  href={social.href} 
+                  href={socialHref(social)}
                   className="w-10 h-10 rounded-full glass-card flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(244,159,32,0.3)] transition-all duration-300"
                   aria-label={social.label}
                 >
@@ -99,7 +110,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4">
           <p className="text-text-meta text-sm text-center md:text-left">
-            &copy; {new Date().getFullYear()} InnoMIS Community. Tüm hakları saklıdır.
+            &copy; {new Date().getFullYear()} {brand.brandName || 'InnoMIS Community'}. Tüm hakları saklıdır.
           </p>
 
           <div className="flex items-center gap-2 text-sm text-text-meta">

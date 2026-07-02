@@ -2,38 +2,107 @@
 
 <style>
 @media (max-width: 700px) {
+    .app-edit-header {
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
     .app-edit-title {
+        min-width: 0;
+        font-size: 15px;
         line-height: 1.25;
-        overflow-wrap: anywhere;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .app-edit-header .btn {
+        flex: 0 0 auto;
+        min-height: 34px;
+        padding: 7px 10px;
+        border-radius: 9px;
+        font-size: 11px;
     }
 
     .app-edit-card {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         max-width: none !important;
+        box-shadow: none;
+    }
+
+    .app-edit-card .card-body {
+        padding: 0;
+    }
+
+    .app-edit-card .form-row {
+        gap: 0;
+    }
+
+    .app-edit-card .form-group {
+        margin-bottom: 10px;
+    }
+
+    .app-edit-card .form-label {
+        margin-bottom: 5px;
+        font-size: 10px;
+        letter-spacing: .04em;
+        color: rgba(255,255,255,0.5);
+    }
+
+    .app-edit-card .form-control {
+        min-height: 38px;
+        border-radius: 9px;
+        background: rgba(255,255,255,0.035);
+        border-color: rgba(255,255,255,0.055);
+        font-size: 12px;
+    }
+
+    .app-edit-card textarea.form-control {
+        min-height: 92px;
     }
 
     .app-edit-options {
         padding-top: 0 !important;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
 
     .app-edit-options .check-group {
-        align-items: flex-start;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: var(--input-bg);
-        padding: 12px;
+        align-items: center;
+        min-height: 38px;
+        margin: 0 !important;
+        border: 1px solid rgba(255,255,255,0.055);
+        border-radius: 9px;
+        background: rgba(255,255,255,0.025);
+        padding: 9px;
+    }
+
+    .app-edit-options .check-group label {
+        font-size: 11px;
     }
 
     .app-edit-actions {
         flex-direction: column;
+        gap: 8px !important;
+        margin-top: 12px !important;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.055);
     }
 
     .app-edit-actions .btn {
         width: 100%;
+        min-height: 40px;
+        border-radius: 10px;
+        font-size: 12px;
     }
 }
 </style>
 
-<div class="page-header">
+<div class="page-header app-edit-header">
     <h2 class="app-edit-title">Uygulama Düzenle — <?= View::escape($app['name']) ?></h2>
     <a href="<?= BASE_URL ?>/superadmin/apps" class="btn btn-outline">← Geri</a>
 </div>

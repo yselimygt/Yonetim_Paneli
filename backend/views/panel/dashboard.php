@@ -1,7 +1,233 @@
 <?php $pageTitle = 'Dashboard'; $activeSection = 'dashboard'; ?>
 
+<style>
+    @media (max-width: 700px) {
+        .panel-dashboard-welcome {
+            margin-bottom: 16px !important;
+        }
+
+        .panel-dashboard-welcome h2 {
+            font-size: 16px !important;
+            line-height: 1.25;
+        }
+
+        .panel-dashboard-welcome p {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 11px !important;
+            line-height: 1.35;
+        }
+
+        .panel-dashboard-stats {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px !important;
+        }
+
+        .panel-dashboard-stats > .stat-card {
+            width: auto !important;
+            min-width: 0 !important;
+            padding: 14px !important;
+            border-radius: 10px;
+        }
+
+        .panel-dashboard-stats .value {
+            font-size: 24px !important;
+        }
+
+        .panel-dashboard-members-strip {
+            grid-column: 1 / -1;
+            min-width: 0 !important;
+            padding: 12px !important;
+            align-items: flex-start !important;
+            gap: 12px;
+        }
+
+        .panel-dashboard-members-strip > div:first-child {
+            font-size: 10px !important;
+            letter-spacing: .4px !important;
+        }
+
+        .panel-dashboard-members-strip > div:last-child {
+            max-width: 56%;
+            overflow: hidden;
+        }
+
+        .panel-dashboard-main {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: 16px !important;
+            margin: 18px 0 22px !important;
+        }
+
+        .panel-dashboard-col,
+        .panel-dashboard-calendar {
+            min-width: 0 !important;
+            width: 100%;
+        }
+
+        .panel-section-title {
+            margin-bottom: 8px !important;
+            font-size: 10px !important;
+            letter-spacing: .5px !important;
+        }
+
+        .panel-announcement-item {
+            padding: 13px !important;
+            gap: 10px !important;
+        }
+
+        .panel-announcement-icon {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 9px !important;
+        }
+
+        .panel-announcement-item h4 {
+            font-size: 13px !important;
+            line-height: 1.25;
+        }
+
+        .panel-announcement-item p {
+            display: -webkit-box;
+            overflow: hidden;
+            font-size: 11px !important;
+            line-height: 1.35 !important;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .panel-announcement-meta {
+            align-items: flex-start !important;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 10px !important;
+        }
+
+        .panel-month-summary {
+            margin-top: 14px !important;
+            padding: 14px !important;
+        }
+
+        .panel-calendar-wrap {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: 12px !important;
+        }
+
+        .panel-calendar-grid-card,
+        .panel-calendar-detail-card {
+            min-width: 0 !important;
+            padding: 14px !important;
+        }
+
+        .panel-calendar-grid-card [style*="gap: 10px"] {
+            gap: 6px !important;
+        }
+
+        #cal-days-grid {
+            gap: 6px !important;
+        }
+
+        #cal-days-grid > div {
+            border-radius: 8px !important;
+            font-size: 11px !important;
+        }
+
+        .panel-dashboard-apps {
+            margin-bottom: 18px !important;
+        }
+
+        .panel-dashboard-apps-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+        }
+
+        .panel-dashboard-app-card {
+            min-height: 112px;
+            align-items: flex-start !important;
+            flex-direction: column;
+            justify-content: space-between !important;
+            padding: 13px !important;
+            border-radius: 11px !important;
+        }
+
+        .panel-dashboard-app-card > div:first-child {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 9px !important;
+            width: 100%;
+        }
+
+        .panel-dashboard-app-icon {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 9px !important;
+        }
+
+        .panel-dashboard-app-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .panel-dashboard-app-card h3 {
+            display: -webkit-box;
+            overflow: hidden;
+            font-size: 12px !important;
+            line-height: 1.2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .panel-dashboard-app-card p {
+            display: none;
+        }
+
+        .panel-dashboard-app-card > div:last-child {
+            align-self: flex-end;
+            font-size: 11px !important;
+        }
+
+        .panel-members-table {
+            overflow: hidden;
+        }
+
+        .panel-members-table table,
+        .panel-members-table tbody,
+        .panel-members-table tr,
+        .panel-members-table td {
+            display: block;
+            width: 100%;
+        }
+
+        .panel-members-table thead {
+            display: none;
+        }
+
+        .panel-members-table tr {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-members-table tr:last-child {
+            border-bottom: 0;
+        }
+
+        .panel-members-table td {
+            padding: 3px 0 !important;
+            border: 0 !important;
+        }
+
+        .panel-members-table td:nth-child(2) {
+            font-size: 11px !important;
+        }
+    }
+</style>
+
 <!-- Hoş Geldiniz -->
-<div class="fade-in-up stagger-1" style="margin-bottom:28px;">
+<div class="panel-dashboard-welcome fade-in-up stagger-1" style="margin-bottom:28px;">
     <h2 style="font-size:20px;font-weight:600;margin-bottom:4px;">
         Hoş geldiniz, <?= View::escape(Auth::user()['name']) ?>
     </h2>
@@ -15,53 +241,12 @@
     </p>
 </div>
 
-<!-- Stat kartları ve Departman Üyeleri -->
-<div class="fade-in-up stagger-2" style="display:flex; flex-wrap:wrap; gap:12px;">
-    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px;">
-        <div class="value"><?= $memberCount ?></div>
-        <div class="label">Üye</div>
-    </div>
-    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px;">
-        <div class="value"><?= $appCount ?></div>
-        <div class="label">Uygulama</div>
-    </div>
-    <?php if ($currentDept['is_management']): ?>
-    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px; border-color:rgba(245,158,11,.2);">
-        <div class="value" style="color:var(--warning)"><?= $totalUsers ?></div>
-        <div class="label">Toplam Üye</div>
-    </div>
-    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px; border-color:rgba(245,158,11,.2);">
-        <div class="value" style="color:var(--warning)"><?= $totalDepts ?></div>
-        <div class="label">Departman</div>
-    </div>
-    <?php endif; ?>
-    
-    <!-- Departman Üyeleri -->
-    <div class="stat-card" style="flex-grow: 1; min-width: 300px; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px;">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px; display:flex; align-items:center; gap:8px;">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-            Departman Üyeleri
-        </div>
-        <div style="display:flex; align-items:center; padding-left:12px;">
-            <?php foreach (array_slice($members, 0, 10) as $idx => $mem): ?>
-                <div title="<?= View::escape($mem['user_name']) ?>" style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; border:2px solid var(--card); margin-left: <?= $idx === 0 ? '0' : '-12px' ?>; cursor:default; z-index: <?= 10 - $idx ?>; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <?= mb_strtoupper(mb_substr($mem['user_name'], 0, 1)) ?>
-                </div>
-            <?php endforeach; ?>
-            <?php if(count($members) > 10): ?>
-                <div style="width:36px; height:36px; border-radius:50%; background:var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; border:2px solid var(--card); margin-left:-12px; z-index: 0;">
-                    +<?= count($members) - 10 ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
 <!-- İki Kolonlu Üst Kısım: Duyurular (Sol) & Takvim (Sağ) -->
-<div class="fade-in-up stagger-3" style="display:flex; flex-wrap:wrap; gap:24px; margin-bottom: 28px; margin-top: 28px; align-items:stretch;">
+<div class="panel-dashboard-main fade-in-up stagger-3" style="display:flex; flex-wrap:wrap; gap:24px; margin-bottom: 28px; margin-top: 28px; align-items:stretch;">
     
     <!-- Sol Kolon: Son Duyurular -->
-    <div style="flex: 1; min-width: 320px; display: flex; flex-direction: column;">
-        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+    <div class="panel-dashboard-col" style="flex: 1; min-width: 320px; display: flex; flex-direction: column;">
+        <div class="panel-section-title" style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
             Son Duyurular
         </div>
         <div class="card" style="padding:0; overflow:hidden;">
@@ -72,8 +257,8 @@
             <?php else: ?>
                 <div style="display:flex; flex-direction:column;">
                     <?php foreach ($latestAnnouncements as $idx => $ann): ?>
-                        <div style="padding:16px 20px; border-bottom: <?= $idx === count($latestAnnouncements)-1 ? 'none' : '1px solid var(--border)' ?>; display:flex; align-items:flex-start; gap:16px;">
-                            <div style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.1); color:#f59e0b; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <div class="panel-announcement-item" style="padding:16px 20px; border-bottom: <?= $idx === count($latestAnnouncements)-1 ? 'none' : '1px solid var(--border)' ?>; display:flex; align-items:flex-start; gap:16px;">
+                            <div class="panel-announcement-icon" style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.1); color:#f59e0b; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 000 3h20a3 3 0 000-3zM22 11H2M22 5H2"/></svg>
                             </div>
                             <div style="flex-grow:1;">
@@ -88,7 +273,7 @@
                                 <p style="margin:0 0 8px 0; font-size:13px; color:var(--muted); line-height:1.5;">
                                     <?= nl2br(View::escape(mb_substr($ann['content'], 0, 150))) ?><?= mb_strlen($ann['content']) > 150 ? '...' : '' ?>
                                 </p>
-                                <div style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--muted);">
+                                <div class="panel-announcement-meta" style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--muted);">
                                     <span><?= View::escape($ann['author_name']) ?> &bull; <?= date('d.m.Y H:i', strtotime($ann['created_at'])) ?></span>
                                     <?php if ($ann['app_slug']): ?>
                                         <a href="<?= BASE_URL ?>/panel/<?= View::escape($currentDept['slug']) ?>/apps/<?= View::escape($ann['app_slug']) ?>" style="color:#3b82f6; text-decoration:none; font-weight:500;">Tümünü Gör &rarr;</a>
@@ -102,7 +287,7 @@
         </div>
         
         <!-- Alt Taraf: Ay Özeti (Duyurular Altına Taşındı) -->
-        <div class="card" style="margin-top:24px; padding:24px; background:rgba(236,72,153,0.03); border:1px solid rgba(236,72,153,0.1); flex-grow: 1; display: flex; flex-direction: column;">
+        <div class="panel-month-summary card" style="margin-top:24px; padding:24px; background:rgba(236,72,153,0.03); border:1px solid rgba(236,72,153,0.1); flex-grow: 1; display: flex; flex-direction: column;">
             <div style="font-weight:600; font-size:15px; color:#ec4899; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                 Ay Özeti
@@ -114,16 +299,16 @@
     </div>
 
     <!-- Sağ Kolon: Takvim -->
-    <div style="flex: 2; min-width: 500px; display: flex; flex-direction: column;">
+    <div class="panel-dashboard-calendar" style="flex: 2; min-width: 500px; display: flex; flex-direction: column;">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
+            <div class="panel-section-title" style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">
                 Takvim
             </div>
         </div>
         
-        <div style="display:flex; gap:20px; align-items:stretch; flex-wrap:wrap; flex-grow: 1;">
+        <div class="panel-calendar-wrap" style="display:flex; gap:20px; align-items:stretch; flex-wrap:wrap; flex-grow: 1;">
             <!-- Sol Taraf: Takvim Grid -->
-            <div class="card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="panel-calendar-grid-card card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
                 <div style="width: 100%; margin: 0 auto;">
                     <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
                         <div style="font-weight:600; color:var(--muted); font-size:12px; padding-bottom:8px;">Pzt</div>
@@ -147,7 +332,7 @@
             </div>
 
             <!-- Sağ Taraf: Gün Detayları -->
-            <div class="card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px; display:flex; flex-direction:column; background:rgba(16,185,129,0.03); border:1px solid rgba(16,185,129,0.1);">
+            <div class="panel-calendar-detail-card card" style="flex:1; flex-basis:45%; min-width:250px; padding: 24px; display:flex; flex-direction:column; background:rgba(16,185,129,0.03); border:1px solid rgba(16,185,129,0.1);">
                 <div style="font-weight:600; font-size:15px; color:#10b981; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     <span id="cal-detail-title">Gün Detayları</span>
@@ -162,13 +347,55 @@
     </div>
 </div>
 
+<!-- Stat kartları ve Departman Üyeleri -->
+<div class="panel-dashboard-stats fade-in-up stagger-2" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:28px;">
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px;">
+        <div class="value"><?= $memberCount ?></div>
+        <div class="label">Üye</div>
+    </div>
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px;">
+        <div class="value"><?= $appCount ?></div>
+        <div class="label">Uygulama</div>
+    </div>
+    <?php if ($currentDept['is_management']): ?>
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px; border-color:rgba(245,158,11,.2);">
+        <div class="value" style="color:var(--warning)"><?= $totalUsers ?></div>
+        <div class="label">Toplam Üye</div>
+    </div>
+    <div class="stat-card" style="width: 140px; flex-shrink: 0; min-width: 120px; border-color:rgba(245,158,11,.2);">
+        <div class="value" style="color:var(--warning)"><?= $totalDepts ?></div>
+        <div class="label">Departman</div>
+    </div>
+    <?php endif; ?>
+    
+    <!-- Departman Üyeleri -->
+    <div class="panel-dashboard-members-strip stat-card" style="flex-grow: 1; min-width: 300px; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Departman Üyeleri
+        </div>
+        <div style="display:flex; align-items:center; padding-left:12px;">
+            <?php foreach (array_slice($members, 0, 10) as $idx => $mem): ?>
+                <div title="<?= View::escape($mem['user_name']) ?>" style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; border:2px solid var(--card); margin-left: <?= $idx === 0 ? '0' : '-12px' ?>; cursor:default; z-index: <?= 10 - $idx ?>; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <?= mb_strtoupper(mb_substr($mem['user_name'], 0, 1)) ?>
+                </div>
+            <?php endforeach; ?>
+            <?php if(count($members) > 10): ?>
+                <div style="width:36px; height:36px; border-radius:50%; background:var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; border:2px solid var(--card); margin-left:-12px; z-index: 0;">
+                    +<?= count($members) - 10 ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
 <!-- Hızlı Erişim (Atanan Uygulamalar) -->
 <?php if (!empty($deptApps)): ?>
-<div class="fade-in-up stagger-4" style="margin-bottom: 24px;">
-    <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+<div class="panel-dashboard-apps fade-in-up stagger-4" style="margin-bottom: 24px;">
+    <div class="panel-section-title" style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
         Hızlı Erişim
     </div>
-    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+    <div class="panel-dashboard-apps-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
         <?php 
         $renderedModules = [];
         $appStagger = 1;
@@ -238,19 +465,19 @@
             if ($app['icon'] === 'user-plus') $svgPath = '<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line>';
             ?>
             <a href="<?= $href ?>" 
-               class="fade-in-up stagger-<?= min($appStagger++, 5) ?>"
+               class="panel-dashboard-app-card fade-in-up stagger-<?= min($appStagger++, 5) ?>"
                style="display:flex; align-items:center; justify-content:space-between; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px 24px; text-decoration:none; transition:all 0.2s;"
                onmouseover="this.style.borderColor='<?= $color ?>50'; this.style.background='<?= $color ?>10';" onmouseout="this.style.borderColor='var(--border)'; this.style.background='var(--card)';">
                 <div style="display:flex; align-items:center; gap:16px;">
-                    <div style="width:48px; height:48px; border-radius:10px; background:<?= $color ?>20; display:flex; align-items:center; justify-content:center; color:<?= $color ?>;">
+                    <div class="panel-dashboard-app-icon" style="width:48px; height:48px; border-radius:10px; background:<?= $color ?>20; display:flex; align-items:center; justify-content:center; color:<?= $color ?>;">
                         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><?= $svgPath ?></svg>
                     </div>
                     <div>
                         <h3 style="margin:0 0 4px 0; font-size:16px; color:var(--text);"><?= View::escape($app['module_type'] === 'form_manager' ? 'Form' : $app['name']) ?></h3>
-                        <p style="margin:0; font-size:13px; color:var(--muted);"><?= View::escape(mb_substr($app['description'] ?? 'Uygulamaya git', 0, 45)) ?>...</p>
+                        <p style="margin:0; font-size:13px; color:var(--muted);"><?= View::escape(mb_substr($app['description'] ?? 'Uygulama', 0, 45)) ?>...</p>
                     </div>
                 </div>
-                <div style="color:<?= $color ?>; font-weight:600; font-size:14px;">Git &rarr;</div>
+                <div style="color:<?= $color ?>; font-weight:600; font-size:16px;" aria-hidden="true">&rarr;</div>
             </a>
         <?php endforeach; ?>
     </div>
@@ -478,7 +705,7 @@
     <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
         Departman Üyeleri
     </div>
-    <div class="card">
+    <div class="panel-members-table card">
         <table>
             <thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th>Durum</th></tr></thead>
             <tbody>

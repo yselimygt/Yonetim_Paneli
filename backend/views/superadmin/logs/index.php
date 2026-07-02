@@ -1,13 +1,18 @@
 <style>
 @media (max-width: 700px) {
+    .flex.justify-between.items-center.mb-6 {
+        margin-bottom: 10px !important;
+    }
+
     .logs-page-title {
         color: var(--text) !important;
-        font-size: 22px !important;
+        font-size: 18px !important;
         line-height: 1.25;
     }
 
     .logs-card {
         background: transparent !important;
+        border-radius: 0 !important;
         box-shadow: none !important;
         overflow: visible !important;
     }
@@ -35,39 +40,40 @@
 
     .logs-table tbody {
         display: grid;
-        gap: 12px;
+        gap: 8px;
         background: transparent !important;
     }
 
     .logs-table tr {
         display: grid;
-        gap: 10px;
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        background: var(--card);
-        padding: 14px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+        gap: 7px;
+        border: 1px solid rgba(255,255,255,0.055);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.018);
+        padding: 10px;
+        box-shadow: none;
     }
 
     .logs-table td {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 14px;
+        gap: 10px;
         max-width: none;
-        border-bottom: 1px solid rgba(255,255,255,.04);
-        padding: 0 0 10px !important;
+        border-bottom: 1px solid rgba(255,255,255,.035);
+        padding: 0 0 7px !important;
         white-space: normal !important;
         overflow: visible;
         text-align: right;
         color: var(--text) !important;
+        font-size: 11px !important;
     }
 
     .logs-table td::before {
         content: attr(data-label);
-        flex: 0 0 92px;
+        flex: 0 0 74px;
         color: var(--muted);
-        font-size: 11px;
+        font-size: 9px;
         font-weight: 700;
         letter-spacing: .05em;
         text-align: left;
@@ -81,9 +87,26 @@
         text-align: left;
     }
 
-    .logs-table td:last-child::before {
-        display: block;
-        margin-bottom: 8px;
+    .logs-table td:not([data-label="Kullanıcı"]):not([data-label="Tarih"]):not([data-label="İşlem"]) {
+        display: none;
+    }
+
+    .logs-table td[data-label="Kullanıcı"] {
+        order: 1;
+    }
+
+    .logs-table td[data-label="Tarih"] {
+        order: 2;
+    }
+
+    .logs-table td[data-label="İşlem"] {
+        order: 3;
+        border-bottom: 0;
+        padding-bottom: 0 !important;
+    }
+
+    .logs-table td[data-label="İşlem"]::before {
+        align-self: center;
     }
 
     .log-user-cell,
@@ -93,22 +116,63 @@
         overflow-wrap: anywhere;
     }
 
+    .log-user-cell .font-medium,
+    .log-user-cell .text-xs,
+    .log-entity-cell,
+    .log-details-cell,
+    .log-details-cell span,
+    .logs-table .text-gray-500,
+    .logs-table .text-gray-700,
+    .logs-table .text-gray-900 {
+        color: var(--text) !important;
+    }
+
+    .log-user-cell .text-xs {
+        display: none;
+    }
+
+    .logs-table td[data-label="İşlem"] span {
+        padding: 3px 7px !important;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 999px !important;
+        background: rgba(0,188,212,0.12) !important;
+        color: var(--accent) !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        white-space: normal;
+    }
+
     .log-details-cell ul {
         display: grid;
-        gap: 6px;
+        gap: 5px;
         padding-left: 0;
         list-style: none;
     }
 
     .log-details-cell li {
+        display: grid;
+        grid-template-columns: 86px minmax(0, 1fr);
+        gap: 8px;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
         overflow-wrap: anywhere;
+    }
+
+    .log-details-cell li:last-child {
+        border-bottom: 0;
+    }
+
+    .log-details-cell li span:first-child {
+        color: var(--muted) !important;
+        font-weight: 700 !important;
     }
 
     .logs-pagination {
         display: flex !important;
+        align-items: center !important;
         flex-direction: column;
-        gap: 12px;
-        padding: 14px !important;
+        gap: 8px;
+        padding: 10px 0 !important;
         border-top: 0 !important;
     }
 
@@ -119,16 +183,63 @@
         width: 100%;
     }
 
+    .logs-page-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: max-content;
+        min-height: 28px;
+        margin: 0 auto;
+        padding: 5px 10px;
+        border: 1px solid rgba(255,255,255,0.055);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.025);
+        color: var(--muted) !important;
+        font-size: 11px !important;
+        line-height: 1;
+    }
+
+    .logs-page-count .desktop-count {
+        display: none !important;
+    }
+
+    .logs-page-count .mobile-count {
+        display: inline !important;
+    }
+
     .logs-pagination nav {
         display: flex !important;
         flex-wrap: wrap;
-        gap: 6px;
+        justify-content: center;
+        gap: 5px;
+        width: 100%;
         box-shadow: none !important;
     }
 
     .logs-pagination nav a {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        min-height: 30px;
+        padding: 0 8px !important;
         border-radius: 8px !important;
+        background: rgba(255,255,255,0.035) !important;
+        border-color: rgba(255,255,255,0.06) !important;
+        color: var(--text) !important;
+        font-size: 11px !important;
+        line-height: 1 !important;
     }
+
+    .logs-pagination nav a.bg-indigo-50 {
+        background: rgba(0,188,212,0.18) !important;
+        border-color: rgba(0,188,212,0.32) !important;
+        color: var(--accent) !important;
+    }
+}
+
+.logs-page-count .mobile-count {
+    display: none;
 }
 </style>
 
@@ -291,8 +402,9 @@
         <div class="px-6 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 logs-pagination">
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-sm text-gray-700">
-                        Toplam <span class="font-medium"><?= $totalPages ?></span> sayfadan <span class="font-medium"><?= $page ?></span>. sayfa gösteriliyor
+                    <p class="text-sm text-gray-700 logs-page-count">
+                        <span class="desktop-count">Toplam <span class="font-medium"><?= $totalPages ?></span> sayfadan <span class="font-medium"><?= $page ?></span>. sayfa gösteriliyor</span>
+                        <span class="mobile-count"><?= $page ?> / <?= $totalPages ?></span>
                     </p>
                 </div>
                 <div>

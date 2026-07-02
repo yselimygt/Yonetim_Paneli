@@ -6,6 +6,7 @@ import { useSiteData } from '../context/SiteDataContext';
 const Hero = () => {
   const { siteData } = useSiteData();
   const hero = siteData?.settings?.hero || {};
+  const brand = siteData?.settings?.brand || {};
   const stats = siteData?.settings?.stats || [];
   const heroStats = stats.slice(0, 3);
 
@@ -64,7 +65,7 @@ const Hero = () => {
             <div className="relative w-full max-w-sm sm:max-w-md aspect-square flex items-center justify-center animate-[float_6s_ease-in-out_infinite]">
               <div className="absolute inset-0 bg-gradient-primary opacity-20 blur-[60px] rounded-full"></div>
               <img 
-                src="/innomis/assets/innox/innox-kararli.png" 
+                src={brand.heroMascot || '/innomis/assets/innox/innox-kararli.png'}
                 alt="Innox Mascot" 
                 className="w-full h-auto relative z-10 drop-shadow-[0_0_50px_rgba(244,159,32,0.3)]"
               />

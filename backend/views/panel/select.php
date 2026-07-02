@@ -21,6 +21,8 @@
             --text:     #e8e8e8;
             --muted:    #555;
             --sa-card:  #1a150b;
+            --bottom-bg: #151515;
+            --bottom-border: #2a2a2a;
         }
 
         [data-theme="light"] {
@@ -30,6 +32,8 @@
             --text:     #111827;
             --muted:    #6b7280;
             --sa-card:  #fffbeb;
+            --bottom-bg: #ffffff;
+            --bottom-border: #e5e7eb;
         }
 
         body {
@@ -44,9 +48,9 @@
             padding: 24px;
         }
 
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 18px; font-weight: 600; color: var(--text); }
-        .header p { font-size: 13px; color: var(--muted); margin-top: 6px; }
+        .header { text-align: center; margin-bottom: 28px; width: 100%; max-width: 700px; }
+        .header h1 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -.01em; }
+        .header p { font-size: 13px; color: var(--muted); margin: 7px auto 0; max-width: 330px; line-height: 1.35; }
 
         .grid {
             display: grid;
@@ -85,6 +89,19 @@
         }
 
         .dept-card .dept-name { font-size: 14px; font-weight: 600; }
+        .dept-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .dept-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
         .dept-card .dept-role {
             font-size: 11px;
             padding: 2px 8px;
@@ -117,6 +134,136 @@
             cursor: pointer;
         }
         .footer-links a:hover { color: var(--text); }
+
+        .footer-mark {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                min-height: 100dvh;
+                justify-content: flex-start;
+                padding: max(28px, env(safe-area-inset-top)) 18px calc(96px + env(safe-area-inset-bottom));
+                background:
+                    radial-gradient(circle at top, rgba(255,255,255,.035), transparent 34%),
+                    var(--bg);
+            }
+
+            .header {
+                margin: 112px auto 24px;
+            }
+
+            .header h1 {
+                font-size: 17px;
+            }
+
+            .header p {
+                font-size: 12px;
+                color: color-mix(in srgb, var(--muted) 86%, var(--text));
+            }
+
+            .grid {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                max-width: 360px;
+            }
+
+            .dept-card {
+                min-height: 96px;
+                padding: 17px 18px;
+                border-radius: 11px;
+                border-color: color-mix(in srgb, var(--c) 34%, var(--border));
+                background:
+                    linear-gradient(90deg, color-mix(in srgb, var(--c) 10%, transparent), transparent 72%),
+                    var(--card);
+                transform: translateZ(0);
+            }
+
+            .dept-card::before {
+                height: 3px;
+            }
+
+            .dept-card:hover {
+                transform: none;
+            }
+
+            .dept-card .dept-name {
+                min-width: 0;
+                padding-right: 4px;
+                font-size: 14px;
+                font-weight: 800;
+                line-height: 1.25;
+            }
+
+            .dept-card .dept-role,
+            .mgmt-badge {
+                position: static;
+                flex: 0 0 auto;
+                border-radius: 999px;
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: 0;
+                text-transform: none;
+            }
+
+            .dept-card .dept-desc {
+                display: -webkit-box;
+                overflow: hidden;
+                margin-top: 4px;
+                color: color-mix(in srgb, var(--muted) 88%, var(--text));
+                font-size: 11px;
+                line-height: 1.35;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+
+            .footer-links {
+                position: fixed;
+                left: 18px;
+                right: 18px;
+                bottom: calc(12px + env(safe-area-inset-bottom));
+                z-index: 20;
+                display: grid;
+                grid-template-columns: 1fr 54px 1fr;
+                align-items: center;
+                gap: 10px;
+                margin: 0;
+                padding: 10px;
+                border: 1px solid var(--bottom-border);
+                border-radius: 18px;
+                background: var(--bottom-bg);
+                box-shadow: 0 14px 38px rgba(0,0,0,.32);
+            }
+
+            .footer-links a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 38px;
+                border-radius: 12px;
+                background: rgba(255,255,255,.035);
+                color: var(--text);
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+            .footer-mark {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 54px;
+                height: 54px;
+                margin-top: -26px;
+                border: 5px solid var(--bg);
+                border-radius: 50%;
+                background: color-mix(in srgb, var(--text) 10%, var(--bottom-bg));
+                color: var(--text);
+                font-size: 13px;
+                font-weight: 900;
+                box-shadow: 0 10px 24px rgba(0,0,0,.28);
+            }
+        }
     </style>
 </head>
 <body>
@@ -138,14 +285,16 @@
        class="dept-card"
        style="--c: <?= View::escape($dept['color']) ?>">
 
-        <?php if ($dept['is_management']): ?>
-            <span class="mgmt-badge">Yönetim</span>
-        <?php endif; ?>
-
-        <div class="dept-name"><?= View::escape($dept['name']) ?></div>
-
-        <div class="dept-role" style="background:<?= $roleBg ?>;color:<?= $roleColor ?>">
-            <?= $roleLabel ?>
+        <div class="dept-card-head">
+            <div class="dept-name"><?= View::escape($dept['name']) ?></div>
+            <div class="dept-card-tags">
+                <?php if ($dept['is_management']): ?>
+                    <span class="mgmt-badge">Yönetim</span>
+                <?php endif; ?>
+                <span class="dept-role" style="background:<?= $roleBg ?>;color:<?= $roleColor ?>">
+                    <?= $roleLabel ?>
+                </span>
+            </div>
         </div>
 
         <?php if (!empty($dept['description'])): ?>
@@ -170,6 +319,7 @@
 
 <div class="footer-links">
     <a onclick="toggleTheme()">Tema Değiştir</a>
+    <span class="footer-mark"><?= View::escape(mb_substr(Auth::user()['name'] ?? APP_NAME, 0, 1)) ?></span>
     <a href="<?= BASE_URL ?>/logout">Çıkış Yap</a>
 </div>
 

@@ -283,6 +283,10 @@
         .topbar h1 { font-size: 13px; font-weight: 600; color: var(--text); }
         .topbar .sep { color: var(--border); }
         .topbar .sub { font-size: 12px; color: var(--muted); }
+        .panel-mobile-menu-btn,
+        .panel-mobile-dept-btn {
+            display: none;
+        }
 
         .page-content { padding: 28px; flex: 1; }
 
@@ -464,6 +468,464 @@
         .modal-overlay.show { display: flex; opacity: 1; }
         .modal-overlay .modal-content { transform: scale(0.95) translateY(10px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
+
+        .panel-sidebar-overlay {
+            display: none;
+        }
+
+        .panel-mobile-bottom-menu {
+            display: none;
+        }
+
+        .panel-dept-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 12px;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .panel-dept-modal.show {
+            display: flex;
+        }
+
+        .panel-dept-sheet {
+            width: min(100%, 460px);
+            max-height: min(78dvh, 620px);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 12px 12px;
+            background: var(--card);
+            box-shadow: 0 18px 44px rgba(0,0,0,.34);
+        }
+
+        .panel-dept-sheet-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-dept-sheet-head strong {
+            font-size: 14px;
+        }
+
+        .panel-dept-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .panel-dept-list {
+            display: grid;
+            gap: 8px;
+            max-height: calc(min(78dvh, 620px) - 64px);
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .panel-dept-option {
+            display: grid;
+            grid-template-columns: 10px minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+            min-height: 48px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            text-decoration: none;
+            background: rgba(255,255,255,.018);
+        }
+
+        .panel-dept-option.active {
+            border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+            background: color-mix(in srgb, var(--accent) 12%, transparent);
+        }
+
+        .panel-dept-dot {
+            width: 10px;
+            height: 30px;
+            border-radius: 999px;
+            background: var(--dept-color, var(--accent));
+        }
+
+        .panel-dept-name {
+            min-width: 0;
+            overflow: hidden;
+            font-size: 12px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .panel-dept-role {
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.04);
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                display: block;
+                overflow-x: hidden;
+            }
+
+            body.panel-menu-open {
+                overflow: hidden;
+            }
+
+            .sidebar {
+                display: flex;
+                width: min(82vw, 300px);
+                z-index: 1300;
+                transform: translateX(-105%);
+                box-shadow: 18px 0 44px rgba(0,0,0,.36);
+                transition: transform .24s ease;
+            }
+
+            body.panel-menu-open .sidebar {
+                transform: translateX(0);
+            }
+
+            .panel-sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 1290;
+                display: block;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                background: rgba(0,0,0,.64);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                transition: opacity .2s ease, visibility .2s ease;
+            }
+
+            body.panel-menu-open .panel-sidebar-overlay {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            .sidebar-brand {
+                padding: 18px 16px 14px;
+            }
+
+            .sidebar-nav {
+                padding: 10px;
+            }
+
+            .nav-section {
+                padding: 12px 10px 6px;
+                font-size: 9px;
+            }
+
+            .nav-link {
+                min-height: 42px;
+                padding: 10px 11px;
+                border-radius: 10px;
+                font-size: 12px;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .panel-mobile-bottom-menu {
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                bottom: calc(8px + env(safe-area-inset-bottom));
+                z-index: 80;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 58px minmax(0, 1fr);
+                align-items: center;
+                gap: 8px;
+                min-height: 64px;
+                padding: 8px 10px;
+                border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+                border-radius: 18px;
+                background:
+                    linear-gradient(135deg, color-mix(in srgb, var(--accent) 17%, transparent), color-mix(in srgb, var(--sidebar) 82%, #111827) 48%, rgba(255,255,255,.035)),
+                    var(--sidebar);
+                box-shadow:
+                    0 16px 38px rgba(0,0,0,.42),
+                    0 0 0 1px rgba(255,255,255,.035) inset,
+                    0 -10px 28px color-mix(in srgb, var(--accent) 10%, transparent);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+            }
+
+            body.panel-menu-open .panel-mobile-bottom-menu {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .panel-mobile-bottom-user {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-width: 0;
+            }
+
+            .panel-mobile-bottom-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 1px solid rgba(255,255,255,.1);
+                flex: 0 0 auto;
+            }
+
+            .panel-mobile-bottom-name {
+                display: block;
+                overflow: hidden;
+                color: var(--text);
+                font-size: 11px;
+                font-weight: 800;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .panel-mobile-bottom-role {
+                display: inline-flex;
+                margin-top: 3px;
+                padding: 2px 6px;
+                border-radius: 999px;
+                background: rgba(245,158,11,.15);
+                color: #fbbf24;
+                font-size: 9px;
+                font-weight: 800;
+            }
+
+            .panel-mobile-bottom-role.member {
+                background: color-mix(in srgb, var(--accent) 18%, transparent);
+                color: var(--accent);
+            }
+
+            .panel-mobile-bottom-logo {
+                justify-self: center;
+                align-self: start;
+                display: grid;
+                place-items: center;
+                width: 54px;
+                height: 54px;
+                margin-top: -27px;
+                border: 5px solid var(--bg);
+                border-radius: 50%;
+                background:
+                    radial-gradient(circle at 35% 28%, rgba(255,255,255,.2), transparent 34%),
+                    var(--accent);
+                color: #071112;
+                font-size: 13px;
+                font-weight: 900;
+                box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 26%, transparent);
+            }
+
+            .panel-mobile-bottom-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5px;
+                min-width: 0;
+            }
+
+            .panel-mobile-bottom-link {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 30px;
+                border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+                border-radius: 9px;
+                background: color-mix(in srgb, var(--accent) 9%, transparent);
+                color: var(--text);
+                font-size: 10px;
+                font-weight: 800;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .panel-mobile-bottom-link.danger {
+                border-color: rgba(239,68,68,.22);
+                background: rgba(239,68,68,.08);
+                color: #fca5a5;
+            }
+
+            .panel-mobile-bottom-powered {
+                position: absolute;
+                left: 50%;
+                bottom: 3px;
+                transform: translateX(-50%);
+                display: inline-flex;
+                align-items: center;
+                gap: 3px;
+                color: var(--muted);
+                font-size: 8px;
+                pointer-events: auto;
+            }
+
+            .panel-mobile-bottom-powered img {
+                height: 12px;
+                opacity: .72;
+                filter: brightness(0) invert(1);
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-menu {
+                border-color: color-mix(in srgb, var(--accent) 22%, var(--border));
+                background:
+                    linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent), rgba(255,255,255,.94) 48%, rgba(255,255,255,.62)),
+                    rgba(255,255,255,.92);
+                box-shadow:
+                    0 14px 32px rgba(15,23,42,.14),
+                    0 0 0 1px rgba(255,255,255,.72) inset,
+                    0 -8px 22px color-mix(in srgb, var(--accent) 8%, transparent);
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-avatar {
+                border-color: rgba(15,23,42,.1);
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-name {
+                color: #0f172a;
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-logo {
+                border-color: #f3f4f6;
+                color: #06343b;
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-link {
+                color: #0f172a;
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-link.danger {
+                color: #b91c1c;
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-powered {
+                color: #64748b;
+            }
+
+            [data-theme="light"] .panel-mobile-bottom-powered img {
+                opacity: .72;
+                filter: none;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+                min-width: 0;
+                padding-bottom: 92px;
+            }
+
+            .topbar {
+                min-height: 54px;
+                height: auto;
+                padding: 8px 12px;
+                gap: 8px;
+                background: color-mix(in srgb, var(--bg) 94%, transparent);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+            }
+
+            .panel-mobile-menu-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 auto;
+                width: 38px;
+                height: 38px;
+                border: 1px solid var(--border);
+                border-radius: 11px;
+                background: var(--card);
+                color: var(--text);
+                cursor: pointer;
+            }
+
+            .topbar h1 {
+                display: none;
+            }
+
+            .topbar .sep {
+                display: none;
+            }
+
+            .topbar .sub {
+                min-width: 0;
+                flex: 1;
+                overflow: hidden;
+                color: var(--text);
+                font-size: 12px;
+                font-weight: 700;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .panel-mobile-dept-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                max-width: 46%;
+                min-height: 38px;
+                padding: 7px 10px;
+                border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border));
+                border-radius: 11px;
+                background: color-mix(in srgb, var(--accent) 11%, var(--card));
+                color: var(--text);
+                cursor: pointer;
+                font-family: inherit;
+            }
+
+            .panel-mobile-dept-btn span {
+                min-width: 0;
+                overflow: hidden;
+                font-size: 11px;
+                font-weight: 800;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .panel-mobile-dept-btn i {
+                flex: 0 0 auto;
+                width: 8px;
+                height: 24px;
+                border-radius: 999px;
+                background: var(--accent);
+            }
+
+            .btn-theme {
+                flex: 0 0 auto;
+                width: 38px;
+                height: 38px;
+                margin-left: 0 !important;
+                border-radius: 11px;
+            }
+
+            .page-content {
+                padding: 14px 12px 28px;
+            }
+
+            .panel-dept-sheet {
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -625,12 +1087,56 @@
     </div>
 </aside>
 
+<button type="button" class="panel-sidebar-overlay" onclick="closePanelMenu()" aria-label="Menüyü kapat"></button>
+
+<div class="panel-mobile-bottom-menu" aria-label="Mobil hesap menüsü">
+    <div class="panel-mobile-bottom-user">
+        <img src="<?= $avatarUrl ?>" alt="Avatar" class="panel-mobile-bottom-avatar">
+        <div style="min-width:0;">
+            <span class="panel-mobile-bottom-name"><?= View::escape($userName) ?></span>
+            <span class="panel-mobile-bottom-role <?= ($userRole ?? 'member') === 'director' ? '' : 'member' ?>">
+                <?= ($userRole ?? 'member') === 'director' ? 'Direktör' : 'Üye' ?>
+            </span>
+        </div>
+    </div>
+
+    <div class="panel-mobile-bottom-logo" aria-label="Logo alanı">IA</div>
+
+    <div class="panel-mobile-bottom-actions">
+        <a href="<?= BASE_URL ?>/profile" class="panel-mobile-bottom-link">Profilim</a>
+        <a href="<?= BASE_URL ?>/logout" class="panel-mobile-bottom-link danger">Çıkış</a>
+    </div>
+
+    <div class="panel-mobile-bottom-powered">
+        <span>Powered by</span>
+        <a href="https://viperadev.com" target="_blank" style="display:flex;align-items:center;">
+            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev">
+        </a>
+    </div>
+</div>
+
 <!-- ── Main ── -->
 <div class="main">
     <div class="topbar">
         <?php
         $topbarTitle = $currentDept['name'] ?? 'Panel';
         ?>
+        <button type="button" class="panel-mobile-menu-btn" onclick="openPanelMenu()" aria-label="Menüyü aç">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17" aria-hidden="true">
+                <line x1="4" y1="7" x2="20" y2="7"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="17" x2="20" y2="17"></line>
+            </svg>
+        </button>
+        <?php if (count($allDepts) > 1): ?>
+        <button type="button" class="panel-mobile-dept-btn" onclick="openPanelDeptModal()" aria-label="Departman değiştir">
+            <i aria-hidden="true"></i>
+            <span><?= View::escape($topbarTitle) ?></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
+        <?php endif; ?>
         <h1><?= View::escape($topbarTitle) ?></h1>
         <span class="sep">/</span>
         <span class="sub"><?= View::escape($pageTitle ?? 'Dashboard') ?></span>
@@ -653,12 +1159,54 @@
     </div>
 </div>
 
+<?php if (count($allDepts) > 1): ?>
+<div class="panel-dept-modal" id="panelDeptModal" aria-hidden="true">
+    <div class="panel-dept-sheet" role="dialog" aria-modal="true" aria-label="Departman değiştir">
+        <div class="panel-dept-sheet-head">
+            <strong>Departman Değiştir</strong>
+            <button type="button" class="panel-dept-close" onclick="closePanelDeptModal()" aria-label="Kapat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="panel-dept-list">
+            <?php foreach ($allDepts as $dept): ?>
+                <?php
+                $deptSlug = $dept['slug'] ?? '';
+                $isActiveDept = $deptSlug === ($currentDept['slug'] ?? '');
+                $deptColor = $dept['color'] ?? ($currentDept['color'] ?? '#00BCD4');
+                $roleLabel = ($dept['role'] ?? 'member') === 'director' ? 'Direktör' : 'Üye';
+                ?>
+                <a href="<?= BASE_URL ?>/panel/<?= View::escape($deptSlug) ?>"
+                   class="panel-dept-option <?= $isActiveDept ? 'active' : '' ?>"
+                   style="--dept-color: <?= View::escape($deptColor) ?>">
+                    <span class="panel-dept-dot" aria-hidden="true"></span>
+                    <span class="panel-dept-name"><?= View::escape($dept['name'] ?? 'Departman') ?></span>
+                    <span class="panel-dept-role"><?= View::escape($roleLabel) ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <script>
 function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
+}
+
+function openPanelMenu() {
+    closePanelDeptModal();
+    document.body.classList.add('panel-menu-open');
+}
+
+function closePanelMenu() {
+    document.body.classList.remove('panel-menu-open');
 }
 
 // Global Modal Functions
@@ -697,6 +1245,39 @@ function toggleModal(id) {
 window.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal') || e.target.classList.contains('modal-overlay')) {
         closeModal(e.target.id);
+    }
+});
+
+function openPanelDeptModal() {
+    const modal = document.getElementById('panelDeptModal');
+    if (!modal) return;
+    closePanelMenu();
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePanelDeptModal() {
+    const modal = document.getElementById('panelDeptModal');
+    if (!modal) return;
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+const panelDeptModal = document.getElementById('panelDeptModal');
+if (panelDeptModal) {
+    panelDeptModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePanelDeptModal();
+        }
+    });
+}
+
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closePanelMenu();
+        closePanelDeptModal();
     }
 });
 </script>

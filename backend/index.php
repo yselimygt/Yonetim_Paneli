@@ -55,6 +55,8 @@ $router->post('/superadmin/site-events/{id}',        ['SiteEventAdminController'
 $router->post('/superadmin/site-events/{id}/delete', ['SiteEventAdminController', 'destroy']);
 
 $router->get('/superadmin/site-settings',                 ['SiteSettingsAdminController', 'index']);
+$router->post('/superadmin/site-settings/hero',           ['SiteSettingsAdminController', 'updateHero']);
+$router->post('/superadmin/site-settings/brand-contact',  ['SiteSettingsAdminController', 'updateBrandContact']);
 $router->post('/superadmin/site-settings/popup',          ['SiteSettingsAdminController', 'updatePopup']);
 $router->post('/superadmin/site-settings/stats',          ['SiteSettingsAdminController', 'updateStats']);
 $router->post('/superadmin/site-settings/sponsors',       ['SiteSettingsAdminController', 'updateSponsors']);
@@ -81,6 +83,8 @@ $router->get('/superadmin/site-history',                  ['SiteHistoryAdminCont
 $router->post('/superadmin/site-history',                 ['SiteHistoryAdminController', 'store']);
 $router->post('/superadmin/site-history/{id}',            ['SiteHistoryAdminController', 'update']);
 $router->post('/superadmin/site-history/{id}/delete',     ['SiteHistoryAdminController', 'destroy']);
+$router->post('/superadmin/site-history/trophies/{id}',   ['SiteHistoryAdminController', 'updateTrophy']);
+$router->post('/superadmin/site-history/trophies/{id}/delete', ['SiteHistoryAdminController', 'destroyTrophy']);
 
 $router->get('/superadmin/apps',              ['AppAdminController', 'index']);
 $router->post('/superadmin/apps/assign',      ['AppAdminController', 'assign']);

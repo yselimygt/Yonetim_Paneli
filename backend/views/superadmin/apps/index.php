@@ -1,17 +1,14 @@
 <style>
 /* Layout */
 .app-assign-container {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
+    display: block;
 }
 .dept-sidebar {
-    width: 280px;
+    width: 100%;
     background: var(--card);
     border: 1px solid var(--border, #1e1e1e);
     border-radius: 12px;
     padding: 16px;
-    flex-shrink: 0;
 }
 .dept-sidebar h3 {
     font-size: 14px;
@@ -22,6 +19,11 @@
     margin: 0 0 16px 0;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
+}
+.dept-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
 }
 .dept-link {
     display: flex;
@@ -152,51 +154,255 @@
     display: flex;
     justify-content: flex-end;
 }
+.apps-assign-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: var(--modal-overlay, rgba(0,0,0,0.85));
+    backdrop-filter: blur(4px);
+}
+.apps-assign-dialog {
+    width: min(980px, 100%);
+    max-height: min(88vh, 760px);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+    box-shadow: 0 18px 48px rgba(0,0,0,0.35);
+}
+.apps-assign-dialog__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+.apps-assign-dialog__header .assign-header {
+    margin: 0;
+}
+.apps-assign-close {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    text-decoration: none;
+}
+.apps-assign-close:hover {
+    color: var(--text);
+    border-color: var(--accent);
+}
+.apps-assign-dialog__body {
+    max-height: calc(min(88vh, 760px) - 78px);
+    overflow-y: auto;
+    padding: 18px 20px 20px;
+}
 
 @media (max-width: 700px) {
+    .apps-page-header {
+        margin-bottom: 10px;
+    }
+
+    .apps-page-header h2 {
+        font-size: 18px;
+    }
+
     .apps-page-header p {
-        line-height: 1.45;
+        display: none;
     }
 
     .dept-sidebar {
-        border-radius: 14px;
-        padding: 12px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        padding: 0 !important;
+        overflow: visible;
+    }
+
+    .dept-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
 
     .dept-sidebar h3 {
-        margin-bottom: 12px;
+        display: none;
     }
 
     .dept-link {
-        min-height: 44px;
-        min-width: max-content;
+        min-height: 54px;
+        min-width: 0;
+        margin: 0;
+        padding: 10px;
+        border-color: rgba(255,255,255,0.055);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.025);
+        font-size: 12px;
+        line-height: 1.15;
+        white-space: normal;
+    }
+
+    .dept-link span {
+        min-width: 0;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .dept-link svg {
+        display: none;
+    }
+
+    .dept-link.active {
+        background: rgba(0,188,212,0.18);
+        border-color: rgba(0,188,212,0.34);
+        box-shadow: none;
     }
 
     .main-content {
-        padding: 16px;
-        border-radius: 14px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        padding: 0 !important;
     }
 
     .empty-selection {
-        padding: 48px 16px;
+        margin-top: 10px;
+        padding: 28px 14px;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.018);
+    }
+
+    .empty-selection svg {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 10px;
+    }
+
+    .empty-selection h2 {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .empty-selection p {
+        font-size: 11px;
+    }
+
+    .apps-assign-modal {
+        align-items: flex-end;
+        padding: 8px;
+    }
+
+    .apps-assign-dialog {
+        max-height: calc(100dvh - 18px);
+        border-radius: 15px 15px 10px 10px;
+        box-shadow: none;
+    }
+
+    .apps-assign-dialog__header {
+        align-items: center;
+        padding: 12px;
+    }
+
+    .apps-assign-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+    }
+
+    .apps-assign-dialog__body {
+        max-height: calc(100dvh - 92px);
+        padding: 10px 12px 12px;
     }
 
     .assign-header {
-        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
     }
 
-    .assign-header h2,
+    .assign-header h2 {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        font-size: 15px;
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .assign-header p {
-        overflow-wrap: anywhere;
+        display: none;
     }
 
     .modules-grid {
-        gap: 12px;
-        margin-bottom: 22px;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px;
+        margin-bottom: 10px;
+        padding: 0 !important;
     }
 
     .mod-card {
-        padding: 18px 14px;
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        column-gap: 8px;
+        align-items: center;
+        min-height: 62px;
+        padding: 8px 26px 8px 8px;
+        border-width: 1px;
+        border-radius: 9px;
+        background: rgba(255,255,255,0.018);
+        text-align: left;
+    }
+
+    .mod-card:hover {
+        background: rgba(255,255,255,0.025);
+        transform: none;
+    }
+
+    .mod-card.selected {
+        border-color: rgba(16,185,129,0.45);
+        background: rgba(16,185,129,0.08);
+    }
+
+    .mod-icon {
+        width: 34px;
+        height: 34px;
+        margin: 0;
+        border-radius: 9px;
+    }
+
+    .mod-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .mod-checkbox {
+        top: 6px;
+        right: 6px;
+        width: 16px;
+        height: 16px;
+        border-width: 1px;
+        border-radius: 5px;
+    }
+
+    .mod-checkbox svg {
+        width: 10px;
+        height: 10px;
     }
 
     .mod-name,
@@ -204,22 +410,72 @@
         overflow-wrap: anywhere;
     }
 
+    .mod-name {
+        display: none;
+    }
+
+    .mod-inputs {
+        margin-top: 0 !important;
+        min-width: 0;
+    }
+
+    .mod-inputs input[type="text"] {
+        min-height: 20px !important;
+        margin-bottom: 3px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        font-size: 10px !important;
+        font-weight: 700;
+        text-align: left !important;
+        box-shadow: none !important;
+    }
+
     .mod-inputs > div {
-        justify-content: space-between !important;
+        justify-content: flex-start !important;
+        gap: 4px !important;
+        width: max-content;
+        max-width: 100%;
+        padding: 2px 5px;
+        border: 1px solid rgba(255,255,255,0.055);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.025);
+    }
+
+    .mod-inputs > div span {
+        font-size: 8px !important;
+        line-height: 1;
     }
 
     .mod-inputs input[type="number"] {
-        width: 88px !important;
-        min-height: 36px;
+        width: 34px !important;
+        min-height: 18px;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        font-size: 9px !important;
+        box-shadow: none !important;
     }
 
     .save-bar {
         align-items: stretch;
         flex-direction: column;
+        position: sticky;
+        bottom: 0;
+        padding-top: 10px;
+        border-top-color: rgba(255,255,255,0.055);
+        background: var(--card);
     }
 
     .save-bar .btn {
         width: 100%;
+        min-height: 36px;
+        padding: 8px 10px !important;
+        border-radius: 9px;
+        font-size: 11px !important;
+        box-shadow: none;
     }
 }
 </style>
@@ -236,28 +492,39 @@
     <!-- Sol: Departmanlar -->
     <div class="dept-sidebar">
         <h3>Departmanlar</h3>
-        <?php foreach ($departments as $dept): ?>
-            <a href="?dept_id=<?= $dept['id'] ?>" class="dept-link <?= $selectedDeptId === $dept['id'] ? 'active' : '' ?>">
-                <span><?= View::escape($dept['name']) ?></span>
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            </a>
-        <?php endforeach; ?>
+        <div class="dept-list">
+            <?php foreach ($departments as $dept): ?>
+                <a href="?dept_id=<?= $dept['id'] ?>" class="dept-link <?= $selectedDeptId === $dept['id'] ? 'active' : '' ?>">
+                    <span><?= View::escape($dept['name']) ?></span>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            <?php endforeach; ?>
+        </div>
     </div>
 
-    <!-- Sağ: Modüller -->
     <div class="main-content">
-        <?php if (!$selectedDept): ?>
-            <div class="empty-selection">
-                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"/></svg>
-                <h2>Departman Seçin</h2>
-                <p>Uygulama ataması yapmak için sol menüden bir departman seçin.</p>
-            </div>
-        <?php else: ?>
+        <div class="empty-selection">
+            <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"/></svg>
+            <h2>Departman Seçin</h2>
+            <p>Uygulama ataması yapmak için bir departman kartına dokunun.</p>
+        </div>
+    </div>
+</div>
+
+<?php if ($selectedDept): ?>
+    <div class="apps-assign-modal" id="appsAssignModal" role="dialog" aria-modal="true" aria-labelledby="appsAssignTitle">
+        <div class="apps-assign-dialog">
+            <div class="apps-assign-dialog__header">
             <div class="assign-header">
-                <h2><?= View::escape($selectedDept['name']) ?> Uygulamaları</h2>
+                    <h2 id="appsAssignTitle"><?= View::escape($selectedDept['name']) ?> Uygulamaları</h2>
                 <p>Bu departmanın sidebar'ında görünecek uygulamaları seçin.</p>
             </div>
+                <a href="<?= BASE_URL ?>/superadmin/apps" class="apps-assign-close" aria-label="Kapat">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </a>
+            </div>
 
+            <div class="apps-assign-dialog__body">
             <form method="POST" action="<?= BASE_URL ?>/superadmin/apps/assign">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="department_id" value="<?= $selectedDept['id'] ?>">
@@ -375,9 +642,10 @@
                     </button>
                 </div>
             </form>
-        <?php endif; ?>
+            </div>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 
 <script>
 function toggleModule(card, type) {
@@ -390,4 +658,16 @@ function toggleModule(card, type) {
         card.classList.remove('selected');
     }
 }
+
+document.getElementById('appsAssignModal')?.addEventListener('click', function(event) {
+    if (event.target === this) {
+        window.location.href = '<?= BASE_URL ?>/superadmin/apps';
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && document.getElementById('appsAssignModal')) {
+        window.location.href = '<?= BASE_URL ?>/superadmin/apps';
+    }
+});
 </script>

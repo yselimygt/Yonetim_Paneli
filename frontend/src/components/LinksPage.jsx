@@ -1,5 +1,6 @@
 import React from 'react';
 import { Instagram, Linkedin, Youtube, Github, Globe, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { useSiteData } from '../context/SiteDataContext';
 
 /* ── Custom Icons ── */
 const XIcon = ({ className }) => (
@@ -90,6 +91,18 @@ const socials = [
 ];
 
 export default function LinksPage() {
+  const { siteData } = useSiteData();
+  const brand = siteData?.settings?.brand || {};
+  const contact = siteData?.settings?.contact || {};
+  const contactSocials = contact.socials || {};
+  const socialKey = (label) => {
+    const normalized = label.toLowerCase();
+    if (normalized.startsWith('x')) return 'x';
+    return normalized;
+  };
+  const hrefFor = (link) => contactSocials[socialKey(link.label)] || link.href;
+  const dynamicLinks = links.map((link) => ({ ...link, href: hrefFor(link) }));
+
   return (
     <div
       className="min-h-screen flex flex-col items-center px-4 py-10 relative overflow-hidden"
@@ -118,8 +131,8 @@ export default function LinksPage() {
           }}
         />
         <img
-          src="/innomis/assets/logo/Ana-Logo-Arma.png"
-          alt="InnoMIS Community"
+          src={brand.popupLogo || '/innomis/assets/logo/Ana-Logo-Arma.png'}
+          alt={brand.brandName || 'InnoMIS Community'}
           className="relative w-24 h-24 rounded-full object-contain z-10"
           style={{ background: '#fff', padding: '4px' }}
         />
@@ -127,7 +140,7 @@ export default function LinksPage() {
 
       {/* Name & bio */}
       <div className="relative z-10 text-center mb-8 space-y-1">
-        <h1 className="text-2xl font-bold text-white tracking-tight">InnoMIS Community</h1>
+        <h1 className="text-2xl font-bold text-white tracking-tight">{brand.brandName || 'InnoMIS Community'}</h1>
         <p className="text-sm" style={{ color: '#A1A1AA' }}>
           Bilişimde Yeniliğe, İnovasyonda Zirveye!
         </p>
@@ -139,7 +152,7 @@ export default function LinksPage() {
       {/* Link cards */}
       <div className="relative z-10 w-full" style={{ maxWidth: '480px' }}>
         <div className="flex flex-col gap-3">
-          {links.map((link, i) => (
+          {dynamicLinks.map((link, i) => (
             <a
               key={i}
               href={link.href}

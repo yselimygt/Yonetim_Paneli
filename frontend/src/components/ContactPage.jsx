@@ -2,8 +2,22 @@ import React, { useState } from 'react';
 import { Mail, MapPin, Phone, CheckCircle2, Send } from 'lucide-react';
 import { socials } from '../data/innomisData';
 import { submitMessage } from '../services/siteApi';
+import { useSiteData } from '../context/SiteDataContext';
 
 const ContactPage = () => {
+  const { siteData } = useSiteData();
+  const contact = siteData?.settings?.contact || {};
+  const contactSocials = contact.socials || {};
+  const socialKey = (label) => {
+    const normalized = label.toLowerCase();
+    if (normalized.startsWith('x')) return 'x';
+    return normalized;
+  };
+  const socialHref = (social) => contactSocials[socialKey(social.label)] || social.href;
+  const email = contact.email || 'info.innomis@gmail.com';
+  const phone = contact.phone || '0555 555 55 55';
+  const phoneHref = phone.replace(/\s+/g, '');
+  const mapEmbedUrl = contact.mapEmbedUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.727670977827!2d32.42436737521876!3d37.81989437197368!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d08db8c0b2f56b%3A0x6b801a2f6fb39e80!2sNecmettin%20Erbakan%20%C3%9Cniversitesi%20Uygulamal%C4%B1%20Bilimler%20Fak%C3%BCltesi!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str';
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -170,7 +184,7 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <p className="text-text-meta text-xs uppercase tracking-wider font-bold mb-1">E-posta</p>
-                  <a href="mailto:info.innomis@gmail.com" className="text-white font-medium hover:text-primary transition-colors">info.innomis@gmail.com</a>
+                  <a href={`mailto:${email}`} className="text-white font-medium hover:text-primary transition-colors">{email}</a>
                 </div>
               </div>
 
@@ -181,7 +195,7 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <p className="text-text-meta text-xs uppercase tracking-wider font-bold mb-1">Telefon</p>
-                  <a href="tel:05555555555" className="text-white font-medium hover:text-primary transition-colors">0555 555 55 55</a>
+                  <a href={`tel:${phoneHref}`} className="text-white font-medium hover:text-primary transition-colors">{phone}</a>
                 </div>
               </div>
 
@@ -193,8 +207,8 @@ const ContactPage = () => {
                 <div>
                   <p className="text-text-meta text-xs uppercase tracking-wider font-bold mb-1">Konum</p>
                   <p className="text-white font-medium text-sm leading-relaxed">
-                    Dere Aşıklar, Köyceğiz Yerleşkesi Köyceğiz, Demeç Sk. No:42/3, 42005 Meram/Konya<br/>
-                    <span className="text-text-secondary">Necmettin Erbakan Üniversitesi / Uygulamalı Bilimler Fakültesi</span>
+                    {contact.address || 'Dere Aşıklar, Köyceğiz Yerleşkesi Köyceğiz, Demeç Sk. No:42/3, 42005 Meram/Konya'}<br/>
+                    <span className="text-text-secondary">{contact.addressDetail || 'Necmettin Erbakan Üniversitesi / Uygulamalı Bilimler Fakültesi'}</span>
                   </p>
                 </div>
               </div>
@@ -206,7 +220,7 @@ const ContactPage = () => {
                 {socials.map((social, idx) => (
                   <a 
                     key={idx} 
-                    href={social.href} 
+                    href={socialHref(social)}
                     className="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(244,159,32,0.3)] hover:-translate-y-1 transition-all duration-300"
                     aria-label={social.label}
                   >
@@ -221,7 +235,7 @@ const ContactPage = () => {
         {/* Map Section */}
         <div className="mt-16 glass-card p-2 sm:p-4 rounded-3xl overflow-hidden h-[400px] relative border border-white/10 hover:border-white/20 transition-all duration-300">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.727670977827!2d32.42436737521876!3d37.81989437197368!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d08db8c0b2f56b%3A0x6b801a2f6fb39e80!2sNecmettin%20Erbakan%20%C3%9Cniversitesi%20Uygulamal%C4%B1%20Bilimler%20Fak%C3%BCltesi!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str" 
+            src={mapEmbedUrl}
             width="100%" 
             height="100%" 
             style={{ border: 0, borderRadius: '1rem' }} 

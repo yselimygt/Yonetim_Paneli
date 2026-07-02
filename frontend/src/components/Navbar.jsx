@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, Globe, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { navLinks } from '../data/innomisData';
+import { useSiteData } from '../context/SiteDataContext';
 
 const Navbar = () => {
+  const { siteData } = useSiteData();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navbarLogo = siteData?.settings?.brand?.navbarLogo || '/innomis/assets/logo/Yatay-Beyaz.png';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +39,7 @@ const Navbar = () => {
           <div className={`flex-shrink-0 flex items-center gap-2 cursor-pointer transition-opacity duration-300 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
             <Link to="/" className="flex items-center gap-2">
               <img 
-                src="/innomis/assets/logo/Yatay-Beyaz.png" 
+                src={navbarLogo}
                 alt="InnoMIS Logo" 
                 className="h-10 w-auto transition-all"
               />
@@ -88,7 +91,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between mb-4">
             <Link to="/" onClick={() => setIsOpen(false)}>
               <img 
-                src="/innomis/assets/logo/Yatay-Beyaz.png" 
+                src={navbarLogo}
                 alt="InnoMIS Logo" 
                 className="h-10 w-auto"
               />

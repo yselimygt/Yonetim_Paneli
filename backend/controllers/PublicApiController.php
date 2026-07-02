@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../models/SiteHistory.php';
 require_once __DIR__ . '/../models/SiteTeamProfile.php';
 
 class PublicApiController extends Controller
@@ -155,7 +156,37 @@ class PublicApiController extends Controller
         $totalSponsorsExact = 0;
         $sponsorLogos = [];
         try {
-            $sponsorStmt = $db->query("SELECT logo_url FROM sponsors WHERE status = 'active' ORDER BY created_at DESC");
+            $selectedSponsorIds = [];
+            foreach (($settings['sponsors'] ?? []) as $sponsorValue) {
+                if (is_numeric($sponsorValue)) {
+                    $selectedSponsorIds[] = (int)$sponsorValue;
+                }
+            }
+            $selectedSponsorIds = array_values(array_unique(array_filter($selectedSponsorIds)));
+
+            if (!empty($selectedSponsorIds)) {
+                $placeholders = implode(',', array_fill(0, count($selectedSponsorIds), '?'));
+                $sponsorStmt = $db->prepare("
+                    SELECT logo_url
+                    FROM sponsors
+                    WHERE status = 'active'
+                      AND logo_url IS NOT NULL
+                      AND logo_url != ''
+                      AND id IN ($placeholders)
+                    ORDER BY FIELD(id, $placeholders)
+                ");
+                $sponsorStmt->execute(array_merge($selectedSponsorIds, $selectedSponsorIds));
+            } else {
+                $sponsorStmt = $db->query("
+                    SELECT logo_url
+                    FROM sponsors
+                    WHERE status = 'active'
+                      AND logo_url IS NOT NULL
+                      AND logo_url != ''
+                    ORDER BY created_at DESC
+                ");
+            }
+
             $sponsorsResult = $sponsorStmt->fetchAll();
             $totalSponsorsExact = count($sponsorsResult);
             foreach ($sponsorsResult as $sp) {
@@ -167,45 +198,12 @@ class PublicApiController extends Controller
         } catch (PDOException $e) {
         }
 
-        if (!isset($settings['stats']) || !is_array($settings['stats'])) {
+        if (!isset($settings['stats']) || !is_array($settings['stats']) || empty($settings['stats'])) {
             $settings['stats'] = [
                 [ 'label' => 'Aktif Üye', 'value' => $roundedUsers . '+', 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ],
                 [ 'label' => 'Etkinlik', 'value' => (string)$totalEventsExact, 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ],
                 [ 'label' => 'İş Birliği', 'value' => (string)$totalSponsorsExact, 'desc' => 'Marka, topluluk ve sektör paydaşları.' ]
             ];
-        } else {
-            // Eğitim Saati istatistiğini sistemden filtrele
-            $settings['stats'] = array_values(array_filter($settings['stats'], function($s) {
-                return $s['label'] !== 'Eğitim Saati';
-            }));
-
-            $foundMember = false;
-            $foundEvent = false;
-            $foundSponsor = false;
-            foreach ($settings['stats'] as &$stat) {
-                if ($stat['label'] === 'Aktif Üye') {
-                    $stat['value'] = $roundedUsers . '+';
-                    $foundMember = true;
-                }
-                if ($stat['label'] === 'Etkinlik') {
-                    $stat['value'] = (string)$totalEventsExact;
-                    $foundEvent = true;
-                }
-                if ($stat['label'] === 'İş Birliği') {
-                    $stat['value'] = (string)$totalSponsorsExact;
-                    $foundSponsor = true;
-                }
-            }
-            if (!$foundMember && count($settings['stats']) >= 0) {
-                array_unshift($settings['stats'], [ 'label' => 'Aktif Üye', 'value' => $roundedUsers . '+', 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ]);
-            }
-            if (!$foundEvent && count($settings['stats']) >= 0) {
-                // Sadece sonradan eklenecekse sonuna ekleyelim veya 2. sıraya
-                array_splice($settings['stats'], 1, 0, [[ 'label' => 'Etkinlik', 'value' => (string)$totalEventsExact, 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ]]);
-            }
-            if (!$foundSponsor) {
-                $settings['stats'][] = [ 'label' => 'İş Birliği', 'value' => (string)$totalSponsorsExact, 'desc' => 'Marka, topluluk ve sektör paydaşları.' ];
-            }
         }
 
         // Sponsor array'ini setting içine entegre et (ön tarafta logolar gösterilecek)
@@ -220,8 +218,7 @@ class PublicApiController extends Controller
         $gallery = array_map(fn($image) => $this->withGalleryThumbnail($image), $stmtGal->fetchAll());
 
         // History (Achievements & Awards)
-        $stmtHist = $db->query("SELECT * FROM site_history ORDER BY year DESC, id DESC");
-        $history = $stmtHist->fetchAll();
+        $history = (new SiteHistory())->getAllHistory();
 
         $achievements = array_values(array_filter($history, fn($h) => $h['type'] === 'achievement'));
         $awards = array_values(array_filter($history, fn($h) => $h['type'] === 'award'));

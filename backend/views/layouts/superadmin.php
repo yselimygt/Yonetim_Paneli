@@ -377,6 +377,10 @@
         }
         .btn-theme:hover { background: rgba(128,128,128,0.1); }
 
+        .mobile-bottom-menu {
+            display: none;
+        }
+
         /* Forms */
         .form-group { margin-bottom: 20px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -575,8 +579,199 @@
             }
 
             .sidebar-footer {
-                padding: 12px;
-                background: transparent;
+                display: none;
+            }
+
+            .mobile-bottom-menu {
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                bottom: calc(8px + env(safe-area-inset-bottom));
+                z-index: 80;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+                align-items: center;
+                gap: 8px;
+                min-height: 64px;
+                padding: 8px 10px;
+                border: 1px solid rgba(0,188,212,.26);
+                border-radius: 18px;
+                background:
+                    linear-gradient(135deg, rgba(0,188,212,.16), rgba(15,23,42,.86) 42%, rgba(16,185,129,.11)),
+                    color-mix(in srgb, var(--sidebar) 78%, #0f172a 22%);
+                box-shadow:
+                    0 16px 38px rgba(0,0,0,.42),
+                    0 0 0 1px rgba(255,255,255,.035) inset,
+                    0 -10px 28px rgba(0,188,212,.08);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+            }
+
+            body.sidebar-open .mobile-bottom-menu {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .mobile-bottom-user {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-width: 0;
+            }
+
+            .mobile-bottom-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 1px solid rgba(255,255,255,.1);
+                flex: 0 0 auto;
+            }
+
+            .mobile-bottom-name {
+                display: block;
+                color: var(--text);
+                font-size: 11px;
+                font-weight: 700;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .mobile-bottom-role {
+                display: inline-flex;
+                margin-top: 3px;
+                padding: 2px 6px;
+                border-radius: 999px;
+                background: rgba(16,185,129,.15);
+                color: #34d399;
+                font-size: 9px;
+                font-weight: 800;
+            }
+
+            .mobile-bottom-logo {
+                position: relative;
+                justify-self: center;
+                align-self: start;
+                width: 58px;
+                height: 58px;
+                margin-top: -30px;
+                border-radius: 50%;
+                display: grid;
+                place-items: center;
+                border: 4px solid var(--bg);
+                background:
+                    radial-gradient(circle at 35% 28%, rgba(255,255,255,.18), transparent 34%),
+                    var(--accent);
+                color: #071112;
+                font-size: 13px;
+                font-weight: 900;
+                box-shadow: 0 12px 28px rgba(0,188,212,.24);
+                overflow: hidden;
+            }
+
+            .mobile-bottom-logo img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .mobile-bottom-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5px;
+                min-width: 0;
+            }
+
+            .mobile-bottom-link {
+                min-height: 30px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid rgba(0,188,212,.2);
+                border-radius: 9px;
+                background: rgba(6,182,212,.08);
+                color: var(--text);
+                text-decoration: none;
+                font-size: 10px;
+                font-weight: 700;
+                white-space: nowrap;
+            }
+
+            .mobile-bottom-link.danger {
+                color: #fca5a5;
+                border-color: rgba(239,68,68,.22);
+                background: rgba(239,68,68,.08);
+            }
+
+            .mobile-bottom-powered {
+                position: absolute;
+                left: 50%;
+                bottom: 3px;
+                transform: translateX(-50%);
+                display: inline-flex;
+                align-items: center;
+                gap: 3px;
+                color: var(--muted);
+                font-size: 8px;
+                pointer-events: auto;
+            }
+
+            .mobile-bottom-powered img {
+                height: 12px;
+                opacity: .72;
+                filter: brightness(0) invert(1);
+            }
+
+            [data-theme="light"] .mobile-bottom-menu {
+                border-color: rgba(0,188,212,.2);
+                background:
+                    linear-gradient(135deg, rgba(0,188,212,.12), rgba(255,255,255,.94) 42%, rgba(16,185,129,.08)),
+                    rgba(255,255,255,.92);
+                box-shadow:
+                    0 14px 32px rgba(15,23,42,.14),
+                    0 0 0 1px rgba(255,255,255,.72) inset,
+                    0 -8px 22px rgba(0,188,212,.06);
+            }
+
+            [data-theme="light"] .mobile-bottom-avatar {
+                border-color: rgba(15,23,42,.1);
+            }
+
+            [data-theme="light"] .mobile-bottom-name {
+                color: #0f172a;
+            }
+
+            [data-theme="light"] .mobile-bottom-role {
+                background: rgba(5,150,105,.12);
+                color: #047857;
+            }
+
+            [data-theme="light"] .mobile-bottom-logo {
+                border-color: #f3f4f6;
+                color: #06343b;
+                box-shadow: 0 12px 26px rgba(0,188,212,.18);
+            }
+
+            [data-theme="light"] .mobile-bottom-link {
+                border-color: rgba(0,188,212,.22);
+                background: rgba(0,188,212,.08);
+                color: #0f172a;
+            }
+
+            [data-theme="light"] .mobile-bottom-link.danger {
+                border-color: rgba(220,38,38,.18);
+                background: rgba(220,38,38,.08);
+                color: #b91c1c;
+            }
+
+            [data-theme="light"] .mobile-bottom-powered {
+                color: #64748b;
+            }
+
+            [data-theme="light"] .mobile-bottom-powered img {
+                opacity: .72;
+                filter: none;
             }
 
             .sidebar-user {
@@ -588,6 +783,7 @@
                 width: 100%;
                 margin-left: 0;
                 min-width: 0;
+                padding-bottom: 92px;
             }
 
             .topbar {
@@ -1100,6 +1296,30 @@
         </div>
     </div>
 </aside>
+
+<div class="mobile-bottom-menu" aria-label="Mobil hesap menüsü">
+    <div class="mobile-bottom-user">
+        <img src="<?= $avatarUrl ?>" alt="Avatar" class="mobile-bottom-avatar">
+        <div style="min-width:0;">
+            <span class="mobile-bottom-name"><?= View::escape($userName) ?></span>
+            <span class="mobile-bottom-role">Süper Admin</span>
+        </div>
+    </div>
+
+    <div class="mobile-bottom-logo" aria-label="Logo alanı">IA</div>
+
+    <div class="mobile-bottom-actions">
+        <a href="<?= BASE_URL ?>/profile" class="mobile-bottom-link">Profilim</a>
+        <a href="<?= BASE_URL ?>/logout" class="mobile-bottom-link danger">Çıkış</a>
+    </div>
+
+    <div class="mobile-bottom-powered">
+        <span>Powered by</span>
+        <a href="https://viperadev.com" target="_blank" style="display:flex;align-items:center;">
+            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev">
+        </a>
+    </div>
+</div>
 
 <!-- ── Main Content ── -->
 <div class="main">
