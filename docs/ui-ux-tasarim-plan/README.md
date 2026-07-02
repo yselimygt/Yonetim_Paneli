@@ -29,3 +29,14 @@ Mevcut görsel dil korunacak. Renk paleti, kart dili, border radius, font ailesi
 - [03-php-superadmin-panel-layouts.md](./backend-moduller/03-php-superadmin-panel-layouts.md)
 - [04-php-mini-uygulama-modulleri.md](./backend-moduller/04-php-mini-uygulama-modulleri.md)
 - [05-uygulama-sirasi-ve-kabul-kriterleri.md](./05-uygulama-sirasi-ve-kabul-kriterleri.md)
+
+## Yeni Faz: Super Admin Minimal Mobil
+
+Super admin paneli mobilde tekrar elden geçirilecek. Bu fazda hedef yalnızca responsive uyum değil, mobilde daha sade, daha az görsel gürültülü ve tek elle kullanılabilir minimalist bir yönetim deneyimidir.
+
+- [00-minimal-mobil-vizyon.md](./superadmin-minimal/00-minimal-mobil-vizyon.md)
+- [01-shell-navigasyon.md](./superadmin-minimal/01-shell-navigasyon.md)
+- [02-liste-tablo-kart-sistemi.md](./superadmin-minimal/02-liste-tablo-kart-sistemi.md)
+- [03-form-modal-aksiyon-sistemi.md](./superadmin-minimal/03-form-modal-aksiyon-sistemi.md)
+- [04-sayfa-gruplari-uygulama-plani.md](./superadmin-minimal/04-sayfa-gruplari-uygulama-plani.md)
+- [05-kabul-kriterleri-test.md](./superadmin-minimal/05-kabul-kriterleri-test.md)
