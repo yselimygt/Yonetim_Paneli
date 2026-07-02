@@ -62,31 +62,46 @@ body {
 .question-card {
     background: var(--card);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 24px 32px;
-    margin-bottom: 24px;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
     position: relative;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: none;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     animation: slideDownFade 0.4s ease forwards;
 }
 .question-card:focus-within, .question-card:hover {
     border-color: rgba(var(--accent-rgb), 0.4);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(var(--accent-rgb), 0.2);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.16);
+    transform: none;
 }
 .question-card.dragging {
-    opacity: 0.5;
-    border: 2px dashed var(--accent);
-    transform: scale(0.98);
+    opacity: 0.62;
+    border-color: var(--accent);
+    transform: scale(0.985);
+    cursor: grabbing;
+}
+
+.question-card.drag-over-before {
+    transform: translateY(-4px);
+    box-shadow: 0 -3px 0 var(--accent), 0 0 0 1px rgba(var(--accent-rgb), 0.14);
+}
+
+.question-card.drag-over-after {
+    transform: translateY(4px);
+    box-shadow: 0 3px 0 var(--accent), 0 0 0 1px rgba(var(--accent-rgb), 0.14);
+}
+
+.question-card.reorder-settle {
+    animation: reorderSettle .22s ease-out;
 }
 .drag-handle {
     position: absolute;
-    top: 4px;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 20px;
+    width: 34px;
+    height: 14px;
     cursor: grab;
     display: flex;
     align-items: center;
@@ -97,24 +112,25 @@ body {
 }
 .drag-handle::after {
     content: "••••••";
-    font-size: 10px;
-    letter-spacing: 2px;
+    font-size: 8px;
+    letter-spacing: 1.4px;
 }
 .question-card:hover .drag-handle { opacity: 0.6; }
 
 .question-actions {
     position: absolute;
-    bottom: -16px;
-    right: 24px;
+    top: 9px;
+    right: 10px;
     display: flex;
-    gap: 8px;
-    background: var(--card);
-    padding: 4px 12px;
-    border-radius: 20px;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    padding: 0;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: none;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(4px);
     transition: all 0.3s ease;
     z-index: 10;
 }
@@ -127,11 +143,31 @@ body {
     border: none;
     color: var(--muted);
     cursor: pointer;
-    padding: 6px;
+    padding: 4px;
     transition: color 0.2s;
 }
 .q-btn:hover { color: var(--accent); }
 .q-btn.delete:hover { color: var(--danger); }
+
+.q-required-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 26px;
+    padding: 3px 6px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+}
+
+.q-required-toggle input {
+    width: 12px;
+    height: 12px;
+    accent-color: var(--accent);
+}
 
 /* Seamless Inputs */
 .seamless-input {
@@ -139,7 +175,7 @@ body {
     border: none;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     color: var(--text);
-    padding: 8px 4px;
+    padding: 6px 4px;
     width: 100%;
     outline: none;
     transition: all 0.3s;
@@ -150,9 +186,24 @@ body {
     border-radius: 4px 4px 0 0;
 }
 .seamless-title {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 0;
+}
+
+.question-main-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    gap: 10px;
+    margin-top: 8px;
+    padding-right: 28px;
+}
+
+.question-card .form-control {
+    min-height: 34px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    font-size: 12px;
 }
 
 /* Builder Floating Menu (Desktop) */
@@ -217,15 +268,22 @@ body {
     transform: translateX(0);
 }
 
-.options-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.options-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
 .option-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 .option-item .seamless-input {
     flex: 1;
-    font-size: 14px;
+    font-size: 12px;
+}
+
+.question-extra {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(128,128,128,0.08);
+    border-radius: 8px;
 }
 
 .responses-table th, .responses-table td {
@@ -242,6 +300,10 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+@keyframes reorderSettle {
+    from { transform: translateY(8px); opacity: .72; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 /* Mobile Responsiveness */
@@ -262,8 +324,15 @@ body {
     }
     .floating-menu::-webkit-scrollbar { display: none; }
     .floating-menu button::after { display: none; } /* Hide tooltips on mobile */
-    .builder-container { padding: 0 16px 120px 16px; }
-    .question-card { padding: 20px 16px; }
+    .builder-container { padding: 0 10px 120px 10px; }
+    .question-card { padding: 13px 12px; margin-bottom: 9px; border-radius: 9px; }
+    .question-main-row { grid-template-columns: 1fr; gap: 8px; padding-right: 0; }
+    .question-actions { top: 7px; right: 8px; opacity: 1; transform: none; border: 0; }
+    .seamless-title { padding-right: 32px; font-size: 13px; }
+    .options-list { gap: 5px; }
+    .option-item { gap: 6px; }
+    .question-extra { padding: 9px; }
+    .q-required-toggle { font-size: 0; gap: 0; padding: 4px 6px; }
     .form-builder-tabs { width: 100%; justify-content: space-between; overflow-x: auto; padding: 4px; }
     .form-builder-tabs button { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
 }
@@ -488,16 +557,21 @@ function createQuestionCard(field, index) {
     card.addEventListener('dragstart', handleDragStart);
     card.addEventListener('dragover', handleDragOver);
     card.addEventListener('drop', handleDrop);
+    card.addEventListener('dragleave', handleDragLeave);
     card.addEventListener('dragend', handleDragEnd);
 
     let html = `
         <div class="drag-handle" title="Sürükle bırak"></div>
         <div class="question-actions">
+            <label class="q-required-toggle" title="Gerekli">
+                <span>Gerekli</span>
+                <input type="checkbox" ${field.required ? 'checked' : ''} onchange="updateField(${index}, 'required', this.checked)">
+            </label>
             <button class="q-btn delete" title="Soruyu Sil" onclick="deleteQuestion(${index})">
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             </button>
         </div>
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-top: 10px;">
+        <div class="question-main-row">
             <div>
                 <input type="text" class="seamless-input seamless-title" value="${escapeHtml(field.label)}" onchange="updateField(${index}, 'label', this.value)" placeholder="Soru Başlığı">
                 <input type="hidden" value="${field.name}">
@@ -545,9 +619,9 @@ function createQuestionCard(field, index) {
     if (field.type === 'file') {
         let maxMB = field.max_size || 5;
         html += `
-            <div style="margin-top: 16px; padding: 12px; background: rgba(128,128,128,0.1); border-radius: 6px;">
-                <label style="font-size: 12px; color: var(--muted);">Maksimum Boyut (MB)</label>
-                <input type="number" class="form-control" value="${maxMB}" onchange="updateField(${index}, 'max_size', this.value)" style="width: 100px; display: inline-block; margin-left: 10px;">
+            <div class="question-extra">
+                <label style="font-size: 11px; color: var(--muted);">Maksimum Boyut (MB)</label>
+                <input type="number" class="form-control" value="${maxMB}" onchange="updateField(${index}, 'max_size', this.value)" style="width: 86px; display: inline-block; margin-left: 8px;">
             </div>
         `;
     }
@@ -555,9 +629,9 @@ function createQuestionCard(field, index) {
     if (field.type === 'social') {
         let platform = field.platform || 'instagram';
         html += `
-            <div style="margin-top: 16px;">
-                <label style="font-size: 12px; color: var(--muted);">Platform:</label>
-                <select class="form-control" style="width: 200px; display: inline-block; margin-left: 10px;" onchange="updateField(${index}, 'platform', this.value)">
+            <div class="question-extra">
+                <label style="font-size: 11px; color: var(--muted);">Platform:</label>
+                <select class="form-control" style="width: 160px; display: inline-block; margin-left: 8px;" onchange="updateField(${index}, 'platform', this.value)">
                     <option value="instagram" ${platform==='instagram'?'selected':''}>Instagram</option>
                     <option value="twitter" ${platform==='twitter'?'selected':''}>X (Twitter)</option>
                     <option value="linkedin" ${platform==='linkedin'?'selected':''}>LinkedIn</option>
@@ -570,60 +644,102 @@ function createQuestionCard(field, index) {
 
     if (field.type === 'education') {
         html += `
-            <div style="margin-top: 16px; padding: 12px; background: rgba(var(--accent-rgb), 0.05); border-radius: 6px; border: 1px dashed var(--accent);">
-                <p style="font-size: 13px; color: var(--muted); margin: 0;">Bu şablon ön yüzde otomatik olarak <strong>Üniversite, Fakülte, Bölüm ve Sınıf</strong> seçimi yaptırır (Konya üniversiteleri için özel zincirleme seçim mantığı içerir).</p>
+            <div class="question-extra" style="background: rgba(var(--accent-rgb), 0.05); border: 1px dashed var(--accent);">
+                <p style="font-size: 11px; line-height: 1.4; color: var(--muted); margin: 0;">Ön yüzde <strong>Üniversite, Fakülte, Bölüm ve Sınıf</strong> seçimi yaptırır.</p>
             </div>
         `;
     }
-
-    html += `
-        <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; display: flex; justify-content: flex-end; align-items: center;">
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer;">
-                Gerekli
-                <input type="checkbox" ${field.required ? 'checked' : ''} onchange="updateField(${index}, 'required', this.checked)">
-            </label>
-        </div>
-    `;
-
     card.innerHTML = html;
     return card;
 }
 
 // DRAG AND DROP
 let dragSrcEl = null;
+let lastDropIndex = null;
 
 function handleDragStart(e) {
     dragSrcEl = this;
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
+    e.dataTransfer.setData('text/plain', this.dataset.index);
     this.classList.add('dragging');
+    requestAnimationFrame(() => {
+        this.style.opacity = '0.62';
+    });
 }
 
 function handleDragOver(e) {
     if (e.preventDefault) e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
+
+    if (!dragSrcEl || dragSrcEl === this) return false;
+
+    const direction = getDropDirection(e, this);
+    clearDragIndicators();
+    this.classList.add(direction === 'before' ? 'drag-over-before' : 'drag-over-after');
     return false;
 }
 
 function handleDrop(e) {
     if (e.stopPropagation) e.stopPropagation();
+    if (e.preventDefault) e.preventDefault();
     
-    if (dragSrcEl !== this) {
-        let srcIndex = parseInt(dragSrcEl.dataset.index);
-        let tgtIndex = parseInt(this.dataset.index);
-        
-        // Swap array items
-        let temp = formFields[srcIndex];
-        formFields[srcIndex] = formFields[tgtIndex];
-        formFields[tgtIndex] = temp;
-        
-        renderBuilder();
-    }
+    if (!dragSrcEl || dragSrcEl === this) return false;
+
+    const srcIndex = parseInt(dragSrcEl.dataset.index, 10);
+    const targetIndex = parseInt(this.dataset.index, 10);
+    const direction = getDropDirection(e, this);
+    moveField(srcIndex, targetIndex, direction);
+
     return false;
 }
 
+function handleDragLeave(e) {
+    if (!this.contains(e.relatedTarget)) {
+        this.classList.remove('drag-over-before', 'drag-over-after');
+    }
+}
+
 function handleDragEnd(e) {
+    this.style.opacity = '';
     this.classList.remove('dragging');
+    clearDragIndicators();
+    dragSrcEl = null;
+}
+
+function getDropDirection(e, target) {
+    const rect = target.getBoundingClientRect();
+    return e.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+}
+
+function clearDragIndicators() {
+    document.querySelectorAll('.question-card.drag-over-before, .question-card.drag-over-after').forEach(card => {
+        card.classList.remove('drag-over-before', 'drag-over-after');
+    });
+}
+
+function moveField(srcIndex, targetIndex, direction) {
+    if (Number.isNaN(srcIndex) || Number.isNaN(targetIndex) || srcIndex === targetIndex) return;
+
+    const moved = formFields.splice(srcIndex, 1)[0];
+    let insertIndex = targetIndex;
+
+    if (srcIndex < targetIndex) insertIndex--;
+    if (direction === 'after') insertIndex++;
+
+    insertIndex = Math.max(0, Math.min(insertIndex, formFields.length));
+    formFields.splice(insertIndex, 0, moved);
+    lastDropIndex = insertIndex;
+    renderBuilder();
+    markReorderedCard();
+}
+
+function markReorderedCard() {
+    requestAnimationFrame(() => {
+        const card = document.querySelector(`.question-card[data-index="${lastDropIndex}"]`);
+        if (!card) return;
+        card.classList.add('reorder-settle');
+        setTimeout(() => card.classList.remove('reorder-settle'), 240);
+    });
 }
 
 // BUILDER ACTIONS

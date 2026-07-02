@@ -35,6 +35,7 @@
 4. Global form yönetimi
    - Sekmeler ve form kartları mobilde sadeleşecek.
    - Form oluşturma alanı popup veya alt panel davranışı alacak.
+   - Durum: mobil sekme, kart matrisi ve oluşturma alt paneli uygulandı.
 
 5. Finans ve aidat
    - Özet kartları kompakt matris.

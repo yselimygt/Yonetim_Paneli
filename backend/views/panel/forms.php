@@ -223,6 +223,220 @@ function getBadge($isActive, $config) {
 .fm-footer {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
+}
+
+@media (max-width: 700px) {
+    .forms-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .forms-title h1 {
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .forms-title p {
+        display: -webkit-box;
+        overflow: hidden;
+        font-size: 11px;
+        line-height: 1.35;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .forms-create-btn {
+        width: 100%;
+        min-height: 42px;
+        justify-content: center;
+        border-radius: 11px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .forms-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 14px;
+        padding: 4px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--card) 82%, transparent);
+    }
+
+    .forms-tabs button {
+        min-height: 38px;
+        padding: 8px 6px;
+        border: 0;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .forms-tabs button.active {
+        background: color-mix(in srgb, var(--accent) 14%, transparent);
+        color: var(--accent);
+    }
+
+    .fm-notice {
+        margin-bottom: 14px;
+        padding: 10px;
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .forms-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .f-card {
+        min-width: 0;
+        padding: 13px;
+        border-radius: 11px;
+    }
+
+    .f-card-header {
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .f-card-header > div:first-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .f-card-header span {
+        margin-left: 0 !important;
+        font-size: 8px !important;
+        line-height: 1.2;
+    }
+
+    .f-actions {
+        gap: 5px;
+    }
+
+    .f-actions button,
+    .f-actions a {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border-radius: 9px;
+    }
+
+    .f-card-title {
+        display: -webkit-box;
+        overflow: hidden;
+        min-height: 34px;
+        margin-bottom: 6px;
+        font-size: 13px;
+        line-height: 1.25;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .f-card-desc {
+        display: -webkit-box;
+        overflow: hidden;
+        margin-bottom: 14px;
+        font-size: 11px;
+        line-height: 1.35;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .f-card-footer {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 10px;
+    }
+
+    .f-resp-count,
+    .f-edit-link {
+        width: 100%;
+        min-height: 32px;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .f-edit-link {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+        border-radius: 9px;
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+        text-decoration: none;
+    }
+
+    .empty-tpl {
+        padding: 28px 16px;
+        border-radius: 11px;
+    }
+
+    .f-modal {
+        align-items: flex-end;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .f-modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: calc(92dvh - env(safe-area-inset-bottom));
+        overflow-y: auto;
+        padding: 18px;
+        border-radius: 18px 18px 12px 12px;
+        box-shadow: none;
+    }
+
+    .f-modal-content h2 {
+        margin-bottom: 16px;
+        font-size: 16px;
+    }
+
+    .fm-label {
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+
+    .fm-input,
+    .fm-textarea,
+    .fm-select {
+        min-height: 42px;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+
+    .fm-footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .fm-footer .btn {
+        width: 100%;
+        min-height: 42px;
+        justify-content: center;
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+    .forms-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 
@@ -231,7 +445,7 @@ function getBadge($isActive, $config) {
         <h1>Form Yönetimi</h1>
         <p>Tüm departmanlarda ortak görünen başvurular, anketler ve topluluk veri havuzu.</p>
     </div>
-    <button class="btn btn-primary" onclick="document.getElementById('createModal').style.display='flex'">
+    <button class="forms-create-btn btn btn-primary" onclick="document.getElementById('createModal').style.display='flex'">
         + Yeni Form Oluştur
     </button>
 </div>
@@ -329,7 +543,7 @@ function getBadge($isActive, $config) {
 </div>
 
 <!-- Modal -->
-<div id="createModal" class="f-modal">
+<div id="createModal" class="f-modal" onclick="closeCreateModal(event)">
     <div class="f-modal-content">
         <h2>Yeni Form Oluştur</h2>
         <form method="POST" action="<?= BASE_URL ?>/panel/<?= View::escape($currentDept['slug']) ?>/forms/create">
@@ -369,4 +583,17 @@ function switchFTab(tab) {
     document.querySelectorAll('.forms-tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
 }
+
+function closeCreateModal(event) {
+    if (event.target.id === 'createModal') {
+        event.target.style.display = 'none';
+    }
+}
+
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('createModal');
+        if (modal) modal.style.display = 'none';
+    }
+});
 </script>
