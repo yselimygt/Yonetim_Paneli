@@ -1,11 +1,120 @@
 <?php $pageTitle = 'Kullanıcı Düzenle'; ?>
 
+<style>
+@media (max-width: 800px) {
+    .user-edit-title {
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .user-edit-layout {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .user-edit-options {
+        display: grid;
+        gap: 10px;
+    }
+
+    .user-edit-options .check-group {
+        align-items: flex-start;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--input-bg);
+        padding: 12px;
+        margin-top: 0 !important;
+    }
+
+    .user-update-button,
+    .user-assign-button {
+        width: 100%;
+    }
+
+    .user-assignments-table {
+        display: table;
+        overflow: visible;
+    }
+
+    .user-assignments-table thead {
+        display: none;
+    }
+
+    .user-assignments-table,
+    .user-assignments-table tbody,
+    .user-assignments-table tr,
+    .user-assignments-table td {
+        width: 100%;
+    }
+
+    .user-assignments-table tbody {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .user-assignments-table tr {
+        display: grid;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--input-bg);
+        padding: 12px;
+    }
+
+    .user-assignments-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        max-width: none;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        padding: 0 0 10px;
+        white-space: normal;
+        overflow: visible;
+        text-align: right;
+    }
+
+    .user-assignments-table td::before {
+        content: attr(data-label);
+        flex: 0 0 104px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .user-assignments-table td:last-child {
+        display: block;
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .user-assignments-table td:last-child::before {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .user-assignments-table td form,
+    .user-assignments-table td .btn {
+        width: 100%;
+    }
+
+    .user-assignments-table td .btn {
+        justify-content: center;
+    }
+}
+</style>
+
 <div class="page-header">
-    <h2><?= View::escape($user['name']) ?> — Düzenle</h2>
+    <h2 class="user-edit-title"><?= View::escape($user['name']) ?> — Düzenle</h2>
     <a href="<?= BASE_URL ?>/superadmin/users" class="btn btn-outline">← Geri</a>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;">
+<div class="user-edit-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;">
 
     <!-- Sol: Kullanıcı Bilgileri -->
     <div class="card">
@@ -36,7 +145,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group user-edit-options">
                     <div class="check-group">
                         <input type="checkbox" id="is_active_u" name="is_active" value="1" <?= $user['is_active'] ? 'checked' : '' ?>>
                         <label for="is_active_u">Aktif</label>
@@ -59,7 +168,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Güncelle</button>
+                <button type="submit" class="btn btn-primary user-update-button">Güncelle</button>
             </form>
         </div>
     </div>
@@ -69,16 +178,16 @@
         <!-- Mevcut atamalar -->
         <div class="card" style="margin-bottom:16px;">
             <div class="card-header">Mevcut Departmanlar</div>
-            <table>
+            <table class="user-assignments-table">
                 <thead><tr><th>Departman</th><th>Rol</th><th></th></tr></thead>
                 <tbody>
                 <?php if (empty($userDepts)): ?>
-                    <tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;">Atama yok</td></tr>
+                    <tr><td colspan="3" data-label="" style="color:var(--muted);text-align:center;padding:20px;">Atama yok</td></tr>
                 <?php else: ?>
                     <?php foreach ($userDepts as $ud): ?>
                     <tr>
-                        <td><?= View::escape($ud['dept_name']) ?></td>
-                        <td>
+                        <td data-label="Departman"><?= View::escape($ud['dept_name']) ?></td>
+                        <td data-label="Rol">
                             <?php 
                                 $badgeClass = 'badge-member';
                                 $roleName = 'Üye';
@@ -94,7 +203,7 @@
                                 <?= $roleName ?>
                             </span>
                         </td>
-                        <td>
+                        <td data-label="İşlem">
                             <form method="POST" action="<?= BASE_URL ?>/superadmin/users/<?= $user['id'] ?>/assign">
                                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                 <input type="hidden" name="department_id" value="<?= $ud['department_id'] ?>">
@@ -139,7 +248,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width:100%">Ata / Güncelle</button>
+                    <button type="submit" class="btn btn-primary user-assign-button" style="width:100%">Ata / Güncelle</button>
                 </form>
             </div>
         </div>
