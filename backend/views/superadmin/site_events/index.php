@@ -31,41 +31,35 @@
 
     .events-table tbody {
         display: grid;
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+        padding: 8px;
     }
 
     .events-table tr {
         display: grid;
-        gap: 10px;
+        gap: 7px;
         border: 1px solid var(--border);
-        border-radius: 16px;
-        background: var(--card);
-        padding: 14px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+        border-radius: 12px;
+        background: var(--input-bg);
+        padding: 8px;
+        box-shadow: none;
+        min-width: 0;
     }
 
     .events-table td {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 14px;
+        display: block;
         max-width: none;
-        border-bottom: 1px solid rgba(255,255,255,.04);
-        padding: 0 0 10px;
+        border-bottom: 0;
+        padding: 0;
         white-space: normal;
         overflow: visible;
-        text-align: right;
+        text-align: left;
+        line-height: 1.35;
     }
 
     .events-table td::before {
-        content: attr(data-label);
-        flex: 0 0 104px;
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .05em;
-        text-align: left;
-        text-transform: uppercase;
+        display: none;
     }
 
     .events-table td:last-child {
@@ -75,8 +69,7 @@
     }
 
     .events-table td:last-child::before {
-        display: block;
-        margin-bottom: 8px;
+        display: none;
     }
 
     .event-title-cell,
@@ -88,9 +81,53 @@
     .event-title-cell strong {
         display: flex !important;
         flex-wrap: wrap;
-        justify-content: flex-end;
+        justify-content: flex-start;
+        align-items: center;
         gap: 6px;
-        text-align: right;
+        text-align: left;
+        font-weight: 700;
+    }
+
+    .event-title-cell .badge {
+        margin-left: 0 !important;
+    }
+
+    .event-meta-cell {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .event-meta-cell > div {
+        margin-top: 0 !important;
+    }
+
+    .event-meta-cell > div:last-child {
+        display: inline-flex;
+        max-width: 100%;
+        min-height: 22px;
+        align-items: center;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255,255,255,.03);
+        color: var(--muted) !important;
+        font-size: 10px !important;
+        font-weight: 700;
+        line-height: 1.2;
+        padding: 3px 7px;
+        overflow-wrap: anywhere;
+    }
+
+    .events-table td[data-label="Durum"],
+    .event-description {
+        display: none;
+    }
+
+    .events-table td[data-label="Görsel"] {
+        order: -1;
+        width: calc(100% + 16px);
+        margin: -8px -8px 0;
     }
 
     .event-description {
@@ -101,14 +138,17 @@
 
     .event-image,
     .event-image-placeholder {
-        width: 76px !important;
-        height: 52px !important;
+        width: 100% !important;
+        height: 58px !important;
+        display: flex !important;
+        border-radius: 12px 12px 7px 7px !important;
+        object-fit: cover;
     }
 
     .events-table .actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        gap: 6px;
     }
 
     .events-table .actions .btn,
@@ -118,14 +158,25 @@
 
     .events-table .actions .btn {
         justify-content: center;
+        min-height: 28px;
+        padding: 0 8px;
+        border-radius: 8px;
+        font-size: 10px;
     }
 
     .event-modal-actions {
-        flex-direction: column-reverse;
+        flex-direction: row !important;
+        flex-wrap: nowrap;
     }
 
     .event-modal-actions .btn {
-        width: 100%;
+        width: auto;
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 34px;
+        justify-content: center;
+        padding: 0 8px;
+        font-size: 11px;
     }
 }
 </style>
@@ -173,11 +224,6 @@
                     <td data-label="Başlık" class="event-title-cell">
                         <strong style="display:block;font-size:14px;color:var(--text);margin-bottom:4px;">
                             <?= View::escape($e['title']) ?>
-                            <?php if(!empty($e['is_bootcamp'])): ?>
-                                <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; margin-left:8px; font-size:10px; border:1px solid rgba(59,130,246,0.3);">Bootcamp</span>
-                            <?php elseif(!empty($e['is_app_event'])): ?>
-                                <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; margin-left:8px; font-size:10px; border:1px solid rgba(16,185,129,0.3);">Modül</span>
-                            <?php endif; ?>
                         </strong>
                         <div class="event-description" style="font-size:12px;color:var(--muted);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                             <?= View::escape($e['description'] ?? '') ?>
@@ -185,6 +231,11 @@
                     </td>
                     <td data-label="Kategori / Konum" class="event-meta-cell">
                         <div><span class="badge badge-member"><?= View::escape($e['category'] ?? 'Genel') ?></span></div>
+                        <?php if(!empty($e['is_bootcamp'])): ?>
+                            <div><span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; font-size:10px; border:1px solid rgba(59,130,246,0.3);">Bootcamp</span></div>
+                        <?php elseif(!empty($e['is_app_event'])): ?>
+                            <div><span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; font-size:10px; border:1px solid rgba(16,185,129,0.3);">Modül</span></div>
+                        <?php endif; ?>
                         <div style="font-size:12px;color:var(--muted);margin-top:4px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:2px;margin-top:-2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             <?= View::escape($e['location'] ?? 'Belirtilmedi') ?>
