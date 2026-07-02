@@ -507,14 +507,69 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
     }
 
     @media (max-width: 760px) {
+        .team-bridge {
+            max-width: none;
+        }
+
         .team-hero,
         .team-stats {
             grid-template-columns: 1fr;
         }
 
+        .team-hero {
+            align-items: stretch;
+            gap: 14px;
+        }
+
+        .team-hero h2 {
+            font-size: 22px;
+        }
+
+        .team-hero .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .team-stats {
+            gap: 8px;
+        }
+
+        .team-stat {
+            padding: 13px 14px;
+        }
+
+        .team-note {
+            gap: 10px;
+            padding: 12px;
+        }
+
+        .team-note p {
+            overflow-wrap: anywhere;
+        }
+
+        .team-group-head {
+            align-items: stretch;
+            padding: 14px;
+        }
+
+        .team-group-title {
+            align-items: flex-start;
+            min-width: 0;
+        }
+
+        .team-group h3,
+        .team-group-meta {
+            overflow-wrap: anywhere;
+        }
+
+        .team-member-list {
+            padding: 8px;
+        }
+
         .team-member {
             grid-template-columns: 1fr;
             gap: 10px;
+            padding: 12px;
         }
 
         .team-member > .team-cell:nth-child(4),
@@ -527,7 +582,12 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
         }
 
         .team-actions {
-            justify-content: flex-start;
+            justify-content: stretch;
+        }
+
+        .team-actions .btn {
+            width: 100%;
+            justify-content: center;
         }
 
         .form-row {
@@ -535,8 +595,9 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
         }
 
         .profile-modal-card {
-            width: calc(100vw - 20px);
-            max-height: calc(100vh - 20px);
+            width: calc(100vw - 20px) !important;
+            height: calc(100dvh - 20px);
+            max-height: calc(100dvh - 20px);
         }
 
         .profile-modal-head,
@@ -546,8 +607,38 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
             padding-right: 16px;
         }
 
+        .profile-modal-head {
+            align-items: flex-start;
+        }
+
+        .profile-modal-title {
+            align-items: flex-start;
+        }
+
+        .profile-modal-subtitle {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-section {
+            padding: 14px;
+        }
+
+        .profile-section-head {
+            flex-direction: column;
+        }
+
+        .profile-switch {
+            align-items: flex-start;
+        }
+
         .profile-history-item {
             grid-template-columns: 1fr;
+        }
+
+        .profile-history-item .btn {
+            width: 100%;
+            justify-content: center;
         }
 
         .profile-modal-footer {
