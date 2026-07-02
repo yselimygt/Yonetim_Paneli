@@ -1,5 +1,118 @@
 <?php $pageTitle = 'Departmanlar'; ?>
 
+<style>
+@media (max-width: 700px) {
+    .departments-card {
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .departments-table {
+        display: table;
+        overflow: visible;
+    }
+
+    .departments-table thead {
+        display: none;
+    }
+
+    .departments-table,
+    .departments-table tbody,
+    .departments-table tr,
+    .departments-table td {
+        width: 100%;
+    }
+
+    .departments-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .departments-table tr {
+        display: grid;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--card);
+        padding: 14px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+    }
+
+    .departments-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        max-width: none;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        padding: 0 0 10px;
+        white-space: normal;
+        overflow: visible;
+        text-align: right;
+    }
+
+    .departments-table td::before {
+        content: attr(data-label);
+        flex: 0 0 96px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .departments-table td:last-child {
+        display: block;
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .departments-table td:last-child::before {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .departments-table .dept-name,
+    .departments-table .dept-slug,
+    .departments-table .dept-description {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .departments-table .dept-description {
+        max-width: none !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+
+    .departments-table .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .departments-table .actions .btn,
+    .departments-table .actions form {
+        width: 100%;
+    }
+
+    .departments-table .actions .btn {
+        justify-content: center;
+    }
+
+    .department-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .department-modal-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
 <div class="page-header">
     <h2>Departmanlar</h2>
     <button onclick="toggleModal('create-dept-modal')" class="btn btn-primary">
@@ -8,8 +121,8 @@
     </button>
 </div>
 
-<div class="card">
-    <table>
+<div class="card departments-card">
+    <table class="departments-table">
         <thead>
             <tr>
                 <th>Renk</th>
@@ -23,31 +136,31 @@
         </thead>
         <tbody>
         <?php if (empty($departments)): ?>
-            <tr><td colspan="7" class="empty-state"><p>Henüz departman yok.</p></td></tr>
+            <tr><td colspan="7" class="empty-state" data-label=""><p>Henüz departman yok.</p></td></tr>
         <?php else: ?>
             <?php foreach ($departments as $d): ?>
             <tr>
-                <td>
+                <td data-label="Renk">
                     <span class="color-dot" style="background:<?= View::escape($d['color']) ?>;width:14px;height:14px;border-radius:50%;display:inline-block;"></span>
                 </td>
-                <td style="font-weight:500"><?= View::escape($d['name']) ?></td>
-                <td style="color:var(--muted);font-size:12px;font-family:monospace"><?= View::escape($d['slug']) ?></td>
-                <td style="color:var(--muted);font-size:12px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                <td data-label="Ad" class="dept-name" style="font-weight:500"><?= View::escape($d['name']) ?></td>
+                <td data-label="Slug" class="dept-slug" style="color:var(--muted);font-size:12px;font-family:monospace"><?= View::escape($d['slug']) ?></td>
+                <td data-label="Açıklama" class="dept-description" style="color:var(--muted);font-size:12px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                     <?= View::escape($d['description'] ?? '—') ?>
                 </td>
-                <td>
+                <td data-label="Tip">
                     <?php if ($d['is_management']): ?>
                         <span class="badge badge-mgmt">Yönetim</span>
                     <?php else: ?>
                         <span class="badge badge-member">Standart</span>
                     <?php endif; ?>
                 </td>
-                <td>
+                <td data-label="Durum">
                     <span class="badge <?= $d['is_active'] ? 'badge-active' : 'badge-inactive' ?>">
                         <?= $d['is_active'] ? 'Aktif' : 'Pasif' ?>
                     </span>
                 </td>
-                <td>
+                <td data-label="İşlemler">
                     <div class="actions">
                         <a href="<?= BASE_URL ?>/superadmin/departments/<?= $d['id'] ?>/edit" class="btn btn-outline btn-sm">Düzenle</a>
                         <form method="POST" action="<?= BASE_URL ?>/superadmin/departments/<?= $d['id'] ?>/delete"
@@ -103,7 +216,7 @@
                 </div>
             </div>
 
-            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+            <div class="department-modal-actions" style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
                 <button type="button" onclick="closeModal('create-dept-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Oluştur</button>
             </div>

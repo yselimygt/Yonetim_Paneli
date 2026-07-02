@@ -1,16 +1,53 @@
 <?php $pageTitle = 'Departman Düzenle'; ?>
 
+<style>
+@media (max-width: 700px) {
+    .department-edit-card {
+        max-width: none !important;
+    }
+
+    .department-edit-title {
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .department-edit-actions {
+        flex-direction: column;
+    }
+
+    .department-edit-actions .btn {
+        width: 100%;
+    }
+
+    .department-edit-checks {
+        gap: 10px;
+    }
+
+    .department-edit-checks .form-group {
+        margin-bottom: 0;
+    }
+
+    .department-edit-checks .check-group {
+        align-items: flex-start;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--input-bg);
+        padding: 12px;
+    }
+}
+</style>
+
 <div class="page-header">
-    <h2>Departman Düzenle — <?= View::escape($department['name']) ?></h2>
+    <h2 class="department-edit-title">Departman Düzenle — <?= View::escape($department['name']) ?></h2>
     <a href="<?= BASE_URL ?>/superadmin/departments" class="btn btn-outline">← Geri</a>
 </div>
 
-<div class="card" style="max-width:600px;">
+<div class="card department-edit-card" style="max-width:600px;">
     <div class="card-body">
         <form method="POST" action="<?= BASE_URL ?>/superadmin/departments/<?= $department['id'] ?>">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
-            <div class="form-row">
+            <div class="form-row department-edit-checks">
                 <div class="form-group">
                     <label class="form-label">Ad *</label>
                     <input type="text" name="name" class="form-control"
@@ -53,7 +90,7 @@
                 </div>
             </div>
 
-            <div style="display:flex;gap:10px;margin-top:8px;">
+            <div class="department-edit-actions" style="display:flex;gap:10px;margin-top:8px;">
                 <button type="submit" class="btn btn-primary">Güncelle</button>
                 <a href="<?= BASE_URL ?>/superadmin/departments" class="btn btn-outline">İptal</a>
             </div>
