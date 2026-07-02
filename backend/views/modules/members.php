@@ -86,6 +86,7 @@
         align-items: center; justify-content: center; transition: all 0.2s ease;
     }
     .action-btn:hover { background: var(--bg); transform: translateY(-2px); }
+    .action-btn.detail:hover { border-color: #3b82f6; color: #3b82f6; }
     .action-btn.edit:hover { border-color: #f59e0b; color: #f59e0b; }
     .action-btn.delete:hover { border-color: #ef4444; color: #ef4444; }
     .action-btn.suspend:hover { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
@@ -132,6 +133,70 @@
     .form-control:focus { outline: none; border-color: var(--accent); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .members-pagination {
+        margin-top: 14px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--card);
+    }
+    .members-pagination-info {
+        margin-bottom: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+    }
+    .members-pagination-pages {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    .members-page-btn {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .members-page-btn.is-active {
+        border-color: rgba(245, 158, 11, 0.45);
+        background: rgba(245, 158, 11, 0.16);
+        color: #f59e0b;
+    }
+    .member-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .member-detail-item {
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--bg);
+    }
+    .member-detail-label {
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+    .member-detail-value {
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+    #memberDetailModal .modal-footer {
+        grid-template-columns: 1fr;
+    }
 
     @media (max-width: 768px) {
         .members-module {
@@ -219,12 +284,16 @@
         }
 
         .members-module .members-table tr.member-row {
-            display: flex;
-            flex-direction: column;
-            min-height: 132px;
-            padding: 10px;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            grid-template-rows: auto auto;
+            align-items: center;
+            column-gap: 8px;
+            row-gap: 3px;
+            min-height: 74px;
+            padding: 8px 10px;
             border: 1px solid var(--border);
-            border-radius: 14px;
+            border-radius: 12px;
             background: var(--card);
             overflow: hidden;
         }
@@ -245,7 +314,19 @@
         }
 
         .members-module .members-table tr.member-row td:first-child {
-            display: none;
+            display: flex;
+            grid-column: 1;
+            grid-row: 1 / 3;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b !important;
+            font-size: 11px !important;
+            font-weight: 800;
+            line-height: 1;
         }
 
         .members-module .member-info {
@@ -261,7 +342,7 @@
         }
 
         .member-name {
-            margin-bottom: 2px;
+            margin-bottom: 0;
             font-size: 12px;
             line-height: 1.25;
             overflow-wrap: anywhere;
@@ -274,41 +355,45 @@
         }
 
         .members-module .members-table td:nth-child(3) {
-            margin-top: 8px;
+            margin-top: 0;
+            grid-column: 2;
+            grid-row: 2;
         }
 
         .members-module .members-table td:nth-child(3)::before {
-            display: block;
-            margin-bottom: 2px;
-            color: var(--muted);
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: .04em;
-            text-transform: uppercase;
+            display: none;
         }
 
         .members-module .members-table td:nth-child(3)::before {
-            content: "Üniversite / Bölüm";
+            content: "";
+        }
+
+        .members-module .members-table td:nth-child(2) {
+            grid-column: 2;
+            grid-row: 1;
         }
 
         .members-module .members-table td:last-child {
-            margin-top: auto;
-            padding-top: 10px;
+            grid-column: 3;
+            grid-row: 1 / 3;
+            margin-top: 0;
+            padding-top: 0;
+            align-self: center;
         }
 
         .members-module .members-table td:last-child > div {
-            justify-content: flex-start !important;
-            gap: 6px !important;
+            justify-content: flex-end !important;
+            gap: 5px !important;
         }
 
         .action-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 9px;
+            width: 27px;
+            height: 27px;
+            border-radius: 8px;
         }
 
         .action-btn svg {
-            width: 13px !important;
+            width: 12px !important;
         }
 
         .modal-overlay {
@@ -393,6 +478,65 @@
         #redListModal .members-table td + td {
             margin-top: 8px;
         }
+
+        .members-pagination {
+            margin-top: 12px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--card);
+        }
+
+        .members-pagination-info {
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .members-pagination-pages {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .members-page-btn {
+            min-width: 30px;
+            height: 30px;
+            padding: 0 9px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .members-page-btn.is-active {
+            border-color: rgba(245, 158, 11, 0.45);
+            background: rgba(245, 158, 11, 0.16);
+            color: #f59e0b;
+        }
+
+        .member-detail-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .member-detail-item {
+            padding: 9px 10px;
+            border-radius: 10px;
+        }
+
+        .member-detail-label {
+            font-size: 10px;
+        }
+
+        .member-detail-value {
+            font-size: 12px;
+        }
     }
 
     @media (max-width: 380px) {
@@ -401,8 +545,8 @@
         }
 
         .members-module .members-table tr.member-row {
-            min-height: 124px;
-            padding: 9px;
+            min-height: 68px;
+            padding: 7px 9px;
         }
 
         .topbar-actions {
@@ -517,6 +661,25 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                <button
+                                    class="action-btn detail"
+                                    type="button"
+                                    data-first-name="<?= htmlspecialchars($m['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-last-name="<?= htmlspecialchars($m['last_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-email="<?= htmlspecialchars($m['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-phone="<?= htmlspecialchars($m['phone'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-student-id="<?= htmlspecialchars($m['student_id'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-university="<?= htmlspecialchars($m['university'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-faculty="<?= htmlspecialchars($m['faculty'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-department="<?= htmlspecialchars($m['department'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-grade="<?= htmlspecialchars($m['grade'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-status="<?= htmlspecialchars($m['status'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-suspend-reason="<?= htmlspecialchars($m['suspend_reason'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-created-at="<?= htmlspecialchars($m['created_at'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    title="Detay"
+                                >
+                                    <svg style="width:14px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                </button>
                                 <button class="action-btn edit" onclick="openMemberModal(<?= htmlspecialchars(json_encode($m)) ?>)" title="Düzenle">
                                     <svg style="width:14px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                 </button>
@@ -541,6 +704,7 @@
             </tbody>
         </table>
     </div>
+    <div id="membersPagination" class="members-pagination" style="display:none;"></div>
 </div>
 
 <!-- Excel Yükle Modal -->
@@ -684,6 +848,24 @@
     </div>
 </div>
 
+<!-- Üye Detay Modal -->
+<div id="memberDetailModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 560px;">
+        <div class="modal-header">
+            <h3 id="memberDetailTitle">Üye Detayı</h3>
+            <button class="modal-close" onclick="document.getElementById('memberDetailModal').style.display='none'">
+                <svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="memberDetailContent" class="member-detail-grid"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="members-btn btn-outline" onclick="document.getElementById('memberDetailModal').style.display='none'">Kapat</button>
+        </div>
+    </div>
+</div>
+
 <!-- Yeni/Düzenle Üye Modal -->
 <div id="memberModal" class="modal-overlay">
     <div class="modal-content" style="max-width: 650px;">
@@ -767,16 +949,155 @@
 </div>
 
 <script>
-function filterMembers() {
-    const search = document.getElementById('memberSearch').value.toLowerCase();
-    
-    document.querySelectorAll('.member-row').forEach(row => {
-        const text = row.getAttribute('data-search');
-        if (text) {
-            row.style.display = text.includes(search) ? '' : 'none';
-        }
+const membersPerPage = 25;
+let currentMembersPage = 1;
+
+function getMemberRows() {
+    return Array.from(document.querySelectorAll('.members-module .member-row'));
+}
+
+function getFilteredMemberRows() {
+    const searchInput = document.getElementById('memberSearch');
+    const search = searchInput ? searchInput.value.toLowerCase() : '';
+
+    return getMemberRows().filter(row => {
+        const text = row.getAttribute('data-search') || '';
+        return text.includes(search);
     });
 }
+
+function filterMembers() {
+    currentMembersPage = 1;
+    renderMembersPage();
+}
+
+function goToMembersPage(page) {
+    currentMembersPage = page;
+    renderMembersPage(true);
+}
+
+function renderMembersPage(shouldScroll = false) {
+    const allRows = getMemberRows();
+    const filteredRows = getFilteredMemberRows();
+    const totalPages = Math.max(1, Math.ceil(filteredRows.length / membersPerPage));
+    const pagination = document.getElementById('membersPagination');
+
+    if (currentMembersPage > totalPages) {
+        currentMembersPage = totalPages;
+    }
+
+    const start = (currentMembersPage - 1) * membersPerPage;
+    const end = start + membersPerPage;
+    const visibleRows = new Set(filteredRows.slice(start, end));
+
+    allRows.forEach(row => {
+        row.style.display = visibleRows.has(row) ? '' : 'none';
+    });
+
+    if (!pagination) {
+        return;
+    }
+
+    if (filteredRows.length <= membersPerPage) {
+        pagination.style.display = 'none';
+        pagination.innerHTML = '';
+        return;
+    }
+
+    const startText = start + 1;
+    const endText = Math.min(end, filteredRows.length);
+    let pageButtons = '';
+
+    for (let page = 1; page <= totalPages; page++) {
+        pageButtons += `<button type="button" class="members-page-btn ${page === currentMembersPage ? 'is-active' : ''}" onclick="goToMembersPage(${page})">${page}</button>`;
+    }
+
+    pagination.style.display = '';
+    pagination.innerHTML = `
+        <div class="members-pagination-info">${filteredRows.length} kişiden ${startText}-${endText} arası gösteriliyor</div>
+        <div class="members-pagination-pages">${pageButtons}</div>
+    `;
+
+    if (shouldScroll) {
+        requestAnimationFrame(() => {
+            document.querySelector('.members-module')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+}
+
+function escapeMemberValue(value) {
+    return String(value ?? '-')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function openMemberDetailModalFromButton(button) {
+    openMemberDetailModal({
+        first_name: button.dataset.firstName || '',
+        last_name: button.dataset.lastName || '',
+        email: button.dataset.email || '',
+        phone: button.dataset.phone || '',
+        student_id: button.dataset.studentId || '',
+        university: button.dataset.university || '',
+        faculty: button.dataset.faculty || '',
+        department: button.dataset.department || '',
+        grade: button.dataset.grade || '',
+        status: button.dataset.status || '',
+        suspend_reason: button.dataset.suspendReason || '',
+        created_at: button.dataset.createdAt || ''
+    });
+}
+
+function openMemberDetailModal(data) {
+    const modal = document.getElementById('memberDetailModal');
+    const title = document.getElementById('memberDetailTitle');
+    const content = document.getElementById('memberDetailContent');
+
+    if (!modal || !content) {
+        return;
+    }
+
+    const fullName = `${data.first_name || ''} ${data.last_name || ''}`.trim() || 'Üye Detayı';
+    const fields = [
+        ['Ad Soyad', fullName],
+        ['E-posta', data.email],
+        ['Telefon', data.phone],
+        ['Öğrenci No', data.student_id],
+        ['Üniversite', data.university],
+        ['Fakülte', data.faculty],
+        ['Bölüm', data.department],
+        ['Sınıf', data.grade],
+        ['Durum', data.status],
+        ['Askıya Alma Sebebi', data.suspend_reason],
+        ['Kayıt Tarihi', data.created_at]
+    ];
+
+    if (title) {
+        title.textContent = fullName;
+    }
+
+    content.innerHTML = fields.map(([label, value]) => `
+        <div class="member-detail-item">
+            <div class="member-detail-label">${escapeMemberValue(label)}</div>
+            <div class="member-detail-value">${escapeMemberValue(value || '-')}</div>
+        </div>
+    `).join('');
+
+    modal.style.display = 'flex';
+}
+
+document.addEventListener('click', function(event) {
+    const detailButton = event.target.closest('.action-btn.detail');
+    if (!detailButton) {
+        return;
+    }
+
+    event.preventDefault();
+    openMemberDetailModalFromButton(detailButton);
+});
 
 function openMemberModal(data = null) {
     const modal = document.getElementById('memberModal');
@@ -819,6 +1140,8 @@ window.onclick = function(event) {
 
 // Phone Mask
 document.addEventListener("DOMContentLoaded", function() {
+    renderMembersPage();
+
     const phoneInputs = document.querySelectorAll('.phone-mask');
     phoneInputs.forEach(input => {
         input.addEventListener('input', function(e) {
