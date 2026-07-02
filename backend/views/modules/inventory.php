@@ -239,8 +239,214 @@
     gap: 16px;
 }
 
-@media(max-width: 500px) {
-    .inv-form-grid { grid-template-columns: 1fr; }
+@media (max-width: 760px) {
+    .inv-header-bar {
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .inv-header-bar h2 {
+        font-size: 19px !important;
+        line-height: 1.2;
+    }
+
+    .inv-header-bar .inv-btn-primary {
+        width: 100%;
+        justify-content: center;
+        min-height: 40px;
+        border-radius: 11px;
+        font-size: 13px;
+    }
+
+    .inv-filters {
+        padding: 10px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+    .inv-filters form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 8px;
+    }
+
+    .inv-filters .form-control,
+    .inv-filters .inv-btn {
+        width: 100% !important;
+        min-width: 0;
+        min-height: 38px;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+
+    .inv-filters input[name="q"] {
+        grid-column: 1 / -1;
+    }
+
+    .inv-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px !important;
+    }
+
+    .inv-card {
+        border-radius: 14px;
+    }
+
+    .inv-card:hover {
+        transform: none;
+    }
+
+    .inv-card-img {
+        height: 92px;
+    }
+
+    .inv-card-img .no-img svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .inv-card-img .no-img span {
+        display: none;
+    }
+
+    .inv-status-badge {
+        top: 7px;
+        right: 7px;
+        padding: 3px 7px;
+        font-size: 9px;
+        letter-spacing: 0;
+    }
+
+    .inv-card-body {
+        padding: 10px;
+    }
+
+    .inv-card-title {
+        font-size: 13px;
+        line-height: 1.25;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .inv-card-cat {
+        margin-bottom: 7px;
+        font-size: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .inv-info-row {
+        margin-bottom: 5px;
+        gap: 5px;
+        font-size: 10px;
+        min-width: 0;
+    }
+
+    .inv-info-row:first-of-type {
+        display: none;
+    }
+
+    .inv-info-row svg {
+        width: 12px;
+    }
+
+    .inv-info-row {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .inv-card-footer {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    .inv-price {
+        min-width: 0;
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .inv-action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+    }
+
+    .inv-modal-overlay {
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .inv-modal {
+        max-width: none;
+        width: 100%;
+        max-height: 88vh;
+        border-radius: 18px;
+    }
+
+    #invForm {
+        max-height: 88vh !important;
+    }
+
+    .inv-modal-header {
+        padding: 14px 16px;
+    }
+
+    .inv-modal-header h3 {
+        font-size: 18px;
+    }
+
+    .inv-modal-body {
+        padding: 14px;
+    }
+
+    .inv-form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .inv-form-grid .form-group {
+        margin-bottom: 0;
+    }
+
+    .inv-form-grid .form-control {
+        min-height: 40px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    .inv-modal-footer {
+        padding: 12px 14px;
+        gap: 8px;
+    }
+
+    .inv-modal-footer .inv-btn {
+        flex: 1;
+        justify-content: center;
+        min-height: 40px;
+        border-radius: 10px;
+    }
+}
+
+@media(max-width: 380px) {
+    .inv-grid {
+        gap: 8px;
+    }
+
+    .inv-card-img {
+        height: 82px;
+    }
 }
 </style>
 

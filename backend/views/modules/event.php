@@ -83,6 +83,11 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
         
         <?php if($canModify): ?>
             <div class="evt-actions">
+                <?php if($link): ?>
+                    <a href="<?= $link ?>" target="_blank" class="evt-action-btn evt-action-link-mobile" title="Bağlantıya Git">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                <?php endif; ?>
                 <button type="button" class="evt-action-btn" title="Düzenle" onclick='openEventEditModal(<?= json_encode($event, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>)'>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 </button>
@@ -349,6 +354,7 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
 .evt-action-btn:hover { background: rgba(255,255,255,0.2); }
 .evt-action-danger:hover { background: var(--evt-danger); }
 .evt-action-btn svg { width: 16px; height: 16px; }
+.evt-action-link-mobile { display: none; text-decoration: none; }
 
 /* Section Title */
 .section-title {
@@ -443,6 +449,257 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
 }
 .empty-state svg { opacity: 0.5; margin-bottom: 16px; }
 .empty-state h4 { margin: 0 0 8px 0; color: var(--evt-text); font-size: 18px; }
+
+@media (max-width: 760px) {
+    .evt-header-bar {
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .evt-header-title {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    .evt-header-subtitle {
+        display: none;
+    }
+
+    .evt-btn-add {
+        width: 100%;
+        justify-content: center;
+        min-height: 40px;
+        padding: 9px 14px;
+        border-radius: 11px;
+        font-size: 13px;
+    }
+
+    .evt-tabs-container {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        gap: 5px;
+        padding: 5px;
+        margin-bottom: 18px;
+        border-radius: 12px;
+    }
+
+    .evt-tab {
+        min-width: 0;
+        padding: 8px 6px;
+        border-radius: 9px;
+        font-size: 11px;
+        line-height: 1.15;
+        white-space: normal;
+    }
+
+    .section-title {
+        margin: 18px 0 12px;
+        font-size: 15px;
+        gap: 8px;
+    }
+
+    .evt-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 26px;
+    }
+
+    .evt-card {
+        border-radius: 14px;
+    }
+
+    .evt-card:hover {
+        transform: none;
+    }
+
+    .evt-img-wrapper {
+        height: 92px;
+        min-height: 92px;
+    }
+
+    .evt-card:hover .evt-img {
+        transform: none;
+    }
+
+    .evt-content {
+        padding: 10px;
+    }
+
+    .evt-header {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .evt-title {
+        font-size: 13px;
+        line-height: 1.25;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .evt-header > div {
+        display: none !important;
+    }
+
+    .evt-badge {
+        padding: 3px 7px;
+        font-size: 9px;
+        letter-spacing: 0;
+    }
+
+    .evt-details {
+        gap: 0;
+        margin-bottom: 8px;
+    }
+
+    .evt-details .evt-row:not(:first-child) {
+        display: none;
+    }
+
+    .evt-row {
+        min-width: 0;
+        gap: 5px;
+        font-size: 11px;
+    }
+
+    .evt-row span,
+    .evt-row a {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .evt-desc {
+        display: none;
+    }
+
+    .evt-link-btn {
+        display: none;
+    }
+
+    .evt-actions {
+        position: static;
+        justify-content: flex-end;
+        gap: 6px;
+        padding: 0 10px 10px;
+        border-radius: 0;
+        opacity: 1;
+        transform: none;
+        background: transparent;
+        border: 0;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .evt-actions form:first-of-type {
+        display: none;
+    }
+
+    .evt-action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: var(--evt-input);
+        color: var(--evt-text);
+        border: 1px solid var(--evt-border);
+    }
+
+    .evt-action-danger {
+        color: var(--evt-danger);
+    }
+
+    .evt-action-link-mobile {
+        display: flex;
+        color: var(--evt-primary);
+    }
+
+    .empty-state {
+        padding: 34px 14px;
+        border-radius: 14px;
+    }
+
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 0 10px calc(10px + env(safe-area-inset-bottom));
+        box-sizing: border-box;
+    }
+
+    .modal-content {
+        max-width: none;
+        max-height: 88vh;
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .modal-overlay.active .modal-content {
+        transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+        margin-bottom: 16px;
+    }
+
+    .modal-header h3 {
+        font-size: 18px;
+    }
+
+    #evtForm > div[style*="display:flex"] {
+        display: block !important;
+    }
+
+    #evtForm > div[style*="border:1px"] {
+        padding: 10px 12px !important;
+        font-size: 12px !important;
+    }
+
+    .form-group {
+        margin-bottom: 13px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+    }
+
+    .form-control {
+        min-height: 40px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    textarea.form-control {
+        min-height: 88px;
+    }
+
+    #partnerSelect {
+        max-width: 118px !important;
+        font-size: 10px !important;
+    }
+
+    .evt-btn-submit {
+        min-height: 42px;
+        padding: 11px;
+        border-radius: 11px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 380px) {
+    .evt-tab {
+        font-size: 10px;
+        padding-inline: 4px;
+    }
+
+    .evt-img-wrapper {
+        height: 82px;
+        min-height: 82px;
+    }
+}
 </style>
 
 <div class="evt-header-bar">
@@ -693,6 +950,12 @@ function openEventEditModal(evt) {
 function closeEventModal() {
     document.getElementById('evtModal').classList.remove('active');
 }
+
+document.getElementById('evtModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeEventModal();
+    }
+});
 
 function toggleEventFields() {
     const type = document.getElementById('evtType').value;

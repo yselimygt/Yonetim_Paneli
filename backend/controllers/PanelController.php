@@ -310,16 +310,11 @@ class PanelController extends Controller
         $userRole    = $this->getUserRoleInDept($slug);
         $pdo         = Database::getInstance();
 
-        // Tüm üyeler + departman bilgisi
+        // Kurumsal rehber kayıtları
         $directory = $pdo->query("
-            SELECT u.id, u.name, u.email, u.is_active, u.created_at,
-                   GROUP_CONCAT(CONCAT(d.name, '|', ud.role) ORDER BY d.name SEPARATOR ',') AS depts_info
-            FROM users u
-            LEFT JOIN user_departments ud ON ud.user_id = u.id
-            LEFT JOIN departments d ON d.id = ud.department_id
-            WHERE u.is_super_admin = 0
-            GROUP BY u.id
-            ORDER BY u.name ASC
+            SELECT id, full_name AS name, company, title
+            FROM app_directory
+            ORDER BY full_name ASC
         ")->fetchAll();
 
         $totalUserCount = count($directory);

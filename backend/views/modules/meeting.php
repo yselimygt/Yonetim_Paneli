@@ -61,6 +61,10 @@ function getMeetingStatusBadge($status) {
         border-color: rgba(16,185,129,0.3);
         border-left-color: #10b981;
     }
+
+    .meeting-history-list {
+        display: block;
+    }
     
     .approval-list {
         background: var(--bg);
@@ -77,6 +81,223 @@ function getMeetingStatusBadge($status) {
     }
     .approval-item:last-child {
         border-bottom: none;
+    }
+
+    @media (max-width: 760px) {
+        div[style*="margin-bottom: 30px; display: flex"] {
+            align-items: flex-start !important;
+            gap: 12px !important;
+            margin-bottom: 14px !important;
+        }
+
+        div[style*="width: 56px; height: 56px"] {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 13px !important;
+        }
+
+        div[style*="width: 56px; height: 56px"] svg {
+            width: 22px !important;
+            height: 22px !important;
+        }
+
+        div[style*="margin-bottom: 30px; display: flex"] h3 {
+            font-size: 19px !important;
+            line-height: 1.2 !important;
+        }
+
+        div[style*="margin-bottom: 30px; display: flex"] p {
+            display: none !important;
+        }
+
+        div[style*="margin-bottom: 30px; display: flex"] > .btn {
+            width: 100% !important;
+            justify-content: center !important;
+            min-height: 40px !important;
+            border-radius: 11px !important;
+            font-size: 13px !important;
+        }
+
+        .meeting-layout {
+            display: block;
+            min-height: 0;
+        }
+
+        .meeting-sidebar {
+            width: 100%;
+            flex: none;
+            margin-bottom: 14px;
+        }
+
+        .meeting-sidebar h4 {
+            margin-bottom: 10px !important;
+            font-size: 11px !important;
+        }
+
+        .meeting-history-list {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 8px;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .meeting-history-list::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .meeting-history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .meeting-history-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 999px;
+        }
+
+        .meeting-sidebar .meeting-card {
+            flex: 0 0 230px;
+            width: 230px;
+            min-height: 112px;
+            margin: 0;
+            padding: 12px;
+            border-radius: 13px;
+            scroll-snap-align: start;
+        }
+
+        .meeting-card:hover,
+        .meeting-card.active {
+            transform: none;
+        }
+
+        .meeting-card h4 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 13px !important;
+            line-height: 1.3 !important;
+        }
+
+        .meeting-main {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .meeting-main > div[style*="background: var(--card)"] {
+            border-radius: 14px !important;
+        }
+
+        .meeting-main > div > div:first-child {
+            padding: 14px !important;
+            gap: 10px !important;
+        }
+
+        .meeting-main h2 {
+            font-size: 18px !important;
+            line-height: 1.25 !important;
+            margin-bottom: 10px !important;
+        }
+
+        .meeting-main h2 + div {
+            gap: 8px !important;
+            font-size: 11px !important;
+        }
+
+        .meeting-main > div > div[style*="display: flex; flex-wrap: wrap"] {
+            display: block !important;
+        }
+
+        .meeting-main > div > div[style*="display: flex; flex-wrap: wrap"] > div {
+            min-width: 0 !important;
+            padding: 14px !important;
+            border-right: 0 !important;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meeting-main h4 {
+            font-size: 14px !important;
+            margin-bottom: 10px !important;
+        }
+
+        .meeting-main textarea.form-control {
+            min-height: 110px;
+        }
+
+        .meeting-main .btn {
+            border-radius: 10px !important;
+        }
+
+        .approval-list {
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .approval-item {
+            gap: 8px;
+            padding: 8px 0;
+        }
+
+        .approval-item span {
+            font-size: 12px !important;
+        }
+
+        #modal-create-meeting {
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        #modal-create-meeting > .card {
+            max-width: 560px !important;
+            max-height: 88vh !important;
+            margin: 0 auto !important;
+            border-radius: 18px !important;
+            overflow: hidden;
+        }
+
+        #modal-create-meeting .card-header {
+            padding: 14px 16px !important;
+        }
+
+        #modal-create-meeting .card-header span {
+            font-size: 17px !important;
+        }
+
+        #modal-create-meeting .card-body {
+            padding: 14px !important;
+            max-height: calc(88vh - 60px) !important;
+        }
+
+        #modal-create-meeting .form-row {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px !important;
+        }
+
+        #modal-create-meeting .form-control {
+            min-height: 40px;
+            border-radius: 10px !important;
+            font-size: 13px;
+        }
+
+        #modal-create-meeting textarea.form-control {
+            min-height: 110px;
+        }
+
+        #modal-create-meeting form > div:last-child {
+            display: flex !important;
+            gap: 8px !important;
+        }
+
+        #modal-create-meeting form > div:last-child .btn {
+            flex: 1;
+            justify-content: center;
+            min-height: 40px;
+        }
     }
 </style>
 
@@ -112,6 +333,7 @@ function getMeetingStatusBadge($status) {
                 Henüz planlanmış bir toplantı yok.
             </div>
         <?php else: ?>
+            <div class="meeting-history-list">
             <?php foreach ($meetings as $m): ?>
                 <a href="<?= $appUrl ?>?meeting=<?= $m['id'] ?>" class="meeting-card <?= $activeMeeting && $activeMeeting['id'] == $m['id'] ? 'active' : '' ?>">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center;">
@@ -127,6 +349,7 @@ function getMeetingStatusBadge($status) {
                     </div>
                 </a>
             <?php endforeach; ?>
+            </div>
         <?php endif; ?>
     </div>
 
@@ -351,4 +574,11 @@ function getMeetingStatusBadge($status) {
         </div>
     </div>
 </div>
+<script>
+document.getElementById('modal-create-meeting').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+</script>
 <?php endif; ?>

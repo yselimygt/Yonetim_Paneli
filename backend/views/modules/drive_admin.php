@@ -491,6 +491,310 @@ if(!function_exists('formatBytes')) {
 .upload-status.success { color: #10B981; }
 .upload-status.error { color: #EF4444; }
 
+@media (max-width: 760px) {
+    .drive-container {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .sticky-top-bar {
+        position: static;
+        padding: 0 0 12px 0;
+        margin-bottom: 10px;
+        background: transparent;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+
+    .action-bar-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+        gap: 6px;
+    }
+
+    .action-bar-buttons .btn {
+        min-width: 0;
+        padding: 7px 6px;
+        font-size: 11px;
+        border-radius: 9px;
+    }
+
+    .drive-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .drive-breadcrumbs {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        padding: 2px 0 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        scrollbar-width: thin;
+    }
+
+    .drive-breadcrumbs a,
+    .drive-breadcrumbs span {
+        flex-shrink: 0;
+    }
+
+    .drive-actions {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        align-items: stretch !important;
+        gap: 7px !important;
+        width: 100%;
+    }
+
+    .drive-actions form {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .drive-actions form .form-control {
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    .drive-actions select.form-control {
+        grid-column: 1 / 3;
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    .drive-actions > div[style*="width:1px"] {
+        display: none;
+    }
+
+    .drive-actions .btn,
+    .drive-actions button,
+    .drive-actions a {
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+        height: 36px !important;
+        padding: 7px 8px !important;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+
+    .drive-actions .btn-primary {
+        grid-column: 4;
+    }
+
+    .drive-layout {
+        display: block;
+    }
+
+    .drive-main {
+        width: 100%;
+    }
+
+    .drive-grid,
+    .drive-grid.list-view {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .drive-list-header,
+    .drive-grid.list-view .drive-list-header {
+        display: none;
+    }
+
+    .drive-item,
+    .drive-grid.list-view .drive-item {
+        display: flex;
+        min-width: 0;
+        min-height: 126px;
+        height: auto;
+        padding: 14px 10px 12px;
+        border-width: 1px;
+        border-radius: 14px;
+        text-align: center;
+    }
+
+    .drive-item:hover,
+    .drive-grid.list-view .drive-item:hover {
+        transform: none;
+    }
+
+    .drive-item-icon,
+    .drive-grid.list-view .drive-item-icon {
+        width: 38px;
+        height: 38px;
+        margin: 4px 0 10px;
+    }
+
+    .drive-item-name,
+    .drive-grid.list-view .drive-item-name {
+        text-align: center;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        min-height: 34px;
+        line-height: 1.25;
+        font-size: 12px;
+    }
+
+    .drive-item-meta,
+    .drive-grid.list-view .drive-item-meta {
+        margin-top: 6px;
+        text-align: center;
+        font-size: 11px;
+    }
+
+    .drive-grid.list-view .drive-item-date,
+    .drive-grid.list-view .drive-item-creator {
+        display: none;
+    }
+
+    .drive-item-star,
+    .drive-item-actions,
+    .drive-grid.list-view .drive-item-star,
+    .drive-grid.list-view .drive-item-actions {
+        position: absolute;
+        opacity: 1;
+        padding: 6px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .drive-item-star,
+    .drive-grid.list-view .drive-item-star {
+        top: 7px;
+        right: 7px;
+    }
+
+    .drive-item-actions,
+    .drive-grid.list-view .drive-item-actions {
+        top: 7px;
+        left: 7px;
+    }
+
+    .dropdown-menu {
+        z-index: 10001;
+        min-width: 170px;
+        border-radius: 12px;
+    }
+
+    .dropdown-item {
+        padding: 11px 14px;
+        font-size: 13px;
+    }
+
+    .drive-details-panel,
+    .drive-details-panel.show {
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        bottom: calc(82px + env(safe-area-inset-bottom));
+        top: auto;
+        z-index: 900;
+        width: auto;
+        max-height: 210px;
+        padding: 12px;
+        border-radius: 16px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(18px);
+        overflow-y: auto;
+    }
+
+    .drive-details-panel.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .details-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 8px;
+    }
+
+    .details-title {
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+    .details-info-row {
+        margin-bottom: 7px;
+        font-size: 12px;
+    }
+
+    .modal {
+        align-items: flex-end;
+        padding: 0 10px calc(10px + env(safe-area-inset-bottom));
+        box-sizing: border-box;
+    }
+
+    .modal-content {
+        max-width: none;
+        width: 100%;
+        max-height: 86vh;
+        overflow-y: auto;
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .modal-content form > div[style*="text-align: right"],
+    #deleteConfirmModal .modal-content > div[style*="text-align: right"] {
+        display: flex;
+        gap: 8px;
+        text-align: initial !important;
+    }
+
+    .modal-content form > div[style*="text-align: right"] .btn,
+    #deleteConfirmModal .modal-content > div[style*="text-align: right"] .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .upload-panel {
+        left: 10px;
+        right: 10px;
+        bottom: calc(82px + env(safe-area-inset-bottom));
+        width: auto;
+        border-radius: 16px;
+    }
+
+    #lightboxModal > div {
+        padding: 54px 10px 18px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .drive-grid,
+    .drive-grid.list-view {
+        gap: 8px;
+    }
+
+    .drive-item,
+    .drive-grid.list-view .drive-item {
+        min-height: 118px;
+        padding: 12px 8px 10px;
+    }
+
+    .drive-actions {
+        gap: 6px !important;
+    }
+}
+
 </style>
 
 <div class="drive-container" id="driveContainer">

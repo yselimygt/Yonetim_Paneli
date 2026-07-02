@@ -132,6 +132,283 @@
     .form-control:focus { outline: none; border-color: var(--accent); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    @media (max-width: 768px) {
+        .members-module {
+            padding-bottom: 84px;
+        }
+
+        .members-topbar {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .members-topbar > div:first-child {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) 112px;
+            gap: 8px !important;
+            align-items: stretch !important;
+            width: 100%;
+        }
+
+        .search-wrapper {
+            width: 100%;
+        }
+
+        .search-wrapper input,
+        .form-control {
+            min-height: 40px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        #statusFilter {
+            width: 100% !important;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        .topbar-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+        }
+
+        .topbar-actions form {
+            display: contents;
+        }
+
+        .members-btn {
+            min-height: 36px;
+            padding: 7px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            justify-content: center;
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .members-btn svg {
+            width: 14px !important;
+            flex-shrink: 0;
+        }
+
+        .members-module .members-table-wrapper {
+            overflow: visible;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+        }
+
+        .members-module .members-table {
+            display: block;
+            min-width: 0;
+        }
+
+        .members-module .members-table thead {
+            display: none;
+        }
+
+        .members-module .members-table tbody {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .members-module .members-table tr.member-row {
+            display: flex;
+            flex-direction: column;
+            min-height: 132px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--card);
+            overflow: hidden;
+        }
+
+        .members-module .members-table tr:not(.member-row) {
+            display: block;
+            grid-column: 1 / -1;
+            border: 1px dashed var(--border);
+            border-radius: 14px;
+            background: var(--card);
+        }
+
+        .members-module .members-table td {
+            display: block;
+            padding: 0;
+            border: 0;
+            min-width: 0;
+        }
+
+        .members-module .members-table tr.member-row td:first-child {
+            display: none;
+        }
+
+        .members-module .member-info {
+            display: block;
+            min-width: 0;
+        }
+
+        .members-module .member-avatar,
+        .members-module .member-info .member-sub,
+        .members-module .member-grade,
+        .members-module .members-table td:nth-child(4) {
+            display: none;
+        }
+
+        .member-name {
+            margin-bottom: 2px;
+            font-size: 12px;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        .member-sub {
+            font-size: 10px;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        .members-module .members-table td:nth-child(3) {
+            margin-top: 8px;
+        }
+
+        .members-module .members-table td:nth-child(3)::before {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .members-module .members-table td:nth-child(3)::before {
+            content: "Üniversite / Bölüm";
+        }
+
+        .members-module .members-table td:last-child {
+            margin-top: auto;
+            padding-top: 10px;
+        }
+
+        .members-module .members-table td:last-child > div {
+            justify-content: flex-start !important;
+            gap: 6px !important;
+        }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+        }
+
+        .action-btn svg {
+            width: 13px !important;
+        }
+
+        .modal-overlay {
+            padding: 14px;
+            align-items: center;
+        }
+
+        .modal-content,
+        .modal-content[style] {
+            width: 100% !important;
+            max-width: 420px !important;
+            max-height: calc(100dvh - 28px);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 14px 16px;
+        }
+
+        .modal-header h3 {
+            font-size: 14px;
+        }
+
+        .modal-body {
+            max-height: calc(100dvh - 156px);
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .modal-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 12px 16px;
+        }
+
+        .grid-2,
+        .grid-3 {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        #redListModal .modal-body {
+            padding: 12px !important;
+        }
+
+        #redListModal .members-table {
+            display: block;
+            min-width: 0;
+        }
+
+        #redListModal .members-table thead {
+            display: none;
+        }
+
+        #redListModal .members-table tbody {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        #redListModal .members-table tr.member-row {
+            display: block;
+            padding: 12px;
+            border: 1px solid rgba(239, 68, 68, 0.22);
+            border-radius: 14px;
+            background: var(--card);
+        }
+
+        #redListModal .members-table td {
+            display: block;
+            padding: 0;
+            border: 0;
+            text-align: left !important;
+        }
+
+        #redListModal .members-table td + td {
+            margin-top: 8px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .members-module .members-table tbody {
+            gap: 8px;
+        }
+
+        .members-module .members-table tr.member-row {
+            min-height: 124px;
+            padding: 9px;
+        }
+
+        .topbar-actions {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
 </style>
 
 <div class="members-module">
@@ -232,7 +509,7 @@
                         </td>
                         <td>
                             <div class="member-name"><?= htmlspecialchars($m['university'] ?: '-') ?></div>
-                            <div class="member-sub"><?= htmlspecialchars($m['department'] ?: '-') ?> (<?= htmlspecialchars($m['grade'] ?: '-') ?>)</div>
+                            <div class="member-sub"><?= htmlspecialchars($m['department'] ?: '-') ?> <span class="member-grade">(<?= htmlspecialchars($m['grade'] ?: '-') ?>)</span></div>
                         </td>
                         <td>
                             <div class="member-name"><?= htmlspecialchars($m['student_id'] ?: '-') ?></div>

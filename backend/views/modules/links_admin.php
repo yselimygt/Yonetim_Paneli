@@ -103,6 +103,146 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+@media (max-width: 760px) {
+    .links-admin-container {
+        max-width: none;
+        width: 100%;
+    }
+
+    .links-admin-container > div:first-child {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .links-admin-container > div:first-child h1 {
+        font-size: 20px !important;
+        line-height: 1.2 !important;
+    }
+
+    .links-admin-container > div:first-child p {
+        display: none !important;
+    }
+
+    .links-admin-container > div:first-child .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        min-height: 40px !important;
+        border-radius: 11px !important;
+        font-size: 13px !important;
+    }
+
+    .links-admin-container > div[style*="background:rgba(59,130,246"] {
+        display: none !important;
+    }
+
+    .la-card {
+        padding: 14px;
+        margin-bottom: 14px;
+        border-radius: 14px;
+    }
+
+    .la-card h3 {
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 13px;
+    }
+
+    .form-label {
+        margin-bottom: 6px;
+        font-size: 12px;
+    }
+
+    .form-control {
+        min-height: 40px;
+        padding: 9px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    textarea.form-control {
+        min-height: 72px;
+    }
+
+    .color-picker-wrapper {
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .color-picker {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+    }
+
+    .color-picker-wrapper span {
+        font-size: 12px !important;
+        line-height: 1.35;
+    }
+
+    .links-list {
+        gap: 10px;
+    }
+
+    .link-item {
+        position: relative;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 13px;
+    }
+
+    .link-drag-handle {
+        padding-top: 8px;
+        flex-shrink: 0;
+    }
+
+    .link-fields {
+        grid-template-columns: 1fr;
+        gap: 9px;
+        min-width: 0;
+    }
+
+    .link-icon-field {
+        grid-column: auto;
+    }
+
+    .link-remove {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 6px;
+        border-radius: 9px;
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    .link-remove svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .add-link-btn {
+        min-height: 40px;
+        border-radius: 11px;
+        font-size: 13px;
+    }
+
+    .links-admin-container form > div[style*="text-align:right"] {
+        text-align: initial !important;
+    }
+
+    .links-admin-container form > div[style*="text-align:right"] .btn {
+        width: 100%;
+        min-height: 42px;
+        justify-content: center;
+        border-radius: 11px;
+        font-size: 14px !important;
+    }
+}
 </style>
 
 <div class="links-admin-container">

@@ -235,7 +235,7 @@ function getSocialLinkInfo(string $url): array {
     font-size: 19px;
     font-weight: 700;
     color: var(--dir-text);
-    margin: 0 0 6px 0;
+    margin: 0 0 10px 0;
     letter-spacing: -0.3px;
 }
 
@@ -247,6 +247,152 @@ function getSocialLinkInfo(string $url): array {
     align-items: center;
     gap: 8px;
     font-weight: 500;
+}
+
+.dir-card-main {
+    min-width: 0;
+}
+
+.dir-meta-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--dir-muted);
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.dir-workplace {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dir-title-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    max-width: 150px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.14);
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dir-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+.dir-detail-btn {
+    min-height: 30px;
+    padding: 6px 13px;
+    border: 1px solid rgba(245, 158, 11, 0.24);
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dir-detail-btn:hover {
+    background: rgba(245, 158, 11, 0.18);
+    transform: translateY(-1px);
+}
+
+.dir-detail-summary {
+    display: grid;
+    gap: 10px;
+}
+
+.dir-detail-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--dir-border);
+    border-radius: 14px;
+    background: var(--dir-input);
+}
+
+.dir-detail-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dir-primary);
+    background: rgba(59, 130, 246, 0.14);
+    font-size: 16px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.dir-detail-name {
+    margin: 0 0 5px 0;
+    color: var(--dir-text);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.dir-detail-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: var(--dir-muted);
+    font-size: 12px;
+}
+
+.dir-detail-section {
+    padding: 12px;
+    border: 1px solid var(--dir-border);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.02);
+}
+
+.dir-detail-label {
+    margin-bottom: 8px;
+    color: var(--dir-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.dir-detail-list {
+    display: grid;
+    gap: 7px;
+}
+
+.dir-detail-value,
+.dir-detail-link {
+    color: var(--dir-text);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    word-break: break-word;
+}
+
+.dir-detail-link:hover {
+    color: var(--dir-primary);
+}
+
+.dir-detail-empty {
+    color: var(--dir-muted);
+    font-size: 12px;
 }
 
 .dir-divider {
@@ -506,10 +652,38 @@ textarea.dir-form-control {
     transition: all 0.2s;
 }
 
-.dir-btn-remove:hover { 
+    .dir-btn-remove:hover { 
     background: #ef4444;
     color: #fff;
     transform: scale(1.05);
+}
+
+@media (max-width: 640px) {
+    .dir-card {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .dir-card-header {
+        margin-bottom: 0;
+        gap: 12px;
+    }
+
+    .dir-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        margin-bottom: 14px;
+    }
+
+    .dir-name {
+        font-size: 17px;
+        line-height: 1.25;
+    }
+
+    .dir-actions {
+        flex-shrink: 0;
+    }
 }
 </style>
 
@@ -552,15 +726,10 @@ textarea.dir-form-control {
                         <?= htmlspecialchars($initials) ?>
                     </div>
                     <h3 class="dir-name"><?= htmlspecialchars($c['full_name']) ?></h3>
-                    <p class="dir-company">
-                        <?php if($c['company']): ?>
-                            <svg style="width:14px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                            <?= htmlspecialchars($c['company']) ?> 
-                        <?php endif; ?>
-                        <?php if($c['title']): ?>
-                            - <?= htmlspecialchars($c['title']) ?>
-                        <?php endif; ?>
-                    </p>
+                    <div class="dir-meta-line">
+                        <span class="dir-workplace"><?= htmlspecialchars($c['company'] ?: 'Çalıştığı yer belirtilmedi') ?></span>
+                        <span class="dir-title-pill"><?= htmlspecialchars($c['title'] ?: 'İlan yok') ?></span>
+                    </div>
                 </div>
 
                 <div class="dir-actions">
@@ -577,69 +746,9 @@ textarea.dir-form-control {
                     </form>
                 </div>
             </div>
-
-            <div class="dir-divider"></div>
-
-            <ul class="dir-info-list">
-                <?php if(!empty($c['phones'])): ?>
-                <li class="dir-info-item">
-                    <svg style="width:16px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <div class="dir-info-content">
-                        <?php foreach($c['phones'] as $p): ?>
-                            <a href="tel:<?= htmlspecialchars($p) ?>" class="dir-info-link"><?= htmlspecialchars($p) ?></a>
-                        <?php endforeach; ?>
-                    </div>
-                </li>
-                <?php endif; ?>
-
-                <?php if(!empty($c['emails'])): ?>
-                <li class="dir-info-item">
-                    <svg style="width:16px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <div class="dir-info-content">
-                        <?php foreach($c['emails'] as $e): ?>
-                            <a href="mailto:<?= htmlspecialchars($e) ?>" class="dir-info-link"><?= htmlspecialchars($e) ?></a>
-                        <?php endforeach; ?>
-                    </div>
-                </li>
-                <?php endif; ?>
-
-                <?php if(!empty($c['links'])): ?>
-                <li class="dir-info-item">
-                    <svg style="width:16px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                    <div class="dir-info-content" style="flex-direction:row; flex-wrap:wrap; gap:8px; align-items:center;">
-                        <?php foreach($c['links'] as $l): 
-                            $soc = getSocialLinkInfo($l);
-                        ?>
-                            <a href="<?= htmlspecialchars($l) ?>" target="_blank" class="dir-info-link" title="<?= htmlspecialchars($soc['name']) ?>" style="display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:12px; background:var(--bg); border:1px solid var(--border); font-size:12px;">
-                                <span style="color:<?= $soc['color'] ?>;">
-                                    <?php if($soc['icon'] == 'linkedin'): ?>
-                                        <svg style="width:12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                                    <?php elseif($soc['icon'] == 'twitter'): ?>
-                                        <svg style="width:12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
-                                    <?php elseif($soc['icon'] == 'instagram'): ?>
-                                        <svg style="width:12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                                    <?php elseif($soc['icon'] == 'youtube'): ?>
-                                        <svg style="width:12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.376.55 9.376.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                                    <?php else: ?>
-                                        <svg style="width:12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                                    <?php endif; ?>
-                                </span>
-                                <?= htmlspecialchars($soc['name']) ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
-                </li>
-                <?php endif; ?>
-
-                <?php if(!empty($c['notes'])): ?>
-                <li class="dir-info-item">
-                    <svg style="width:16px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    <div class="dir-info-content" style="color:var(--muted);">
-                        <?= nl2br(htmlspecialchars($c['notes'])) ?>
-                    </div>
-                </li>
-                <?php endif; ?>
-            </ul>
+            <div class="dir-card-footer">
+                <button type="button" class="dir-detail-btn" onclick="openDirDetailModal(<?= htmlspecialchars(json_encode($c)) ?>)">Detay</button>
+            </div>
         </div>
         <?php endforeach; ?>
     </div>
@@ -724,7 +833,90 @@ textarea.dir-form-control {
     </div>
 </div>
 
+<!-- Detay Modal -->
+<div class="dir-modal-overlay" id="dirDetailModal" onclick="if(event.target===this) closeDirDetailModal()">
+    <div class="dir-modal pop-in">
+        <div class="dir-modal-header">
+            <h3 class="dir-modal-title">Kişi Detayı</h3>
+            <button class="dir-modal-close" onclick="closeDirDetailModal()">
+                <svg style="width:24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="dir-modal-body">
+            <div class="dir-detail-summary" id="dirDetailContent"></div>
+        </div>
+        <div class="dir-modal-footer">
+            <button type="button" class="dir-btn dir-btn-dark" onclick="closeDirDetailModal()">Kapat</button>
+        </div>
+    </div>
+</div>
+
 <script>
+function escapeDirHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, function(char) {
+        return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[char];
+    });
+}
+
+function dirInitials(name) {
+    const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    return parts.slice(0, 2).map(part => part.charAt(0)).join('').toUpperCase() || '?';
+}
+
+function renderDirDetailList(label, values, type = 'text') {
+    const list = Array.isArray(values) ? values.filter(Boolean) : [];
+    const content = list.length
+        ? list.map(value => {
+            const safeValue = escapeDirHtml(value);
+            if (type === 'email') return `<a class="dir-detail-link" href="mailto:${safeValue}">${safeValue}</a>`;
+            if (type === 'phone') return `<a class="dir-detail-link" href="tel:${safeValue}">${safeValue}</a>`;
+            if (type === 'link') return `<a class="dir-detail-link" href="${safeValue}" target="_blank" rel="noopener">${safeValue}</a>`;
+            return `<div class="dir-detail-value">${safeValue}</div>`;
+        }).join('')
+        : '<div class="dir-detail-empty">Belirtilmedi</div>';
+
+    return `
+        <section class="dir-detail-section">
+            <div class="dir-detail-label">${escapeDirHtml(label)}</div>
+            <div class="dir-detail-list">${content}</div>
+        </section>
+    `;
+}
+
+function openDirDetailModal(data) {
+    const content = document.getElementById('dirDetailContent');
+    const fullName = data.full_name || '';
+    const company = data.company || 'Çalıştığı yer belirtilmedi';
+    const title = data.title || 'İlan yok';
+    const notes = data.notes ? escapeDirHtml(data.notes).replace(/\n/g, '<br>') : '<span class="dir-detail-empty">Belirtilmedi</span>';
+
+    content.innerHTML = `
+        <section class="dir-detail-person">
+            <div class="dir-detail-avatar">${escapeDirHtml(dirInitials(fullName))}</div>
+            <div>
+                <h4 class="dir-detail-name">${escapeDirHtml(fullName)}</h4>
+                <div class="dir-detail-sub">
+                    <span>${escapeDirHtml(company)}</span>
+                    <span class="dir-title-pill">${escapeDirHtml(title)}</span>
+                </div>
+            </div>
+        </section>
+        ${renderDirDetailList('E-postalar', data.emails, 'email')}
+        ${renderDirDetailList('Telefonlar', data.phones, 'phone')}
+        ${renderDirDetailList('Web & Sosyal Medya', data.links, 'link')}
+        <section class="dir-detail-section">
+            <div class="dir-detail-label">Notlar</div>
+            <div class="dir-detail-value">${notes}</div>
+        </section>
+    `;
+
+    document.getElementById('dirDetailModal').classList.add('active');
+}
+
+function closeDirDetailModal() {
+    document.getElementById('dirDetailModal').classList.remove('active');
+}
+
 function createDynamicField(name, placeholder, type, value = '') {
     const item = document.createElement('div');
     item.className = 'dir-dynamic-item';

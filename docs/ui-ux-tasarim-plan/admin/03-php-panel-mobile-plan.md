@@ -43,8 +43,13 @@
    - Modal/form aksiyonları yan yana veya tam genişlik standardına alınacak.
    - Durum: finans ve aidat sayfalarında mobil özet matrisi, işlem/ödeme kartları ve bottom-sheet modal düzeni uygulandı.
 
-6. Modül sayfaları
+6. Yönetim sayfaları
+   - `management/announce.php`, `management/directory.php`, `management/reports.php` mobilde tek kolon ve kart liste düzenine alınacak.
+   - Durum: küresel duyuru sayfası mobil tek kolon form ve kompakt duyuru kartlarıyla düzenlendi; kurumsal rehber mobil arama ve üye kart listesine dönüştürüldü; rapor izleme departman ve üye kart listesi olarak düzenlendi.
+
+7. Modül sayfaları
    - Her modülde tablo/kart, modal, dosya yükleme ve aksiyon alanları tek tek kontrol edilecek.
+   - Durum: kurumsal rehber kartları sadeleştirildi, detay bilgileri popup'a taşındı; dosya yönetimi mobil araç çubuğu, iki kolon dosya kartları, bottom-sheet modal ve yükleme paneli düzeniyle optimize edildi; etkinlik yönetimi iki kolon minimalist kart ve mobil bottom-sheet form düzenine alındı; fikir havuzu kartları, yorum alanı ve popup formları mobil için sıkıştırıldı; envanter sayfası iki kolon kart, kompakt filtre ve mobil form paneline alındı; bağlantılar yönetimi mobil tek kolon form ve kompakt link kartlarıyla düzenlendi; medya yöneticisi yatay klasör şeridi, iki kolon görsel grid ve kompakt yükleme alanıyla düzenlendi; toplantı modülü yatay toplantı geçmişi, tek kolon detay ve kompakt merkez popup ile düzenlendi; üyeler modülü mobilde iki kolon kart listesi, sıkı üst aksiyonlar ve merkez popup düzeniyle optimize edildi.
 
 ## Kabul Kriterleri
 

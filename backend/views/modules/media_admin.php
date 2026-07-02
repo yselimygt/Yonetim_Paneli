@@ -142,6 +142,229 @@
     border-top: 1px solid var(--border);
 }
 .load-more-wrap { display: flex; justify-content: center; padding-bottom: 40px; margin-top: 10px; }
+
+@media (max-width: 760px) {
+    .gallery-layout {
+        display: block;
+        height: auto;
+        min-height: 0;
+        border-radius: 14px;
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .gallery-sidebar {
+        width: 100%;
+        border-right: 0;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 12px;
+        background: var(--card-bg);
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        padding: 12px;
+    }
+
+    .sidebar-header span {
+        font-size: 14px;
+    }
+
+    .folder-list {
+        display: flex;
+        gap: 8px;
+        padding: 0 12px 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: thin;
+    }
+
+    .folder-item {
+        flex: 0 0 auto;
+        max-width: 170px;
+        min-height: 36px;
+        padding: 8px 10px;
+        margin: 0;
+        border-radius: 999px;
+        font-size: 12px;
+    }
+
+    .folder-item:hover,
+    .folder-item.active {
+        transform: none;
+    }
+
+    .folder-item span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .folder-delete-btn {
+        opacity: 1;
+        padding: 4px 7px;
+        margin-left: 6px;
+    }
+
+    .gallery-content {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--bg);
+    }
+
+    .gallery-header-sticky {
+        position: static;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .gallery-header-sticky h3 {
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .gallery-header-sticky > div {
+        flex-shrink: 0;
+        font-size: 11px !important;
+    }
+
+    .dropzone-wrapper {
+        padding: 0 12px;
+        margin-top: 12px;
+    }
+
+    .dropzone {
+        border-radius: 14px;
+        padding: 22px 12px;
+    }
+
+    .dropzone i {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .dropzone h4 {
+        font-size: 14px !important;
+    }
+
+    .dropzone p {
+        font-size: 11px !important;
+    }
+
+    .media-toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 0 12px;
+        margin: 14px 0;
+        font-size: 12px;
+    }
+
+    .media-toolbar > div {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+
+    .media-toolbar .btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 36px;
+        border-radius: 10px;
+    }
+
+    .image-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 0 12px 16px;
+    }
+
+    .image-card {
+        border-radius: 13px;
+    }
+
+    .image-card:hover {
+        transform: none;
+    }
+
+    .image-card:hover .image-wrapper img {
+        transform: none;
+    }
+
+    .image-overlay {
+        opacity: 1;
+        pointer-events: auto;
+        background: linear-gradient(to top, rgba(0,0,0,0.45), transparent 55%);
+    }
+
+    .delete-file-btn {
+        width: 30px;
+        height: 30px;
+        right: 8px;
+        bottom: 8px;
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .bulk-cb {
+        top: 8px;
+        left: 8px;
+        width: 20px;
+        height: 20px;
+        opacity: 1;
+    }
+
+    .image-card-info {
+        padding: 9px 7px;
+        font-size: 11px;
+    }
+
+    .load-more-wrap {
+        padding: 0 12px 18px;
+    }
+
+    .load-more-wrap .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #addFolderModal.modal {
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    #addFolderModal .modal-content {
+        width: 100%;
+        max-width: 420px !important;
+        border-radius: 18px;
+    }
+
+    #addFolderModal form > div[style*="justify-content:flex-end"] {
+        display: flex !important;
+        gap: 8px !important;
+    }
+
+    #addFolderModal form > div[style*="justify-content:flex-end"] .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 380px) {
+    .image-grid {
+        gap: 8px;
+    }
+}
 </style>
 
 <div class="gallery-layout">

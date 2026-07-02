@@ -23,6 +23,157 @@ function timeAgo($datetime) {
 }
 ?>
 
+<style>
+@media (max-width: 760px) {
+    div[style*="margin-bottom: 24px; display: flex"] {
+        align-items: flex-start !important;
+        gap: 10px !important;
+        margin-bottom: 14px !important;
+    }
+
+    div[style*="margin-bottom: 24px; display: flex"] h3 {
+        font-size: 18px !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
+    }
+
+    div[style*="margin-bottom: 24px; display: flex"] p {
+        display: none !important;
+    }
+
+    div[style*="margin-bottom: 24px; display: flex"] > .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        min-height: 40px !important;
+        border-radius: 11px !important;
+        font-size: 13px !important;
+    }
+
+    div[style*="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))"] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    div[style*="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))"] > .card {
+        border-radius: 14px !important;
+        overflow: hidden !important;
+    }
+
+    div[style*="flex-grow: 1; padding: 20px"] {
+        padding: 14px !important;
+    }
+
+    div[style*="justify-content: space-between; align-items: flex-start; margin-bottom: 16px"] {
+        margin-bottom: 10px !important;
+        gap: 8px !important;
+    }
+
+    div[style*="width: 36px; height: 36px"] {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    div[style*="margin-bottom: 16px;"] {
+        margin-bottom: 12px !important;
+    }
+
+    div[style*="margin-bottom: 16px;"] h3 {
+        font-size: 14px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 7px !important;
+    }
+
+    div[style*="margin-bottom: 16px;"] p {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 3 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        font-size: 12px !important;
+        line-height: 1.45 !important;
+    }
+
+    div[style*="padding: 12px 20px; background: var(--card-alt)"] {
+        padding: 10px 12px !important;
+        gap: 8px !important;
+    }
+
+    div[style*="padding: 12px 20px; background: var(--card-alt)"] .btn-sm {
+        min-width: 34px !important;
+        min-height: 32px !important;
+        padding: 6px 9px !important;
+        border-radius: 9px !important;
+        font-size: 11px !important;
+    }
+
+    div[id^="comments-"] {
+        padding: 12px !important;
+    }
+
+    div[id^="comments-"] form {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        gap: 7px !important;
+    }
+
+    div[id^="comments-"] .form-control {
+        min-width: 0 !important;
+        height: 36px !important;
+    }
+
+    #modal-create-idea,
+    #modal-update-status {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    #modal-create-idea > .card,
+    #modal-update-status > .card {
+        width: 100% !important;
+        max-width: none !important;
+        max-height: 88vh !important;
+        margin: 0 auto !important;
+        border-radius: 18px !important;
+        overflow-y: auto !important;
+    }
+
+    #modal-create-idea .card-body,
+    #modal-update-status .card-body {
+        padding: 14px !important;
+    }
+
+    #modal-create-idea .form-group,
+    #modal-update-status .form-group {
+        margin-bottom: 13px !important;
+    }
+
+    #modal-create-idea .form-control,
+    #modal-update-status .form-control {
+        min-height: 40px !important;
+        border-radius: 10px !important;
+        font-size: 13px !important;
+    }
+
+    #modal-create-idea textarea.form-control {
+        min-height: 92px !important;
+    }
+
+    #modal-create-idea form > div[style*="justify-content: flex-end"],
+    #modal-update-status form > div[style*="justify-content: flex-end"] {
+        display: flex !important;
+        gap: 8px !important;
+        margin-top: 16px !important;
+    }
+
+    #modal-create-idea form > div[style*="justify-content: flex-end"] .btn,
+    #modal-update-status form > div[style*="justify-content: flex-end"] .btn {
+        flex: 1 !important;
+        justify-content: center !important;
+    }
+}
+</style>
+
 <!-- Header -->
 <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
     <div>
@@ -226,6 +377,14 @@ function timeAgo($datetime) {
     </div>
 </div>
 
+<script>
+document.getElementById('modal-create-idea').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+</script>
+
 <!-- Modal: Durum Güncelleme -->
 <?php if ($isDirectorOrAdmin): ?>
 <div id="modal-update-status" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); z-index: 1000; align-items: center; justify-content: center;">
@@ -264,5 +423,11 @@ function openStatusModal(ideaId, currentStatus) {
     document.getElementById('status_select').value = currentStatus;
     document.getElementById('modal-update-status').style.display = 'flex';
 }
+
+document.getElementById('modal-update-status').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
 </script>
 <?php endif; ?>

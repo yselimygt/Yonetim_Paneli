@@ -287,10 +287,15 @@
         display: flex;
         flex-direction: column;
         gap: 14px;
+        width: 100%;
+        min-width: 0;
     }
 
     .dues-layout > .glass-card:first-child {
         height: auto !important;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
         border-radius: 14px;
     }
 
@@ -301,23 +306,67 @@
     .glass-list {
         display: flex;
         gap: 8px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
         max-height: none;
         overflow-x: auto;
-        padding: 10px;
+        overflow-y: hidden;
+        padding: 10px 10px 14px;
         scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #60a5fa rgba(59, 130, 246, 0.12);
     }
 
     .glass-list::-webkit-scrollbar {
-        display: none;
+        display: block;
+        height: 6px;
+    }
+
+    .glass-list::-webkit-scrollbar-track {
+        background: rgba(59, 130, 246, 0.12);
+        border-radius: 999px;
+        margin: 0 10px;
+    }
+
+    .glass-list::-webkit-scrollbar-thumb {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        border-radius: 999px;
+    }
+
+    .glass-list::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(90deg, #2563eb, #3b82f6);
     }
 
     .glass-list-item {
-        flex: 0 0 78%;
-        max-width: 260px;
+        flex: 0 0 172px;
+        width: 172px;
+        min-width: 172px;
+        max-width: 172px;
+        box-sizing: border-box;
         padding: 12px;
         border: 1px solid var(--border);
         border-radius: 12px;
         scroll-snap-align: start;
+    }
+
+    .glass-list-item h6 {
+        min-width: 0;
+        max-width: 96px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .glass-list-item .flex-row.justify-between {
+        gap: 8px;
+    }
+
+    .dues-layout > div:last-child {
+        width: 100%;
+        min-width: 0;
     }
 
     .glass-list-item.active {
@@ -573,6 +622,20 @@
         padding: 5px 9px;
         font-size: 10px;
     }
+
+    .dues-payment-card {
+        padding: 14px !important;
+    }
+
+    .dues-payment-card h5 {
+        margin: 0 0 12px 2px !important;
+        font-size: 14px !important;
+        line-height: 1.2;
+    }
+
+    .dues-payment-card > div {
+        overflow-x: visible !important;
+    }
 }
 </style>
 
@@ -726,7 +789,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-card">
+                    <div class="glass-card dues-payment-card">
                         <h5 class="fw-semibold mb-4" style="color:var(--text); font-size:16px;">Üye Ödeme Durumları</h5>
                         <div style="overflow-x:auto;">
                             <table class="glass-table dues-payment-table">
