@@ -20,6 +20,7 @@
     }
 
     .department-edit-checks {
+        display: grid;
         gap: 10px;
     }
 
@@ -34,6 +35,10 @@
         background: var(--input-bg);
         padding: 12px;
     }
+
+    .department-edit-fields {
+        gap: 0;
+    }
 }
 </style>
 
@@ -47,7 +52,7 @@
         <form method="POST" action="<?= BASE_URL ?>/superadmin/departments/<?= $department['id'] ?>">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
-            <div class="form-row department-edit-checks">
+            <div class="form-row department-edit-fields">
                 <div class="form-group">
                     <label class="form-label">Ad *</label>
                     <input type="text" name="name" class="form-control"
@@ -73,7 +78,7 @@
                 <p class="form-hint">feathericons.com'dan bir ikon adı girin</p>
             </div>
 
-            <div class="form-row">
+            <div class="form-row department-edit-checks">
                 <div class="form-group">
                     <div class="check-group">
                         <input type="checkbox" id="is_management_e" name="is_management" value="1"

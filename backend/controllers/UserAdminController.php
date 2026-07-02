@@ -25,7 +25,8 @@ class UserAdminController extends Controller
         $pdo   = Database::getInstance();
         $users = $pdo->query("
             SELECT u.*,
-                   GROUP_CONCAT(d.name ORDER BY d.name SEPARATOR ', ') AS depts
+                   GROUP_CONCAT(d.name ORDER BY d.name SEPARATOR ', ') AS depts,
+                   GROUP_CONCAT(CONCAT(d.name, '::', d.color) ORDER BY d.name SEPARATOR '||') AS departments_meta
             FROM users u
             LEFT JOIN user_departments ud ON ud.user_id = u.id
             LEFT JOIN departments d ON d.id = ud.department_id

@@ -26,10 +26,22 @@ class SuperAdminController extends Controller
             ORDER BY d.is_management DESC, d.name ASC
         ")->fetchAll();
 
-        // Son 5 kullanıcı
-        $recentUsers = $pdo->query(
-            "SELECT * FROM users WHERE is_super_admin = 0 ORDER BY created_at DESC LIMIT 5"
-        )->fetchAll();
+        // Son 5 kullanıcı + departman renkleri
+        $recentUsers = $pdo->query("
+            SELECT u.*,
+                   COALESCE(du.departments_meta, '') AS departments_meta
+            FROM users u
+            LEFT JOIN (
+                SELECT ud.user_id,
+                       GROUP_CONCAT(CONCAT(d.name, '::', d.color) ORDER BY d.name SEPARATOR '||') AS departments_meta
+                FROM user_departments ud
+                JOIN departments d ON d.id = ud.department_id
+                GROUP BY ud.user_id
+            ) du ON du.user_id = u.id
+            WHERE u.is_super_admin = 0
+            ORDER BY u.created_at DESC
+            LIMIT 5
+        ")->fetchAll();
 
         $this->view('superadmin/dashboard', [
             'deptCount'   => $deptCount,

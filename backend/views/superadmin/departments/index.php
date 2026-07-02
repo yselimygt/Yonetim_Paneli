@@ -35,7 +35,10 @@
         gap: 7px;
         border: 1px solid var(--border);
         border-radius: 12px;
-        background: var(--card);
+        background:
+            linear-gradient(135deg, color-mix(in srgb, var(--dept-color, var(--accent)) 22%, transparent), transparent 58%),
+            var(--card);
+        border-color: color-mix(in srgb, var(--dept-color, var(--border)) 45%, var(--border));
         padding: 10px;
         box-shadow: none;
         min-width: 0;
@@ -89,6 +92,13 @@
         text-overflow: clip !important;
     }
 
+    .departments-table .dept-color,
+    .departments-table .dept-slug,
+    .departments-table .dept-description,
+    .departments-table .dept-status {
+        display: none;
+    }
+
     .departments-table .actions {
         display: grid;
         grid-template-columns: 1fr;
@@ -104,6 +114,10 @@
         justify-content: center;
         min-height: 38px;
         padding: 8px 10px;
+    }
+
+    .departments-table .dept-actions::before {
+        display: none !important;
     }
 
     .departments-table .empty-state {
@@ -151,8 +165,8 @@
             <tr><td colspan="7" class="empty-state" data-label=""><p>Henüz departman yok.</p></td></tr>
         <?php else: ?>
             <?php foreach ($departments as $d): ?>
-            <tr>
-                <td data-label="Renk">
+            <tr style="--dept-color: <?= View::escape($d['color']) ?>;">
+                <td data-label="Renk" class="dept-color">
                     <span class="color-dot" style="background:<?= View::escape($d['color']) ?>;width:14px;height:14px;border-radius:50%;display:inline-block;"></span>
                 </td>
                 <td data-label="Ad" class="dept-name" style="font-weight:500"><?= View::escape($d['name']) ?></td>
@@ -167,12 +181,12 @@
                         <span class="badge badge-member">Standart</span>
                     <?php endif; ?>
                 </td>
-                <td data-label="Durum">
+                <td data-label="Durum" class="dept-status">
                     <span class="badge <?= $d['is_active'] ? 'badge-active' : 'badge-inactive' ?>">
                         <?= $d['is_active'] ? 'Aktif' : 'Pasif' ?>
                     </span>
                 </td>
-                <td data-label="İşlemler">
+                <td data-label="İşlemler" class="dept-actions">
                     <div class="actions">
                         <a href="<?= BASE_URL ?>/superadmin/departments/<?= $d['id'] ?>/edit" class="btn btn-outline btn-sm">Düzenle</a>
                         <form method="POST" action="<?= BASE_URL ?>/superadmin/departments/<?= $d['id'] ?>/delete"
