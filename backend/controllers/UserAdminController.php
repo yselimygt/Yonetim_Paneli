@@ -34,9 +34,25 @@ class UserAdminController extends Controller
             ORDER BY u.created_at DESC
         ")->fetchAll();
 
+        $userDeptRows = $pdo->query("
+            SELECT ud.user_id,
+                   ud.department_id,
+                   ud.role,
+                   d.name AS dept_name,
+                   d.color AS dept_color
+            FROM user_departments ud
+            JOIN departments d ON d.id = ud.department_id
+            ORDER BY d.name
+        ")->fetchAll();
+
+        $userAssignments = [];
+        foreach ($userDeptRows as $row) {
+            $userAssignments[(int) $row['user_id']][] = $row;
+        }
+
         $departments = $this->deptModel->getAll();
 
-        $this->view('superadmin/users/index', compact('users', 'departments'), 'superadmin');
+        $this->view('superadmin/users/index', compact('users', 'departments', 'userAssignments'), 'superadmin');
     }
 
     // POST /superadmin/users  (create)
@@ -205,7 +221,7 @@ class UserAdminController extends Controller
 
         if (!$deptId) {
             $this->flashError('Departman seçin.');
-            $this->redirect('/superadmin/users/' . $id . '/edit');
+            $this->redirect('/superadmin/users');
         }
 
         if ($action === 'remove') {
@@ -219,7 +235,7 @@ class UserAdminController extends Controller
             $this->syncAlumniProfile((int)$id);
         }
 
-        $this->redirect('/superadmin/users/' . $id . '/edit');
+        $this->redirect('/superadmin/users');
     }
 
     private function syncAlumniProfile(int $userId): void
