@@ -26,41 +26,42 @@
 
     .departments-table tbody {
         display: grid;
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
     }
 
     .departments-table tr {
         display: grid;
-        gap: 10px;
+        gap: 7px;
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 12px;
         background: var(--card);
-        padding: 14px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+        padding: 10px;
+        box-shadow: none;
+        min-width: 0;
     }
 
     .departments-table td {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 14px;
+        display: block;
         max-width: none;
-        border-bottom: 1px solid rgba(255,255,255,.04);
-        padding: 0 0 10px;
+        border-bottom: 0;
+        padding: 0;
         white-space: normal;
         overflow: visible;
-        text-align: right;
+        text-align: left;
+        line-height: 1.35;
     }
 
     .departments-table td::before {
         content: attr(data-label);
-        flex: 0 0 96px;
+        display: block;
         color: var(--muted);
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .05em;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .06em;
         text-align: left;
         text-transform: uppercase;
+        margin-bottom: 3px;
     }
 
     .departments-table td:last-child {
@@ -71,7 +72,7 @@
 
     .departments-table td:last-child::before {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .departments-table .dept-name,
@@ -90,8 +91,8 @@
 
     .departments-table .actions {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        grid-template-columns: 1fr;
+        gap: 6px;
     }
 
     .departments-table .actions .btn,
@@ -101,6 +102,17 @@
 
     .departments-table .actions .btn {
         justify-content: center;
+        min-height: 38px;
+        padding: 8px 10px;
+    }
+
+    .departments-table .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    .departments-table .empty-state::before {
+        display: none;
     }
 
     .department-modal-actions {
