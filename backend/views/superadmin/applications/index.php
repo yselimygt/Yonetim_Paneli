@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Tüm Başvurular'; ?>
 
-<div class="row mb-4">
+<div class="row mb-4 applications-page-head">
     <div class="col-12 d-flex justify-content-between align-items-center">
         <h2 class="h4 mb-0"><i class="fas fa-file-signature text-primary me-2"></i> Yönetim & Temsilcilik Başvuruları</h2>
     </div>
@@ -225,6 +225,132 @@
     .app-list-pane { flex: none; max-height: 400px; }
     .app-detail-pane { min-height: 600px; }
 }
+
+@media (max-width: 700px) {
+    .applications-page-head {
+        margin-bottom: 16px !important;
+    }
+
+    .applications-page-head h2 {
+        font-size: 18px !important;
+        line-height: 1.3;
+    }
+
+    .app-list-pane,
+    .app-detail-pane {
+        border-radius: 14px;
+    }
+
+    .app-list-pane {
+        max-height: none;
+    }
+
+    .application-filters {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        gap: 8px !important;
+    }
+
+    .application-filters .btn {
+        width: 100%;
+    }
+
+    .app-list-content {
+        max-height: 420px;
+        padding: 10px;
+    }
+
+    .app-card {
+        border-radius: 14px;
+        padding: 14px;
+    }
+
+    .app-card-header {
+        display: grid;
+        gap: 6px;
+    }
+
+    .app-sender,
+    .app-subject {
+        max-width: 100%;
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .app-date {
+        font-size: 11px;
+    }
+
+    .app-detail-pane {
+        min-height: 420px;
+    }
+
+    .app-empty-state {
+        min-height: 320px;
+        padding: 32px 20px;
+        text-align: center;
+    }
+
+    #detailContent {
+        min-height: 0;
+    }
+
+    .application-detail-actions,
+    .application-status-form,
+    .application-delete-form {
+        display: grid !important;
+        width: 100%;
+        gap: 8px !important;
+    }
+
+    .application-status-form .form-select,
+    .application-status-form .btn,
+    .application-delete-form .btn {
+        width: 100% !important;
+    }
+
+    .app-detail-content {
+        overflow: visible;
+    }
+
+    .base-info-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .info-item {
+        align-items: flex-start;
+        min-width: 0;
+    }
+
+    .info-item-text {
+        min-width: 0;
+    }
+
+    .info-item-text div:last-child {
+        color: var(--text);
+        overflow-wrap: anywhere;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .json-field {
+        padding: 14px;
+    }
+
+    .json-field p,
+    .json-field pre {
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+}
 .d-none { display: none !important; }
 </style>
 
@@ -233,7 +359,7 @@
     <div class="app-list-pane">
         <div class="app-list-header d-flex flex-column gap-3">
             <h5 class="mb-0 fs-6 fw-bold">Başvuru Listesi</h5>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 application-filters">
                 <button class="btn btn-sm btn-primary app-filter-btn active" data-filter="all">Tümü</button>
                 <button class="btn btn-sm btn-outline-secondary app-filter-btn" data-filter="management">Yönetim</button>
                 <button class="btn btn-sm btn-outline-secondary app-filter-btn" data-filter="representative">Temsilci</button>
@@ -289,8 +415,8 @@
                     <h3 class="mb-1 text-white fw-bold" id="d-name" style="font-size: 20px;">-</h3>
                     <div class="fs-6" style="color: #60a5fa;" id="d-type-date">-</div>
                 </div>
-                <div class="d-flex gap-2 align-items-center">
-                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/status" id="statusForm" class="d-flex gap-2 align-items-center mb-0">
+                <div class="d-flex gap-2 align-items-center application-detail-actions">
+                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/status" id="statusForm" class="d-flex gap-2 align-items-center mb-0 application-status-form">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="id" id="status_id">
                         <select name="status" class="form-select form-select-sm w-auto status-select-custom" id="status_select">
@@ -301,7 +427,7 @@
                         </select>
                         <button type="submit" class="btn btn-sm btn-primary">Güncelle</button>
                     </form>
-                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/delete" onsubmit="return confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?');" class="mb-0">
+                    <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/delete" onsubmit="return confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?');" class="mb-0 application-delete-form">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="id" id="delete_id">
                         <button type="submit" class="btn btn-sm" style="background-color: #ef4444; border-color: #dc2626; color: white; padding: 4px 10px;"><i class="fas fa-trash me-1"></i> Sil</button>
