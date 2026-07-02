@@ -335,13 +335,24 @@
     }
 
     .app-detail-header {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 34px;
         gap: 10px;
         padding: 14px;
     }
 
+    .app-detail-header > div:first-child {
+        min-width: 0;
+    }
+
     .app-detail-header h3 {
         font-size: 16px !important;
+        overflow-wrap: anywhere;
+    }
+
+    #d-type-date {
+        font-size: 12px !important;
+        line-height: 1.3;
         overflow-wrap: anywhere;
     }
 
@@ -377,11 +388,12 @@
     .application-delete-form {
         display: grid !important;
         width: 100%;
-        gap: 8px !important;
+        gap: 6px !important;
     }
 
     .application-detail-actions {
-        flex: 0 0 100%;
+        grid-column: 1 / -1;
+        align-items: stretch !important;
         grid-template-columns: 1fr;
     }
 
@@ -393,6 +405,18 @@
     .application-status-form .btn,
     .application-delete-form .btn {
         width: 100% !important;
+        min-height: 32px;
+        border-radius: 8px;
+        font-size: 11px;
+        padding: 0 8px !important;
+    }
+
+    .application-status-form .form-select {
+        min-width: 0;
+    }
+
+    .application-delete-form .btn {
+        min-height: 30px;
     }
 
     .app-detail-content {
@@ -663,10 +687,37 @@ function showDetails(app) {
             
             const keyMap = {
                 'city': 'Şehir / İlçe',
+                'district': 'İlçe',
                 'department': 'Okunan Bölüm',
                 'grade': 'Sınıf / Derece',
                 'studentId': 'Öğrenci Numarası',
+                'studentNumber': 'Öğrenci Numarası',
+                'birthDate': 'Doğum Tarihi',
+                'linkedin': 'LinkedIn',
+                'github': 'GitHub',
+                'portfolio': 'Portfolyo',
+                'instagram': 'Instagram',
+                'cv': 'CV',
+                'motivation': 'Motivasyon',
+                'experience': 'Deneyim',
+                'skills': 'Yetenekler',
+                'interests': 'İlgi Alanları',
+                'availability': 'Uygunluk',
+                'preferredRole': 'Tercih Edilen Rol',
+                'preferredDepartment': 'Tercih Edilen Departman',
                 'targetTeam': 'Hedef Ekip',
+                'targetDepartment': 'Hedef Departman',
+                'whyTeam': 'Bu Ekibi Neden İstiyorsunuz?',
+                'previousExperience': 'Önceki Deneyimler',
+                'clubExperience': 'Topluluk Deneyimi',
+                'leadershipExperience': 'Liderlik Deneyimi',
+                'teamworkExperience': 'Takım Çalışması Deneyimi',
+                'contribution': 'Katkı',
+                'goals': 'Hedefler',
+                'strengths': 'Güçlü Yönler',
+                'weaknesses': 'Gelişim Alanları',
+                'notes': 'Notlar',
+                'message': 'Mesaj',
                 'argeTools': 'Kullandığı Araçlar / Programlar',
                 'argePastProjectsDetails': 'Geçmiş Proje Detayları',
                 'argeContribution': 'Ar-Ge Ekibine Katkısı / Beklentisi',
@@ -681,9 +732,31 @@ function showDetails(app) {
                 
                 let formattedKey = keyMap[key];
                 if (!formattedKey) {
-                    // Fallback to Title Case if not in map
-                    formattedKey = key.replace(/([a-z])([A-Z])/g, '$1 $2');
-                    formattedKey = formattedKey.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                    formattedKey = key
+                        .replace(/([a-z])([A-Z])/g, '$1 $2')
+                        .replace(/_/g, ' ')
+                        .replace(/\bid\b/gi, 'ID')
+                        .replace(/\burl\b/gi, 'Bağlantı')
+                        .replace(/\blink\b/gi, 'Bağlantı')
+                        .replace(/\bname\b/gi, 'Ad')
+                        .replace(/\bemail\b/gi, 'E-posta')
+                        .replace(/\bphone\b/gi, 'Telefon')
+                        .replace(/\buniversity\b/gi, 'Üniversite')
+                        .replace(/\bfaculty\b/gi, 'Fakülte')
+                        .replace(/\bdepartment\b/gi, 'Bölüm')
+                        .replace(/\bgrade\b/gi, 'Sınıf')
+                        .replace(/\bteam\b/gi, 'Ekip')
+                        .replace(/\brole\b/gi, 'Rol')
+                        .replace(/\bwhy\b/gi, 'Neden')
+                        .replace(/\btools\b/gi, 'Araçlar')
+                        .replace(/\bproject\b/gi, 'Proje')
+                        .replace(/\bprojects\b/gi, 'Projeler')
+                        .replace(/\bdetails\b/gi, 'Detaylar')
+                        .replace(/\bexperience\b/gi, 'Deneyim')
+                        .replace(/\bskills\b/gi, 'Yetenekler')
+                        .replace(/\bexpectations\b/gi, 'Beklentiler')
+                        .replace(/\bcontribution\b/gi, 'Katkı');
+                    formattedKey = formattedKey.split(' ').map(w => w === 'ID' ? w : w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1)).join(' ');
                 }
                 
                 let displayValue = value;
