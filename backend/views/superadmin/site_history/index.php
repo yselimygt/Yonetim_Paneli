@@ -1,13 +1,132 @@
 <?php $pageTitle = 'Site Tarihçesi (Başarılar / Ödüller)'; ?>
 
+<style>
+@media (max-width: 700px) {
+    .history-card {
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .history-table-wrap {
+        overflow: visible !important;
+    }
+
+    .history-table {
+        display: table;
+        overflow: visible;
+    }
+
+    .history-table thead {
+        display: none;
+    }
+
+    .history-table,
+    .history-table tbody,
+    .history-table tr,
+    .history-table td {
+        width: 100%;
+    }
+
+    .history-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .history-table tr {
+        display: grid;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--card);
+        padding: 14px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+    }
+
+    .history-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        max-width: none;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        padding: 0 0 10px;
+        white-space: normal;
+        overflow: visible;
+        text-align: right;
+    }
+
+    .history-table td::before {
+        content: attr(data-label);
+        flex: 0 0 104px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .history-table td:last-child {
+        display: block;
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .history-table td:last-child::before {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .history-title-cell,
+    .history-description {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .history-title-cell a {
+        display: inline-flex;
+        margin-top: 6px;
+        overflow-wrap: anywhere;
+    }
+
+    .history-description {
+        white-space: normal;
+    }
+
+    .history-actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+    }
+
+    .history-actions .btn,
+    .history-actions form {
+        width: 100%;
+    }
+
+    .history-actions .btn {
+        justify-content: center;
+    }
+
+    .history-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .history-modal-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
 <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
     <h2>Site Tarihçesi (Başarılar / Ödüller)</h2>
     <button class="btn btn-primary" onclick="openModal('addHistoryModal')">Yeni Kayıt Ekle</button>
 </div>
 
-<div class="card">
-    <div style="overflow-x:auto;">
-        <table class="table">
+<div class="card history-card">
+    <div class="history-table-wrap" style="overflow-x:auto;">
+        <table class="table history-table">
             <thead>
                 <tr>
                     <th style="width:100px;">Yıl</th>
@@ -20,30 +139,30 @@
             <tbody>
                 <?php if(empty($historyItems)): ?>
                 <tr>
-                    <td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">Henüz kayıt eklenmemiş.</td>
+                    <td colspan="5" data-label="" style="text-align:center; padding:20px; color:var(--muted);">Henüz kayıt eklenmemiş.</td>
                 </tr>
                 <?php else: ?>
                     <?php foreach($historyItems as $h): ?>
                     <tr>
-                        <td><strong><?= View::escape($h['year']) ?></strong></td>
-                        <td>
+                        <td data-label="Yıl"><strong><?= View::escape($h['year']) ?></strong></td>
+                        <td data-label="Başlık" class="history-title-cell">
                             <div><?= View::escape($h['title']) ?></div>
                             <?php if($h['link']): ?>
                                 <a href="<?= View::escape($h['link']) ?>" target="_blank" style="font-size:12px; color:var(--primary);">Bağlantı</a>
                             <?php endif; ?>
                         </td>
-                        <td>
-                            <div style="font-size:13px; color:var(--muted);">
+                        <td data-label="Açıklama">
+                            <div class="history-description" style="font-size:13px; color:var(--muted);">
                                 <?= View::escape(mb_strimwidth($h['description'], 0, 80, '...')) ?>
                             </div>
                         </td>
-                        <td>
+                        <td data-label="Tür">
                             <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--text);">
                                 <?= $h['type'] === 'achievement' ? 'Başarı' : 'Ödül' ?>
                             </span>
                         </td>
-                        <td>
-                            <div style="display:flex; gap:8px;">
+                        <td data-label="İşlemler">
+                            <div class="history-actions" style="display:flex; gap:8px;">
                                 <button class="btn btn-sm btn-outline" onclick='editHistory(<?= json_encode($h) ?>)'>Düzenle</button>
                                 <form method="POST" action="<?= BASE_URL ?>/superadmin/site-history/<?= $h['id'] ?>/delete" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
@@ -105,7 +224,7 @@
                     </div>
                 </div>
 
-                <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+                <div class="history-modal-actions" style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('addHistoryModal')">İptal</button>
                     <button type="submit" class="btn btn-primary">Kaydet</button>
                 </div>
@@ -160,7 +279,7 @@
                     </div>
                 </div>
 
-                <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+                <div class="history-modal-actions" style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('editHistoryModal')">İptal</button>
                     <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
                 </div>

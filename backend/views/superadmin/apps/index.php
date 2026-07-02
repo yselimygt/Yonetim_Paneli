@@ -152,9 +152,79 @@
     display: flex;
     justify-content: flex-end;
 }
+
+@media (max-width: 700px) {
+    .apps-page-header p {
+        line-height: 1.45;
+    }
+
+    .dept-sidebar {
+        border-radius: 14px;
+        padding: 12px;
+    }
+
+    .dept-sidebar h3 {
+        margin-bottom: 12px;
+    }
+
+    .dept-link {
+        min-height: 44px;
+        min-width: max-content;
+    }
+
+    .main-content {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .empty-selection {
+        padding: 48px 16px;
+    }
+
+    .assign-header {
+        margin-bottom: 20px;
+    }
+
+    .assign-header h2,
+    .assign-header p {
+        overflow-wrap: anywhere;
+    }
+
+    .modules-grid {
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .mod-card {
+        padding: 18px 14px;
+    }
+
+    .mod-name,
+    .mod-inputs input {
+        overflow-wrap: anywhere;
+    }
+
+    .mod-inputs > div {
+        justify-content: space-between !important;
+    }
+
+    .mod-inputs input[type="number"] {
+        width: 88px !important;
+        min-height: 36px;
+    }
+
+    .save-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .save-bar .btn {
+        width: 100%;
+    }
+}
 </style>
 
-<div class="page-header">
+<div class="page-header apps-page-header">
     <div>
         <h2>Uygulama Ata</h2>
         <p style="color:var(--muted); font-size:13px; margin-top:4px;">Departmanlara çekirdek modülleri tanımlayın.</p>

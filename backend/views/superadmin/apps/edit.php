@@ -1,11 +1,44 @@
 <?php $pageTitle = 'Uygulama Düzenle'; ?>
 
+<style>
+@media (max-width: 700px) {
+    .app-edit-title {
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .app-edit-card {
+        max-width: none !important;
+    }
+
+    .app-edit-options {
+        padding-top: 0 !important;
+    }
+
+    .app-edit-options .check-group {
+        align-items: flex-start;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--input-bg);
+        padding: 12px;
+    }
+
+    .app-edit-actions {
+        flex-direction: column;
+    }
+
+    .app-edit-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
 <div class="page-header">
-    <h2>Uygulama Düzenle — <?= View::escape($app['name']) ?></h2>
+    <h2 class="app-edit-title">Uygulama Düzenle — <?= View::escape($app['name']) ?></h2>
     <a href="<?= BASE_URL ?>/superadmin/apps" class="btn btn-outline">← Geri</a>
 </div>
 
-<div class="card" style="max-width:600px;">
+<div class="card app-edit-card" style="max-width:600px;">
     <div class="card-body">
         <form method="POST" action="<?= BASE_URL ?>/superadmin/apps/<?= $app['id'] ?>">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
@@ -46,7 +79,7 @@
                     <label class="form-label">Sıralama</label>
                     <input type="number" name="sort_order" class="form-control" value="<?= (int)$app['sort_order'] ?>" min="0">
                 </div>
-                <div class="form-group" style="padding-top:28px">
+                <div class="form-group app-edit-options" style="padding-top:28px">
                     <div class="check-group" style="margin-bottom:10px">
                         <input type="checkbox" id="director_only_e" name="director_only" value="1" <?= $app['director_only'] ? 'checked' : '' ?>>
                         <label for="director_only_e">Sadece Direktör</label>
@@ -63,7 +96,7 @@
                 <textarea name="config" class="form-control" style="font-family:monospace; min-height: 120px;"><?= View::escape($app['config'] ?? '{}') ?></textarea>
             </div>
 
-            <div style="display:flex;gap:10px;margin-top:16px;">
+            <div class="app-edit-actions" style="display:flex;gap:10px;margin-top:16px;">
                 <button type="submit" class="btn btn-primary">Güncelle</button>
                 <a href="<?= BASE_URL ?>/superadmin/apps" class="btn btn-outline">İptal</a>
             </div>

@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Site Ayarları'; ?>
 
-<div class="page-header">
+<div class="page-header settings-page-header">
     <div>
         <h2>Genel Site Ayarları</h2>
         <p style="color:var(--muted); font-size:13px; margin-top:4px;">Web sitesinin temel bileşenlerini ve içeriklerini buradan yönetebilirsiniz.</p>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
 
-                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:flex-end;">
+                <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:flex-end;">
                     <button type="submit" class="btn btn-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         Ayarları Kaydet
@@ -154,7 +154,7 @@
                     <?php endforeach; ?>
                 </div>
                 
-                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
                     <button type="button" class="btn btn-outline" onclick="addStat()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Yeni Metrik Ekle
@@ -185,7 +185,7 @@
                     <?php if (empty($sponsors)): $sponsors = ['']; endif; ?>
                     <?php foreach ($sponsors as $url): ?>
                     <div class="dynamic-item" style="padding:16px;">
-                        <div style="display:flex; gap:12px; align-items:center;">
+                        <div class="sponsor-url-row" style="display:flex; gap:12px; align-items:center;">
                             <div style="flex:1;">
                                 <label class="form-label">Logo URL'si</label>
                                 <input type="text" name="sponsor_url[]" class="form-control" value="<?= View::escape($url) ?>" placeholder="/assets/img/sponsor.png">
@@ -198,7 +198,7 @@
                     <?php endforeach; ?>
                 </div>
                 
-                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
                     <button type="button" class="btn btn-outline" onclick="addSponsor()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Logo Ekle
@@ -250,7 +250,7 @@
                     <?php endforeach; ?>
                 </div>
                 
-                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
                     <button type="button" class="btn btn-outline" onclick="addFaq()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Soru Ekle
@@ -340,7 +340,7 @@
                     <?php endforeach; ?>
                 </div>
                 
-                <div style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
                     <button type="button" class="btn btn-outline" onclick="addRoutingRule()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Yeni Kural Ekle
@@ -506,6 +506,66 @@ input:checked + .toggle-slider:before {
     .sponsors-grid { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 700px) {
+    .settings-page-header p {
+        line-height: 1.45;
+    }
+
+    .settings-tabs {
+        margin-left: -2px;
+        margin-right: -2px;
+    }
+
+    .settings-tabs .tab-btn {
+        flex: 0 0 auto;
+    }
+
+    .tab-content .card-body {
+        padding: 16px;
+    }
+
+    .dynamic-item {
+        padding: 16px;
+    }
+
+    .item-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .item-header strong,
+    .item-header strong select {
+        width: 100% !important;
+    }
+
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .sponsor-url-row,
+    .target-row {
+        align-items: stretch !important;
+        flex-direction: column;
+    }
+
+    .sponsor-url-row .btn-icon,
+    .target-row .btn-icon {
+        width: 100%;
+    }
+
+    .settings-save-bar {
+        align-items: stretch !important;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .settings-save-bar .btn {
+        width: 100%;
+    }
+}
+
 .mt-4 { margin-top: 24px; }
 </style>
 
@@ -551,7 +611,7 @@ function addStat() {
 function addSponsor() {
     const html = `
     <div class="dynamic-item" style="padding:16px;">
-        <div style="display:flex; gap:12px; align-items:center;">
+        <div class="sponsor-url-row" style="display:flex; gap:12px; align-items:center;">
             <div style="flex:1;">
                 <label class="form-label">Logo URL'si</label>
                 <input type="text" name="sponsor_url[]" class="form-control" placeholder="/assets/img/sponsor.png">
