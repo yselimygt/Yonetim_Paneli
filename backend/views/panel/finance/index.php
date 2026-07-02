@@ -223,6 +223,240 @@
 .input-group .input-prefix { background: var(--input-bg); border: 1px solid var(--border); border-right: none; border-radius: 8px 0 0 8px; padding: 12px 16px; font-weight: bold; }
 .input-group .form-control { border-radius: 0 8px 8px 0; }
 select.form-control option { background: var(--bg); color: var(--text); }
+
+@media (max-width: 900px) {
+    .finance-wrapper > .flex-row.justify-between.align-start.mb-5 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .finance-wrapper > .flex-row.justify-between.align-start.mb-5 > div:first-child .flex-row {
+        align-items: center;
+    }
+
+    .finance-wrapper h3 {
+        font-size: 19px !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    .finance-wrapper > .flex-row.justify-between.align-start.mb-5 p {
+        margin-left: 0 !important;
+        font-size: 12px !important;
+        line-height: 1.4;
+    }
+
+    .finance-wrapper > .flex-row.justify-between.align-start.mb-5 > .flex-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+    }
+
+    .finance-wrapper > .flex-row.justify-between.align-start.mb-5 > .flex-row .btn-glass {
+        justify-content: center;
+        width: 100%;
+        min-height: 38px;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 22px;
+    }
+
+    .stats-grid .glass-card {
+        min-height: 86px;
+        padding: 12px 10px;
+        border-radius: 12px;
+    }
+
+    .stats-grid .glass-card:hover {
+        transform: none;
+    }
+
+    .stats-grid .stat-icon {
+        width: 58px;
+        height: 58px;
+        right: -16px;
+        bottom: -14px;
+        opacity: .08;
+    }
+
+    .stats-grid p {
+        font-size: 9px !important;
+        line-height: 1.2;
+        margin-bottom: 7px !important;
+    }
+
+    .stats-grid h2 {
+        font-size: clamp(13px, 3.6vw, 18px) !important;
+        line-height: 1.15;
+        letter-spacing: -0.4px !important;
+        word-break: break-word;
+    }
+
+    .stats-grid h2 span {
+        font-size: .82em !important;
+    }
+
+    .glass-table {
+        display: block;
+        border-spacing: 0;
+        margin-top: 0;
+    }
+
+    .glass-table thead {
+        display: none;
+    }
+
+    .glass-table tbody,
+    .glass-table tr,
+    .glass-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .glass-table tr {
+        background: var(--card-alt);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .glass-table tr:hover td {
+        background: transparent;
+    }
+
+    .glass-table td,
+    .glass-table td:first-child,
+    .glass-table td:last-child {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        padding: 7px 2px;
+    }
+
+    .glass-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 12px;
+    }
+
+    .glass-table td::before {
+        color: var(--muted);
+        content: "";
+        flex: 0 0 auto;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+    }
+
+    .glass-table td:nth-child(1)::before { content: "Tarih"; }
+    .glass-table td:nth-child(2)::before { content: "Tip"; }
+    .glass-table td:nth-child(3)::before { content: "Kategori"; }
+    .glass-table td:nth-child(4)::before { content: "Açıklama"; }
+    .glass-table td:nth-child(5)::before { content: "Tutar"; }
+    .glass-table td:nth-child(6)::before { content: "İşlem"; }
+
+    .glass-table td:nth-child(4) {
+        align-items: flex-start;
+    }
+
+    .glass-table td:nth-child(4) > .flex-row {
+        flex: 1;
+        justify-content: flex-end;
+        text-align: right;
+        min-width: 0;
+    }
+
+    .glass-table td:nth-child(5) {
+        text-align: left !important;
+    }
+
+    .glass-table td:nth-child(6) > div {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px !important;
+        width: 100%;
+    }
+
+    .glass-table td:nth-child(6) form,
+    .glass-table td:nth-child(6) button {
+        width: auto !important;
+    }
+
+    .glass-table td:nth-child(6) button {
+        min-height: 30px;
+        padding: 6px 8px !important;
+        border-radius: 8px;
+    }
+
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .modal-glass {
+        max-height: calc(100vh - 32px);
+        max-width: none;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .modal-glass form {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        padding: 16px;
+    }
+
+    .modal-title {
+        font-size: 14px;
+    }
+
+    .modal-body {
+        padding: 16px;
+        overflow-y: auto;
+    }
+
+    .modal-body > .flex-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .modal-glass .form-group {
+        margin-bottom: 14px;
+    }
+
+    .modal-footer {
+        padding: 12px 16px 16px;
+        justify-content: stretch;
+        gap: 8px;
+    }
+
+    .modal-footer .btn-glass {
+        flex: 1;
+        justify-content: center;
+        min-height: 38px;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+}
 </style>
 
 <div class="finance-wrapper">

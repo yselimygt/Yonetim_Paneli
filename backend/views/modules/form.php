@@ -206,6 +206,22 @@ body {
     font-size: 12px;
 }
 
+.q-fixed-type {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 9px;
+    border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--border));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    white-space: nowrap;
+}
+
 /* Builder Floating Menu (Desktop) */
 .floating-menu {
     position: fixed;
@@ -310,7 +326,7 @@ body {
 @media (max-width: 900px) {
     .floating-menu {
         top: auto;
-        bottom: 20px;
+        bottom: calc(92px + env(safe-area-inset-bottom));
         left: 50%;
         right: auto;
         transform: translateX(-50%);
@@ -321,10 +337,11 @@ body {
         max-width: 95%;
         overflow-x: auto;
         justify-content: flex-start;
+        z-index: 120;
     }
     .floating-menu::-webkit-scrollbar { display: none; }
     .floating-menu button::after { display: none; } /* Hide tooltips on mobile */
-    .builder-container { padding: 0 10px 120px 10px; }
+    .builder-container { padding: 0 10px 210px 10px; }
     .question-card { padding: 13px 12px; margin-bottom: 9px; border-radius: 9px; }
     .question-main-row { grid-template-columns: 1fr; gap: 8px; padding-right: 0; }
     .question-actions { top: 7px; right: 8px; opacity: 1; transform: none; border: 0; }
@@ -412,50 +429,37 @@ body {
                 <table class="responses-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <thead>
                         <tr>
-                            <th>Tarih</th>
-                            <th>Kullanıcı</th>
-                            <?php 
-                            $showCount = 0;
-                            foreach ($fields as $f): 
-                                if($showCount >= 3) break;
-                                echo "<th>".View::escape($f['label'])."</th>";
-                                $showCount++;
-                            endforeach; 
-                            ?>
+                            <th>Ad Soyad</th>
                             <th>Detay</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($entries as $e): 
                             $d = json_decode($e['data'], true) ?: [];
+                            $fullName = '';
+                            foreach ($fields as $f) {
+                                $label = mb_strtolower($f['label'] ?? '', 'UTF-8');
+                                $name = mb_strtolower($f['name'] ?? '', 'UTF-8');
+                                if (mb_strpos($label, 'ad soyad') !== false || mb_strpos($name, 'adsoyad') !== false || mb_strpos($name, 'ad_soyad') !== false) {
+                                    $value = $d[$f['name']] ?? '';
+                                    $fullName = is_array($value) ? implode(', ', $value) : (string)$value;
+                                    break;
+                                }
+                            }
+                            if (trim($fullName) === '') {
+                                $fullName = !empty($e['user_name']) ? $e['user_name'] : 'Misafir';
+                            }
                         ?>
                         <tr>
-                            <td><?= date('d.m.Y H:i', strtotime($e['created_at'])) ?></td>
+                            <td><?= View::escape($fullName) ?></td>
                             <td>
-                                <?php if($e['user_id']): ?>
-                                    <?= View::escape($e['user_name']) ?> <br><small style="color:var(--muted);"><?= View::escape($e['user_email']) ?></small>
-                                <?php else: ?>
-                                    Misafir <br><small style="color:var(--muted);">IP: <?= View::escape($d['_meta']['ip'] ?? '') ?></small>
-                                <?php endif; ?>
-                            </td>
-                            <?php 
-                            $showCount = 0;
-                            foreach ($fields as $f): 
-                                if($showCount >= 3) break;
-                                $val = $d[$f['name']] ?? '';
-                                if (is_array($val)) $val = implode(', ', $val);
-                                echo "<td>".View::escape(mb_substr($val, 0, 30))."</td>";
-                                $showCount++;
-                            endforeach; 
-                            ?>
-                            <td>
-                                <button class="btn btn-sm btn-outline" onclick="showResponseDetails(<?= $e['id'] ?>)">İncele</button>
+                                <button class="btn btn-sm btn-outline" onclick="showResponseDetails(<?= $e['id'] ?>)">Detay</button>
                                 <div id="resp-<?= $e['id'] ?>" style="display:none;"><?= htmlspecialchars($e['data']) ?></div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
                         <?php if(empty($entries)): ?>
-                        <tr><td colspan="6" style="text-align:center; padding: 20px; color: var(--muted);">Henüz yanıt yok.</td></tr>
+                        <tr><td colspan="2" style="text-align:center; padding: 20px; color: var(--muted);">Henüz yanıt yok.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -519,11 +523,11 @@ body {
 </div>
 
 <!-- Modal -->
-<div id="resModal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:var(--modal-overlay);z-index:9999;align-items:center;justify-content:center;">
-    <div class="card" style="width: 90%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column;">
+<div id="resModal" onclick="closeResponseModal()" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:var(--modal-overlay);z-index:9999;align-items:center;justify-content:center;">
+    <div class="card" onclick="event.stopPropagation()" style="width: 90%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column;">
         <div class="card-header" style="display:flex; justify-content:space-between;">
-            <span>Yanıt Detayı</span>
-            <button onclick="document.getElementById('resModal').style.display='none'" style="background:none;border:none;color:#fff;cursor:pointer;">&times;</button>
+            <span>Kişi Özellikleri</span>
+            <button onclick="closeResponseModal()" style="background:none;border:none;color:#fff;cursor:pointer;">&times;</button>
         </div>
         <div class="card-body" id="resModalBody" style="overflow-y:auto; padding: 20px;"></div>
     </div>
@@ -560,6 +564,24 @@ function createQuestionCard(field, index) {
     card.addEventListener('dragleave', handleDragLeave);
     card.addEventListener('dragend', handleDragEnd);
 
+    const typeControl = field.type === 'education'
+        ? `<div class="q-fixed-type" title="Özel eğitim alanı">Eğitim Bilgileri</div>`
+        : `
+            <select class="form-control" onchange="updateFieldType(${index}, this.value)">
+                <option value="text" ${field.type==='text'?'selected':''}>Kısa Metin</option>
+                <option value="textarea" ${field.type==='textarea'?'selected':''}>Paragraf</option>
+                <option value="radio" ${field.type==='radio'?'selected':''}>Çoktan Seçmeli</option>
+                <option value="checkbox" ${field.type==='checkbox'?'selected':''}>Onay Kutuları</option>
+                <option value="dropdown" ${field.type==='dropdown'?'selected':''}>Açılır Menü</option>
+                <option value="file" ${field.type==='file'?'selected':''}>Dosya Yükleme</option>
+                <option value="tc" ${field.type==='tc'?'selected':''}>T.C. Kimlik</option>
+                <option value="phone" ${field.type==='phone'?'selected':''}>Telefon</option>
+                <option value="email" ${field.type==='email'?'selected':''}>E-posta</option>
+                <option value="social" ${field.type==='social'?'selected':''}>Sosyal Medya</option>
+                <option value="number" ${field.type==='number'?'selected':''}>Sayı</option>
+            </select>
+        `;
+
     let html = `
         <div class="drag-handle" title="Sürükle bırak"></div>
         <div class="question-actions">
@@ -577,19 +599,7 @@ function createQuestionCard(field, index) {
                 <input type="hidden" value="${field.name}">
             </div>
             <div>
-                <select class="form-control" onchange="updateFieldType(${index}, this.value)">
-                    <option value="text" ${field.type==='text'?'selected':''}>Kısa Metin</option>
-                    <option value="textarea" ${field.type==='textarea'?'selected':''}>Paragraf</option>
-                    <option value="radio" ${field.type==='radio'?'selected':''}>Çoktan Seçmeli</option>
-                    <option value="checkbox" ${field.type==='checkbox'?'selected':''}>Onay Kutuları</option>
-                    <option value="dropdown" ${field.type==='dropdown'?'selected':''}>Açılır Menü</option>
-                    <option value="file" ${field.type==='file'?'selected':''}>Dosya Yükleme</option>
-                    <option value="tc" ${field.type==='tc'?'selected':''}>T.C. Kimlik</option>
-                    <option value="phone" ${field.type==='phone'?'selected':''}>Telefon</option>
-                    <option value="email" ${field.type==='email'?'selected':''}>E-posta</option>
-                    <option value="social" ${field.type==='social'?'selected':''}>Sosyal Medya</option>
-                    <option value="number" ${field.type==='number'?'selected':''}>Sayı</option>
-                </select>
+                ${typeControl}
             </div>
         </div>
     `;
@@ -911,12 +921,14 @@ function showResponseDetails(id) {
     let data = {};
     try { data = JSON.parse(raw); } catch(e){}
     
-    let html = `<div style="display:grid; gap:16px;">`;
+    let html = `<div style="display:grid; gap:12px;">`;
     formFields.forEach(f => {
         let val = data[f.name] || '—';
         if (Array.isArray(val)) val = val.join(', ');
         if (f.type === 'file' && val !== '—') {
             val = `<a href="${'<?= BASE_URL ?>/' + val}" target="_blank" style="color:var(--accent);">Dosyayı Görüntüle</a>`;
+        } else {
+            val = escapeHtml(String(val));
         }
         html += `
             <div>
@@ -928,6 +940,10 @@ function showResponseDetails(id) {
     html += `</div>`;
     document.getElementById('resModalBody').innerHTML = html;
     document.getElementById('resModal').style.display = 'flex';
+}
+
+function closeResponseModal() {
+    document.getElementById('resModal').style.display = 'none';
 }
 
 function escapeHtml(unsafe) {
