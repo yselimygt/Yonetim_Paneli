@@ -123,21 +123,89 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
     }
 
     .gallery-layout {
-        border-radius: 14px;
+        display: block;
+        height: auto;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .gallery-sidebar {
+        width: 100%;
+        border-right: 0;
+        background: transparent;
+    }
+
+    .sidebar-header {
+        display: none;
+    }
+
+    .folder-list {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 0 0 10px;
+        scrollbar-width: none;
+    }
+
+    .folder-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .folder-item {
+        flex: 0 0 auto;
+        min-height: 30px;
+        margin-bottom: 0;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .folder-item:hover,
+    .folder-item.active {
+        transform: none;
+    }
+
+    .badge-count {
+        padding: 1px 6px;
+        font-size: 10px;
+    }
+
+    .gallery-content {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        overflow: visible;
+    }
+
+    .gallery-header-sticky {
+        position: static;
+        border: 0;
+        background: transparent;
+        padding: 0 0 10px;
     }
 
     .gallery-header-sticky h3 {
+        font-size: 15px;
         min-width: 0;
         overflow-wrap: anywhere;
     }
 
-    .folder-item {
-        min-height: 44px;
+    .image-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+        padding: 0 !important;
     }
 
-    .image-grid {
-        gap: 14px;
-        padding: 14px !important;
+    .image-card {
+        border-radius: 12px;
+        box-shadow: none;
+    }
+
+    .image-wrapper {
+        aspect-ratio: 1 / .78;
     }
 
     .image-card:hover {
@@ -151,7 +219,8 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
     .image-overlay {
         opacity: 1;
         pointer-events: auto;
-        background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.04) 58%);
+        background: linear-gradient(to top, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.02) 60%);
+        padding: 8px;
     }
 
     .action-buttons,
@@ -164,11 +233,19 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
         align-self: stretch;
         display: grid;
         grid-template-columns: 1fr 1fr;
+        gap: 6px;
     }
 
     .btn-overlay {
-        min-height: 42px;
+        min-height: 28px;
+        border-radius: 8px;
+        padding: 0 8px;
         justify-content: center;
+    }
+
+    .image-info {
+        gap: 5px;
+        padding: 8px;
     }
 
     .image-title,
@@ -177,16 +254,32 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
         overflow-wrap: anywhere;
     }
 
+    .image-title {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .image-span {
+        display: none;
+    }
+
     .gallery-empty-state {
         padding: 44px 16px !important;
     }
 
     .gallery-modal-actions {
-        flex-direction: column-reverse;
+        flex-direction: row !important;
+        flex-wrap: nowrap;
     }
 
     .gallery-modal-actions .btn {
-        width: 100%;
+        width: auto;
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 34px;
+        justify-content: center;
+        padding: 0 8px;
+        font-size: 11px;
     }
 }
 </style>

@@ -30,41 +30,35 @@
 
     .projects-table tbody {
         display: grid;
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+        padding: 8px;
     }
 
     .projects-table tr {
         display: grid;
-        gap: 10px;
+        gap: 7px;
         border: 1px solid var(--border);
-        border-radius: 16px;
-        background: var(--card);
-        padding: 14px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+        border-radius: 12px;
+        background: var(--input-bg);
+        padding: 8px;
+        box-shadow: none;
+        min-width: 0;
     }
 
     .projects-table td {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 14px;
+        display: block;
         max-width: none;
-        border-bottom: 1px solid rgba(255,255,255,.04);
-        padding: 0 0 10px;
+        border-bottom: 0;
+        padding: 0;
         white-space: normal;
         overflow: visible;
-        text-align: right;
+        text-align: left;
+        line-height: 1.35;
     }
 
     .projects-table td::before {
-        content: attr(data-label);
-        flex: 0 0 104px;
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .05em;
-        text-align: left;
-        text-transform: uppercase;
+        display: none;
     }
 
     .projects-table td:last-child {
@@ -74,8 +68,7 @@
     }
 
     .projects-table td:last-child::before {
-        display: block;
-        margin-bottom: 8px;
+        display: none;
     }
 
     .project-title-cell,
@@ -87,33 +80,60 @@
 
     .project-title-cell strong {
         display: block;
+        font-size: 13px;
+        font-weight: 700;
         overflow-wrap: anywhere;
     }
 
     .project-description {
+        display: none;
         white-space: normal;
         overflow-wrap: anywhere;
     }
 
+    .projects-table td[data-label="Kategori"],
+    .projects-table td[data-label="Durum"],
+    .projects-table td[data-label="Teknolojiler"],
+    .projects-table td[data-label="Linkler"] {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+    }
+
     .project-tech-list {
-        justify-content: flex-end;
+        justify-content: flex-start;
+        gap: 4px !important;
     }
 
     .project-links {
         display: flex;
         flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 8px;
+        justify-content: flex-start;
+        gap: 4px;
     }
 
     .project-links a {
+        display: inline-flex;
+        min-height: 22px;
+        align-items: center;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255,255,255,.03);
+        padding: 3px 7px;
+        font-size: 10px;
+        font-weight: 800;
         margin-right: 0 !important;
+    }
+
+    .projects-table tr {
+        cursor: pointer;
     }
 
     .project-actions {
         display: grid !important;
         grid-template-columns: 1fr 1fr;
-        gap: 8px !important;
+        gap: 6px !important;
     }
 
     .project-actions .btn,
@@ -123,15 +143,50 @@
 
     .project-actions .btn {
         justify-content: center;
+        min-height: 28px;
+        padding: 0 8px;
+        border-radius: 8px;
+        font-size: 10px;
     }
 
     .project-modal-actions {
-        flex-direction: column-reverse;
+        flex-direction: row !important;
+        flex-wrap: nowrap;
     }
 
     .project-modal-actions .btn {
-        width: 100%;
+        width: auto;
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 34px;
+        justify-content: center;
+        padding: 0 8px;
+        font-size: 11px;
     }
+}
+
+.project-detail-body {
+    display: grid;
+    gap: 14px;
+}
+
+.project-detail-meta,
+.project-detail-techs,
+.project-detail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.project-detail-description {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text);
+    line-height: 1.55;
+    padding: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 </style>
 
@@ -162,7 +217,7 @@
                     <?php foreach($projects as $proj): 
                         $techs = json_decode($proj['tech_stack_json'], true) ?? [];
                     ?>
-                    <tr>
+                    <tr onclick='showProjectDetails(<?= json_encode($proj, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                         <td data-label="Başlık" class="project-title-cell">
                             <strong><?= View::escape($proj['title']) ?></strong>
                             <div class="project-description" style="font-size:12px; color:var(--muted); margin-top:4px;">
@@ -200,9 +255,9 @@
                             </div>
                         </td>
                         <td data-label="İşlemler">
-                            <div class="project-actions" style="display:flex; gap:8px;">
-                                <button class="btn btn-sm btn-outline" onclick='editProject(<?= json_encode($proj) ?>)'>Düzenle</button>
-                                <form method="POST" action="<?= BASE_URL ?>/superadmin/site-projects/<?= $proj['id'] ?>/delete" onsubmit="return confirm('Projeyi silmek istediğinize emin misiniz?');">
+                            <div class="project-actions" style="display:flex; gap:8px;" onclick="event.stopPropagation()">
+                                <button class="btn btn-sm btn-outline" onclick='editProject(<?= json_encode($proj, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
+                                <form method="POST" action="<?= BASE_URL ?>/superadmin/site-projects/<?= $proj['id'] ?>/delete" onsubmit="event.stopPropagation(); return confirm('Projeyi silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                     <button type="submit" class="btn btn-sm btn-danger">Sil</button>
                                 </form>
@@ -213,6 +268,31 @@
                 <?php endif; ?>
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Modal: Project Detail -->
+<div id="projectDetailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="detail_project_title">Proje Detayı</h3>
+            <button class="modal-close" onclick="closeModal('projectDetailModal')">&times;</button>
+        </div>
+        <div class="modal-body project-detail-body">
+            <div class="project-detail-meta" id="detail_project_meta"></div>
+            <div class="project-detail-description" id="detail_project_description"></div>
+            <div>
+                <div class="form-label" style="margin-bottom:8px;">Teknolojiler</div>
+                <div class="project-detail-techs" id="detail_project_techs"></div>
+            </div>
+            <div>
+                <div class="form-label" style="margin-bottom:8px;">Linkler</div>
+                <div class="project-detail-links" id="detail_project_links"></div>
+            </div>
+            <div class="project-modal-actions" style="margin-top:6px; display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn btn-outline" onclick="closeModal('projectDetailModal')">Kapat</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -351,6 +431,55 @@
 </div>
 
 <script>
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function projectStatusLabel(status) {
+    if (status === 'active') return 'Aktif';
+    if (status === 'completed') return 'Tamamlandı';
+    if (status === 'planning') return 'Planlama';
+    return status || '-';
+}
+
+function showProjectDetails(project) {
+    document.getElementById('detail_project_title').textContent = project.title || 'Proje Detayı';
+    document.getElementById('detail_project_description').textContent = project.description || 'Açıklama yok.';
+    document.getElementById('detail_project_meta').innerHTML = `
+        <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--text);">${escapeHtml(project.category || 'Kategori yok')}</span>
+        <span class="badge badge-info">${escapeHtml(projectStatusLabel(project.status))}</span>
+    `;
+
+    let techs = [];
+    try {
+        techs = JSON.parse(project.tech_stack_json || '[]') || [];
+    } catch(e) {
+        techs = [];
+    }
+
+    document.getElementById('detail_project_techs').innerHTML = techs.length
+        ? techs.map(tech => `<span class="badge" style="background:rgba(244,159,32,0.1); color:var(--primary);">${escapeHtml(tech)}</span>`).join('')
+        : '<span style="color:var(--muted);font-size:12px;">Teknoloji bilgisi yok.</span>';
+
+    const links = [];
+    if (project.github_link) {
+        links.push(`<a href="${escapeHtml(project.github_link)}" target="_blank" class="btn btn-outline btn-sm">GitHub</a>`);
+    }
+    if (project.demo_link) {
+        links.push(`<a href="${escapeHtml(project.demo_link)}" target="_blank" class="btn btn-outline btn-sm">Demo</a>`);
+    }
+    document.getElementById('detail_project_links').innerHTML = links.length
+        ? links.join('')
+        : '<span style="color:var(--muted);font-size:12px;">Link yok.</span>';
+
+    openModal('projectDetailModal');
+}
+
 function editProject(project) {
     document.getElementById('edit_title').value = project.title;
     document.getElementById('edit_description').value = project.description;
