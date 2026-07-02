@@ -52,6 +52,7 @@
             color: var(--text);
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* ── Sidebar ── */
@@ -67,6 +68,17 @@
             z-index: 100;
             box-shadow: 2px 0 20px rgba(0,0,0,0.15);
             transition: width 0.3s ease;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            background: rgba(0,0,0,0.58);
+            border: 0;
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
         .sidebar-brand {
@@ -202,6 +214,20 @@
             position: sticky;
             top: 0;
             z-index: 50;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            width: 40px;
+            height: 40px;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--card);
+            color: var(--text);
+            cursor: pointer;
         }
 
         .topbar h1 {
@@ -475,12 +501,341 @@
         }
         .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
 
+        @media (max-width: 900px) {
+            body {
+                display: block;
+            }
+
+            body.sidebar-open {
+                overflow: hidden;
+            }
+
+            .sidebar {
+                width: min(86vw, 300px);
+                transform: translateX(-100%);
+                transition: transform 0.24s ease;
+            }
+
+            .sidebar.is-open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.is-open {
+                display: block;
+                opacity: 1;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+                min-width: 0;
+            }
+
+            .topbar {
+                min-height: 56px;
+                height: auto;
+                padding: 8px 14px;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .topbar h1 {
+                min-width: 0;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .topbar .breadcrumb {
+                display: none;
+            }
+
+            .btn-theme {
+                width: 40px;
+                height: 40px;
+                margin-left: 0;
+                flex: 0 0 auto;
+            }
+
+            .page-content {
+                padding: 18px 14px 28px;
+            }
+
+            .page-header,
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .page-header .btn,
+            .card-header .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-card .value {
+                font-size: 24px;
+            }
+
+            .card {
+                overflow: visible;
+            }
+
+            table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            thead,
+            tbody,
+            tr {
+                width: max-content;
+                min-width: 100%;
+            }
+
+            th,
+            td {
+                white-space: nowrap;
+            }
+
+            td {
+                max-width: 240px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            td:last-child,
+            td:has(.actions) {
+                max-width: none;
+                overflow: visible;
+            }
+
+            .actions {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            .actions .btn,
+            .actions form {
+                flex: 1 1 auto;
+            }
+
+            .actions form .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .modal,
+            .modal-overlay {
+                align-items: flex-start;
+                justify-content: center;
+                padding: 12px;
+                overflow-y: auto;
+            }
+
+            .modal-content,
+            .modal-overlay .modal-content {
+                width: min(100%, calc(100vw - 24px));
+                max-width: none !important;
+                max-height: calc(100dvh - 24px);
+                overflow-y: auto;
+                padding: 20px;
+            }
+
+            .modal-header {
+                gap: 12px;
+            }
+
+            .modal-close {
+                min-width: 40px;
+                min-height: 40px;
+                justify-content: center;
+            }
+
+            .settings-tabs {
+                display: flex !important;
+                gap: 8px !important;
+                overflow-x: auto !important;
+                padding-bottom: 6px !important;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .settings-tabs .tab-btn,
+            .tab-btn {
+                flex: 0 0 auto !important;
+                min-height: 44px !important;
+                white-space: nowrap !important;
+            }
+
+            .dynamic-item,
+            .routing-rule {
+                padding: 16px !important;
+            }
+
+            .item-header {
+                align-items: flex-start !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .item-header .form-control {
+                width: 100% !important;
+            }
+
+            .sponsors-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .gallery-layout,
+            .app-assign-container,
+            .app-container,
+            .dashboard-panels-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+
+            .gallery-sidebar,
+            .dept-sidebar,
+            .app-list-pane {
+                width: 100% !important;
+                flex: none !important;
+                max-height: none !important;
+            }
+
+            .folder-list {
+                display: flex !important;
+                gap: 8px !important;
+                overflow-x: auto !important;
+                padding: 12px !important;
+            }
+
+            .folder-item {
+                min-width: max-content !important;
+                margin-bottom: 0 !important;
+                transform: none !important;
+            }
+
+            .gallery-content,
+            .app-detail-pane,
+            .main-content {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            .gallery-header-sticky,
+            .app-detail-header,
+            .assign-header {
+                align-items: flex-start !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+                padding: 16px !important;
+            }
+
+            .image-grid,
+            .modules-grid,
+            .detail-grid,
+            .profile-modal-grid {
+                grid-template-columns: 1fr !important;
+                padding: 16px !important;
+            }
+
+            .app-list-header .d-flex,
+            .app-detail-header .d-flex,
+            .base-info-row,
+            .save-bar,
+            .profile-modal-footer,
+            .profile-history-item {
+                align-items: stretch !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .base-info-row {
+                padding: 16px !important;
+            }
+
+            .info-item {
+                min-width: 0 !important;
+            }
+
+            .info-item-text,
+            .info-item-text div:last-child,
+            .json-field p,
+            .team-sub,
+            .app-sender {
+                white-space: normal !important;
+                overflow-wrap: anywhere !important;
+                max-width: 100% !important;
+            }
+
+            .profile-modal-card {
+                width: min(100%, calc(100vw - 24px)) !important;
+            }
+
+            .profile-modal-head,
+            .profile-modal-title,
+            .team-group-head,
+            .team-member,
+            .team-person {
+                align-items: flex-start !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+
+            .team-actions,
+            .team-actions .btn,
+            .profile-modal-footer .btn,
+            .save-bar .btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            .logs-mobile-card,
+            .application-mobile-card {
+                min-width: 0 !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                min-height: 44px;
+                justify-content: center;
+            }
+        }
+
     </style>
 </head>
 <body>
 
 <!-- ── Sidebar ── -->
-<aside class="sidebar">
+<button type="button" class="sidebar-overlay" id="sidebarOverlay" aria-label="Menüyü kapat" onclick="closeSidebar()"></button>
+<aside class="sidebar" id="superadminSidebar">
     <div class="sidebar-brand">
         <h2><?= APP_NAME ?></h2>
         <span>Süper Admin</span>
@@ -637,6 +992,13 @@
 <!-- ── Main Content ── -->
 <div class="main">
     <div class="topbar">
+        <button type="button" class="mobile-menu-btn" aria-label="Menüyü aç" aria-controls="superadminSidebar" onclick="openSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
         <h1><?= $pageTitle ?? 'Dashboard' ?></h1>
         <span class="breadcrumb">Süper Admin</span>
         <button onclick="toggleTheme()" class="btn-theme" title="Tema Değiştir">
@@ -659,6 +1021,18 @@
 </div>
 
 <script>
+function openSidebar() {
+    document.getElementById('superadminSidebar')?.classList.add('is-open');
+    document.getElementById('sidebarOverlay')?.classList.add('is-open');
+    document.body.classList.add('sidebar-open');
+}
+
+function closeSidebar() {
+    document.getElementById('superadminSidebar')?.classList.remove('is-open');
+    document.getElementById('sidebarOverlay')?.classList.remove('is-open');
+    document.body.classList.remove('sidebar-open');
+}
+
 function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'light' ? 'dark' : 'light';
@@ -702,6 +1076,12 @@ function toggleModal(id) {
 window.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal') || e.target.classList.contains('modal-overlay')) {
         closeModal(e.target.id);
+    }
+});
+
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeSidebar();
     }
 });
 </script>

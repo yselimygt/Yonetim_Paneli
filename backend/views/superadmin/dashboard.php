@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+<div class="dashboard-panels-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
     <!-- Son Departmanlar -->
     <div class="card">
