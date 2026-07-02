@@ -112,9 +112,86 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
 .image-info { padding: 16px; font-size: 13px; color: var(--text); display:flex; flex-direction:column; gap:8px; border-top: 1px solid var(--border); }
 .image-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
 .image-span { font-size: 11px; color: var(--muted); font-family: monospace; background: var(--bg); padding:4px 8px; border-radius:6px; align-self:flex-start; border: 1px solid var(--border); }
+
+@media (max-width: 700px) {
+    .gallery-page-header {
+        gap: 14px;
+    }
+
+    .gallery-page-header p {
+        line-height: 1.45;
+    }
+
+    .gallery-layout {
+        border-radius: 14px;
+    }
+
+    .gallery-header-sticky h3 {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .folder-item {
+        min-height: 44px;
+    }
+
+    .image-grid {
+        gap: 14px;
+        padding: 14px !important;
+    }
+
+    .image-card:hover {
+        transform: none;
+    }
+
+    .image-card:hover .image-wrapper img {
+        transform: none;
+    }
+
+    .image-overlay {
+        opacity: 1;
+        pointer-events: auto;
+        background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.04) 58%);
+    }
+
+    .action-buttons,
+    .action-buttons form,
+    .btn-overlay {
+        width: 100%;
+    }
+
+    .action-buttons {
+        align-self: stretch;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .btn-overlay {
+        min-height: 42px;
+        justify-content: center;
+    }
+
+    .image-title,
+    .image-span {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .gallery-empty-state {
+        padding: 44px 16px !important;
+    }
+
+    .gallery-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .gallery-modal-actions .btn {
+        width: 100%;
+    }
+}
 </style>
 
-<div class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+<div class="page-header gallery-page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
     <div>
         <h2>Site Galerisi</h2>
         <p style="color:var(--muted); font-size:13px; margin-top:4px;">Web sitesinin ön yüzünde (Galeri veya Slider) görünen tüm dinamik içerikleri buradan yönetin.</p>
@@ -160,7 +237,7 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
 
         <div class="image-grid">
             <?php if(empty($filteredImages)): ?>
-                <div style="grid-column: 1/-1; padding:60px; text-align:center; color:var(--muted); display:flex; flex-direction:column; align-items:center;">
+                <div class="gallery-empty-state" style="grid-column: 1/-1; padding:60px; text-align:center; color:var(--muted); display:flex; flex-direction:column; align-items:center;">
                     <i class="fas fa-images" style="font-size:64px; margin-bottom:20px; opacity:0.2;"></i>
                     <h3 style="margin:0 0 10px 0; font-weight:600; color:var(--text);">Boş Kategori</h3>
                     <p style="margin:0;">Bu kategoride henüz resim bulunmuyor. Yeni resim ekleyerek başlayabilirsiniz.</p>
@@ -228,7 +305,7 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
                     <input type="text" name="span_class" class="form-control">
                 </div>
 
-                <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+                <div class="gallery-modal-actions" style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('addImageModal')">İptal</button>
                     <button type="submit" class="btn btn-primary">Kaydet</button>
                 </div>
@@ -269,7 +346,7 @@ $filteredImages = array_filter($images, function($i) use ($selectedCategory) {
                     <input type="text" name="span_class" id="edit_span_class" class="form-control">
                 </div>
 
-                <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+                <div class="gallery-modal-actions" style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('editImageModal')">İptal</button>
                     <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
                 </div>

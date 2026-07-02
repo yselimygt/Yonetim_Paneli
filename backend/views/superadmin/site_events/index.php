@@ -1,5 +1,135 @@
 <?php $pageTitle = 'Site Etkinlikleri'; ?>
 
+<style>
+@media (max-width: 700px) {
+    .events-card {
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .events-table-wrap {
+        overflow: visible !important;
+    }
+
+    .events-table {
+        display: table;
+        min-width: 0 !important;
+        overflow: visible;
+    }
+
+    .events-table thead {
+        display: none;
+    }
+
+    .events-table,
+    .events-table tbody,
+    .events-table tr,
+    .events-table td {
+        width: 100%;
+    }
+
+    .events-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .events-table tr {
+        display: grid;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--card);
+        padding: 14px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+    }
+
+    .events-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        max-width: none;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        padding: 0 0 10px;
+        white-space: normal;
+        overflow: visible;
+        text-align: right;
+    }
+
+    .events-table td::before {
+        content: attr(data-label);
+        flex: 0 0 104px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .events-table td:last-child {
+        display: block;
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .events-table td:last-child::before {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .event-title-cell,
+    .event-meta-cell {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .event-title-cell strong {
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+        text-align: right;
+    }
+
+    .event-description {
+        max-width: 100% !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+    }
+
+    .event-image,
+    .event-image-placeholder {
+        width: 76px !important;
+        height: 52px !important;
+    }
+
+    .events-table .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .events-table .actions .btn,
+    .events-table .actions form {
+        width: 100%;
+    }
+
+    .events-table .actions .btn {
+        justify-content: center;
+    }
+
+    .event-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .event-modal-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
 <div class="page-header">
     <h2>Web Sitesi Etkinlikleri</h2>
     <button onclick="openModal('create-event-modal')" class="btn btn-primary">
@@ -8,9 +138,9 @@
     </button>
 </div>
 
-<div class="card">
-    <div style="overflow-x: auto;">
-        <table style="min-width: 800px;">
+<div class="card events-card">
+    <div class="events-table-wrap" style="overflow-x: auto;">
+        <table class="events-table" style="min-width: 800px;">
             <thead>
                 <tr>
                     <th>Görsel</th>
@@ -23,11 +153,11 @@
             </thead>
             <tbody>
             <?php if (empty($events)): ?>
-                <tr><td colspan="6" class="empty-state"><p>Henüz site etkinliği bulunmuyor.</p></td></tr>
+                <tr><td colspan="6" data-label="" class="empty-state"><p>Henüz site etkinliği bulunmuyor.</p></td></tr>
             <?php else: ?>
                 <?php foreach ($events as $e): ?>
                 <tr>
-                    <td>
+                    <td data-label="Görsel">
                         <?php if ($e['image_url']): ?>
                             <?php 
                                 $imgSrc = $e['image_url'];
@@ -35,12 +165,12 @@
                                     $imgSrc = BASE_URL . '/public/' . ltrim($imgSrc, '/');
                                 }
                             ?>
-                            <img src="<?= View::escape($imgSrc) ?>" alt="Event" style="width:60px;height:40px;border-radius:6px;object-fit:cover;">
+                            <img src="<?= View::escape($imgSrc) ?>" alt="Event" class="event-image" style="width:60px;height:40px;border-radius:6px;object-fit:cover;">
                         <?php else: ?>
-                            <div style="width:60px;height:40px;background:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;">Görsel Yok</div>
+                            <div class="event-image-placeholder" style="width:60px;height:40px;background:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;">Görsel Yok</div>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td data-label="Başlık" class="event-title-cell">
                         <strong style="display:block;font-size:14px;color:var(--text);margin-bottom:4px;">
                             <?= View::escape($e['title']) ?>
                             <?php if(!empty($e['is_bootcamp'])): ?>
@@ -49,23 +179,23 @@
                                 <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; margin-left:8px; font-size:10px; border:1px solid rgba(16,185,129,0.3);">Modül</span>
                             <?php endif; ?>
                         </strong>
-                        <div style="font-size:12px;color:var(--muted);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <div class="event-description" style="font-size:12px;color:var(--muted);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                             <?= View::escape($e['description'] ?? '') ?>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Kategori / Konum" class="event-meta-cell">
                         <div><span class="badge badge-member"><?= View::escape($e['category'] ?? 'Genel') ?></span></div>
                         <div style="font-size:12px;color:var(--muted);margin-top:4px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:2px;margin-top:-2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             <?= View::escape($e['location'] ?? 'Belirtilmedi') ?>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Tarih">
                         <div style="font-size:13px;font-weight:500;">
                             <?= $e['event_date'] ? date('d M Y, H:i', strtotime($e['event_date'])) : 'Belirtilmedi' ?>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Durum">
                         <?php if ($e['status'] === 'upcoming'): ?>
                             <span class="badge badge-active">Yaklaşan</span>
                         <?php elseif ($e['status'] === 'past'): ?>
@@ -74,7 +204,7 @@
                             <span class="badge badge-inactive"><?= View::escape($e['status']) ?></span>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td data-label="İşlemler">
                         <div class="actions">
                             <button type="button" class="btn btn-outline btn-sm" onclick='editEvent(<?= json_encode($e, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Düzenle</button>
                             <?php $deleteType = !empty($e['is_bootcamp']) ? 'bootcamp' : (!empty($e['is_app_event']) ? 'app_event' : 'site_event'); ?>
@@ -149,7 +279,7 @@
                 <input type="url" name="image_url" class="form-control" placeholder="https://...">
             </div>
 
-            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+            <div class="event-modal-actions" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button type="button" onclick="closeModal('create-event-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Kaydet</button>
             </div>
@@ -214,7 +344,7 @@
                 <input type="url" name="image_url" id="edit_image_url" class="form-control">
             </div>
 
-            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+            <div class="event-modal-actions" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button type="button" onclick="closeModal('edit-event-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Güncelle</button>
             </div>
