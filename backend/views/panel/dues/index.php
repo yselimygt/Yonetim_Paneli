@@ -255,6 +255,325 @@
 .stats-row .divider {
     position: absolute; width: 1px; background: rgba(255,255,255,0.05); top: 10%; bottom: 10%;
 }
+
+@media (max-width: 900px) {
+    .dues-wrapper > .flex-row.justify-between.align-start.mb-5 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .dues-wrapper h3 {
+        font-size: 19px !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    .dues-wrapper > .flex-row.justify-between.align-start.mb-5 p {
+        margin-left: 0 !important;
+        font-size: 12px !important;
+        line-height: 1.4;
+    }
+
+    .dues-wrapper > .flex-row.justify-between.align-start.mb-5 .btn-glass {
+        width: 100%;
+        justify-content: center;
+        min-height: 38px;
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+
+    .dues-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .dues-layout > .glass-card:first-child {
+        height: auto !important;
+        border-radius: 14px;
+    }
+
+    .dues-layout > .glass-card:first-child > div:first-child {
+        padding: 14px 16px !important;
+    }
+
+    .glass-list {
+        display: flex;
+        gap: 8px;
+        max-height: none;
+        overflow-x: auto;
+        padding: 10px;
+        scroll-snap-type: x mandatory;
+    }
+
+    .glass-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .glass-list-item {
+        flex: 0 0 78%;
+        max-width: 260px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        scroll-snap-align: start;
+    }
+
+    .glass-list-item.active {
+        border-left-width: 1px;
+        box-shadow: inset 0 3px 0 #3b82f6;
+    }
+
+    .dues-layout > div:last-child > .glass-card {
+        border-radius: 14px;
+    }
+
+    .dues-layout .glass-card.p-5 {
+        padding: 16px !important;
+    }
+
+    .dues-layout .glass-card.p-5 > .flex-row.justify-between {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 18px !important;
+    }
+
+    .dues-layout .glass-card.p-5 h4 {
+        font-size: 18px !important;
+    }
+
+    .dues-layout .glass-card.p-5 form .btn-glass {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .stats-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 22px;
+    }
+
+    .stats-row > div {
+        min-width: 0;
+        padding: 10px 6px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+    }
+
+    .stats-row .divider {
+        display: none;
+    }
+
+    .stats-row p {
+        font-size: 8px !important;
+        line-height: 1.2;
+        margin-bottom: 6px !important;
+    }
+
+    .stats-row h3 {
+        font-size: clamp(13px, 3.6vw, 18px) !important;
+        line-height: 1.15;
+        word-break: break-word;
+    }
+
+    .glass-table {
+        display: block;
+        border-spacing: 0;
+    }
+
+    .glass-table thead {
+        display: none;
+    }
+
+    .glass-table tbody,
+    .glass-table tr,
+    .glass-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .glass-table tr {
+        background: var(--card-alt);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .glass-table tr:hover td {
+        background: transparent;
+    }
+
+    .glass-table td,
+    .glass-table td:first-child,
+    .glass-table td:last-child {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        padding: 7px 2px;
+    }
+
+    .glass-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 12px;
+    }
+
+    .glass-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        flex: 0 0 auto;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+    }
+
+    .glass-table td > .flex-row {
+        justify-content: flex-end;
+        min-width: 0;
+        text-align: right;
+    }
+
+    .glass-table td form {
+        margin-left: auto;
+    }
+
+    .glass-table td .btn-glass {
+        min-height: 30px;
+        padding: 6px 9px;
+        border-radius: 8px;
+    }
+
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .modal-glass {
+        max-width: none;
+        max-height: calc(100vh - 32px);
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .modal-glass form {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        padding: 16px;
+    }
+
+    .modal-title {
+        font-size: 14px;
+    }
+
+    .modal-body {
+        padding: 16px;
+        overflow-y: auto;
+    }
+
+    .modal-glass .form-group {
+        margin-bottom: 14px;
+    }
+
+    .modal-footer {
+        padding: 12px 16px 16px;
+        justify-content: stretch;
+        gap: 8px;
+    }
+
+    .modal-footer .btn-glass {
+        flex: 1;
+        justify-content: center;
+        min-height: 38px;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .dues-payment-table tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        align-items: center;
+        gap: 5px 10px;
+        padding: 11px 12px;
+    }
+
+    .dues-payment-table td,
+    .dues-payment-table td:first-child,
+    .dues-payment-table td:last-child {
+        display: block;
+        width: auto;
+        padding: 0;
+    }
+
+    .dues-payment-table td::before {
+        display: none;
+    }
+
+    .dues-payment-table td[data-label="Üye"] {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        min-width: 0;
+    }
+
+    .dues-payment-table td[data-label="Üye"] > .flex-row {
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .dues-payment-table td[data-label="Üye"] > .flex-row > div:first-child {
+        display: none !important;
+    }
+
+    .dues-payment-table td[data-label="Üye"] span {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dues-payment-table td[data-label="Durum"] {
+        grid-column: 2;
+        grid-row: 1;
+        text-align: right;
+    }
+
+    .dues-payment-table td[data-label="Ödeme Tarihi"] {
+        display: none;
+    }
+
+    .dues-payment-table td[data-label="İşlem"] {
+        grid-column: 2;
+        grid-row: 2;
+        text-align: right !important;
+    }
+
+    .dues-payment-table td[data-label="İşlem"] form {
+        display: block !important;
+        margin: 0;
+    }
+
+    .dues-payment-table td[data-label="İşlem"] .btn-glass {
+        min-width: 72px;
+        min-height: 28px;
+        justify-content: center;
+        padding: 5px 9px;
+        font-size: 10px;
+    }
+}
 </style>
 
 <div class="dues-wrapper">
@@ -340,16 +659,16 @@
                                 <tbody>
                                     <?php foreach ($myPayments as $mp): ?>
                                     <tr>
-                                        <td><span style="color:var(--text); font-weight:500; font-size:14px;"><?= View::escape($mp['period_name']) ?></span></td>
-                                        <td><span style="color:var(--text); font-weight:700; font-size:14px;">₺<?= number_format($mp['expected_amount'], 2, ',', '.') ?></span></td>
-                                        <td>
+                                        <td data-label="Dönem"><span style="color:var(--text); font-weight:500; font-size:14px;"><?= View::escape($mp['period_name']) ?></span></td>
+                                        <td data-label="Tutar"><span style="color:var(--text); font-weight:700; font-size:14px;">₺<?= number_format($mp['expected_amount'], 2, ',', '.') ?></span></td>
+                                        <td data-label="Durum">
                                             <?php if ($mp['status'] === 'paid'): ?>
                                                 <span class="badge-neon badge-neon-success">ÖDENDİ</span>
                                             <?php else: ?>
                                                 <span class="badge-neon badge-neon-danger">ÖDENMEDİ</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td style="color:rgba(255,255,255,0.5); font-size:13px;">
+                                        <td data-label="Ödeme Tarihi" style="color:rgba(255,255,255,0.5); font-size:13px;">
                                             <?= $mp['payment_date'] ? date('d.m.Y H:i', strtotime($mp['payment_date'])) : '-' ?>
                                         </td>
                                     </tr>
@@ -410,7 +729,7 @@
                     <div class="glass-card">
                         <h5 class="fw-semibold mb-4" style="color:var(--text); font-size:16px;">Üye Ödeme Durumları</h5>
                         <div style="overflow-x:auto;">
-                            <table class="glass-table">
+                            <table class="glass-table dues-payment-table">
                                 <thead>
                                     <tr>
                                         <th style="width: 35%">Üye Adı</th>
@@ -422,7 +741,7 @@
                                 <tbody>
                                     <?php foreach ($payments as $pay): ?>
                                     <tr>
-                                        <td>
+                                        <td data-label="Üye">
                                             <div class="flex-row align-center">
                                                 <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--input-bg); color: var(--text); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; margin-right: 12px;">
                                                     <?= mb_substr(View::escape($pay['user_name']), 0, 1) ?>
@@ -430,17 +749,17 @@
                                                 <span style="color:var(--text); font-weight:500; font-size:14px;"><?= View::escape($pay['user_name']) ?></span>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td data-label="Durum">
                                             <?php if ($pay['status'] === 'paid'): ?>
                                                 <span class="badge-neon badge-neon-success">ÖDENDİ</span>
                                             <?php else: ?>
                                                 <span class="badge-neon badge-neon-danger">BEKLİYOR</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td style="color:rgba(255,255,255,0.5); font-size: 13px;">
+                                        <td data-label="Ödeme Tarihi" style="color:rgba(255,255,255,0.5); font-size: 13px;">
                                             <?= $pay['payment_date'] ? date('d.m.Y H:i', strtotime($pay['payment_date'])) : '-' ?>
                                         </td>
-                                        <td style="text-align:right;">
+                                        <td data-label="İşlem" style="text-align:right;">
                                             <form action="<?= BASE_URL ?>/panel/<?= $currentDept['slug'] ?>/dues/payments/toggle" method="POST" style="display:inline;">
                                                 <?= '<input type="hidden" name="csrf_token" value="' . ($_SESSION['csrf_token'] ?? '') . '">' ?>
                                                 <input type="hidden" name="payment_id" value="<?= $pay['id'] ?>">
@@ -449,7 +768,7 @@
                                                     <button type="submit" class="btn-glass btn-glass-warning btn-sm">GERİ AL</button>
                                                 <?php else: ?>
                                                     <input type="hidden" name="status" value="paid">
-                                                    <button type="submit" class="btn-glass btn-glass-success btn-sm">ÖDEDİ</button>
+                                                    <button type="submit" class="btn-glass btn-glass-success btn-sm">ÖDE</button>
                                                 <?php endif; ?>
                                             </form>
                                         </td>

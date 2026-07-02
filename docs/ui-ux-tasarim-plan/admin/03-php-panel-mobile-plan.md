@@ -41,7 +41,7 @@
    - Özet kartları kompakt matris.
    - İşlem tabloları mobil kartlara dönüşecek.
    - Modal/form aksiyonları yan yana veya tam genişlik standardına alınacak.
-   - Durum: finans sayfası mobil özet matrisi, işlem kartları ve bottom-sheet modal düzeni uygulandı; aidat sayfası sırada.
+   - Durum: finans ve aidat sayfalarında mobil özet matrisi, işlem/ödeme kartları ve bottom-sheet modal düzeni uygulandı.
 
 6. Modül sayfaları
    - Her modülde tablo/kart, modal, dosya yükleme ve aksiyon alanları tek tek kontrol edilecek.
