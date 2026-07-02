@@ -48,6 +48,32 @@ class SiteTeamAdminController extends Controller
         $this->saveProfile();
     }
 
+    public function toggleVisibility(): void
+    {
+        Auth::requireSuperAdmin();
+        $this->csrfCheck();
+
+        $userId = (int) ($_POST['user_id'] ?? 0);
+        $departmentId = $_POST['department_id'] ?? null;
+        $departmentId = $departmentId === '' ? null : (int) $departmentId;
+        $isVisible = (int) ($_POST['is_visible'] ?? 0);
+
+        if ($userId <= 0) {
+            $this->flashError('Admin bilgisi bulunamadı.');
+            $this->redirect('/superadmin/site-team');
+            return;
+        }
+
+        $this->teamModel->updateVisibility($userId, $departmentId, $isVisible);
+        Logger::log('TOGGLE_SITE_TEAM_VISIBILITY', 'User', $userId, [
+            'department_id' => $departmentId,
+            'is_visible' => $isVisible
+        ]);
+
+        $this->flashSuccess($isVisible ? 'Profil sitede gösterilecek.' : 'Profil siteden gizlendi.');
+        $this->redirect('/superadmin/site-team');
+    }
+
     private function profileDataFromPost(): array
     {
         $historyYears = $_POST['history_year'] ?? [];

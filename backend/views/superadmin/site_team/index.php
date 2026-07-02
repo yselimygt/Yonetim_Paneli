@@ -144,8 +144,9 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
         border-radius: 12px;
         display: grid;
         place-items: center;
-        background: rgba(0,188,212,.1);
-        color: var(--accent);
+        background: color-mix(in srgb, var(--dept-color, var(--accent)) 16%, transparent);
+        border: 1px solid color-mix(in srgb, var(--dept-color, var(--accent)) 28%, transparent);
+        color: color-mix(in srgb, var(--dept-color, var(--accent)) 78%, var(--text));
         font-weight: 800;
     }
 
@@ -251,6 +252,13 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
         background: rgba(255,255,255,.03);
     }
 
+    .team-pill.department,
+    .team-pill.role {
+        border-color: color-mix(in srgb, var(--dept-color, var(--accent)) 42%, var(--border));
+        background: color-mix(in srgb, var(--dept-color, var(--accent)) 16%, transparent);
+        color: color-mix(in srgb, var(--dept-color, var(--accent)) 82%, var(--text));
+    }
+
     .team-pill.super {
         border-color: rgba(245,158,11,.24);
         background: rgba(245,158,11,.12);
@@ -276,6 +284,11 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
     .team-actions {
         display: flex;
         justify-content: flex-end;
+        gap: 6px;
+    }
+
+    .team-actions form {
+        margin: 0;
     }
 
     .team-empty {
@@ -305,6 +318,15 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
         display: flex;
         flex-direction: column;
         overflow: hidden;
+    }
+
+    .profile-modal-card .modal-close {
+        flex: 0 0 auto;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
     }
 
     .profile-modal-card form {
@@ -431,6 +453,13 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
         min-height: 44px;
     }
 
+    .profile-section .form-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
     .profile-section textarea.form-control {
         min-height: 96px;
     }
@@ -511,82 +540,179 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
             max-width: none;
         }
 
-        .team-hero,
-        .team-stats {
-            grid-template-columns: 1fr;
+        .team-hero {
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
-        .team-hero {
-            align-items: stretch;
-            gap: 14px;
+        .team-kicker,
+        .team-hero p,
+        .team-note,
+        .team-group-head > .team-pill {
+            display: none;
         }
 
         .team-hero h2 {
-            font-size: 22px;
+            font-size: 18px;
         }
 
         .team-hero .btn {
-            width: 100%;
+            width: auto;
+            min-height: 30px;
+            padding: 6px 9px;
+            font-size: 11px;
             justify-content: center;
         }
 
         .team-stats {
-            gap: 8px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin-bottom: 10px;
         }
 
         .team-stat {
-            padding: 13px 14px;
+            border-radius: 8px;
+            padding: 8px;
         }
 
-        .team-note {
+        .team-stat strong {
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .team-stat span {
+            font-size: 10px;
+            line-height: 1.15;
+        }
+
+        .team-groups {
             gap: 10px;
-            padding: 12px;
         }
 
-        .team-note p {
-            overflow-wrap: anywhere;
+        .team-group {
+            border-radius: 10px;
+            background:
+                linear-gradient(135deg, color-mix(in srgb, var(--dept-color, var(--accent)) 16%, transparent), transparent 56%),
+                rgba(255,255,255,.018);
+            border-color: color-mix(in srgb, var(--dept-color, var(--border)) 34%, var(--border));
         }
 
         .team-group-head {
-            align-items: stretch;
-            padding: 14px;
+            align-items: center;
+            padding: 9px 10px;
+            background: transparent;
         }
 
         .team-group-title {
-            align-items: flex-start;
             min-width: 0;
+            gap: 8px;
         }
 
-        .team-group h3,
+        .team-group-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .team-group h3 {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .team-group-meta {
-            overflow-wrap: anywhere;
+            font-size: 10px;
         }
 
         .team-member-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
             padding: 8px;
         }
 
         .team-member {
             grid-template-columns: 1fr;
-            gap: 10px;
-            padding: 12px;
+            align-content: start;
+            gap: 7px;
+            min-width: 0;
+            padding: 8px;
+            border-color: color-mix(in srgb, var(--dept-color, var(--border)) 38%, var(--border));
+            border-radius: 9px;
+            background:
+                linear-gradient(145deg, color-mix(in srgb, var(--dept-color, var(--accent)) 18%, transparent), transparent 55%),
+                rgba(255,255,255,.025);
+        }
+
+        .team-person {
+            display: grid;
+            gap: 7px;
+        }
+
+        .team-avatar {
+            width: 100%;
+            height: 58px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .team-name,
+        .team-role-title {
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .team-sub {
+            font-size: 10px;
+            line-height: 1.25;
+            margin-top: 2px;
+        }
+
+        .team-person .team-sub {
+            display: none;
+        }
+
+        .team-badges {
+            gap: 4px;
+        }
+
+        .team-pill {
+            min-height: 19px;
+            padding: 2px 6px;
+            font-size: 9px;
         }
 
         .team-member > .team-cell:nth-child(4),
         .team-member > .team-cell:nth-child(5) {
-            display: block;
+            display: none;
+        }
+
+        .team-member > .team-cell:nth-child(2) {
+            display: none;
         }
 
         .team-label {
-            display: block;
+            display: none;
         }
 
         .team-actions {
             justify-content: stretch;
         }
 
+        .team-actions form {
+            display: flex;
+            flex: 1 1 0;
+        }
+
         .team-actions .btn {
-            width: 100%;
+            flex: 1 1 0;
+            width: auto;
+            min-height: 28px;
+            padding: 5px 7px;
+            font-size: 10px;
             justify-content: center;
         }
 
@@ -598,42 +724,133 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
             width: calc(100vw - 20px) !important;
             height: calc(100dvh - 20px);
             max-height: calc(100dvh - 20px);
+            border-radius: 12px !important;
+            border: 1px solid var(--border) !important;
         }
 
         .profile-modal-head,
         .profile-modal-body,
         .profile-modal-footer {
-            padding-left: 16px;
-            padding-right: 16px;
+            padding-left: 12px;
+            padding-right: 12px;
         }
 
         .profile-modal-head {
-            align-items: flex-start;
+            align-items: center;
+            gap: 10px;
+            padding-top: 12px;
+            padding-bottom: 10px;
+            background:
+                linear-gradient(135deg, rgba(0,188,212,.11), transparent 60%),
+                var(--card);
+        }
+
+        .profile-modal-card .modal-close {
+            align-self: flex-start;
+            width: 34px;
+            height: 34px;
+            margin-left: auto;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.05);
+            color: var(--text);
+            font-size: 20px;
+            line-height: 1;
         }
 
         .profile-modal-title {
-            align-items: flex-start;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .profile-modal-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .profile-modal-title h3 {
+            font-size: 15px;
+            line-height: 1.15;
         }
 
         .profile-modal-subtitle {
+            font-size: 10px;
             white-space: normal;
             overflow-wrap: anywhere;
         }
 
+        .profile-modal-body {
+            padding-top: 10px;
+            padding-bottom: 76px;
+        }
+
+        .profile-modal-grid {
+            gap: 9px;
+        }
+
         .profile-section {
-            padding: 14px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,.014);
         }
 
         .profile-section-head {
             flex-direction: column;
+            gap: 3px;
+            margin-bottom: 8px;
+        }
+
+        .profile-section-title {
+            font-size: 12px;
+        }
+
+        .profile-section-desc {
+            display: none;
+        }
+
+        .profile-section .form-group {
+            margin-bottom: 9px;
+        }
+
+        .profile-section .form-label {
+            font-size: 9px;
+            margin-bottom: 4px;
+        }
+
+        .profile-section .form-control {
+            min-height: 36px;
+            border-radius: 8px;
+            font-size: 12px;
+            padding: 8px 10px;
+        }
+
+        .profile-section textarea.form-control {
+            min-height: 72px;
         }
 
         .profile-switch {
-            align-items: flex-start;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 9px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .profile-switch strong {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .profile-switch span span {
+            display: none;
         }
 
         .profile-history-item {
             grid-template-columns: 1fr;
+            gap: 7px;
+            padding: 8px;
+            border-radius: 9px;
         }
 
         .profile-history-item .btn {
@@ -641,12 +858,27 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
             justify-content: center;
         }
 
+        #profile_history_container + .btn {
+            width: 100%;
+            min-height: 34px;
+            justify-content: center;
+            font-size: 11px;
+        }
+
         .profile-modal-footer {
-            flex-direction: column-reverse;
+            position: sticky;
+            bottom: 0;
+            padding-top: 10px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            gap: 8px;
         }
 
         .profile-modal-footer .btn {
-            width: 100%;
+            flex: 1 1 0;
+            min-width: 0;
+            width: auto;
+            min-height: 38px;
+            font-size: 12px;
         }
     }
 </style>
@@ -691,7 +923,10 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
     <?php else: ?>
         <div class="team-groups">
             <?php foreach ($groups as $group): ?>
-                <section class="team-group">
+                <?php
+                    $groupColor = preg_match('/^#[0-9a-fA-F]{6}$/', (string) ($group['color'] ?? '')) ? $group['color'] : '#00BCD4';
+                ?>
+                <section class="team-group" style="--dept-color: <?= View::escape($groupColor) ?>;">
                     <div class="team-group-head">
                         <div class="team-group-title">
                             <div class="team-group-icon"><?= View::escape(mb_substr($group['name'], 0, 1, 'UTF-8')) ?></div>
@@ -706,6 +941,7 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
                     <div class="team-member-list">
                         <?php foreach ($group['members'] as $admin): ?>
                             <?php
+                                $adminColor = preg_match('/^#[0-9a-fA-F]{6}$/', (string) ($admin['department_color'] ?? '')) ? $admin['department_color'] : $groupColor;
                                 $payload = [
                                     'user_id' => (int) $admin['user_id'],
                                     'department_id' => $admin['department_id'] === null ? '' : (int) $admin['department_id'],
@@ -733,7 +969,7 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
                                     'sort_order' => (int) ($admin['sort_order'] ?? 0),
                                 ];
                             ?>
-                            <article class="team-member">
+                            <article class="team-member" style="--dept-color: <?= View::escape($adminColor) ?>;">
                                 <div class="team-person">
                                     <?php if (!empty($admin['image_url'])): ?>
                                         <img class="team-avatar" src="<?= View::escape($admin['image_url']) ?>" alt="Profil">
@@ -752,15 +988,15 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
                                         <?php if (!empty($admin['is_super_admin'])): ?>
                                             <span class="team-pill super">Süper Admin</span>
                                         <?php endif; ?>
-                                        <span class="team-pill"><?= ($admin['department_role'] ?? '') === 'director' ? 'Direktör' : 'Üye' ?></span>
+                                        <span class="team-pill role"><?= ($admin['department_role'] ?? '') === 'director' ? 'Direktör' : 'Üye' ?></span>
                                     </div>
                                 </div>
 
                                 <div class="team-cell">
                                     <div class="team-label">Site Görünümü</div>
-                                    <div class="team-role-title"><?= View::escape($admin['display_role']) ?></div>
-                                    <div class="team-sub">
-                                        <?= View::escape($admin['display_department']) ?> · <?= View::escape($admin['display_type']) ?>
+                                    <div class="team-badges">
+                                        <span class="team-pill role"><?= View::escape($admin['display_role']) ?></span>
+                                        <span class="team-pill department"><?= View::escape($admin['display_department']) ?></span>
                                     </div>
                                 </div>
 
@@ -779,9 +1015,18 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
                                 </div>
 
                                 <div class="team-actions">
-                                    <button class="btn btn-sm btn-primary" onclick='editProfile(<?= json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick='editProfile(<?= json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                                         Site Profili
                                     </button>
+                                    <form method="POST" action="<?= BASE_URL ?>/superadmin/site-team/visibility">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                                        <input type="hidden" name="user_id" value="<?= (int) $admin['user_id'] ?>">
+                                        <input type="hidden" name="department_id" value="<?= $admin['department_id'] === null ? '' : (int) $admin['department_id'] ?>">
+                                        <input type="hidden" name="is_visible" value="<?= $admin['is_visible'] ? 0 : 1 ?>">
+                                        <button type="submit" class="btn btn-sm <?= $admin['is_visible'] ? 'btn-outline' : 'btn-primary' ?>">
+                                            <?= $admin['is_visible'] ? 'Gizle' : 'Göster' ?>
+                                        </button>
+                                    </form>
                                 </div>
                             </article>
                         <?php endforeach; ?>

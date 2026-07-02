@@ -75,6 +75,7 @@ $router->post('/superadmin/site-gallery/{id}/delete',     ['SiteGalleryAdminCont
 $router->get('/superadmin/site-team',                     ['SiteTeamAdminController', 'index']);
 $router->post('/superadmin/site-team',                    ['SiteTeamAdminController', 'store']);
 $router->post('/superadmin/site-team/profile',            ['SiteTeamAdminController', 'saveProfile']);
+$router->post('/superadmin/site-team/visibility',         ['SiteTeamAdminController', 'toggleVisibility']);
 
 $router->get('/superadmin/site-history',                  ['SiteHistoryAdminController', 'index']);
 $router->post('/superadmin/site-history',                 ['SiteHistoryAdminController', 'store']);

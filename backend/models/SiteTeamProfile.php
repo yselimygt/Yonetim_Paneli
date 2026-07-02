@@ -17,6 +17,7 @@ class SiteTeamProfile extends Model
                     'id' => $admin['department_id'],
                     'name' => $admin['department_name'],
                     'slug' => $admin['department_slug'],
+                    'color' => $admin['department_color'] ?? '#00BCD4',
                     'members' => []
                 ];
             }
@@ -30,6 +31,7 @@ class SiteTeamProfile extends Model
                 'id' => null,
                 'name' => 'Departmansız Adminler',
                 'slug' => 'departmansiz-adminler',
+                'color' => '#6b7280',
                 'members' => $unassigned
             ];
         }
@@ -49,6 +51,23 @@ class SiteTeamProfile extends Model
         $payload['user_id'] = (int) $data['user_id'];
         $payload['department_id'] = $data['department_id'];
         return (bool) $this->insert($payload);
+    }
+
+    public function updateVisibility(int $userId, $departmentId, int $isVisible): bool
+    {
+        $existing = $this->findProfile($userId, $departmentId);
+
+        if ($existing) {
+            return $this->update((int) $existing['id'], ['is_visible' => $isVisible]);
+        }
+
+        return (bool) $this->insert([
+            'user_id' => $userId,
+            'department_id' => $departmentId,
+            'display_type' => 'department',
+            'is_visible' => $isVisible,
+            'sort_order' => 0
+        ]);
     }
 
     public function updateUserPublicProfile(int $userId, array $data): bool
@@ -145,6 +164,7 @@ class SiteTeamProfile extends Model
                 ud.role AS department_role,
                 d.name AS department_name,
                 d.slug AS department_slug,
+                d.color AS department_color,
                 p.display_name,
                 p.display_role,
                 p.display_department,
@@ -192,6 +212,7 @@ class SiteTeamProfile extends Model
                 NULL AS department_role,
                 NULL AS department_name,
                 'departmansiz-adminler' AS department_slug,
+                '#6b7280' AS department_color,
                 p.display_name,
                 p.display_role,
                 p.display_department,
