@@ -124,6 +124,10 @@
     align-items: flex-start;
 }
 
+.app-detail-close {
+    display: none;
+}
+
 .app-detail-content {
     flex: 1;
     overflow-y: auto;
@@ -238,36 +242,55 @@
 
     .app-list-pane,
     .app-detail-pane {
-        border-radius: 14px;
+        border-radius: 12px;
     }
 
     .app-list-pane {
+        border: 0;
+        background: transparent;
         max-height: none;
+    }
+
+    .app-list-header {
+        border: 0;
+        background: transparent;
+        padding: 0 0 10px;
     }
 
     .application-filters {
         display: grid !important;
-        grid-template-columns: 1fr;
-        gap: 8px !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px !important;
     }
 
     .application-filters .btn {
         width: 100%;
+        min-height: 30px;
+        padding: 0 7px;
+        border-radius: 8px;
+        font-size: 10px;
     }
 
     .app-list-content {
-        max-height: 420px;
-        padding: 10px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+        max-height: none;
+        overflow: visible;
+        padding: 0;
     }
 
     .app-card {
-        border-radius: 14px;
-        padding: 14px;
+        gap: 6px;
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: none;
+        min-width: 0;
     }
 
     .app-card-header {
         display: grid;
-        gap: 6px;
+        gap: 4px;
     }
 
     .app-sender,
@@ -278,22 +301,75 @@
         overflow-wrap: anywhere;
     }
 
+    .app-sender {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .app-subject {
+        font-size: 10px;
+    }
+
     .app-date {
-        font-size: 11px;
+        display: none;
+    }
+
+    .app-badge {
+        font-size: 9px;
+        padding: 2px 6px;
     }
 
     .app-detail-pane {
-        min-height: 420px;
+        display: none;
+        position: fixed;
+        inset: 10px;
+        z-index: 1200;
+        min-height: 0;
+        max-height: calc(100dvh - 20px);
+        background: var(--card);
+        box-shadow: 0 16px 42px rgba(0,0,0,.35);
+    }
+
+    .app-detail-pane.is-open {
+        display: flex;
+    }
+
+    .app-detail-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .app-detail-header h3 {
+        font-size: 16px !important;
+        overflow-wrap: anywhere;
+    }
+
+    .app-detail-close {
+        display: inline-flex;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--input-bg);
+        color: var(--text);
+        font-size: 20px;
+        line-height: 1;
     }
 
     .app-empty-state {
-        min-height: 320px;
+        display: none !important;
+        min-height: 0;
         padding: 32px 20px;
         text-align: center;
     }
 
     #detailContent {
         min-height: 0;
+        height: auto !important;
     }
 
     .application-detail-actions,
@@ -304,6 +380,15 @@
         gap: 8px !important;
     }
 
+    .application-detail-actions {
+        flex: 0 0 100%;
+        grid-template-columns: 1fr;
+    }
+
+    .application-status-form {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
     .application-status-form .form-select,
     .application-status-form .btn,
     .application-delete-form .btn {
@@ -311,7 +396,7 @@
     }
 
     .app-detail-content {
-        overflow: visible;
+        overflow: auto;
     }
 
     .base-info-row {
@@ -415,6 +500,7 @@
                     <h3 class="mb-1 text-white fw-bold" id="d-name" style="font-size: 20px;">-</h3>
                     <div class="fs-6" style="color: #60a5fa;" id="d-type-date">-</div>
                 </div>
+                <button type="button" class="app-detail-close" onclick="closeApplicationDetail()" aria-label="Detayı kapat">&times;</button>
                 <div class="d-flex gap-2 align-items-center application-detail-actions">
                     <form method="POST" action="<?= BASE_URL ?>/superadmin/applications/status" id="statusForm" class="d-flex gap-2 align-items-center mb-0 application-status-form">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
@@ -533,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showDetails(app) {
+    document.getElementById('appDetailPane').classList.add('is-open');
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('detailContent').style.display = 'flex';
     document.getElementById('detailContent').classList.remove('d-none');
@@ -631,5 +718,9 @@ function showDetails(app) {
 
     document.getElementById('d-department').textContent = parsedDepartment;
     document.getElementById('d-grade').textContent = parsedGrade;
+}
+
+function closeApplicationDetail() {
+    document.getElementById('appDetailPane').classList.remove('is-open');
 }
 </script>
