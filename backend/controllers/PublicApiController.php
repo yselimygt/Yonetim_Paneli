@@ -128,13 +128,12 @@ class PublicApiController extends Controller
         $userCountRow = $userCountStmt->fetch();
         $totalUsersExact = $userCountRow['total'] ?? 0;
         
-        // En yakın 50'nin katına yuvarlama (Örn: 124 -> 100, 126 -> 150)
-        // Eğer sayı 25'ten küçükse en azından 50 göstermesi için (opsiyonel ama mantıklı) maks fonksiyonu ile 0'ı önleyebiliriz
-        // ama tam istenen 'en yakın' olduğu için standart round kullanıyoruz. Ancak 0 çıkmaması için minimum 50 yapalım.
-        $roundedUsers = round($totalUsersExact / 50) * 50;
+        // Kendisinden büyük en yakın 50'nin katına yuvarlama
+        $roundedUsers = ceil($totalUsersExact / 50) * 50;
         if ($roundedUsers == 0 && $totalUsersExact > 0) {
             $roundedUsers = 50;
         }
+
 
         // --- Dinamik Etkinlik ve Bootcamp Sayısı Güncellemesi ---
         // app_events, site_events ve app_bootcamps tablolarındaki toplam sayı
@@ -198,12 +197,24 @@ class PublicApiController extends Controller
         } catch (PDOException $e) {
         }
 
+        $dynamicStats = [
+            'Aktif Üye' => $roundedUsers . '+',
+            'Etkinlik'  => (string)$totalEventsExact,
+            'İş Birliği'=> (string)$totalSponsorsExact
+        ];
+
         if (!isset($settings['stats']) || !is_array($settings['stats']) || empty($settings['stats'])) {
             $settings['stats'] = [
-                [ 'label' => 'Aktif Üye', 'value' => $roundedUsers . '+', 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ],
-                [ 'label' => 'Etkinlik', 'value' => (string)$totalEventsExact, 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ],
-                [ 'label' => 'İş Birliği', 'value' => (string)$totalSponsorsExact, 'desc' => 'Marka, topluluk ve sektör paydaşları.' ]
+                [ 'label' => 'Aktif Üye', 'value' => $dynamicStats['Aktif Üye'], 'desc' => 'Topluluk ekosisteminde yer alan öğrenci ağı.' ],
+                [ 'label' => 'Etkinlik', 'value' => $dynamicStats['Etkinlik'], 'desc' => 'Workshop, panel, zirve ve buluşmalar.' ],
+                [ 'label' => 'İş Birliği', 'value' => $dynamicStats['İş Birliği'], 'desc' => 'Marka, topluluk ve sektör paydaşları.' ]
             ];
+        } else {
+            foreach ($settings['stats'] as &$statItem) {
+                if (isset($dynamicStats[$statItem['label']])) {
+                    $statItem['value'] = $dynamicStats[$statItem['label']];
+                }
+            }
         }
 
         // Sponsor array'ini setting içine entegre et (ön tarafta logolar gösterilecek)

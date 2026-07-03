@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { footerLinks, socials } from '../data/innomisData';
 import { useSiteData } from '../context/SiteDataContext';
+import { submitMessage } from '../services/siteApi';
 
 const Footer = () => {
   const { siteData } = useSiteData();
@@ -13,6 +14,38 @@ const Footer = () => {
     return normalized;
   };
   const socialHref = (social) => contactSocials[socialKey(social.label)] || social.href;
+
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null); // { type: 'success' | 'error', msg: '' }
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      const response = await submitMessage({
+        type: 'newsletter',
+        email: email,
+        fullName: 'Bülten Abonesi',
+        message: 'Bülten aboneliği'
+      });
+      
+      if (response.success) {
+        setStatus({ type: 'success', msg: 'Bültene başarıyla abone oldunuz!' });
+        setEmail('');
+      } else {
+        setStatus({ type: 'error', msg: response.message || 'Bir hata oluştu.' });
+      }
+    } catch (err) {
+      setStatus({ type: 'error', msg: err.message || 'Bağlantı hatası.' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer className="border-t border-white/10 bg-gray-50 dark:bg-surface/50 pt-16 pb-8 relative overflow-hidden">
@@ -93,15 +126,28 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-display font-semibold mb-6">Bülten</h4>
             <p className="text-text-secondary text-sm mb-4">Etkinliklerden ve gelişmelerden ilk siz haberdar olun.</p>
-            <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-3" onSubmit={handleSubscribe}>
               <input 
                 type="email" 
                 placeholder="E-posta adresiniz" 
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-meta focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                required
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-meta focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all disabled:opacity-50"
               />
-              <button type="submit" className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors border border-white/5 hover:border-white/20">
-                Abone Ol
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors border border-white/5 hover:border-white/20 disabled:opacity-50"
+              >
+                {loading ? 'İşleniyor...' : 'Abone Ol'}
               </button>
+              {status && (
+                <div className={`text-sm px-3 py-2 rounded-lg ${status.type === 'success' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                  {status.msg}
+                </div>
+              )}
             </form>
           </div>
 
