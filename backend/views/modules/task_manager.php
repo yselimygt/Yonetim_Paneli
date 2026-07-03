@@ -1,13 +1,245 @@
-<div class="panel-header fade-in-up">
+<style>
+/* =========================================
+   TASK MANAGER UI/UX STYLES
+========================================= */
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.task-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    color: var(--text);
+    letter-spacing: -0.5px;
+}
+.task-subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Tabs Mobile Scroll */
+.tm-tabs-wrapper {
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+.tm-tabs-wrapper::-webkit-scrollbar {
+    display: none; /* Safari/Chrome */
+}
+.tm-tabs {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    padding-bottom: 2px;
+}
+.tm-tab-btn {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 6px 6px 0 0;
+}
+.tm-tab-btn:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+}
+.tm-tab-btn.active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--text);
+    background: var(--bg-hover);
+}
+
+/* Task List Grid */
+.tm-task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+/* Task Card Enhancements */
+.tm-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid var(--primary);
+    display: flex;
+    flex-direction: column;
+}
+.tm-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.tm-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    color: var(--text);
+}
+.tm-card-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+/* Avatars Overlapping */
+.tm-avatars {
+    display: flex;
+    align-items: center;
+}
+.tm-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    border: 2px solid var(--card);
+    margin-left: -8px;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+.tm-avatar:first-child {
+    margin-left: 0;
+}
+.tm-avatar:hover {
+    transform: translateY(-2px);
+    z-index: 10;
+}
+.tm-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.tm-avatar-more {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    border: 2px solid var(--card);
+    margin-left: -8px;
+}
+
+/* Empty State */
+.tm-empty {
+    padding: 60px 20px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px dashed var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+.tm-empty-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--muted);
+    opacity: 0.5;
+}
+.tm-empty-text {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+/* Progress Bar */
+.tm-progress-bg {
+    height: 6px;
+    background: var(--bg-hover);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+.tm-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s ease-out;
+}
+
+/* Modals Bottom Sheet on Mobile */
+.tm-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px;
+    z-index: 1000;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+@media (max-width: 768px) {
+    .tm-modal {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        max-height: 85vh;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+        animation: slideUp 0.3s ease-out forwards;
+    }
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+}
+</style>
+
+<div class="task-manager-container" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width:100%;">
+
+<div class="task-header fade-in-up">
     <div>
-        <h1 class="panel-title" style="display:flex; align-items:center; gap:8px;">
-            <i data-lucide="check-square" style="width:24px; height:24px; color:var(--primary);"></i>
+        <h1 class="task-title">
+            <i data-lucide="check-square" style="width:28px; height:28px; color:var(--primary);"></i>
             Görev Yönetimi
         </h1>
-        <p class="panel-subtitle">Kişisel ve ekip görevlerini takip edin</p>
+        <p class="task-subtitle">Kişisel ve ekip görevlerini takip edin</p>
     </div>
     <?php if ($isManagement): ?>
-    <div class="panel-header-actions">
+    <div>
         <button class="btn btn-primary" onclick="openCreateTaskModal()">
             <i data-lucide="plus"></i> Yeni Görev
         </button>
@@ -16,15 +248,15 @@
 </div>
 
 <div class="panel-content fade-in-up stagger-1">
-    <div class="tabs-container" style="margin-bottom: 24px; border-bottom: 1px solid var(--border);">
-        <div class="tabs" style="display:flex; gap:16px;">
-            <button class="tab-btn active" data-tab="my-tasks" style="padding:12px 16px; background:none; border:none; border-bottom: 2px solid var(--primary); color:var(--text); font-weight:500; cursor:pointer;">Görevlerim</button>
+    <div class="tm-tabs-wrapper">
+        <div class="tm-tabs">
+            <button class="tm-tab-btn active" data-tab="my-tasks">Görevlerim</button>
             <?php if ($isDirector && !$isManagement): ?>
-            <button class="tab-btn" data-tab="dept-tasks" style="padding:12px 16px; background:none; border:none; border-bottom: 2px solid transparent; color:var(--muted); font-weight:500; cursor:pointer;">Departman Görevleri</button>
+            <button class="tm-tab-btn" data-tab="dept-tasks">Departman Görevleri</button>
             <?php endif; ?>
             <?php if ($isManagement): ?>
-            <button class="tab-btn" data-tab="all-tasks" style="padding:12px 16px; background:none; border:none; border-bottom: 2px solid transparent; color:var(--muted); font-weight:500; cursor:pointer;">Tüm Görevler</button>
-            <button class="tab-btn" data-tab="mini-teams" style="padding:12px 16px; background:none; border:none; border-bottom: 2px solid transparent; color:var(--muted); font-weight:500; cursor:pointer;">Mini Takımlar</button>
+            <button class="tm-tab-btn" data-tab="all-tasks">Tüm Görevler</button>
+            <button class="tm-tab-btn" data-tab="mini-teams">Mini Takımlar</button>
             <?php endif; ?>
         </div>
     </div>
@@ -51,32 +283,38 @@
                 <i data-lucide="users"></i> Takım Oluştur
             </button>
         </div>
-        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+        <div class="tm-task-grid">
             <?php foreach ($teams as $team): ?>
-            <div class="panel-card p-4">
-                <h3 style="font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+            <div class="panel-card p-4 tm-card">
+                <h3 style="font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:8px; font-size:16px;">
                     <i data-lucide="shield" style="width:18px; color:var(--primary);"></i>
                     <?= htmlspecialchars($team['name']) ?>
                 </h3>
-                <p style="color:var(--muted); font-size:13px; margin-bottom:16px;"><?= nl2br(htmlspecialchars($team['description'] ?? '')) ?></p>
+                <p class="tm-card-desc" style="margin-bottom:16px;"><?= nl2br(htmlspecialchars($team['description'] ?? '')) ?></p>
                 
-                <div style="font-size:12px; font-weight:600; margin-bottom:8px; color:var(--muted);">ÜYELER (<?= count($team['members']) ?>)</div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                    <?php foreach ($team['members'] as $m): ?>
-                    <span style="padding:4px 8px; background:var(--bg-hover); border-radius:4px; font-size:12px;">
-                        <?= htmlspecialchars($m['name']) ?>
-                    </span>
-                    <?php endforeach; ?>
+                <div style="margin-top:auto; padding-top:12px; border-top:1px solid var(--border);">
+                    <div style="font-size:11px; font-weight:700; margin-bottom:8px; color:var(--muted); letter-spacing:0.5px;">ÜYELER (<?= count($team['members']) ?>)</div>
+                    <div class="tm-avatars" style="flex-wrap:wrap;">
+                        <?php foreach ($team['members'] as $m): ?>
+                        <div class="tm-avatar" title="<?= htmlspecialchars($m['name']) ?>" style="margin-bottom:4px;">
+                            <?= strtoupper(mb_substr($m['name'], 0, 2)) ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
             <?php endforeach; ?>
             <?php if (empty($teams)): ?>
-            <p style="color:var(--muted);">Henüz bir mini takım oluşturulmadı.</p>
+            <div class="tm-empty" style="grid-column: 1 / -1;">
+                <i data-lucide="users" class="tm-empty-icon"></i>
+                <div class="tm-empty-text">Henüz bir mini takım oluşturulmadı.</div>
+            </div>
             <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
 </div>
+</div> <!-- /task-manager-container -->
 
 <?php
 function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
@@ -102,11 +340,14 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
     }
 
     if (empty($filteredTasks)) {
-        echo '<div style="padding: 40px; text-align:center; color:var(--muted); background:var(--card); border-radius:12px; border:1px solid var(--border);">Bu kategoride görev bulunmuyor.</div>';
+        echo '<div class="tm-empty">';
+        echo '  <i data-lucide="inbox" class="tm-empty-icon"></i>';
+        echo '  <div class="tm-empty-text">Bu kategoride gösterilecek görev bulunmuyor.</div>';
+        echo '</div>';
         return;
     }
 
-    echo '<div style="display:flex; flex-direction:column; gap:16px;">';
+    echo '<div class="tm-task-grid">';
     foreach ($filteredTasks as $task) {
         $myAssignment = null;
         foreach ($task['assignees'] as $a) {
@@ -123,25 +364,44 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
         
         $dueDateStr = $task['due_date'] ? date('d M Y, H:i', strtotime($task['due_date'])) : 'Süresiz';
         
-        echo '<div class="panel-card p-4" style="border-left: 4px solid var(--primary);">';
-        echo '  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">';
-        echo '      <div>';
-        echo '          <h3 style="font-size:16px; font-weight:600; margin-bottom:4px;">'.htmlspecialchars($task['title']).'</h3>';
-        echo '          <div style="font-size:12px; color:var(--muted); display:flex; gap:16px;">';
-        echo '              <span><i data-lucide="calendar" style="width:14px; vertical-align:middle;"></i> Son: '.$dueDateStr.'</span>';
-        echo '              <span><i data-lucide="user" style="width:14px; vertical-align:middle;"></i> Açan: '.htmlspecialchars($task['creator_name']).'</span>';
-        echo '          </div>';
-        echo '      </div>';
-        echo '      <button class="btn btn-sm btn-outline" onclick="openTaskDetails('.htmlspecialchars(json_encode($task)).', '.(int)$currentUserId.', '.(int)$isManagement.')">Detaylar</button>';
+        echo '<div class="panel-card p-4 tm-card">';
+        echo '  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:12px;">';
+        echo '      <h3 class="tm-card-title">'.htmlspecialchars($task['title']).'</h3>';
+        echo '      <button class="btn btn-sm btn-outline" style="flex-shrink:0;" onclick="openTaskDetails('.htmlspecialchars(json_encode($task)).', '.(int)$currentUserId.', '.(int)$isManagement.')">Detaylar</button>';
         echo '  </div>';
         
-        echo '  <p style="font-size:14px; color:var(--text); margin-bottom:16px;">'.nl2br(htmlspecialchars($task['description'])).'</p>';
+        echo '  <p class="tm-card-desc">'.nl2br(htmlspecialchars($task['description'])).'</p>';
         
-        if ($isManagement || $viewContext === 'dept_tasks') {
-            echo '  <div style="margin-bottom:12px;">';
-            echo '      <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; color:var(--muted);"><span>İlerleme</span><span>'.$completed.' / '.$total.' Tamamlandı</span></div>';
-            echo '      <div style="height:6px; background:var(--bg-hover); border-radius:3px; overflow:hidden;">';
-            echo '          <div style="height:100%; width:'.$progress.'%; background:var(--primary); transition:width 0.3s;"></div>';
+        echo '  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:16px;">';
+        echo '      <div style="font-size:12px; color:var(--muted); display:flex; flex-direction:column; gap:4px;">';
+        echo '          <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="calendar" style="width:14px;"></i> '.$dueDateStr.'</span>';
+        echo '          <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="user" style="width:14px;"></i> '.htmlspecialchars($task['creator_name']).'</span>';
+        echo '      </div>';
+        
+        // Avatars
+        echo '      <div class="tm-avatars">';
+        $showLimit = 3;
+        $count = 0;
+        foreach ($task['assignees'] as $a) {
+            if ($count < $showLimit) {
+                $initials = mb_substr($a['user_name'], 0, 2);
+                echo '<div class="tm-avatar" title="'.htmlspecialchars($a['user_name']).'">'.strtoupper($initials).'</div>';
+            }
+            $count++;
+        }
+        if ($count > $showLimit) {
+            echo '<div class="tm-avatar-more">+'.($count - $showLimit).'</div>';
+        }
+        echo '      </div>';
+        echo '  </div>';
+        
+        if ($isManagement || $viewContext === 'dept_tasks' || $viewContext === 'all_tasks') {
+            echo '  <div style="margin-top:auto; padding-top:12px; border-top:1px solid var(--border);">';
+            echo '      <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; color:var(--muted);">';
+            echo '          <span>İlerleme</span><span style="font-weight:600; color:var(--text);">'.$completed.' / '.$total.'</span>';
+            echo '      </div>';
+            echo '      <div class="tm-progress-bg">';
+            echo '          <div class="tm-progress-fill" style="width:'.$progress.'%;"></div>';
             echo '      </div>';
             echo '  </div>';
         }
@@ -158,15 +418,20 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
                 'completed' => 'Tamamlandı'
             ];
             $myStatus = $myAssignment['status'];
-            echo '  <div style="display:flex; align-items:center; gap:12px; margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">';
-            echo '      <span style="font-size:13px; font-weight:600;">Benim Durumum:</span>';
-            echo '      <span style="padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600; color:#fff; background:'.$statusColors[$myStatus].'">'.$statusLabels[$myStatus].'</span>';
+            echo '  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:16px; padding-top:16px; border-top:1px dashed var(--border);">';
+            echo '      <div style="display:flex; align-items:center; gap:8px;">';
+            echo '          <span style="font-size:12px; font-weight:600; color:var(--muted);">Durumum:</span>';
+            echo '          <span style="padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; color:#fff; background:'.$statusColors[$myStatus].'; display:flex; align-items:center; gap:4px;">';
+            if ($myStatus === 'completed') echo '<i data-lucide="check" style="width:12px;"></i> ';
+            echo $statusLabels[$myStatus].'</span>';
+            echo '      </div>';
             
             if ($myStatus !== 'completed') {
                 if ($myStatus === 'pending') {
-                    echo '      <button class="btn btn-sm" style="background:var(--info); color:#fff;" onclick="updateMyStatus('.$myAssignment['id'].', \'acknowledged\')">Görev Alındı İşaretle</button>';
+                    echo '      <button class="btn btn-sm" style="background:var(--info); color:#fff; flex:1; min-width:120px;" onclick="updateMyStatus('.$myAssignment['id'].', \'acknowledged\')">Görev Alındı</button>';
+                } else {
+                    echo '      <button class="btn btn-sm" style="background:var(--success); color:#fff; flex:1; min-width:120px;" onclick="updateMyStatus('.$myAssignment['id'].', \'completed\')">Tamamlandı</button>';
                 }
-                echo '      <button class="btn btn-sm" style="background:var(--success); color:#fff;" onclick="updateMyStatus('.$myAssignment['id'].', \'completed\')">Tamamlandı İşaretle</button>';
             }
             echo '  </div>';
         }
@@ -181,7 +446,7 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
 <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:999; backdrop-filter:blur(2px);"></div>
 
 <!-- Task Details Modal -->
-<div id="taskDetailsModal" class="panel-card" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:600px; z-index:1000; max-height:90vh; overflow-y:auto; padding:24px;">
+<div id="taskDetailsModal" class="tm-modal">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2 id="tdTitle" style="font-size:20px; font-weight:600;"></h2>
         <button class="btn btn-icon" onclick="closeModals()"><i data-lucide="x"></i></button>
@@ -221,7 +486,7 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
 
 <?php if ($isManagement): ?>
 <!-- Create Task Modal -->
-<div id="createTaskModal" class="panel-card" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:500px; z-index:1000; padding:24px;">
+<div id="createTaskModal" class="tm-modal">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2 style="font-size:20px; font-weight:600;">Yeni Görev</h2>
         <button class="btn btn-icon" onclick="closeModals()"><i data-lucide="x"></i></button>
@@ -267,7 +532,7 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
 </div>
 
 <!-- Create Team Modal -->
-<div id="createTeamModal" class="panel-card" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:500px; z-index:1000; padding:24px;">
+<div id="createTeamModal" class="tm-modal">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2 style="font-size:20px; font-weight:600;">Mini Takım Oluştur</h2>
         <button class="btn btn-icon" onclick="closeModals()"><i data-lucide="x"></i></button>
@@ -301,9 +566,9 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
 
 <script>
 // Tabs logic
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.tm-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => {
+        document.querySelectorAll('.tm-tab-btn').forEach(b => {
             b.classList.remove('active');
             b.style.borderBottomColor = 'transparent';
             b.style.color = 'var(--muted)';
