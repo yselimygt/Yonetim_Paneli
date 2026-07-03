@@ -193,15 +193,6 @@
             box-shadow: inset 4px 0 0 var(--accent);
         }
 
-        .nav-link.primary {
-            opacity: .95;
-            background: color-mix(in srgb, var(--accent) 7%, transparent);
-        }
-
-        .nav-link.primary:not(.active) {
-            box-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 62%, transparent);
-        }
-
         .nav-category {
             margin: 10px 0 8px;
         }
