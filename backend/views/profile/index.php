@@ -178,22 +178,41 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
         <div class="form-row">
             <div class="form-group">
                 <label class="form-label">Üniversite</label>
-                <input type="text" name="university" class="form-control" value="<?= View::escape($user['university'] ?? '') ?>">
+                <select id="select_university" class="form-control" onchange="uniChanged()">
+                    <option value="">Seçiniz...</option>
+                </select>
+                <input type="text" name="university" id="profile_university" class="form-control" style="display:none; margin-top:8px;" placeholder="Üniversite adını giriniz" value="<?= View::escape($user['university'] ?? '') ?>">
             </div>
             <div class="form-group">
                 <label class="form-label">Fakülte</label>
-                <input type="text" name="faculty" class="form-control" value="<?= View::escape($user['faculty'] ?? '') ?>">
+                <select id="select_faculty" class="form-control" onchange="facChanged()">
+                    <option value="">Önce Üniversite Seçin</option>
+                </select>
+                <input type="text" name="faculty" id="profile_faculty" class="form-control" style="display:none; margin-top:8px;" placeholder="Fakülte/Yüksekokul adını giriniz" value="<?= View::escape($user['faculty'] ?? '') ?>">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label class="form-label">Bölüm</label>
-                <input type="text" name="school_department" class="form-control" value="<?= View::escape($user['school_department'] ?? '') ?>">
+                <select id="select_department" class="form-control" onchange="deptChanged()">
+                    <option value="">Önce Fakülte Seçin</option>
+                </select>
+                <input type="text" name="school_department" id="profile_school_department" class="form-control" style="display:none; margin-top:8px;" placeholder="Bölüm adını giriniz" value="<?= View::escape($user['school_department'] ?? '') ?>">
             </div>
             <div class="form-group">
                 <label class="form-label">Sınıf</label>
-                <input type="text" name="grade" class="form-control" value="<?= View::escape($user['grade'] ?? '') ?>">
+                <select id="select_grade" class="form-control" onchange="gradeChanged()">
+                    <option value="">Seçiniz...</option>
+                    <option value="Hazırlık">Hazırlık</option>
+                    <option value="1. Sınıf">1. Sınıf</option>
+                    <option value="2. Sınıf">2. Sınıf</option>
+                    <option value="3. Sınıf">3. Sınıf</option>
+                    <option value="4. Sınıf">4. Sınıf</option>
+                    <option value="Mezun">Mezun</option>
+                    <option value="Diğer">Diğer...</option>
+                </select>
+                <input type="text" name="grade" id="profile_grade" class="form-control" style="display:none; margin-top:8px;" placeholder="Sınıf bilgisi giriniz" value="<?= View::escape($user['grade'] ?? '') ?>">
             </div>
         </div>
 
@@ -220,7 +239,8 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             </div>
             <div class="form-group">
                 <label class="form-label">Üniversite Logo URL</label>
-                <input type="text" name="university_logo" class="form-control" value="<?= View::escape($user['university_logo'] ?? '') ?>" placeholder="/innomis/assets/uni/...">
+                <input type="text" name="university_logo" id="profile_university_logo" class="form-control" value="<?= View::escape($user['university_logo'] ?? '') ?>" placeholder="/innomis/assets/uni/..." readonly>
+                <span class="hint">Üniversite seçimine göre otomatik doldurulur.</span>
             </div>
         </div>
 
@@ -280,7 +300,179 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
     <a onclick="toggleTheme()">Tema Değiştir</a>
 </div>
 
+<script src="<?= BASE_URL ?>/public/assets/admin/js/universities_data.js"></script>
 <script>
+    const initUni = <?= json_encode($user['university'] ?? '') ?>;
+    const initFac = <?= json_encode($user['faculty'] ?? '') ?>;
+    const initDept = <?= json_encode($user['school_department'] ?? '') ?>;
+    const initGrade = <?= json_encode($user['grade'] ?? '') ?>;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const uniSelect = document.getElementById('select_university');
+        if (typeof KON_UNIS !== 'undefined') {
+            Object.keys(KON_UNIS).forEach(uni => {
+                const opt = document.createElement('option');
+                opt.value = uni;
+                opt.textContent = uni;
+                uniSelect.appendChild(opt);
+            });
+        }
+        const otherOpt = document.createElement('option');
+        otherOpt.value = 'Diğer';
+        otherOpt.textContent = 'Diğer...';
+        uniSelect.appendChild(otherOpt);
+
+        if (initUni && typeof KON_UNIS !== 'undefined' && KON_UNIS[initUni]) {
+            uniSelect.value = initUni;
+            uniChanged();
+            const fSelect = document.getElementById('select_faculty');
+            if (initFac && KON_UNIS[initUni][initFac]) {
+                fSelect.value = initFac;
+                facChanged();
+                const dSelect = document.getElementById('select_department');
+                if (initDept && KON_UNIS[initUni][initFac].includes(initDept)) {
+                    dSelect.value = initDept;
+                    deptChanged();
+                } else {
+                    dSelect.value = 'Diğer';
+                    deptChanged();
+                }
+            } else {
+                fSelect.value = 'Diğer';
+                facChanged();
+            }
+        } else if (initUni) {
+            uniSelect.value = 'Diğer';
+            uniChanged();
+        }
+
+        const gSelect = document.getElementById('select_grade');
+        const validGrades = ["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf", "Mezun"];
+        if (initGrade && validGrades.includes(initGrade)) {
+            gSelect.value = initGrade;
+            gradeChanged();
+        } else if (initGrade) {
+            gSelect.value = 'Diğer';
+            gradeChanged();
+        }
+    });
+
+    function getLogoForUniversity(uniName) {
+        if (!uniName) return '';
+        const uni = uniName.toLowerCase();
+        const base = '';
+        if (uni.includes('necmettin erbakan') || uni.includes('neu')) return base + '/assets/uni/neuLogo.png';
+        if (uni.includes('selçuk') || uni.includes('selcuk')) return base + '/assets/uni/selcukLogo.png';
+        if (uni.includes('teknik') || uni.includes('ktün') || uni.includes('ktun')) return base + '/assets/uni/ktunLogo.png';
+        if (uni.includes('kto') || uni.includes('karatay')) return base + '/assets/uni/ktoLogo.png';
+        if (uni.includes('gıda ve tarım') || uni.includes('gida ve tarim')) return base + '/assets/uni/kgtuLogo.png';
+        return '';
+    }
+
+    function uniChanged() {
+        const val = document.getElementById('select_university').value;
+        const input = document.getElementById('profile_university');
+        const facSelect = document.getElementById('select_faculty');
+        const deptSelect = document.getElementById('select_department');
+        const logoInput = document.getElementById('profile_university_logo');
+
+        facSelect.innerHTML = '<option value="">Önce Üniversite Seçin</option>';
+        deptSelect.innerHTML = '<option value="">Önce Fakülte Seçin</option>';
+        document.getElementById('profile_faculty').style.display = 'none';
+        document.getElementById('profile_school_department').style.display = 'none';
+
+        if (val === 'Diğer') {
+            input.style.display = 'block';
+            if(input.value === 'Diğer') input.value = '';
+            facSelect.innerHTML = '<option value="Diğer">Diğer...</option>';
+            document.getElementById('profile_faculty').style.display = 'block';
+            deptSelect.innerHTML = '<option value="Diğer">Diğer...</option>';
+            document.getElementById('profile_school_department').style.display = 'block';
+            logoInput.value = '';
+        } else if (val) {
+            input.style.display = 'none';
+            input.value = val;
+            logoInput.value = getLogoForUniversity(val);
+            facSelect.innerHTML = '<option value="">Seçiniz...</option>';
+            if (typeof KON_UNIS !== 'undefined' && KON_UNIS[val]) {
+                Object.keys(KON_UNIS[val]).forEach(fac => {
+                    const opt = document.createElement('option');
+                    opt.value = fac;
+                    opt.textContent = fac;
+                    facSelect.appendChild(opt);
+                });
+            }
+            facSelect.innerHTML += '<option value="Diğer">Diğer...</option>';
+        } else {
+            input.style.display = 'none';
+            input.value = '';
+            logoInput.value = '';
+        }
+    }
+
+    function facChanged() {
+        const uniVal = document.getElementById('select_university').value;
+        const facVal = document.getElementById('select_faculty').value;
+        const input = document.getElementById('profile_faculty');
+        const deptSelect = document.getElementById('select_department');
+
+        deptSelect.innerHTML = '<option value="">Seçiniz...</option>';
+        document.getElementById('profile_school_department').style.display = 'none';
+
+        if (facVal === 'Diğer') {
+            input.style.display = 'block';
+            if(input.value === 'Diğer') input.value = '';
+            deptSelect.innerHTML = '<option value="Diğer">Diğer...</option>';
+            document.getElementById('profile_school_department').style.display = 'block';
+        } else if (facVal && uniVal && typeof KON_UNIS !== 'undefined' && KON_UNIS[uniVal]) {
+            input.style.display = 'none';
+            input.value = facVal;
+            if (KON_UNIS[uniVal][facVal]) {
+                KON_UNIS[uniVal][facVal].forEach(dept => {
+                    const opt = document.createElement('option');
+                    opt.value = dept;
+                    opt.textContent = dept;
+                    deptSelect.appendChild(opt);
+                });
+            }
+            deptSelect.innerHTML += '<option value="Diğer">Diğer...</option>';
+        } else {
+            input.style.display = 'none';
+            input.value = '';
+            deptSelect.innerHTML = '<option value="">Önce Fakülte Seçin</option>';
+        }
+    }
+
+    function deptChanged() {
+        const val = document.getElementById('select_department').value;
+        const input = document.getElementById('profile_school_department');
+        if (val === 'Diğer') {
+            input.style.display = 'block';
+            if(input.value === 'Diğer') input.value = '';
+        } else if (val) {
+            input.style.display = 'none';
+            input.value = val;
+        } else {
+            input.style.display = 'none';
+            input.value = '';
+        }
+    }
+
+    function gradeChanged() {
+        const val = document.getElementById('select_grade').value;
+        const input = document.getElementById('profile_grade');
+        if (val === 'Diğer') {
+            input.style.display = 'block';
+            if(input.value === 'Diğer') input.value = '';
+        } else if (val) {
+            input.style.display = 'none';
+            input.value = val;
+        } else {
+            input.style.display = 'none';
+            input.value = '';
+        }
+    }
+
 function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'light' ? 'dark' : 'light';

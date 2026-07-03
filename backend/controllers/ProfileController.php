@@ -84,13 +84,17 @@ class ProfileController extends Controller
             finfo_close($finfo);
 
             if (in_array($ext, $allowed) && in_array($realMime, $allowedMimes)) {
-                $filename = 'avatar_' . $user['id'] . '_' . time() . '.' . $ext;
+                require_once __DIR__ . '/../core/ImageOptimizer.php';
+                
+                // Optimize and save as WebP
+                $filename = 'avatar_' . $user['id'] . '_' . time() . '.webp';
                 $targetDir = __DIR__ . '/../public/uploads/avatars/';
                 if (!is_dir($targetDir)) {
                     mkdir($targetDir, 0755, true);
                 }
                 $targetPath = $targetDir . $filename;
-                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $targetPath)) {
+                
+                if (ImageOptimizer::optimizeAndSave($_FILES['avatar']['tmp_name'], $targetPath, 800, 80)) {
                     if ($avatarPath && file_exists(__DIR__ . '/../public/' . $avatarPath)) {
                         @unlink(__DIR__ . '/../public/' . $avatarPath);
                     }
