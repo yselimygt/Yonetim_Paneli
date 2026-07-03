@@ -36,6 +36,29 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
         flex: 1;
         min-width: 400px;
     }
+    .mentor-header {
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .mentor-header-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .mentor-hero-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
     
     .pair-card {
         background: var(--card);
@@ -94,12 +117,227 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
         padding: 20px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     }
+    .mentor-panel {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+    }
+    .mentor-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 400px;
+        border: 2px dashed var(--border);
+        border-radius: 16px;
+        color: var(--muted);
+        background: var(--card);
+        text-align: center;
+        padding: 20px;
+    }
+    .mentor-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        overflow-y: auto;
+    }
+    .mentor-modal-card {
+        width: 100%;
+        max-width: 560px;
+        margin: auto;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .mentor-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .mentor-header {
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+        }
+        .mentor-header-title {
+            gap: 10px;
+            min-width: 0;
+        }
+        .mentor-hero-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            flex: 0 0 auto;
+        }
+        .mentor-header h3 {
+            font-size: 18px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mentor-header p {
+            display: none;
+        }
+        .mentor-header .btn {
+            width: 100%;
+            min-height: 40px;
+            padding: 9px 12px !important;
+            border-radius: 12px !important;
+            font-size: 13px;
+        }
+        .mentor-layout {
+            display: block;
+            min-height: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        .mentor-sidebar {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            margin-bottom: 14px;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            display: flex;
+            gap: 10px;
+            padding: 1px 18px 10px 1px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139,92,246,0.7) rgba(139,92,246,0.12);
+            scroll-snap-type: x mandatory;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
+        }
+        .mentor-sidebar::-webkit-scrollbar {
+            height: 6px;
+        }
+        .mentor-sidebar::-webkit-scrollbar-track {
+            background: rgba(139,92,246,0.12);
+            border-radius: 999px;
+        }
+        .mentor-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(139,92,246,0.7);
+            border-radius: 999px;
+        }
+        .mentor-sidebar h4,
+        .mentor-sidebar > div[style*="dashed"] {
+            display: none;
+        }
+        .pair-card {
+            flex: 0 0 min(230px, 78vw);
+            scroll-snap-align: start;
+            margin: 0;
+            padding: 12px;
+            border-radius: 14px;
+        }
+        .pair-card > div {
+            margin-bottom: 0 !important;
+        }
+        .pair-card span {
+            font-size: 11px !important;
+        }
+        .mentor-main {
+            min-width: 0;
+            width: 100%;
+        }
+        .mentor-panel {
+            padding: 14px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            flex-direction: column;
+        }
+        .mentor-panel h2 {
+            font-size: 17px !important;
+        }
+        .mentor-panel p {
+            font-size: 12px !important;
+        }
+        .mentor-panel .btn {
+            width: 100%;
+            min-height: 38px;
+            font-size: 13px;
+        }
+        .timeline {
+            padding-left: 0;
+        }
+        .timeline::before,
+        .timeline-item::before {
+            display: none;
+        }
+        .timeline-item {
+            margin-bottom: 12px;
+        }
+        .note-card {
+            padding: 14px;
+            border-radius: 14px;
+        }
+        .note-card > div:first-child {
+            gap: 10px;
+            margin-bottom: 12px !important;
+            padding-bottom: 12px !important;
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        .mentor-empty-state {
+            height: auto;
+            min-height: 220px;
+            border-radius: 14px;
+        }
+        .mentor-modal {
+            align-items: center;
+            padding: 14px;
+            z-index: 2000;
+        }
+        .mentor-modal-card {
+            max-height: calc(100vh - 28px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin: auto !important;
+            border-radius: 14px !important;
+        }
+        .mentor-modal-card .card-header {
+            padding: 14px !important;
+        }
+        .mentor-modal-card .card-body {
+            padding: 14px !important;
+            overflow-y: auto;
+        }
+        .mentor-modal-actions {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px !important;
+        }
+        .mentor-modal-actions .btn {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+    }
 </style>
 
 <!-- Header -->
-<div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-        <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+<div class="mentor-header">
+    <div class="mentor-header-title">
+        <div class="mentor-hero-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" width="28" height="28">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
@@ -157,7 +395,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
     <div class="mentor-main">
         <?php if ($userPair): ?>
             
-            <div style="background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="mentor-panel">
                 <div>
                     <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 4px 0;">Gelişim Çizelgesi</h2>
                     <p style="font-size: 14px; color: var(--muted); margin: 0;">Bu alanda mentor veya menti haftalık görüşme notlarını ekleyebilir.</p>
@@ -212,7 +450,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
             <?php endif; ?>
             
         <?php else: ?>
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; border: 2px dashed var(--border); border-radius: 16px; color: var(--muted); background: var(--card);">
+            <div class="mentor-empty-state">
                 <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom: 16px; opacity: 0.5;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 <p>Detayları görmek için sol menüden bir eşleşme seçin.</p>
             </div>
@@ -222,8 +460,8 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
 
 <!-- Modal: Yeni Eşleştirme (Sadece Yöneticiler) -->
 <?php if ($canManage): ?>
-<div id="modal-create-pair" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center;">
-    <div class="card pop-in" style="width: 100%; max-width: 500px; margin: 20px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+<div id="modal-create-pair" class="mentor-modal">
+    <div class="card pop-in mentor-modal-card" style="max-width: 500px;">
         <div class="card-header" style="background: var(--bg); padding: 20px; border-bottom: 1px solid var(--border);">
             <span style="font-size: 18px; font-weight: 600;">Yeni Mentor - Menti Eşleştirmesi</span>
             <button type="button" onclick="document.getElementById('modal-create-pair').style.display='none'" style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px;">&times;</button>
@@ -253,7 +491,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
                     </select>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <div class="mentor-modal-actions">
                     <button type="button" class="btn btn-outline" style="border-radius: 8px;" onclick="document.getElementById('modal-create-pair').style.display='none'">İptal</button>
                     <button type="submit" class="btn btn-primary" style="border-radius: 8px; background: #8b5cf6; border-color: #8b5cf6;">Eşleştir ve Başlat</button>
                 </div>
@@ -265,8 +503,8 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
 
 <!-- Modal: Görüşme Notu Ekle (Mentor & Menti & Yönetici) -->
 <?php if ($userPair && ($canManage || $userPair['mentor_id'] == $user['id'] || $userPair['mentee_id'] == $user['id'])): ?>
-<div id="modal-add-note" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center;">
-    <div class="card pop-in" style="width: 100%; max-width: 600px; margin: 20px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+<div id="modal-add-note" class="mentor-modal">
+    <div class="card pop-in mentor-modal-card" style="max-width: 600px;">
         <div class="card-header" style="background: var(--bg); padding: 20px; border-bottom: 1px solid var(--border);">
             <span style="font-size: 18px; font-weight: 600;">Görüşme Notu Ekle</span>
             <button type="button" onclick="document.getElementById('modal-add-note').style.display='none'" style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px;">&times;</button>
@@ -287,7 +525,7 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
                     <textarea name="note" class="form-control" rows="5" style="padding: 12px; border-radius: 8px;" required placeholder="Bu haftaki görüşmede neler konuşuldu? Gelişim nasıl?"></textarea>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <div class="mentor-modal-actions">
                     <button type="button" class="btn btn-outline" style="border-radius: 8px;" onclick="document.getElementById('modal-add-note').style.display='none'">İptal</button>
                     <button type="submit" class="btn btn-primary" style="border-radius: 8px; background: #8b5cf6; border-color: #8b5cf6;">Zaman Tüneline Ekle</button>
                 </div>
@@ -296,3 +534,13 @@ function getAvatarHtml($avatarStr, $nameStr, $size = 32) {
     </div>
 </div>
 <?php endif; ?>
+
+<script>
+document.querySelectorAll('.mentor-modal').forEach(function(modal) {
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+</script>
