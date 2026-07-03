@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Eğer gelen istek /f/ veya /api/ ile başlıyorsa backend/index.php'ye yönlendir
-    RewriteRule ^(f|api)(/.*)?$ backend/index.php [QSA,L]
+    # Eğer gelen istek /f/, /api/ veya /go/ ile başlıyorsa backend/index.php'ye yönlendir
+    RewriteRule ^(f|api|go)(/.*)?$ backend/index.php [QSA,L]
 </IfModule>

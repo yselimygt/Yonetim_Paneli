@@ -87,12 +87,264 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
         margin-bottom: 1.5em;
         padding-left: 20px;
     }
+    .wiki-mobile-back {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .wiki-header {
+            margin-bottom: 16px !important;
+            align-items: center !important;
+            gap: 12px !important;
+        }
+        .wiki-header-main {
+            gap: 10px !important;
+            min-width: 0;
+        }
+        .wiki-header-icon {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 12px !important;
+            flex: 0 0 auto;
+        }
+        .wiki-header h3 {
+            font-size: 18px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wiki-header p {
+            display: none;
+        }
+        .wiki-header .btn {
+            width: 100%;
+            min-height: 40px;
+            padding: 9px 12px !important;
+            border-radius: 12px !important;
+            font-size: 13px;
+        }
+        .wiki-container {
+            display: block;
+            min-height: 0;
+        }
+        .wiki-sidebar {
+            width: 100%;
+            flex: none;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .wiki-sidebar > div {
+            padding: 10px !important;
+            border-radius: 14px !important;
+        }
+        .wiki-sidebar input {
+            min-height: 38px;
+            border-radius: 9px !important;
+            font-size: 12px !important;
+        }
+        .wiki-sidebar h4 {
+            display: none;
+        }
+        .wiki-sidebar > div:nth-child(2) {
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            padding-bottom: 8px !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+        .category-link {
+            flex: 0 0 auto;
+            padding: 7px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: var(--card);
+            border: 1px solid var(--border);
+        }
+        .wiki-main {
+            min-width: 0;
+            width: 100%;
+        }
+        .wiki-main > div[style*="grid-template-columns"] {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+        }
+        .article-card {
+            padding: 11px;
+            border-radius: 14px;
+            margin-bottom: 0;
+            min-width: 0;
+        }
+        .article-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        .article-card span:first-child {
+            font-size: 9px !important;
+            margin-bottom: 6px !important;
+        }
+        .article-card h4 {
+            font-size: 13px !important;
+            line-height: 1.25 !important;
+            margin-bottom: 10px !important;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .article-card h4 + div {
+            display: block !important;
+            padding-top: 8px !important;
+            font-size: 10px !important;
+        }
+        .article-card h4 + div > div {
+            margin-top: 5px;
+            gap: 7px !important;
+        }
+        .wiki-content-box {
+            padding: 14px;
+            border-radius: 14px;
+            box-shadow: none;
+        }
+        .wiki-content-box h1 {
+            font-size: 22px !important;
+        }
+        .wiki-content-box > div:first-child {
+            margin-bottom: 18px !important;
+            padding-bottom: 14px !important;
+        }
+        .wiki-content-box > div:first-child > div {
+            gap: 12px !important;
+        }
+        .wiki-content-box > div:first-child div[style*="align-items: center"] {
+            flex-wrap: wrap;
+            gap: 8px !important;
+            font-size: 11px !important;
+        }
+        .wiki-content-text {
+            font-size: 14px;
+            line-height: 1.65;
+        }
+        .wiki-container.article-open .wiki-sidebar,
+        .wiki-container.article-open + #modal-create-article {
+            display: none;
+        }
+        .wiki-header.article-open .btn {
+            display: none;
+        }
+        .wiki-container.article-open .wiki-main {
+            width: 100%;
+        }
+        .wiki-container.article-open .wiki-main > div:first-child {
+            display: none;
+        }
+        .wiki-container.article-open .wiki-content-box {
+            border: 0;
+            background: transparent;
+            padding: 0;
+        }
+        .wiki-container.article-open .wiki-content-box > div:first-child {
+            display: none;
+        }
+        .wiki-container.article-open .wiki-content-text {
+            font-size: 15px;
+            line-height: 1.75;
+            background: rgba(59, 130, 246, 0.06);
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            border-radius: 14px;
+            padding: 14px;
+        }
+        .wiki-container.article-open .wiki-mobile-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 34px;
+            padding: 7px 10px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        #modal-create-article,
+        #modal-edit-article {
+            padding: 14px;
+            align-items: center !important;
+            overflow-y: auto;
+            z-index: 2000 !important;
+        }
+        #modal-create-article > .card,
+        #modal-edit-article > .card {
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: calc(100vh - 28px);
+            margin: auto !important;
+            border-radius: 14px !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        #modal-create-article .card-header,
+        #modal-edit-article .card-header {
+            padding: 14px !important;
+        }
+        #modal-create-article .card-body,
+        #modal-edit-article .card-body {
+            padding: 14px !important;
+            max-height: none !important;
+            overflow-y: auto;
+        }
+        #modal-create-article .form-row,
+        #modal-edit-article .form-row {
+            flex-direction: column;
+            gap: 0 !important;
+            margin-bottom: 12px !important;
+        }
+        #modal-create-article .form-group,
+        #modal-edit-article .form-group {
+            margin-bottom: 12px !important;
+        }
+        #modal-create-article .form-label,
+        #modal-edit-article .form-label {
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+        #modal-create-article .form-control,
+        #modal-edit-article .form-control {
+            min-height: 38px;
+            padding: 9px 10px !important;
+            border-radius: 9px !important;
+            font-size: 13px !important;
+        }
+        #modal-create-article textarea.form-control,
+        #modal-edit-article textarea.form-control {
+            min-height: 220px;
+        }
+        #modal-create-article form > div:last-child,
+        #modal-edit-article form > div:last-child {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px !important;
+        }
+        #modal-create-article .btn,
+        #modal-edit-article .btn {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
+            font-size: 13px;
+        }
+    }
 </style>
 
 <!-- Header -->
-<div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-        <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+<div class="wiki-header <?= $activeArticle ? 'article-open' : '' ?>" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
+    <div class="wiki-header-main" style="display: flex; align-items: center; gap: 16px;">
+        <div class="wiki-header-icon" style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
             <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" width="28" height="28">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
@@ -109,7 +361,19 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
     </button>
 </div>
 
-<div class="wiki-container fade-in-up stagger-1">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#modal-create-article, #modal-edit-article').forEach(function(modal) {
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+<div class="wiki-container <?= $activeArticle ? 'article-open' : '' ?> fade-in-up stagger-1">
     
     <!-- Sidebar -->
     <div class="wiki-sidebar">
@@ -140,6 +404,10 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
     <div class="wiki-main">
         <?php if ($activeArticle): ?>
             <!-- READ ARTICLE -->
+            <a href="<?= $appUrl ?>" class="wiki-mobile-back">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Geri
+            </a>
             <div style="margin-bottom: 16px;">
                 <a href="<?= $appUrl ?>" style="color: #3b82f6; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>

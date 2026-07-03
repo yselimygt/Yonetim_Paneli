@@ -232,7 +232,7 @@
             <div class="form-group">
                 <label class="form-label">Özel Kısa Kod (Opsiyonel)</label>
                 <div class="input-group">
-                    <div class="input-group-text"><?= preg_replace('#^https?://#', '', BASE_URL) ?>/go/</div>
+                    <div class="input-group-text"><?= preg_replace('#^https?://#', '', PUBLIC_URL) ?>/go/</div>
                     <input type="text" name="custom_code" class="form-control" placeholder="ozel-isim" pattern="[a-zA-Z0-9_-]+" title="Sadece harf, rakam, tire ve alt çizgi kullanın">
                 </div>
                 <div style="font-size:12px; color:var(--muted); margin-top:6px;">Eğer boş bırakırsanız sistem otomatik rastgele bir kod üretecektir.</div>
@@ -265,7 +265,7 @@
                     </thead>
                     <tbody>
                         <?php foreach($links as $link): ?>
-                            <?php $fullShortUrl = BASE_URL . '/go/' . $link['code']; ?>
+                            <?php $fullShortUrl = PUBLIC_URL . '/go/' . $link['code']; ?>
                             <tr>
                                 <td style="font-weight:500; color:var(--text);">
                                     <?= View::escape($link['title'] ?: 'İsimsiz Link') ?>
