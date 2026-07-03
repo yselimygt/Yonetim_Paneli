@@ -13,7 +13,7 @@ class PasswordsModule extends BaseModule
     public function render(): string
     {
         // Yetki Kontrolü: Sadece Super Admin veya Director görebilir.
-        if (!Auth::isSuperAdmin() && $this->getUserRole() !== 'director') {
+        if (!(Auth::isSuperAdmin() || Auth::isPresidentOrVice()) && $this->getUserRole() !== 'director') {
             return "<div style='padding:40px;text-align:center;'><h2 style='color:var(--danger);'>Erişim Reddedildi</h2><p>Şifre yöneticisine erişim yetkiniz bulunmamaktadır.</p></div>";
         }
 
@@ -28,14 +28,14 @@ class PasswordsModule extends BaseModule
         }
 
         // Düzenleme yetkisi (Super Admin, Yetkili kullanıcı veya o departmanın Direktörü)
-        $canManage = Auth::isSuperAdmin() || (!empty(Auth::user()['can_manage_passwords'])) || ($this->getUserRole() === 'director');
+        $canManage = Auth::isSuperAdmin() || Auth::isPresidentOrVice() || (!empty(Auth::user()['can_manage_passwords'])) || ($this->getUserRole() === 'director');
 
         return $this->renderView('passwords', compact('passwords', 'canManage'));
     }
 
     public function handlePost(array $postData): void
     {
-        $canManage = Auth::isSuperAdmin() || (!empty(Auth::user()['can_manage_passwords'])) || ($this->getUserRole() === 'director');
+        $canManage = Auth::isSuperAdmin() || Auth::isPresidentOrVice() || (!empty(Auth::user()['can_manage_passwords'])) || ($this->getUserRole() === 'director');
         
         if (!$canManage) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Şifre ekleme/silme yetkiniz yok.'];

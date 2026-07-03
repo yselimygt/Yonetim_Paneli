@@ -4,8 +4,8 @@ class TaskManagerModule extends BaseModule
 {
     public function render(): string
     {
-        $isManagement = (Auth::isManagement() || Auth::isSuperAdmin()) && ($this->department['slug'] ?? '') === 'yonetim';
-        $isDirector = Auth::isDirectorOf($this->department['slug'] ?? '') || Auth::isSuperAdmin();
+        $isManagement = (Auth::isManagement() || Auth::isSuperAdmin() || Auth::isPresidentOrVice()) && ($this->department['slug'] ?? '') === 'yonetim';
+        $isDirector = Auth::isDirectorOf($this->department['slug'] ?? '') || Auth::isSuperAdmin() || Auth::isPresidentOrVice();
 
         $tasks = $this->getTasks($isManagement, $isDirector);
         $teams = $this->getTeams();
@@ -22,8 +22,8 @@ class TaskManagerModule extends BaseModule
     public function handlePost(array $data): void
     {
         $action = $data['action'] ?? '';
-        $isManagement = (Auth::isManagement() || Auth::isSuperAdmin()) && ($this->department['slug'] ?? '') === 'yonetim';
-        $isDirector = Auth::isDirectorOf($this->department['slug'] ?? '') || Auth::isSuperAdmin();
+        $isManagement = (Auth::isManagement() || Auth::isSuperAdmin() || Auth::isPresidentOrVice()) && ($this->department['slug'] ?? '') === 'yonetim';
+        $isDirector = Auth::isDirectorOf($this->department['slug'] ?? '') || Auth::isSuperAdmin() || Auth::isPresidentOrVice();
         $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
         try {

@@ -54,7 +54,7 @@ class FinanceController extends Controller
                 break;
             }
         }
-        if (Auth::isSuperAdmin()) {
+        if (Auth::isSuperAdmin() || Auth::isPresidentOrVice()) {
             $userRole = 'director'; // Admin is director everywhere implicitly
         }
 

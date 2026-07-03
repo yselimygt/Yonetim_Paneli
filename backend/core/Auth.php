@@ -192,8 +192,20 @@ class Auth
         return false;
     }
 
+    public static function isPresidentOrVice(): bool
+    {
+        foreach (($_SESSION['departments'] ?? []) as $dept) {
+            if (in_array($dept['role'], ['president', 'vice_president'], true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function isDirectorOf(string $slug): bool
     {
+        if (self::isSuperAdmin() || self::isPresidentOrVice()) return true;
+
         foreach (($_SESSION['departments'] ?? []) as $dept) {
             if ($dept['slug'] === $slug && in_array($dept['role'], ['director', 'president', 'vice_president'], true)) {
                 return true;
@@ -204,7 +216,7 @@ class Auth
 
     public static function hasDepartmentAccess(string $slug): bool
     {
-        if (self::isSuperAdmin()) return true;
+        if (self::isSuperAdmin() || self::isPresidentOrVice()) return true;
         foreach (($_SESSION['departments'] ?? []) as $dept) {
             if ($dept['slug'] === $slug) return true;
         }

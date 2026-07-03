@@ -74,20 +74,20 @@ class MembersModule extends BaseModule
                     $_SESSION['flash_success'] = 'Üye güncellendi.';
                 }
             } elseif ($action === 'delete') {
-                if ($this->userRole !== 'director' && !Auth::isSuperAdmin()) throw new Exception("Yetkiniz yok.");
+                if ($this->userRole !== 'director' && !(Auth::isSuperAdmin() || Auth::isPresidentOrVice())) throw new Exception("Yetkiniz yok.");
                 $memberId = (int)($post['member_id'] ?? 0);
                 $stmt = $this->pdo->prepare("DELETE FROM app_members WHERE id=?");
                 $stmt->execute([$memberId]);
                 $_SESSION['flash_success'] = 'Üye silindi.';
             } elseif ($action === 'suspend') {
-                if ($this->userRole !== 'director' && !Auth::isSuperAdmin()) throw new Exception("Yetkiniz yok.");
+                if ($this->userRole !== 'director' && !(Auth::isSuperAdmin() || Auth::isPresidentOrVice())) throw new Exception("Yetkiniz yok.");
                 $memberId = (int)($post['member_id'] ?? 0);
                 $reason = trim($post['suspend_reason'] ?? '');
                 $stmt = $this->pdo->prepare("UPDATE app_members SET status='suspended', suspend_reason=? WHERE id=?");
                 $stmt->execute([$reason, $memberId]);
                 $_SESSION['flash_success'] = 'Üye kırmızı listeye eklendi.';
             } elseif ($action === 'restore') {
-                if ($this->userRole !== 'director' && !Auth::isSuperAdmin()) throw new Exception("Yetkiniz yok.");
+                if ($this->userRole !== 'director' && !(Auth::isSuperAdmin() || Auth::isPresidentOrVice())) throw new Exception("Yetkiniz yok.");
                 $memberId = (int)($post['member_id'] ?? 0);
                 $stmt = $this->pdo->prepare("UPDATE app_members SET status='active', suspend_reason=NULL WHERE id=?");
                 $stmt->execute([$memberId]);

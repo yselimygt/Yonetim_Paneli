@@ -37,7 +37,7 @@ class AppRunnerController extends Controller
         $userRole = $this->getUserRoleInDept($slug);
 
         // Director kısıtı
-        if ($app['director_only'] && $userRole !== 'director' && !Auth::isSuperAdmin()) {
+        if ($app['director_only'] && $userRole !== 'director' && !(Auth::isSuperAdmin() || Auth::isPresidentOrVice())) {
             http_response_code(403);
             require_once __DIR__ . '/../views/errors/403.php';
             exit;
@@ -74,7 +74,7 @@ class AppRunnerController extends Controller
 
         $userRole = $this->getUserRoleInDept($slug);
 
-        if ($app['director_only'] && $userRole !== 'director' && !Auth::isSuperAdmin()) {
+        if ($app['director_only'] && $userRole !== 'director' && !(Auth::isSuperAdmin() || Auth::isPresidentOrVice())) {
             http_response_code(403);
             require_once __DIR__ . '/../views/errors/403.php';
             exit;
@@ -220,7 +220,7 @@ class AppRunnerController extends Controller
 
     private function getUserRoleInDept(string $slug): string
     {
-        if (Auth::isSuperAdmin()) return 'director';
+        if (Auth::isSuperAdmin() || Auth::isPresidentOrVice()) return 'director';
         foreach (Auth::getDepartments() as $d) {
             if ($d['slug'] === $slug) return $d['role'];
         }

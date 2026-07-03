@@ -455,6 +455,8 @@
         .badge-active   { background:rgba(34,197,94,.12);  color:#86efac; }
         .badge-inactive { background:rgba(100,100,100,.12); color:#666; }
         .badge-director { background:rgba(245,158,11,.12); color:#fcd34d; }
+        .badge-president{ background:rgba(234,179,8,.12); color:#eab308; }
+        .badge-vice-president{ background:rgba(250,204,21,.12); color:#facc15; }
         .badge-member   { background:rgba(0,188,212,.1);   color:#67e8f9; }
 
         /* Buttons */

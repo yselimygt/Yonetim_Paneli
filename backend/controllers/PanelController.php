@@ -26,13 +26,13 @@ class PanelController extends Controller
 
         $depts = Auth::getDepartments();
 
-        // Tek departmansa ve süper admin değilse direkt yönlendir
-        if (count($depts) === 1 && !Auth::isSuperAdmin()) {
+        // Tek departmansa ve yetkili değilse direkt yönlendir
+        if (count($depts) === 1 && !(Auth::isSuperAdmin() || Auth::isPresidentOrVice())) {
             $this->redirect('/panel/' . $depts[0]['slug']);
         }
 
-        // Super admin hiç departmanda değilse dashboard'a gönder
-        if (Auth::isSuperAdmin() && empty($depts)) {
+        // Yetkili hiç departmanda değilse dashboard'a gönder
+        if ((Auth::isSuperAdmin() || Auth::isPresidentOrVice()) && empty($depts)) {
             $this->redirect('/superadmin');
         }
 
@@ -82,7 +82,7 @@ class PanelController extends Controller
         $data = compact('currentDept', 'userRole', 'deptApps', 'members', 'memberCount', 'appCount');
 
         // Yönetim paneli ek istatistikleri
-        if ($currentDept['is_management'] || Auth::isSuperAdmin()) {
+        if ($currentDept['is_management'] || Auth::isSuperAdmin() || Auth::isPresidentOrVice()) {
             $pdo = Database::getInstance();
             $data['totalUsers'] = (int) $pdo->query("SELECT COUNT(*) FROM users WHERE is_super_admin=0")->fetchColumn();
             $data['totalDepts'] = (int) $pdo->query("SELECT COUNT(*) FROM departments WHERE is_active=1")->fetchColumn();
@@ -332,7 +332,7 @@ class PanelController extends Controller
     // -------------------------------------------------------
     private function getUserRoleInDept(string $slug): string
     {
-        if (Auth::isSuperAdmin()) return 'director';
+        if (Auth::isSuperAdmin() || Auth::isPresidentOrVice()) return 'director';
         foreach (Auth::getDepartments() as $d) {
             if ($d['slug'] === $slug) return $d['role'];
         }
@@ -352,14 +352,14 @@ class PanelController extends Controller
             $this->redirect('/panel');
         }
 
-        // Süper admin veya yönetim departmanı üyesi olmalı
-        if (!Auth::isSuperAdmin() && !$dept['is_management']) {
+        // Yetkili veya yönetim departmanı üyesi olmalı
+        if (!(Auth::isSuperAdmin() || Auth::isPresidentOrVice()) && !$dept['is_management']) {
             http_response_code(403);
             require_once __DIR__ . '/../views/errors/403.php';
             exit;
         }
 
-        if (!Auth::isSuperAdmin() && !Auth::hasDepartmentAccess($slug)) {
+        if (!(Auth::isSuperAdmin() || Auth::isPresidentOrVice()) && !Auth::hasDepartmentAccess($slug)) {
             http_response_code(403);
             require_once __DIR__ . '/../views/errors/403.php';
             exit;
