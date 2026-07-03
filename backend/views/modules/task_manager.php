@@ -12,6 +12,16 @@ if (!function_exists('tmTimeAgo')) {
         return floor($diff / 86400) . ' gün önce';
     }
 }
+
+if (!function_exists('tmAvatarHtml')) {
+    function tmAvatarHtml($avatar, $name, $size = 36, $margin = '0', $extraStyle = '') {
+        $sizePx = $size . 'px';
+        if (!empty($avatar)) {
+            return '<img src="'.BASE_URL.'/public/'.htmlspecialchars($avatar).'" alt="" class="tm-avatar" title="'.htmlspecialchars($name).'" style="margin:'.$margin.'; width:'.$sizePx.'; height:'.$sizePx.'; object-fit:cover; '.$extraStyle.'">';
+        }
+        return '<div class="tm-avatar" title="'.htmlspecialchars($name).'" style="margin:'.$margin.'; width:'.$sizePx.'; height:'.$sizePx.'; '.$extraStyle.'">'.strtoupper(mb_substr($name ?? 'A', 0, 2)).'</div>';
+    }
+}
 ?>
 
 <style>
@@ -347,9 +357,7 @@ if (!function_exists('tmTimeAgo')) {
                             <div style="font-size:11px; color:var(--muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">ÜYELER (<?= count($team['members'] ?? []) ?>)</div>
                             <div style="display:flex; align-items:center;">
                                 <?php foreach ($team['members'] ?? [] as $m): ?>
-                                <div class="tm-avatar" title="<?= htmlspecialchars($m['name'] ?? '') ?>">
-                                    <?= strtoupper(mb_substr($m['name'] ?? '?', 0, 2)) ?>
-                                </div>
+                                <?= tmAvatarHtml($m['avatar'] ?? null, $m['name'] ?? 'A', 32, '-8px', 'background: var(--bg);') ?>
                                 <?php endforeach; ?>
                             </div>
                         </div>
@@ -408,7 +416,7 @@ function renderNeonGrid($tasks, $viewContext, $currentUserId, $canManage, $isRea
         // Header (Creator & Date)
         echo '      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">';
         echo '          <div style="display:flex; align-items:center; gap:10px;">';
-        echo '              <div class="tm-avatar" style="margin:0; width:36px; height:36px;">'.strtoupper(mb_substr($task['creator_name'] ?? 'A', 0, 2)).'</div>';
+        echo '              ' . tmAvatarHtml($task['creator_avatar'] ?? null, $task['creator_name'] ?? 'A', 36, '0');
         echo '              <div>';
         $isYonetim = ($task['creator_dept_slug'] ?? '') === 'yonetim';
         $originLabel = $isYonetim ? 'Yönetimden' : 'Departmandan';
@@ -443,7 +451,7 @@ function renderNeonGrid($tasks, $viewContext, $currentUserId, $canManage, $isRea
         $showLimit = 3; $count = 0;
         foreach ($task['assignees'] ?? [] as $a) {
             if ($count < $showLimit) {
-                echo '<div class="tm-avatar" title="'.htmlspecialchars($a['name'] ?? '').'">'.strtoupper(mb_substr($a['name'] ?? '', 0, 2)).'</div>';
+                echo tmAvatarHtml($a['avatar'] ?? null, $a['name'] ?? 'A', 32, '-8px', 'background:var(--bg); border-color:var(--glass-border); box-shadow:0 0 0 2px var(--card);');
             }
             $count++;
         }
@@ -581,7 +589,7 @@ function renderNeonGrid($tasks, $viewContext, $currentUserId, $canManage, $isRea
                             <label class="glass-checkbox-item">
                                 <input type="checkbox" name="user_ids[]" value="<?= $u['id'] ?>">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <div class="tm-avatar" style="margin:0; width:20px; height:20px; font-size:9px;"><?= strtoupper(mb_substr($u['name'] ?? '?', 0, 2)) ?></div>
+                                    <?= tmAvatarHtml($u['avatar'] ?? null, $u['name'] ?? 'A', 20, '0', 'font-size:9px;') ?>
                                     <span><?= htmlspecialchars($u['name'] ?? '') ?></span>
                                 </div>
                             </label>
@@ -644,7 +652,7 @@ function renderNeonGrid($tasks, $viewContext, $currentUserId, $canManage, $isRea
                             <label class="glass-checkbox-item">
                                 <input type="checkbox" name="user_ids[]" value="<?= $u['id'] ?>" class="edit_task_user_chk">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <div class="tm-avatar" style="margin:0; width:20px; height:20px; font-size:9px;"><?= strtoupper(mb_substr($u['name'] ?? '?', 0, 2)) ?></div>
+                                    <?= tmAvatarHtml($u['avatar'] ?? null, $u['name'] ?? 'A', 20, '0', 'font-size:9px;') ?>
                                     <span><?= htmlspecialchars($u['name'] ?? '') ?></span>
                                 </div>
                             </label>
@@ -697,7 +705,7 @@ function renderNeonGrid($tasks, $viewContext, $currentUserId, $canManage, $isRea
                         <label class="glass-checkbox-item">
                             <input type="checkbox" name="user_ids[]" value="<?= $u['id'] ?>">
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <div class="tm-avatar" style="margin:0; width:24px; height:24px; font-size:10px;"><?= strtoupper(mb_substr($u['name'] ?? '?', 0, 2)) ?></div>
+                                <?= tmAvatarHtml($u['avatar'] ?? null, $u['name'] ?? 'A', 24, '0', 'font-size:10px;') ?>
                                 <span><?= htmlspecialchars($u['name'] ?? '') ?></span>
                             </div>
                         </label>
@@ -751,7 +759,7 @@ function renderNeonGrid($tasks, $viewContext, $currentUserId, $canManage, $isRea
                         <label class="glass-checkbox-item">
                             <input type="checkbox" name="user_ids[]" value="<?= $u['id'] ?>" class="edit_team_user_chk">
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <div class="tm-avatar" style="margin:0; width:24px; height:24px; font-size:10px;"><?= strtoupper(mb_substr($u['name'] ?? '?', 0, 2)) ?></div>
+                                <?= tmAvatarHtml($u['avatar'] ?? null, $u['name'] ?? 'A', 24, '0', 'font-size:10px;') ?>
                                 <span><?= htmlspecialchars($u['name'] ?? '') ?></span>
                             </div>
                         </label>
@@ -832,7 +840,7 @@ function tmOpenDetails(task, currentUserId, canEdit) {
         assigneesDiv.innerHTML += `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(255,255,255,0.02); border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <div class="tm-avatar" style="margin:0;">${(a.name || '?').substring(0,2).toUpperCase()}</div>
+                    ${a.avatar ? `<img src="<?= BASE_URL ?>/public/${a.avatar}" class="tm-avatar" style="margin:0; object-fit:cover;">` : `<div class="tm-avatar" style="margin:0;">${(a.name || '?').substring(0,2).toUpperCase()}</div>`}
                     <span style="font-size:13px; font-weight:500; color:var(--text);">${a.name}</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">

@@ -376,9 +376,13 @@
         </div>
         <div style="display:flex; align-items:center; padding-left:12px;">
             <?php foreach (array_slice($members, 0, 10) as $idx => $mem): ?>
-                <div title="<?= View::escape($mem['user_name']) ?>" style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; border:2px solid var(--card); margin-left: <?= $idx === 0 ? '0' : '-12px' ?>; cursor:default; z-index: <?= 10 - $idx ?>; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <?= mb_strtoupper(mb_substr($mem['user_name'], 0, 1)) ?>
-                </div>
+                <?php if (!empty($mem['avatar'])): ?>
+                    <img title="<?= View::escape($mem['user_name']) ?>" src="<?= BASE_URL . '/public/' . htmlspecialchars($mem['avatar']) ?>" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid var(--card); margin-left: <?= $idx === 0 ? '0' : '-12px' ?>; cursor:default; z-index: <?= 10 - $idx ?>; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'" alt="">
+                <?php else: ?>
+                    <div title="<?= View::escape($mem['user_name']) ?>" style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; border:2px solid var(--card); margin-left: <?= $idx === 0 ? '0' : '-12px' ?>; cursor:default; z-index: <?= 10 - $idx ?>; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <?= mb_strtoupper(mb_substr($mem['user_name'], 0, 1)) ?>
+                    </div>
+                <?php endif; ?>
             <?php endforeach; ?>
             <?php if(count($members) > 10): ?>
                 <div style="width:36px; height:36px; border-radius:50%; background:var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; border:2px solid var(--card); margin-left:-12px; z-index: 0;">

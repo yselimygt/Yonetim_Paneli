@@ -75,7 +75,13 @@ function getBudgetStatusBadge($status) {
                             <span style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase;">TALEP: #<?= $req['id'] ?></span>
                             <h4 style="font-size: 18px; font-weight: 700; color: var(--text); margin: 4px 0 0 0;"><?= View::escape($req['title']) ?></h4>
                             <div style="font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 6px;">
-                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <?php if (!empty($req['requester_avatar'])): ?>
+                                    <img src="<?= BASE_URL . '/public/' . htmlspecialchars($req['requester_avatar']) ?>" alt="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+                                <?php else: ?>
+                                    <div style="width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; color: var(--text);">
+                                        <?= strtoupper(mb_substr($req['requester_name'] ?? '?', 0, 2)) ?>
+                                    </div>
+                                <?php endif; ?>
                                 <?= View::escape($req['requester_name']) ?>
                             </div>
                         </div>

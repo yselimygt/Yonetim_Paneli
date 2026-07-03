@@ -9,7 +9,7 @@ class BudgetModule extends BaseModule
         $isSuperAdmin = !empty($this->user['is_super_admin']);
         
         $sql = "
-            SELECT b.*, u.name as requester_name 
+            SELECT b.*, u.name as requester_name, u.avatar as requester_avatar 
             FROM app_budget_requests b 
             JOIN users u ON b.requester_id = u.id 
             WHERE b.app_id = ? AND b.department_id = ?

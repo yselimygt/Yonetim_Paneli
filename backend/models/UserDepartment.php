@@ -24,7 +24,7 @@ class UserDepartment extends Model
     public function getByDepartment(int $deptId): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT ud.*, u.name AS user_name, u.email, u.is_active, u.birth_date
+            SELECT ud.*, u.name AS user_name, u.email, u.is_active, u.birth_date, u.avatar
             FROM user_departments ud
             JOIN users u ON u.id = ud.user_id
             WHERE ud.department_id = ?
