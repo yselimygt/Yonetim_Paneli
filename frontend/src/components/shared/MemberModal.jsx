@@ -73,37 +73,32 @@ const MemberModal = ({ member, onClose }) => {
           {/* Details List */}
           <div className="space-y-4">
             {/* Education Block */}
-            {(member.universityLogo || member.companyLogo || member.university || member.faculty || member.department || member.grade) && (
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-3">
-                <div className="w-28 h-28 sm:w-32 sm:h-32 shrink-0 bg-white border border-white/10 rounded-xl flex items-center justify-center p-3 sm:p-4">
+            {(member.universityLogo || member.companyLogo || member.faculty || member.department || member.grade) && (
+              <div className="flex flex-row items-stretch gap-3 sm:gap-4">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white border border-white/10 rounded-xl flex items-center justify-center p-2 sm:p-3">
                   {(member.companyLogo || member.universityLogo) ? (
                     <img src={member.companyLogo || member.universityLogo} alt="Kurum Logosu" className="w-full h-full object-contain drop-shadow-md" />
                   ) : (
                     <div className="flex flex-col items-center justify-center text-text-meta/50">
-                      <GraduationCap className="w-8 h-8 sm:w-10 sm:h-10 mb-1 opacity-50" />
-                      <span className="text-[10px] font-semibold opacity-50">LOGO</span>
+                      <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 mb-1 opacity-50" />
+                      <span className="text-[9px] sm:text-[10px] font-semibold opacity-50">LOGO</span>
                     </div>
                   )}
                 </div>
-                <div className="w-full flex-1 flex flex-col justify-between sm:min-h-32 gap-2">
-                  {member.university && (
-                    <div className="w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-3 py-2 min-h-[32px] text-center">
-                      <p className="text-xs text-white font-medium truncate w-full" title={member.university}>{member.university}</p>
-                    </div>
-                  )}
+                <div className="flex-1 flex flex-col justify-between gap-1.5 sm:gap-2 overflow-hidden py-0">
                   {member.faculty && (
-                    <div className="w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-3 py-2 min-h-[32px] text-center">
-                      <p className="text-xs text-white font-medium truncate w-full" title={member.faculty}>{member.faculty}</p>
+                    <div className="flex-1 w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-2 text-center overflow-hidden">
+                      <p className="text-[10px] sm:text-xs text-white font-medium truncate w-full" title={member.faculty}>{member.faculty}</p>
                     </div>
                   )}
                   {member.department && (
-                    <div className="w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-3 py-2 min-h-[32px] text-center">
-                      <p className="text-xs text-white font-medium truncate w-full" title={member.department}>{member.department}</p>
+                    <div className="flex-1 w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-2 text-center overflow-hidden">
+                      <p className="text-[10px] sm:text-xs text-white font-medium truncate w-full" title={member.department}>{member.department}</p>
                     </div>
                   )}
                   {member.grade && (
-                    <div className="w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-3 py-2 min-h-[32px] text-center">
-                      <p className="text-xs text-white font-medium truncate w-full" title={member.grade}>{member.grade}</p>
+                    <div className="flex-1 w-full bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-2 text-center overflow-hidden">
+                      <p className="text-[10px] sm:text-xs text-white font-medium truncate w-full" title={member.grade}>{member.grade}</p>
                     </div>
                   )}
                 </div>
@@ -135,28 +130,28 @@ const MemberModal = ({ member, onClose }) => {
             )}
 
             {(member.website || member.linkedin || member.github) && (
-              <div className="bg-white/5 border border-white/5 rounded-xl p-4 mt-2">
-                <p className="text-[10px] text-text-meta uppercase tracking-wider font-semibold mb-3">Bağlantılar</p>
-                <div className="flex gap-2">
+              <div className="bg-white/5 border border-white/5 rounded-xl p-3 mt-2">
+                <p className="text-[10px] text-text-meta uppercase tracking-wider font-semibold mb-2.5">Bağlantılar</p>
+                <div className="flex gap-1.5 sm:gap-2">
                   {member.website && (
                     <a href={member.website.includes('http') ? member.website : `https://${member.website}`} target="_blank" rel="noopener noreferrer"
-                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all rounded-xl p-3 flex flex-col items-center justify-center gap-2 group">
-                      <Globe className="w-5 h-5 text-text-meta group-hover:text-primary transition-colors" />
-                      <span className="text-[10px] uppercase tracking-wider font-semibold text-text-meta group-hover:text-white transition-colors">Web</span>
+                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center gap-1.5 sm:gap-2 group">
+                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-text-meta group-hover:text-primary transition-colors" />
+                      <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-text-meta group-hover:text-white transition-colors">Web</span>
                     </a>
                   )}
                   {member.linkedin && member.linkedin !== '#' && (
                     <a href={member.linkedin} target="_blank" rel="noopener noreferrer"
-                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all rounded-xl p-3 flex flex-col items-center justify-center gap-2 group">
-                      <Linkedin className="w-5 h-5 text-text-meta group-hover:text-primary transition-colors" />
-                      <span className="text-[10px] uppercase tracking-wider font-semibold text-text-meta group-hover:text-white transition-colors">LinkedIn</span>
+                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center gap-1.5 sm:gap-2 group">
+                      <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-text-meta group-hover:text-primary transition-colors" />
+                      <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-text-meta group-hover:text-white transition-colors">LinkedIn</span>
                     </a>
                   )}
                   {member.github && member.github !== '#' && (
                     <a href={member.github} target="_blank" rel="noopener noreferrer"
-                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all rounded-xl p-3 flex flex-col items-center justify-center gap-2 group">
-                      <Github className="w-5 h-5 text-text-meta group-hover:text-primary transition-colors" />
-                      <span className="text-[10px] uppercase tracking-wider font-semibold text-text-meta group-hover:text-white transition-colors">GitHub</span>
+                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center gap-1.5 sm:gap-2 group">
+                      <Github className="w-4 h-4 sm:w-5 sm:h-5 text-text-meta group-hover:text-primary transition-colors" />
+                      <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-text-meta group-hover:text-white transition-colors">GitHub</span>
                     </a>
                   )}
                 </div>
