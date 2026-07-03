@@ -325,6 +325,7 @@
 </div>
 
 <script>
+if (typeof Chart !== 'undefined') {
 // Chart Defaults for Dark/Light Mode adaptivity
 Chart.defaults.color = '#888';
 Chart.defaults.font.family = 'inherit';
@@ -474,4 +475,5 @@ new Chart(document.getElementById('partnerChart').getContext('2d'), {
     },
     options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
 });
+}
 </script>

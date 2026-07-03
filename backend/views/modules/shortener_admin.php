@@ -31,6 +31,167 @@
 .delete-btn:hover { opacity: 1; }
 
 .badge-clicks { background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+
+@media(max-width: 768px) {
+    .shortener-container {
+        max-width: 100%;
+    }
+    .shortener-container > div:first-child {
+        margin-bottom: 14px !important;
+    }
+    .shortener-container h1 {
+        font-size: 20px !important;
+        line-height: 1.15;
+    }
+    .shortener-container > div:first-child p {
+        display: none;
+    }
+    .s-card {
+        padding: 14px;
+        border-radius: 14px;
+        margin-bottom: 10px;
+    }
+    .s-card h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+    .s-card form > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+    .form-group {
+        margin-bottom: 12px;
+    }
+    .form-label {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    .form-control {
+        min-height: 38px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        font-size: 13px;
+    }
+    .input-group {
+        min-width: 0;
+    }
+    .input-group-text {
+        max-width: 45%;
+        padding: 9px 8px;
+        font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .input-group .form-control {
+        min-width: 0;
+    }
+    .s-btn {
+        width: 100%;
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+    .link-table,
+    .link-table thead,
+    .link-table tbody,
+    .link-table tr,
+    .link-table td {
+        display: block;
+        width: 100%;
+    }
+    .link-table {
+        margin-top: 0;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+    .link-table thead {
+        display: none;
+    }
+    .link-table tr {
+        background: var(--card-alt);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px;
+    }
+    .link-table tr:hover {
+        background: var(--card-alt);
+    }
+    .link-table td {
+        border-bottom: 0;
+        padding: 4px 0;
+        font-size: 12px;
+    }
+    .link-table td:first-child {
+        font-size: 13px;
+        line-height: 1.25;
+    }
+    .link-table td:nth-child(2) {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .link-table td:nth-child(2) a {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .link-table td:nth-child(3) {
+        display: none;
+    }
+    .link-table td:nth-child(4) {
+        position: absolute;
+        right: 50px;
+        top: 12px;
+        width: auto;
+        padding: 0;
+    }
+    .link-table td:nth-child(5) {
+        position: absolute;
+        right: 12px;
+        top: 9px;
+        width: auto;
+        padding: 0;
+    }
+    .link-table tr {
+        position: relative;
+        padding-right: 92px;
+        min-height: 72px;
+    }
+    .copy-btn {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        justify-content: center;
+        margin-left: 0 !important;
+        border-radius: 9px;
+        flex: 0 0 auto;
+    }
+    .copy-btn svg {
+        width: 13px;
+        height: 13px;
+    }
+    .badge-clicks {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    .delete-btn {
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        background: rgba(239,68,68,0.1);
+    }
+    .delete-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+}
 </style>
 
 <div class="shortener-container">
@@ -148,11 +309,29 @@
 </div>
 
 <script>
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Kısa link panoya kopyalandı:\n" + text);
-    }).catch(err => {
-        console.error('Kopyalama başarısız', err);
-    });
+window.copyToClipboard = function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Kısa link panoya kopyalandı:\n" + text);
+        }).catch(() => {
+            fallbackCopy(text);
+        });
+        return;
+    }
+
+    fallbackCopy(text);
+};
+
+function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert("Kısa link panoya kopyalandı:\n" + text);
 }
 </script>

@@ -1,4 +1,147 @@
-<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+<style>
+@media (max-width: 768px) {
+    .sponsor-header {
+        margin-bottom: 14px !important;
+        gap: 12px;
+        align-items: center !important;
+    }
+    .sponsor-header h3 {
+        font-size: 18px !important;
+        line-height: 1.15;
+        margin: 0;
+    }
+    .sponsor-header p {
+        display: none;
+    }
+    .sponsor-header .btn {
+        min-height: 36px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .sponsor-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+    .sponsor-card {
+        min-width: 0;
+        border-radius: 14px;
+    }
+    .sponsor-logo-box {
+        height: 88px !important;
+        background: #1f2933 !important;
+        padding: 8px !important;
+    }
+    [data-theme="light"] .sponsor-logo-box {
+        background: #e5e7eb !important;
+    }
+    .sponsor-logo-empty {
+        height: 88px !important;
+        border-radius: 0;
+    }
+    .sponsor-card .card-body {
+        padding: 10px !important;
+    }
+    .sponsor-card h4 {
+        font-size: 13px !important;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .sponsor-card .badge {
+        font-size: 9px;
+        padding: 3px 7px;
+        border-radius: 999px;
+    }
+    .sponsor-type {
+        font-size: 10px !important;
+        margin-bottom: 8px !important;
+    }
+    .sponsor-contact {
+        display: none;
+    }
+    .sponsor-notes {
+        display: none;
+    }
+    .sponsor-actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px !important;
+        margin-top: 10px !important;
+        padding-top: 8px !important;
+    }
+    .sponsor-actions form {
+        display: block !important;
+        width: 100%;
+    }
+    .sponsor-actions .btn {
+        width: 100%;
+        min-height: 30px;
+        padding: 6px 8px;
+        border-radius: 9px;
+        font-size: 11px;
+    }
+    #sponsorModal {
+        padding: 14px;
+        align-items: center !important;
+        z-index: 2000 !important;
+    }
+    #sponsorModal > .card {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: calc(100vh - 28px);
+        margin: auto !important;
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    #sponsorModal .card-header {
+        padding: 14px !important;
+    }
+    #sponsorModal .card-body {
+        padding: 14px !important;
+        overflow-y: auto;
+    }
+    #sponsorModal .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+    #sponsorModal .form-group {
+        margin-bottom: 12px;
+    }
+    #sponsorModal .form-label {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    #sponsorModal .form-control {
+        min-height: 38px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        font-size: 13px;
+    }
+    #sponsorModal textarea.form-control {
+        min-height: 82px !important;
+    }
+    #sponsorModal form > div[style*="justify-content"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+    }
+    #sponsorModal .btn {
+        width: 100%;
+        min-height: 38px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+}
+</style>
+
+<div class="sponsor-header" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
     <div>
         <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><?= View::escape($app['name']) ?></h3>
         <p style="font-size: 12px; color: var(--muted);"><?= View::escape($app['description'] ?? '') ?></p>
@@ -10,7 +153,7 @@
     <?php endif; ?>
 </div>
 
-<div class="fade-in-up stagger-1" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+<div class="sponsor-grid fade-in-up stagger-1" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
     <?php if (empty($sponsors)): ?>
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--muted); border: 1px dashed var(--border); border-radius: 8px;">
             Henüz sponsor eklenmemiş.
@@ -20,13 +163,13 @@
         $sponStagger = 1;
         foreach ($sponsors as $sponsor): 
         ?>
-            <div class="card fade-in-up stagger-<?= min($sponStagger++, 5) ?>" style="background: var(--card-alt); border-color: var(--border); overflow: hidden;">
+            <div class="sponsor-card card fade-in-up stagger-<?= min($sponStagger++, 5) ?>" style="background: var(--card-alt); border-color: var(--border); overflow: hidden;">
                 <?php if (!empty($sponsor['logo_url'])): ?>
-                    <div style="height: 140px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                    <div class="sponsor-logo-box" style="height: 140px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 10px;">
                         <img src="<?= BASE_URL ?>/<?= View::escape($sponsor['logo_url']) ?>" alt="Logo" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                     </div>
                 <?php else: ?>
-                    <div style="height: 140px; background: #222; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px;">
+                    <div class="sponsor-logo-empty" style="height: 140px; background: #222; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px;">
                         Logo Yok
                     </div>
                 <?php endif; ?>
@@ -42,12 +185,12 @@
                     </div>
                     
                     <?php if (!empty($sponsor['sponsorship_type'])): ?>
-                        <div style="font-size: 12px; color: var(--accent); margin-bottom: 12px; font-weight: 500;">
+                        <div class="sponsor-type" style="font-size: 12px; color: var(--accent); margin-bottom: 12px; font-weight: 500;">
                             <?= View::escape($sponsor['sponsorship_type']) ?> Sponsor
                         </div>
                     <?php endif; ?>
 
-                    <div style="font-size: 12px; color: var(--muted); line-height: 1.6;">
+                    <div class="sponsor-contact" style="font-size: 12px; color: var(--muted); line-height: 1.6;">
                         <?php if (!empty($sponsor['contact_person'])): ?>
                             <div>👤 <?= View::escape($sponsor['contact_person']) ?></div>
                         <?php endif; ?>
@@ -60,13 +203,13 @@
                     </div>
 
                     <?php if (!empty($sponsor['notes'])): ?>
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted);">
+                        <div class="sponsor-notes" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted);">
                             <?= nl2br(View::escape($sponsor['notes'])) ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if ($isDirectorOrAdmin || (int)$sponsor['created_by'] === $user['id']): ?>
-                        <div style="display: flex; gap: 8px; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+                        <div class="sponsor-actions" style="display: flex; gap: 8px; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
                             <button class="btn btn-outline btn-sm" style="flex:1;" onclick="editSponsor(<?= $sponsor['id'] ?>, '<?= View::escape(addslashes($sponsor['name'])) ?>', '<?= View::escape(addslashes($sponsor['contact_person'])) ?>', '<?= View::escape(addslashes($sponsor['email'])) ?>', '<?= View::escape(addslashes($sponsor['phone'])) ?>', '<?= View::escape(addslashes($sponsor['sponsorship_type'])) ?>', '<?= View::escape(addslashes($sponsor['status'])) ?>', '<?= View::escape(addslashes(str_replace(["\r", "\n"], ["\\r", "\\n"], $sponsor['notes']))) ?>')">Düzenle</button>
                             
                             <form method="POST" style="margin:0; flex:1; display:flex;" onsubmit="return confirm('Bu sponsoru silmek istediğinize emin misiniz?');">
@@ -153,7 +296,7 @@
 </div>
 
 <script>
-function openSponsorModal() {
+window.openSponsorModal = function openSponsorModal() {
     document.getElementById('sponsorAction').value = 'add';
     document.getElementById('sponsorEditId').value = '';
     document.getElementById('sponsorName').value = '';
@@ -167,9 +310,9 @@ function openSponsorModal() {
     document.getElementById('sponsorModalTitle').innerText = 'Yeni Sponsor Ekle';
     document.getElementById('sponsorSubmitBtn').innerText = 'Ekle';
     document.getElementById('sponsorModal').style.display = 'flex';
-}
+};
 
-function editSponsor(id, name, contact, email, phone, type, status, notes) {
+window.editSponsor = function editSponsor(id, name, contact, email, phone, type, status, notes) {
     document.getElementById('sponsorAction').value = 'edit';
     document.getElementById('sponsorEditId').value = id;
     document.getElementById('sponsorName').value = name;
@@ -186,16 +329,18 @@ function editSponsor(id, name, contact, email, phone, type, status, notes) {
     document.getElementById('sponsorModalTitle').innerText = 'Sponsor Düzenle';
     document.getElementById('sponsorSubmitBtn').innerText = 'Kaydet';
     document.getElementById('sponsorModal').style.display = 'flex';
-}
+};
 
-function closeSponsorModal() {
+window.closeSponsorModal = function closeSponsorModal() {
     document.getElementById('sponsorModal').style.display = 'none';
-}
+};
 
-window.onclick = function(event) {
-    const modal = document.getElementById('sponsorModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+var sponsorModalEl = document.getElementById('sponsorModal');
+if (sponsorModalEl) {
+    sponsorModalEl.addEventListener('click', function(event) {
+        if (event.target === sponsorModalEl) {
+            window.closeSponsorModal();
+        }
+    });
 }
 </script>

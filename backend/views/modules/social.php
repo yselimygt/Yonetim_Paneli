@@ -97,12 +97,201 @@ function getPlatformColor($platform) {
         margin-bottom: 8px;
         background: var(--border);
     }
+
+    @media (max-width: 768px) {
+        .social-header {
+            margin-bottom: 16px !important;
+            align-items: center !important;
+            gap: 12px !important;
+        }
+        .social-header-main {
+            gap: 10px !important;
+            min-width: 0;
+        }
+        .social-header-icon {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 12px !important;
+            flex: 0 0 auto;
+        }
+        .social-header h3 {
+            font-size: 18px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .social-header p {
+            display: none;
+        }
+        .social-header .btn {
+            width: 100%;
+            min-height: 40px;
+            padding: 9px 12px !important;
+            border-radius: 12px !important;
+            font-size: 13px;
+        }
+        .kanban-board {
+            gap: 10px;
+            min-height: 0;
+            padding: 1px 18px 10px 1px;
+            scroll-snap-type: x mandatory;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+        .kanban-board::-webkit-scrollbar {
+            height: 6px;
+        }
+        .kanban-board::-webkit-scrollbar-thumb {
+            background: rgba(236, 72, 153, 0.6);
+            border-radius: 999px;
+        }
+        .kanban-column {
+            flex: 0 0 min(260px, 78vw);
+            min-width: 0;
+            border-radius: 14px;
+            scroll-snap-align: start;
+        }
+        .kanban-column-header {
+            padding: 11px;
+            font-size: 12px;
+            gap: 8px;
+        }
+        .kanban-column-header span {
+            font-size: 10px !important;
+            padding: 2px 7px !important;
+            flex: 0 0 auto;
+        }
+        .kanban-column-body {
+            padding: 10px;
+            max-height: 52vh;
+            gap: 8px;
+        }
+        .soc-card {
+            padding: 10px;
+            border-radius: 12px;
+        }
+        .soc-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        .soc-platform {
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 9px;
+            margin-bottom: 7px;
+        }
+        .soc-img-preview {
+            height: 84px;
+            border-radius: 9px;
+        }
+        .soc-card h4 {
+            font-size: 12px !important;
+            line-height: 1.25;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .soc-card h4 + div {
+            gap: 8px;
+            align-items: center !important;
+        }
+        .soc-card h4 + div > div:first-child {
+            font-size: 10px !important;
+            line-height: 1.2;
+        }
+        body:has(#modal-create[style*="flex"]) #modal-create,
+        body:has(#modal-edit[style*="flex"]) #modal-edit {
+            padding: 14px;
+        }
+        #modal-create,
+        #modal-edit {
+            align-items: center !important;
+            padding: 14px;
+            overflow-y: auto;
+            z-index: 2000 !important;
+        }
+        #modal-create > .card,
+        #modal-edit > .card {
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: calc(100vh - 28px) !important;
+            margin: auto !important;
+            border-radius: 14px !important;
+        }
+        #modal-create .card-header,
+        #modal-edit .card-header {
+            padding: 14px !important;
+        }
+        #modal-create .card-body,
+        #modal-edit .card-body {
+            padding: 14px !important;
+        }
+        #modal-create .form-group,
+        #modal-edit .form-group {
+            margin-bottom: 12px !important;
+        }
+        #modal-create .form-label,
+        #modal-edit .form-label {
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+        #modal-create .form-control,
+        #modal-edit .form-control {
+            min-height: 38px;
+            padding: 9px 10px !important;
+            border-radius: 9px !important;
+            font-size: 13px;
+        }
+        #modal-create textarea.form-control,
+        #modal-edit textarea.form-control {
+            min-height: 90px;
+        }
+        #modal-create form > div[style*="justify-content: flex-end"] {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px !important;
+        }
+        #modal-create .btn,
+        #modal-edit .btn {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
+            font-size: 12px !important;
+        }
+        #edit-image {
+            max-height: 160px !important;
+        }
+        #status-actions {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: 8px !important;
+        }
+        #status-actions form {
+            width: 100%;
+        }
+        #post-comments-list {
+            gap: 10px !important;
+        }
+        #comment-form > div {
+            padding: 10px !important;
+            border-radius: 12px !important;
+        }
+        #comment-form textarea {
+            font-size: 13px !important;
+        }
+        #file-name-display {
+            max-width: 120px !important;
+        }
+    }
 </style>
 
 <!-- Header -->
-<div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-        <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(236,72,153,0.05)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+<div class="social-header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
+    <div class="social-header-main" style="display: flex; align-items: center; gap: 16px;">
+        <div class="social-header-icon" style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(236,72,153,0.05)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
             <svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" width="28" height="28">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -408,27 +597,27 @@ function getPlatformColor($platform) {
     const canManage = <?= $canManage ? 'true' : 'false' ?>;
 
     // Drag & Drop
-    function allowDrop(ev) {
+    window.allowDrop = function allowDrop(ev) {
         ev.preventDefault();
         const target = ev.target.closest('.kanban-column-body');
         if (target && !target.classList.contains('drag-over')) {
             target.classList.add('drag-over');
         }
-    }
+    };
     
-    function dragLeave(ev) {
+    window.dragLeave = function dragLeave(ev) {
         const target = ev.target.closest('.kanban-column-body');
         if (target) {
             target.classList.remove('drag-over');
         }
-    }
+    };
     
-    function drag(ev, postId) {
+    window.drag = function drag(ev, postId) {
         ev.dataTransfer.setData("postId", postId);
         setTimeout(() => {
             document.getElementById('post-' + postId).classList.add('dragging');
         }, 0);
-    }
+    };
     
     document.addEventListener('dragend', function(e) {
         if(e.target.classList && e.target.classList.contains('soc-card')) {
@@ -447,7 +636,7 @@ function getPlatformColor($platform) {
         });
     }
     
-    function drop(ev, newStatus) {
+    window.drop = function drop(ev, newStatus) {
         ev.preventDefault();
         const target = ev.target.closest('.kanban-column-body');
         if (target) target.classList.remove('drag-over');
@@ -481,9 +670,9 @@ function getPlatformColor($platform) {
             console.error("Hata:", err);
             alert("Taşıma işlemi sırasında hata oluştu. Sayfayı yenileyiniz.");
         });
-    }
+    };
 
-    function loadPostComments(postId) {
+    window.loadPostComments = function loadPostComments(postId) {
         const list = document.getElementById('post-comments-list');
         list.innerHTML = '<div style="text-align:center; padding: 20px; color:var(--muted);"><svg class="spin" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2v4"></path></svg></div>';
         
@@ -535,9 +724,9 @@ function getPlatformColor($platform) {
                 });
             }
         });
-    }
+    };
 
-    function submitPostComment(e) {
+    window.submitPostComment = function submitPostComment(e) {
         e.preventDefault();
         const form = e.target;
         const postId = document.getElementById('comment-post-id').value;
@@ -572,9 +761,9 @@ function getPlatformColor($platform) {
             btn.disabled = false;
             alert('Bağlantı hatası.');
         });
-    }
+    };
 
-    function openPostModal(post) {
+    window.openPostModal = function openPostModal(post) {
         document.getElementById('edit-post-id').value = post.id;
         if (document.getElementById('delete-post-id')) {
             document.getElementById('delete-post-id').value = post.id;
@@ -626,5 +815,13 @@ function getPlatformColor($platform) {
         loadPostComments(post.id);
 
         document.getElementById('modal-edit').style.display = 'flex';
-    }
+    };
+
+    document.querySelectorAll('#modal-create, #modal-edit').forEach(function(modal) {
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
 </script>

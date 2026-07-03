@@ -15,7 +15,7 @@ class ShortenerController extends Controller
 
         // Güvenlik: LIKE wildcard karakterlerini escape et (SQL injection önlemi)
         $safeCode = str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $code);
-        $stmt = $db->prepare("SELECT id, config FROM apps WHERE module_type = 'shortener' AND config LIKE ? ESCAPE '\\'");
+        $stmt = $db->prepare("SELECT id, config FROM apps WHERE module_type = 'shortener' AND config LIKE ? ESCAPE '\\\\'");
         $stmt->execute(['%"code":"' . $safeCode . '"%']);
         $apps = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
