@@ -111,6 +111,7 @@ function renderPartnerCard($partner, $canEdit) {
     --prt-hover: #2a2a2a;
     --prt-primary: #14b8a6;
     --prt-primary-hover: #0d9488;
+    --prt-image-bg: #1f2933;
 }
 
 [data-theme="light"] {
@@ -118,6 +119,7 @@ function renderPartnerCard($partner, $canEdit) {
     --prt-border: #e5e7eb;
     --prt-muted: #6b7280;
     --prt-hover: #f9fafb;
+    --prt-image-bg: #e5e7eb;
 }
 
 .prt-header-area {
@@ -180,7 +182,7 @@ function renderPartnerCard($partner, $canEdit) {
     min-height: 180px;
     position: relative;
     overflow: hidden;
-    background: #1a1a1a;
+    background: var(--prt-image-bg);
     flex-shrink: 0;
 }
 .prt-img {
@@ -363,6 +365,182 @@ function renderPartnerCard($partner, $canEdit) {
 .modal-content::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
 .modal-content::-webkit-scrollbar-thumb { background: var(--prt-border); border-radius: 4px; }
 .modal-content::-webkit-scrollbar-thumb:hover { background: var(--prt-muted); }
+
+@media (max-width: 768px) {
+    .prt-header-area {
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .prt-header-title {
+        font-size: 20px;
+        line-height: 1.15;
+    }
+    .prt-header-subtitle {
+        display: none;
+    }
+    .prt-btn-add {
+        min-height: 36px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: none;
+    }
+    .prt-btn-add svg {
+        width: 16px;
+        height: 16px;
+    }
+    .prt-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    .prt-card {
+        border-radius: 14px;
+        min-width: 0;
+    }
+    .prt-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .prt-img-wrapper {
+        height: 92px;
+        min-height: 92px;
+    }
+    .prt-content {
+        padding: 10px;
+    }
+    .prt-header {
+        display: block;
+        margin-bottom: 8px;
+    }
+    .prt-title {
+        font-size: 13px;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 31px;
+    }
+    .prt-badge {
+        display: inline-flex;
+        margin-top: 7px;
+        padding: 3px 7px;
+        border-radius: 999px;
+        font-size: 9px;
+        letter-spacing: 0;
+    }
+    .prt-details {
+        gap: 6px;
+        margin-bottom: 0;
+    }
+    .prt-row {
+        font-size: 11px;
+        line-height: 1.25;
+    }
+    .prt-row:not(.discount-row) {
+        display: none;
+    }
+    .discount-row {
+        padding: 6px 7px;
+        border-left-width: 2px;
+        border-radius: 8px;
+    }
+    .discount-row span {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .prt-icon {
+        width: 13px;
+        height: 13px;
+        margin-top: 1px;
+    }
+    .prt-footer {
+        padding: 8px 10px;
+        gap: 8px;
+        align-items: center;
+    }
+    .prt-btn-map {
+        width: 32px;
+        height: 32px;
+        justify-content: center;
+        border-radius: 9px;
+        background: rgba(20, 184, 166, 0.1);
+        font-size: 0;
+        flex: 0 0 auto;
+    }
+    .prt-btn-map svg {
+        width: 15px;
+        height: 15px;
+    }
+    .prt-actions {
+        margin-left: auto;
+        gap: 5px;
+    }
+    .prt-action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+    }
+    .prt-action-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+    .modal-overlay {
+        align-items: center;
+        padding: 12px;
+        z-index: 2000;
+    }
+    .modal-content {
+        max-height: calc(100vh - 24px);
+        max-width: 100%;
+        padding: 14px;
+        border-radius: 16px;
+    }
+    .modal-header {
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+    }
+    .modal-header h3 {
+        font-size: 16px;
+    }
+    .form-group {
+        margin-bottom: 12px;
+    }
+    .form-group label {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    .form-control {
+        min-height: 38px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        font-size: 13px;
+    }
+    textarea.form-control {
+        min-height: 86px;
+    }
+    #prtForm > div[style*="display:flex"] {
+        flex-direction: column;
+        gap: 0 !important;
+    }
+    #prtForm > div[style*="justify-content:flex-end"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+        margin-top: 14px !important;
+    }
+    #prtForm .btn {
+        width: 100%;
+        min-height: 38px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+}
 </style>
 
 <div class="prt-header-area fade-in-up">
@@ -451,16 +629,16 @@ function renderPartnerCard($partner, $canEdit) {
 </div>
 
 <script>
-function openPartnerModal() {
+window.openPartnerModal = function openPartnerModal() {
     document.getElementById('prtForm').reset();
     document.getElementById('modalTitle').textContent = 'Yeni Anlaşmalı Mekan Ekle';
     document.getElementById('prtAction').value = 'add';
     document.getElementById('prtId').value = '';
     
     document.getElementById('prtModal').classList.add('active');
-}
+};
 
-function openPartnerEditModal(prt) {
+window.openPartnerEditModal = function openPartnerEditModal(prt) {
     document.getElementById('prtForm').reset();
     document.getElementById('modalTitle').textContent = 'Mekanı Düzenle';
     document.getElementById('prtAction').value = 'edit';
@@ -474,10 +652,19 @@ function openPartnerEditModal(prt) {
     document.querySelector('textarea[name="discount_detail"]').value = prt.discount_detail || '';
     
     document.getElementById('prtModal').classList.add('active');
-}
+};
 
-function closePartnerModal() {
+window.closePartnerModal = function closePartnerModal() {
     document.getElementById('prtModal').classList.remove('active');
+};
+
+var partnerModalEl = document.getElementById('prtModal');
+if (partnerModalEl) {
+    partnerModalEl.addEventListener('click', function(event) {
+        if (event.target === this) {
+            window.closePartnerModal();
+        }
+    });
 }
 
 document.addEventListener("DOMContentLoaded", function() {

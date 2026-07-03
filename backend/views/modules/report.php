@@ -128,8 +128,94 @@
 .rep-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
 @media(max-width: 768px) {
-    .charts-grid { grid-template-columns: 1fr; }
-    .export-form { flex-direction: column; align-items: stretch; }
+    .rep-header {
+        margin-bottom: 16px;
+    }
+    .rep-header h2 {
+        font-size: 20px !important;
+        line-height: 1.15;
+    }
+    .rep-header p {
+        display: none;
+    }
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .kpi-card {
+        padding: 13px;
+        border-radius: 14px;
+        min-width: 0;
+        box-shadow: none;
+    }
+    .kpi-card::before {
+        height: 3px;
+    }
+    .kpi-title {
+        font-size: 10px;
+        letter-spacing: 0;
+        margin-bottom: 6px;
+    }
+    .kpi-value {
+        font-size: 20px;
+        line-height: 1.15;
+        margin-bottom: 4px;
+        overflow-wrap: anywhere;
+    }
+    .kpi-sub {
+        font-size: 10px;
+        line-height: 1.25;
+    }
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .chart-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+    .chart-card h3 {
+        font-size: 13px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+    .chart-card > div {
+        height: 210px !important;
+    }
+    .export-section {
+        padding: 14px;
+        border-radius: 14px;
+    }
+    .export-section h3 {
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+    .export-section p {
+        display: none;
+    }
+    .export-form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .export-form .form-control,
+    .export-form select {
+        max-width: none !important;
+        min-height: 38px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        font-size: 13px;
+    }
+    .rep-btn {
+        width: 100%;
+        min-height: 38px;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
 }
 </style>
 

@@ -1,7 +1,6 @@
 <style>
 .qr-admin-container { max-width: 900px; margin: 0 auto; }
 .card-grid { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
-@media(max-width: 768px) { .card-grid { grid-template-columns: 1fr; } }
 
 .q-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
 .q-card h3 { margin-top: 0; margin-bottom: 20px; font-size: 18px; color: var(--text); }
@@ -30,6 +29,132 @@
 .qr-btn-primary:hover { opacity: 0.9; }
 .qr-btn-danger { background: rgba(239,68,68,0.1); color: #ef4444; border-color: rgba(239,68,68,0.2); }
 .qr-btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+@media(max-width: 768px) {
+    .qr-admin-container {
+        max-width: 100%;
+    }
+    .qr-admin-container > div:first-child {
+        margin-bottom: 14px !important;
+    }
+    .qr-admin-container h1 {
+        font-size: 20px !important;
+        line-height: 1.15;
+    }
+    .qr-admin-container > div:first-child p {
+        display: none;
+    }
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .q-card {
+        padding: 14px;
+        border-radius: 14px;
+        margin-bottom: 10px;
+    }
+    .q-card h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+    .form-group {
+        margin-bottom: 12px;
+    }
+    .form-label {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    .form-control {
+        min-height: 38px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        font-size: 13px;
+    }
+    .color-picker {
+        height: 38px;
+    }
+    .q-card form > div[style*="display:flex"] {
+        gap: 8px !important;
+    }
+    .q-card form > div[style*="margin-top: 16px"] {
+        margin-top: 10px !important;
+    }
+    .q-card form > div[style*="margin-top: 16px"] .qr-btn {
+        min-height: 40px;
+        padding: 8px !important;
+        border-radius: 10px;
+        font-size: 12px !important;
+    }
+    .q-card form > div[style*="margin-top: 16px"] svg {
+        width: 14px;
+        height: 14px;
+        margin-right: 0 !important;
+    }
+    .qr-preview-box {
+        min-height: 180px;
+        padding: 14px;
+        border-radius: 12px;
+    }
+    .qr-preview-box #liveQrCode {
+        margin-bottom: 10px;
+    }
+    .qr-preview-box #liveQrCode canvas,
+    .qr-preview-box #liveQrCode img {
+        width: 140px !important;
+        height: 140px !important;
+    }
+    .qr-admin-container h2 {
+        font-size: 17px !important;
+        margin: 14px 0 10px !important;
+    }
+    .qr-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .qr-item {
+        min-width: 0;
+        padding: 10px;
+        border-radius: 14px;
+    }
+    .qr-item-title {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+    .qr-item-val {
+        font-size: 10px;
+        line-height: 1.25;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .qr-item-box {
+        padding: 8px;
+        margin-bottom: 8px;
+        border-radius: 9px;
+        max-width: 100%;
+    }
+    .qr-item-box canvas,
+    .qr-item-box img {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    .qr-item-actions {
+        gap: 6px;
+    }
+    .qr-btn {
+        min-height: 30px;
+        padding: 6px;
+        border-radius: 9px;
+        font-size: 11px;
+        gap: 4px;
+    }
+    .qr-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+}
 </style>
 
 <div class="qr-admin-container">
@@ -157,6 +282,10 @@
 const qrInstances = {};
 
 document.addEventListener('DOMContentLoaded', function() {
+    if (typeof QRCodeStyling === 'undefined') {
+        return;
+    }
+
     // 1. Live Preview Logic
     window.liveQr = new QRCodeStyling({
         width: 180,
@@ -251,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Download Logic using the library's built-in download method
-function downloadSavedQR(id, title) {
+window.downloadSavedQR = function downloadSavedQR(id, title) {
     const instance = qrInstances[id];
     if (instance) {
         let safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -259,9 +388,9 @@ function downloadSavedQR(id, title) {
     } else {
         alert("QR Kod örneği bulunamadı.");
     }
-}
+};
 
-function downloadLivePreview() {
+window.downloadLivePreview = function downloadLivePreview() {
     if (window.liveQr) {
         const valInput = document.getElementById('qrValueInput');
         const titleInput = document.querySelector('input[name="title"]');
@@ -273,5 +402,5 @@ function downloadLivePreview() {
     } else {
         alert("Canlı önizleme henüz hazır değil.");
     }
-}
+};
 </script>
