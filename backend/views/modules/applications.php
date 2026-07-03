@@ -3,7 +3,7 @@ if (!defined('BASE_URL')) exit;
 // Data $applications is provided by ApplicationsModule
 ?>
 
-<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+<div class="applications-module-head" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
     <div>
         <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><i class="fas fa-file-text text-primary me-2"></i> Başvurular</h3>
         <p style="font-size: 12px; color: var(--muted);">Temsilcilik ve Yönetim Kurulu başvurularını buradan yönetebilirsiniz.</p>
@@ -229,9 +229,254 @@ if (!defined('BASE_URL')) exit;
 }
 
 @media (max-width: 900px) {
-    .app-container { flex-direction: column; height: auto; }
-    .app-list-pane { flex: none; max-height: 400px; }
-    .app-detail-pane { min-height: 600px; }
+    .applications-module-head {
+        margin-bottom: 12px !important;
+    }
+
+    .applications-module-head h3 {
+        margin: 0;
+        font-size: 17px !important;
+    }
+
+    .applications-module-head p {
+        display: none;
+    }
+
+    .app-container {
+        display: block;
+        height: auto;
+        min-height: 0;
+    }
+
+    .app-list-pane {
+        flex: none;
+        max-height: none;
+        border-radius: 14px;
+    }
+
+    .app-list-header {
+        padding: 12px;
+        gap: 10px !important;
+    }
+
+    .app-list-header h4 {
+        font-size: 13px !important;
+    }
+
+    .app-list-header .d-flex.gap-2 {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px !important;
+    }
+
+    .app-filter-btn {
+        min-height: 32px;
+        padding: 6px 7px;
+        border-radius: 9px;
+        font-size: 10px;
+    }
+
+    .app-list-content {
+        max-height: none;
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .app-card {
+        min-height: 76px;
+        padding: 10px 11px;
+        border-radius: 12px;
+        gap: 5px;
+    }
+
+    .app-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .app-sender {
+        max-width: 57vw;
+        font-size: 12px;
+    }
+
+    .app-date {
+        font-size: 10px;
+    }
+
+    .app-subject {
+        font-size: 11px;
+    }
+
+    .app-badge {
+        padding: 2px 7px;
+        font-size: 9px;
+    }
+
+    .app-detail-pane {
+        position: fixed;
+        inset: 0;
+        z-index: 1450;
+        display: none;
+        min-height: 0;
+        border: 0;
+        border-radius: 0;
+        background: rgba(0,0,0,.58);
+        padding: 10px;
+        align-items: flex-end;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    .app-detail-pane.mobile-open {
+        display: flex;
+    }
+
+    .app-empty-state {
+        display: none !important;
+    }
+
+    #detailContent {
+        width: 100%;
+        height: auto !important;
+        max-height: calc(100dvh - 112px - env(safe-area-inset-bottom));
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 16px 16px 12px 12px;
+        background: var(--card);
+    }
+
+    .app-detail-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 13px 14px;
+        align-items: start;
+    }
+
+    .app-detail-header h3 {
+        font-size: 15px !important;
+        color: var(--text) !important;
+    }
+
+    #d-type-date {
+        font-size: 11px !important;
+    }
+
+    .application-mobile-close {
+        display: inline-flex !important;
+        grid-column: 2;
+        grid-row: 1;
+        min-height: 32px;
+        padding: 7px 10px;
+        border-radius: 9px;
+        font-size: 11px;
+    }
+
+    .app-detail-header > .d-flex {
+        grid-column: 1 / -1;
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        gap: 8px !important;
+        width: 100%;
+    }
+
+    .app-detail-header form {
+        width: 100%;
+    }
+
+    .app-detail-header .application-status-form {
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        gap: 7px !important;
+    }
+
+    .status-select-custom {
+        width: 100% !important;
+        min-height: 34px;
+        font-size: 11px;
+    }
+
+    .app-detail-header .btn {
+        min-height: 34px;
+        padding: 6px 9px !important;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .app-detail-content {
+        flex: 0 1 auto;
+        max-height: calc(100dvh - 244px - env(safe-area-inset-bottom));
+        overflow-y: auto;
+    }
+
+    .base-info-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .info-item {
+        min-width: 0;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--input-bg);
+    }
+
+    .info-item-icon {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 auto;
+        font-size: 11px;
+    }
+
+    .info-item-text {
+        min-width: 0;
+    }
+
+    .info-item-text div:first-child {
+        font-size: 9px;
+    }
+
+    .info-item-text div:last-child {
+        overflow: hidden;
+        font-size: 11px;
+        color: var(--text);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+        padding: 10px;
+    }
+
+    .app-detail-content .px-4 {
+        padding: 8px 10px 4px !important;
+    }
+
+    .app-detail-content .px-4 h6 {
+        font-size: 12px !important;
+    }
+
+    .json-field {
+        padding: 12px;
+        border-radius: 11px;
+    }
+
+    .json-field h6 {
+        margin-bottom: 6px;
+        font-size: 10px;
+    }
+
+    .json-field p {
+        font-size: 12px;
+        line-height: 1.55;
+    }
 }
 .d-none { display: none !important; }
 </style>
@@ -267,7 +512,7 @@ if (!defined('BASE_URL')) exit;
                         default => 'Bilinmiyor'
                     };
                 ?>
-                    <div class="app-card" data-app-type="<?= $filterType ?>" onclick='showDetails(<?= json_encode($app, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                    <div class="app-card" data-app-type="<?= $filterType ?>" onclick='showDetails(this, <?= json_encode($app, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                         <div class="app-card-header">
                             <span class="app-sender"><?= htmlspecialchars($app['full_name']) ?></span>
                             <span class="app-date"><?= date('d.m.Y H:i', strtotime($app['created_at'])) ?></span>
@@ -297,8 +542,9 @@ if (!defined('BASE_URL')) exit;
                     <h3 class="mb-1 text-white fw-bold" id="d-name" style="font-size: 20px;">-</h3>
                     <div class="fs-6" style="color: #60a5fa;" id="d-type-date">-</div>
                 </div>
+                <button type="button" class="application-mobile-close btn btn-outline" onclick="closeApplicationDetail()" style="display:none;">Kapat</button>
                 <div class="d-flex gap-2 align-items-center">
-                    <form method="POST" action="" id="statusForm" class="d-flex gap-2 align-items-center mb-0">
+                    <form method="POST" action="" id="statusForm" class="d-flex gap-2 align-items-center mb-0 application-status-form">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="action" value="status">
                         <input type="hidden" name="id" id="status_id">
@@ -416,13 +662,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function showDetails(app) {
+function showDetails(cardEl, app) {
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('detailContent').style.display = 'flex';
     document.getElementById('detailContent').classList.remove('d-none');
     
     document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+    if (cardEl) {
+        cardEl.classList.add('active');
+    }
+
+    if (window.innerWidth <= 900) {
+        document.getElementById('appDetailPane')?.classList.add('mobile-open');
+        document.body.style.overflow = 'hidden';
+    }
 
     const typeLabel = app.type === 'management' ? 'Yönetim Kurulu' : 'Temsilcilik';
     const dateStr = new Date(app.created_at).toLocaleString('tr-TR');
@@ -565,4 +818,21 @@ function showDetails(app) {
     document.getElementById('d-department').textContent = parsedDepartment;
     document.getElementById('d-grade').textContent = parsedGrade;
 }
+
+function closeApplicationDetail() {
+    document.getElementById('appDetailPane')?.classList.remove('mobile-open');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('appDetailPane')?.addEventListener('click', function(e) {
+    if (window.innerWidth <= 900 && e.target === this) {
+        closeApplicationDetail();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeApplicationDetail();
+    }
+});
 </script>

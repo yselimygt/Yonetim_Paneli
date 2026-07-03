@@ -95,6 +95,7 @@
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background: var(--modal-overlay); z-index: 9999; align-items: center; 
         justify-content: center; backdrop-filter: blur(4px); padding: 20px; overflow-y: auto;
+        opacity: 1;
     }
     .modal-content {
         background: var(--card); border: 1px solid var(--border); border-radius: 16px;
@@ -196,6 +197,20 @@
     }
     #memberDetailModal .modal-footer {
         grid-template-columns: 1fr;
+    }
+    .members-no-results {
+        display: none;
+        margin-top: 12px;
+        padding: 28px 16px;
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        background: var(--card);
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+    }
+    .members-module .member-row.is-hidden {
+        display: none !important;
     }
 
     @media (max-width: 768px) {
@@ -553,9 +568,386 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
+
+    .members-mobile-hero {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .members-module {
+            padding-bottom: 96px;
+        }
+
+        .members-mobile-hero {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 0 0 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .members-mobile-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+        }
+
+        .members-mobile-kicker::before {
+            content: "";
+            width: 20px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .members-mobile-hero h2 {
+            margin: 0;
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .members-mobile-hero p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .members-topbar {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .members-topbar > div:first-child {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: 8px !important;
+            width: 100%;
+        }
+
+        .search-wrapper,
+        #statusFilter {
+            width: 100% !important;
+        }
+
+        .search-wrapper input,
+        #statusFilter {
+            min-height: 42px;
+            border-radius: 8px;
+            background: var(--card);
+            font-size: 13px;
+        }
+
+        .topbar-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+        }
+
+        .topbar-actions form {
+            display: contents;
+        }
+
+        .members-btn {
+            min-height: 34px;
+            padding: 6px 8px;
+            border-radius: 7px;
+            justify-content: center;
+            font-size: 11px;
+            line-height: 1.15;
+            text-align: center;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .members-btn svg {
+            width: 13px !important;
+        }
+
+        .topbar-actions .btn-primary {
+            grid-column: 1 / -1;
+            order: -1;
+        }
+
+        .members-module .members-table-wrapper {
+            overflow: visible;
+            border: 0;
+            background: transparent;
+        }
+
+        .members-module .members-table {
+            display: block;
+            min-width: 0;
+        }
+
+        .members-module .members-table thead {
+            display: none;
+        }
+
+        .members-module .members-table tbody {
+            display: grid;
+            gap: 8px;
+        }
+
+        .members-module .members-table tbody > tr.member-row {
+            display: grid !important;
+            grid-template-columns: 28px minmax(0, 1fr) auto;
+            grid-template-areas:
+                "index person actions";
+            align-items: center;
+            gap: 8px;
+            min-height: 0;
+            padding: 8px 9px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card);
+        }
+
+        .members-module .members-table tbody > tr.member-row.is-hidden {
+            display: none !important;
+        }
+
+        .members-module .members-table tbody > tr:not(.member-row) {
+            display: block;
+            padding: 24px 14px;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            background: var(--card);
+        }
+
+        .members-module .members-table td {
+            display: block;
+            min-width: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(1) {
+            grid-area: index;
+            display: flex;
+            width: 28px;
+            height: 28px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            background: var(--input-bg);
+            color: var(--accent) !important;
+            font-size: 10px !important;
+            font-weight: 800;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(2) {
+            grid-area: person;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(3) {
+            display: none;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(4) {
+            display: none;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(4)::before,
+        .members-module .members-table tbody > tr.member-row > td:nth-child(4)::after {
+            display: none;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(5) {
+            grid-area: actions;
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .members-module .member-info {
+            display: flex !important;
+            gap: 8px;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .members-module .member-avatar {
+            display: none !important;
+        }
+
+        .members-module .member-name {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        .members-module .member-sub,
+        .members-module .member-info .member-sub {
+            display: none !important;
+            margin-top: 2px;
+            font-size: 10px;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .members-module .member-grade {
+            display: inline !important;
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(4) .member-name,
+        .members-module .members-table tbody > tr.member-row > td:nth-child(4) .member-sub {
+            display: block;
+            padding: 6px 7px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: var(--input-bg);
+        }
+
+        .members-module .members-table tbody > tr.member-row > td:nth-child(4) .member-sub {
+            margin-top: 0;
+        }
+
+        .members-module .members-table td:last-child > div {
+            display: flex !important;
+            gap: 4px !important;
+            justify-content: flex-end !important;
+            align-items: center;
+        }
+
+        .members-module .members-table td:last-child form {
+            display: contents;
+        }
+
+        .action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--input-bg);
+            transform: none;
+        }
+
+        .action-btn svg {
+            width: 12px !important;
+        }
+
+        .modal-overlay {
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        .modal-content,
+        .modal-content[style] {
+            display: flex;
+            flex-direction: column;
+            width: 100% !important;
+            max-width: 440px !important;
+            max-height: calc(100dvh - 28px);
+            border: 1px solid var(--border);
+            border-radius: 12px !important;
+            overflow: hidden;
+        }
+
+        #redListModal .modal-content,
+        #memberModal .modal-content {
+            max-width: 560px !important;
+        }
+
+        .modal-header {
+            flex: 0 0 auto;
+            padding: 14px 16px;
+        }
+
+        .modal-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            max-height: none;
+            overflow-y: auto;
+            padding: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-footer {
+            flex: 0 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 0 !important;
+        }
+
+        #memberModal form,
+        #excelModal form#uploadForm,
+        #suspendModal form#suspendForm {
+            min-height: 0;
+        }
+
+        #memberModal form {
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #memberDetailModal .modal-footer,
+        #redListModal .modal-footer {
+            grid-template-columns: 1fr;
+        }
+
+        .members-pagination {
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .members-pagination-info {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .members-pagination-pages {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .members-page-btn {
+            height: 32px;
+            min-width: 32px;
+            border-radius: 7px;
+            font-size: 11px;
+        }
+
+        .members-page-btn:not(.members-page-prev):not(.members-page-next):not(.is-active) {
+            display: none;
+        }
+
+        .members-page-btn.is-active {
+            min-width: 44px;
+            padding: 0 12px;
+        }
+
+        .members-page-btn:disabled {
+            opacity: .38;
+            cursor: not-allowed;
+        }
+    }
 </style>
 
 <div class="members-module">
+    <div class="members-mobile-hero">
+        <span class="members-mobile-kicker">Üye Yönetimi</span>
+        <div>
+            <h2>Üye Listesi</h2>
+            <p><?= count($members ?? []) ?> aktif kayıt görüntüleniyor.</p>
+        </div>
+    </div>
+
     <!-- Üst Bar -->
     <div class="members-topbar">
         <div style="display:flex; gap:12px; align-items:center;">
@@ -574,7 +966,7 @@
         
         <div class="topbar-actions">
             <!-- Excel Yükle -->
-            <button onclick="document.getElementById('excelModal').style.display='flex'" class="members-btn btn-outline">
+            <button onclick="openMembersModal('excelModal')" class="members-btn btn-outline">
                 <svg style="width:16px; color:#3b82f6;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 Yükle
             </button>
@@ -600,7 +992,7 @@
             </form>
             
             <!-- Kırmızı Liste -->
-            <button onclick="document.getElementById('redListModal').style.display='flex'" class="members-btn btn-danger">
+            <button onclick="openMembersModal('redListModal')" class="members-btn btn-danger">
                 <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.8);"></span>
                 Kırmızı Liste
             </button>
@@ -638,7 +1030,7 @@
                     foreach ($members as $index => $m): 
                         $avatarColor = $colors[$m['id'] % count($colors)];
                     ?>
-                    <tr class="member-row" data-search="<?= strtolower(htmlspecialchars($m['first_name'].' '.$m['last_name'].' '.$m['email'].' '.$m['student_id'])) ?>">
+                    <tr class="member-row" data-search="<?= strtolower(htmlspecialchars($m['first_name'].' '.$m['last_name'].' '.$m['email'].' '.$m['student_id'])) ?>" data-status="<?= htmlspecialchars($m['status'] ?? 'active', ENT_QUOTES, 'UTF-8') ?>">
                         <td style="text-align:center; color: var(--muted); font-size:13px;"><?= $index + 1 ?></td>
                         <td>
                             <div class="member-info">
@@ -704,6 +1096,7 @@
             </tbody>
         </table>
     </div>
+    <div id="membersNoResults" class="members-no-results">Aramana uygun üye bulunamadı.</div>
     <div id="membersPagination" class="members-pagination" style="display:none;"></div>
 </div>
 
@@ -715,7 +1108,7 @@
                 <svg style="width:20px; color:#3b82f6;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 Excel İle Üye Yükle
             </h3>
-            <button class="modal-close" onclick="document.getElementById('excelModal').style.display='none'">
+            <button class="modal-close" onclick="closeMembersModal('excelModal')">
                 <svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
@@ -745,7 +1138,7 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button class="members-btn btn-outline" onclick="document.getElementById('excelModal').style.display='none'">İptal</button>
+            <button class="members-btn btn-outline" onclick="closeMembersModal('excelModal')">İptal</button>
             <button class="members-btn btn-primary" onclick="document.getElementById('uploadForm').submit()">Yüklemeyi Başlat</button>
         </div>
     </div>
@@ -759,7 +1152,7 @@
                 <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);"></span>
                 Kırmızı Liste (Askıya Alınanlar)
             </h3>
-            <button class="modal-close" onclick="document.getElementById('redListModal').style.display='none'">
+            <button class="modal-close" onclick="closeMembersModal('redListModal')">
                 <svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
@@ -825,7 +1218,7 @@
     <div class="modal-content" style="max-width: 400px;">
         <div class="modal-header" style="border-bottom:none; padding-bottom:10px;">
             <h3 style="color:#ef4444;">Üyeyi Askıya Al</h3>
-            <button class="modal-close" onclick="document.getElementById('suspendModal').style.display='none'">
+            <button class="modal-close" onclick="closeMembersModal('suspendModal')">
                 <svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
@@ -842,7 +1235,7 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button class="members-btn btn-outline" onclick="document.getElementById('suspendModal').style.display='none'">İptal</button>
+            <button class="members-btn btn-outline" onclick="closeMembersModal('suspendModal')">İptal</button>
             <button class="members-btn btn-danger" onclick="document.getElementById('suspendForm').submit()" style="color:#fff; background:#ef4444;">Askıya Al</button>
         </div>
     </div>
@@ -853,7 +1246,7 @@
     <div class="modal-content" style="max-width: 560px;">
         <div class="modal-header">
             <h3 id="memberDetailTitle">Üye Detayı</h3>
-            <button class="modal-close" onclick="document.getElementById('memberDetailModal').style.display='none'">
+            <button class="modal-close" onclick="closeMembersModal('memberDetailModal')">
                 <svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
@@ -861,7 +1254,7 @@
             <div id="memberDetailContent" class="member-detail-grid"></div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="members-btn btn-outline" onclick="document.getElementById('memberDetailModal').style.display='none'">Kapat</button>
+            <button type="button" class="members-btn btn-outline" onclick="closeMembersModal('memberDetailModal')">Kapat</button>
         </div>
     </div>
 </div>
@@ -871,7 +1264,7 @@
     <div class="modal-content" style="max-width: 650px;">
         <div class="modal-header">
             <h3 id="memberModalTitle">Yeni Üye Ekle</h3>
-            <button class="modal-close" onclick="document.getElementById('memberModal').style.display='none'">
+            <button class="modal-close" onclick="closeMembersModal('memberModal')">
                 <svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
@@ -941,7 +1334,7 @@
             </div>
             
             <div class="modal-footer">
-                <button type="button" class="members-btn btn-outline" onclick="document.getElementById('memberModal').style.display='none'">İptal</button>
+                <button type="button" class="members-btn btn-outline" onclick="closeMembersModal('memberModal')">İptal</button>
                 <button type="submit" class="members-btn btn-primary">Kaydet</button>
             </div>
         </form>
@@ -952,17 +1345,39 @@
 const membersPerPage = 25;
 let currentMembersPage = 1;
 
+function openMembersModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.offsetHeight;
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMembersModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    modal.style.display = 'none';
+}
+
 function getMemberRows() {
     return Array.from(document.querySelectorAll('.members-module .member-row'));
 }
 
 function getFilteredMemberRows() {
     const searchInput = document.getElementById('memberSearch');
+    const statusFilter = document.getElementById('statusFilter');
     const search = searchInput ? searchInput.value.toLowerCase() : '';
+    const status = statusFilter ? statusFilter.value : '';
 
     return getMemberRows().filter(row => {
         const text = row.getAttribute('data-search') || '';
-        return text.includes(search);
+        const rowStatus = row.getAttribute('data-status') || 'active';
+        return text.includes(search) && (!status || rowStatus === status);
     });
 }
 
@@ -972,7 +1387,8 @@ function filterMembers() {
 }
 
 function goToMembersPage(page) {
-    currentMembersPage = page;
+    const totalPages = Math.max(1, Math.ceil(getFilteredMemberRows().length / membersPerPage));
+    currentMembersPage = Math.min(Math.max(1, page), totalPages);
     renderMembersPage(true);
 }
 
@@ -981,6 +1397,7 @@ function renderMembersPage(shouldScroll = false) {
     const filteredRows = getFilteredMemberRows();
     const totalPages = Math.max(1, Math.ceil(filteredRows.length / membersPerPage));
     const pagination = document.getElementById('membersPagination');
+    const noResults = document.getElementById('membersNoResults');
 
     if (currentMembersPage > totalPages) {
         currentMembersPage = totalPages;
@@ -991,8 +1408,12 @@ function renderMembersPage(shouldScroll = false) {
     const visibleRows = new Set(filteredRows.slice(start, end));
 
     allRows.forEach(row => {
-        row.style.display = visibleRows.has(row) ? '' : 'none';
+        row.classList.toggle('is-hidden', !visibleRows.has(row));
     });
+
+    if (noResults) {
+        noResults.style.display = filteredRows.length === 0 && allRows.length > 0 ? 'block' : 'none';
+    }
 
     if (!pagination) {
         return;
@@ -1006,11 +1427,17 @@ function renderMembersPage(shouldScroll = false) {
 
     const startText = start + 1;
     const endText = Math.min(end, filteredRows.length);
-    let pageButtons = '';
+    let pageButtons = `
+        <button type="button" class="members-page-btn members-page-prev" onclick="goToMembersPage(${currentMembersPage - 1})" ${currentMembersPage === 1 ? 'disabled' : ''}>Önceki</button>
+    `;
 
     for (let page = 1; page <= totalPages; page++) {
         pageButtons += `<button type="button" class="members-page-btn ${page === currentMembersPage ? 'is-active' : ''}" onclick="goToMembersPage(${page})">${page}</button>`;
     }
+
+    pageButtons += `
+        <button type="button" class="members-page-btn members-page-next" onclick="goToMembersPage(${currentMembersPage + 1})" ${currentMembersPage === totalPages ? 'disabled' : ''}>Sonraki</button>
+    `;
 
     pagination.style.display = '';
     pagination.innerHTML = `
@@ -1086,7 +1513,7 @@ function openMemberDetailModal(data) {
         </div>
     `).join('');
 
-    modal.style.display = 'flex';
+    openMembersModal('memberDetailModal');
 }
 
 document.addEventListener('click', function(event) {
@@ -1123,18 +1550,18 @@ function openMemberModal(data = null) {
         form.reset();
     }
     
-    modal.style.display = 'flex';
+    openMembersModal('memberModal');
 }
 
 function openSuspendModal(id) {
     document.getElementById('suspendMemberId').value = id;
-    document.getElementById('suspendModal').style.display = 'flex';
+    openMembersModal('suspendModal');
 }
 
 // Close modals when clicking outside
 window.onclick = function(event) {
     if (event.target.classList.contains('modal-overlay')) {
-        event.target.style.display = 'none';
+        closeMembersModal(event.target.id);
     }
 }
 

@@ -6,30 +6,71 @@
 .vault-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
+    gap: 18px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+.vault-kicker {
+    display: inline-flex;
     align-items: center;
-    margin-bottom: 24px;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+.vault-kicker::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--accent);
+}
+.vault-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+.vault-copy {
+    max-width: 460px;
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.vault-add-btn {
+    min-height: 40px;
+    white-space: nowrap;
 }
 .vault-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 12px;
 }
 .pwd-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     position: relative;
     overflow: hidden;
 }
 .pwd-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 4px;
+    top: 14px;
+    bottom: 14px;
+    left: 0;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
     background: var(--accent);
 }
 .pwd-header {
@@ -38,40 +79,42 @@
     align-items: flex-start;
 }
 .pwd-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     margin: 0;
     color: var(--text);
+    letter-spacing: -0.01em;
 }
 .pwd-url {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--muted);
     text-decoration: none;
-    margin-top: 4px;
+    margin-top: 5px;
     display: inline-block;
 }
 .pwd-url:hover { color: var(--accent); text-decoration: underline; }
 
 .pwd-field {
-    background: var(--input-bg);
-    border-radius: 8px;
-    padding: 10px 14px;
+    background: transparent;
+    border-radius: 6px;
+    padding: 9px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 .pwd-field-label {
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 4px;
-    font-weight: 600;
+    margin-bottom: 2px;
+    font-weight: 700;
+    letter-spacing: .08em;
 }
 .pwd-value-container { flex: 1; overflow: hidden; }
 .pwd-value {
-    font-family: monospace;
-    font-size: 14px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
     color: var(--text);
     white-space: nowrap;
     overflow: hidden;
@@ -83,53 +126,193 @@
 }
 .pwd-actions {
     display: flex;
-    gap: 8px;
-    margin-left: 12px;
+    gap: 6px;
+    margin-left: 10px;
 }
 .pwd-btn {
-    background: none;
-    border: none;
+    width: 30px;
+    height: 30px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
     color: var(--muted);
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
+    padding: 0;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
 }
-.pwd-btn:hover { background: var(--border); color: var(--text); }
+.pwd-btn:hover { border-color: var(--accent); color: var(--accent); }
 .pwd-notes {
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.55;
     color: var(--muted);
-    background: var(--bg);
-    padding: 10px;
+    background: var(--input-bg);
+    padding: 10px 11px;
     border-radius: 6px;
+    border: 1px solid var(--border);
     margin-top: auto;
 }
 .card-actions {
     display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+.card-actions .btn {
+    justify-content: center;
+    flex: 1;
+}
+.card-actions form {
+    display: flex !important;
+    flex: 1;
+}
+.card-actions form .btn {
+    width: 100%;
+}
+.card-actions .btn-danger {
+    background: rgba(239,68,68,.1);
+    border: 1px solid rgba(239,68,68,.24);
+    color: #fca5a5;
+}
+.card-actions .btn-danger:hover {
+    background: rgba(239,68,68,.16);
+    border-color: rgba(239,68,68,.38);
+}
+.pwd-empty {
+    text-align: center;
+    padding: 42px 18px;
+    color: var(--muted);
+    background: var(--card);
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+}
+.pwd-empty svg {
+    opacity: .42;
+    margin-bottom: 12px;
+}
+.pwd-empty p {
+    font-size: 13px;
+}
+.pwd-modal-content {
+    background: var(--card);
+    width: min(500px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow: auto;
+    padding: 0;
+}
+.pwd-modal-head {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pwd-modal-head h3 {
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+}
+.pwd-modal-close {
+    width: 34px;
+    height: 34px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+}
+.pwd-modal-form {
+    padding: 18px;
+}
+.pwd-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.pwd-modal-actions {
+    display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 8px;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
+    margin-top: 18px;
+}
+@media (max-width: 640px) {
+    .vault-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .vault-title {
+        font-size: 20px;
+    }
+    .vault-copy {
+        font-size: 12px;
+    }
+    .vault-header .btn {
+        justify-content: center;
+        width: 100%;
+    }
+    .vault-grid {
+        grid-template-columns: 1fr;
+    }
+    .pwd-card,
+    .pwd-field {
+        min-width: 0;
+    }
+    .pwd-card {
+        padding: 14px;
+    }
+    .pwd-actions {
+        margin-left: 8px;
+    }
+    .card-actions {
+        gap: 6px;
+    }
+    .pwd-modal-content {
+        width: 100%;
+        max-height: min(88dvh, 680px);
+        border-radius: 8px 8px 0 0;
+        align-self: flex-end;
+    }
+    .pwd-modal-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .pwd-modal-actions {
+        position: sticky;
+        bottom: 0;
+        padding-top: 12px;
+        background: var(--card);
+    }
+    .pwd-modal-actions .btn {
+        justify-content: center;
+        flex: 1;
+    }
 }
 </style>
 
 <div class="vault-header">
     <div>
-        <h2 style="margin:0;">Şifre Kasası</h2>
-        <p style="color:var(--muted); margin:4px 0 0 0;">Sosyal medya ve diğer uygulamaların şifreleri</p>
+        <span class="vault-kicker">Güvenli Erişim</span>
+        <h2 class="vault-title">Şifre Kasası</h2>
+        <p class="vault-copy">Sosyal medya ve uygulama girişlerini hızlıca görüntüle, kopyala ve yönet.</p>
     </div>
     <?php if ($canManage): ?>
-    <button class="btn btn-primary" onclick="openPwdModal()">+ Yeni Şifre Ekle</button>
+    <button class="btn btn-primary vault-add-btn" onclick="openPwdModal()">+ Yeni Şifre</button>
     <?php endif; ?>
 </div>
 
 <?php if (empty($passwords)): ?>
-<div style="text-align:center; padding:40px; color:var(--muted); background:var(--card); border-radius:12px; border:1px dashed var(--border);">
-    <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="opacity:0.5; margin-bottom:12px;">
+<div class="pwd-empty">
+    <svg width="42" height="42" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
     </svg>
@@ -191,14 +374,17 @@
 
         <?php if ($canManage): ?>
         <div class="card-actions">
-            <button class="btn btn-sm btn-outline" onclick='editPwd(<?= json_encode([
+            <?php
+            $pwdPayload = htmlspecialchars(json_encode([
                 "id" => $p["id"],
                 "title" => $p["title"],
                 "url" => $p["url"],
                 "username" => $p["username"],
                 "password" => $p["decrypted_password"],
                 "notes" => $p["notes"]
-            ]) ?>)'>Düzenle</button>
+            ], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG), ENT_QUOTES, 'UTF-8');
+            ?>
+            <button class="btn btn-sm btn-outline" data-pwd="<?= $pwdPayload ?>" onclick="editPwd(JSON.parse(this.dataset.pwd))">Düzenle</button>
             <form method="POST" style="display:inline;" onsubmit="return confirm('Bu şifreyi silmek istediğinize emin misiniz?');">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="delete">
@@ -215,13 +401,13 @@
 
 <?php if ($canManage): ?>
 <!-- Modal -->
-<div id="pwdModal" class="modal-overlay" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
-    <div class="modal-content" style="background:var(--card); width:90%; max-width:500px; border-radius:12px; border:1px solid var(--border); overflow:hidden;">
-        <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="pwdModalTitle" style="margin:0;">Yeni Şifre</h3>
-            <button type="button" onclick="closePwdModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;">&times;</button>
+<div id="pwdModal" class="modal-overlay" style="z-index:9999;" aria-hidden="true">
+    <div class="modal-content pwd-modal-content" role="dialog" aria-modal="true" aria-labelledby="pwdModalTitle">
+        <div class="pwd-modal-head">
+            <h3 id="pwdModalTitle">Yeni Şifre</h3>
+            <button type="button" class="pwd-modal-close" onclick="closePwdModal()" aria-label="Kapat">&times;</button>
         </div>
-        <form method="POST" style="padding:20px;">
+        <form method="POST" class="pwd-modal-form">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <input type="hidden" name="action" id="pwdAction" value="create">
             <input type="hidden" name="id" id="pwdId" value="">
@@ -236,7 +422,7 @@
                 <input type="url" name="url" id="pwdUrl" class="form-control" placeholder="https://...">
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="pwd-modal-grid">
                 <div class="form-group">
                     <label class="form-label">Kullanıcı Adı / E-posta</label>
                     <input type="text" name="username" id="pwdUsername" class="form-control">
@@ -252,9 +438,9 @@
                 <textarea name="notes" id="pwdNotes" class="form-control" rows="3"></textarea>
             </div>
 
-            <div style="text-align:right; margin-top:20px;">
+            <div class="pwd-modal-actions">
                 <button type="button" class="btn btn-outline" onclick="closePwdModal()">İptal</button>
-                <button type="submit" class="btn btn-primary" style="margin-left:8px;">Kaydet</button>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
             </div>
         </form>
     </div>
@@ -297,7 +483,7 @@ function openPwdModal() {
     document.getElementById('pwdPassword').value = '';
     document.getElementById('pwdNotes').value = '';
     document.getElementById('pwdModalTitle').innerText = 'Yeni Şifre Ekle';
-    document.getElementById('pwdModal').style.display = 'flex';
+    showPwdModal();
 }
 
 function editPwd(data) {
@@ -309,11 +495,37 @@ function editPwd(data) {
     document.getElementById('pwdPassword').value = data.password;
     document.getElementById('pwdNotes').value = data.notes;
     document.getElementById('pwdModalTitle').innerText = 'Şifreyi Düzenle';
-    document.getElementById('pwdModal').style.display = 'flex';
+    showPwdModal();
+}
+
+function showPwdModal() {
+    const modal = document.getElementById('pwdModal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.offsetHeight;
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('pwdTitle').focus();
 }
 
 function closePwdModal() {
-    document.getElementById('pwdModal').style.display = 'none';
+    const modal = document.getElementById('pwdModal');
+    if (!modal) return;
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+        if (!modal.classList.contains('show')) {
+            modal.style.display = 'none';
+        }
+    }, 300);
 }
+
+document.getElementById('pwdModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePwdModal();
+    }
+});
 <?php endif; ?>
 </script>

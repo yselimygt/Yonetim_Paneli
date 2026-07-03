@@ -165,21 +165,183 @@
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
-    .inbox-container {
-        flex-direction: column;
-        height: auto;
+    .inbox-page-head {
+        margin-bottom: 12px !important;
     }
+
+    .inbox-page-head h3 {
+        font-size: 17px !important;
+        margin: 0;
+    }
+
+    .inbox-page-head p {
+        display: none;
+    }
+
+    .inbox-container {
+        display: block;
+        height: auto;
+        min-height: 0;
+    }
+
     .inbox-list-pane {
         flex: none;
-        max-height: 400px; /* Limit height on mobile */
+        max-height: none;
+        border-radius: 14px;
     }
+
+    .inbox-list-header {
+        padding: 12px;
+    }
+
+    .inbox-list-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        max-height: none;
+        padding: 10px;
+    }
+
+    .msg-card {
+        min-height: 74px;
+        padding: 10px 11px;
+        border-radius: 12px;
+    }
+
+    .msg-card:hover {
+        transform: none;
+    }
+
+    .msg-card.unread::before {
+        top: 13px;
+        left: 8px;
+        width: 6px;
+        height: 6px;
+    }
+
+    .msg-card-header {
+        margin-bottom: 3px;
+        padding-left: 10px;
+    }
+
+    .msg-sender {
+        max-width: 58vw;
+        font-size: 12px;
+    }
+
+    .msg-date {
+        font-size: 10px;
+    }
+
+    .msg-subject {
+        margin-bottom: 7px;
+        padding-left: 10px;
+        font-size: 11px;
+    }
+
+    .msg-badge-row {
+        padding-left: 10px;
+    }
+
     .inbox-detail-pane {
-        min-height: 500px;
+        position: fixed;
+        inset: 0;
+        z-index: 1450;
+        display: none;
+        min-height: 0;
+        border: 0;
+        border-radius: 0;
+        background: rgba(0,0,0,.58);
+        padding: 10px;
+        align-items: flex-end;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    .inbox-detail-pane.mobile-open {
+        display: flex;
+    }
+
+    .inbox-empty-state {
+        display: none !important;
+    }
+
+    .inbox-detail-content {
+        width: 100%;
+        max-height: calc(92dvh - env(safe-area-inset-bottom));
+        border: 1px solid var(--border);
+        border-radius: 16px 16px 12px 12px;
+        overflow: hidden;
+        background: var(--card);
+    }
+
+    .detail-header {
+        padding: 13px 14px;
+        gap: 10px;
+    }
+
+    .detail-header h3 {
+        min-width: 0;
+        font-size: 14px !important;
+        flex-wrap: wrap;
+    }
+
+    .detail-mobile-close {
+        display: inline-flex !important;
+    }
+
+    .detail-body {
+        max-height: calc(92dvh - 132px - env(safe-area-inset-bottom));
+        padding: 14px;
+    }
+
+    .detail-body > div {
+        gap: 12px !important;
+    }
+
+    .inbox-meta-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        padding: 12px !important;
+        border-radius: 12px !important;
+    }
+
+    .inbox-contact-row {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        gap: 10px !important;
+        padding: 0 !important;
+    }
+
+    #msgText {
+        padding: 14px !important;
+        border-radius: 12px !important;
+        font-size: 13px !important;
+        line-height: 1.6 !important;
+    }
+
+    .detail-footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .detail-footer form,
+    .detail-footer > div {
+        width: 100%;
+    }
+
+    .detail-footer .btn {
+        width: 100%;
+        min-height: 38px;
+        font-size: 11px;
     }
 }
 </style>
 
-<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+<div class="inbox-page-head" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
     <div>
         <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><?= View::escape($app['name']) ?></h3>
         <p style="font-size: 12px; color: var(--muted);"><?= View::escape($app['description'] ?? '') ?></p>
@@ -273,13 +435,14 @@
                     <span id="msgTypeBadge" style="display:none; font-size:11px; font-weight:500; padding:2px 10px; border-radius:20px; background:var(--accent-bg,rgba(244,166,23,0.15)); border:1px solid var(--accent,#f4a617); color:var(--accent,#f4a617);"></span>
                 </h3>
                 <div style="font-size: 13px; color: var(--muted);" id="msgDateFull"></div>
+                <button type="button" class="detail-mobile-close btn btn-outline" onclick="closeInboxDetail()" style="display:none; padding:7px 10px; border-radius:9px;">Kapat</button>
             </div>
 
             <div class="detail-body">
                 <div style="display:flex; flex-direction:column; gap:20px;">
                     
                     <!-- Meta Info Grid -->
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; background:var(--input-bg); padding:20px; border-radius:8px; border:1px solid var(--border);">
+                    <div class="inbox-meta-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; background:var(--input-bg); padding:20px; border-radius:8px; border:1px solid var(--border);">
                         <div>
                             <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Gönderen</div>
                             <strong id="msgSender" style="font-size:15px;"></strong>
@@ -295,7 +458,7 @@
                     </div>
 
                     <!-- Contact Info -->
-                    <div style="display:flex; gap:24px; padding:0 4px; flex-wrap:wrap;">
+                    <div class="inbox-contact-row" style="display:flex; gap:24px; padding:0 4px; flex-wrap:wrap;">
                         <div id="emailContainer">
                             <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">E-posta</div>
                             <a id="msgEmail" href="#" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:6px; font-weight:500;">
@@ -361,6 +524,7 @@ function viewMessage(cardEl, msg) {
     // Switch panes
     document.getElementById('emptyStatePane').style.display = 'none';
     document.getElementById('detailContentPane').style.display = 'flex';
+    document.getElementById('detailContentPane').classList.add('mobile-open');
 
     // Populate data
     document.getElementById('msgSender').innerText = msg.sender_name || '-';
@@ -418,7 +582,26 @@ function viewMessage(cardEl, msg) {
     
     // On mobile, auto-scroll to detail pane
     if (window.innerWidth <= 900) {
-        document.getElementById('detailContentPane').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('detailContentPane').classList.add('mobile-open');
+        document.querySelector('.inbox-detail-pane')?.classList.add('mobile-open');
+        document.body.style.overflow = 'hidden';
     }
 }
+
+function closeInboxDetail() {
+    document.querySelector('.inbox-detail-pane')?.classList.remove('mobile-open');
+    document.body.style.overflow = '';
+}
+
+document.querySelector('.inbox-detail-pane')?.addEventListener('click', function(e) {
+    if (window.innerWidth <= 900 && e.target === this) {
+        closeInboxDetail();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeInboxDetail();
+    }
+});
 </script>
