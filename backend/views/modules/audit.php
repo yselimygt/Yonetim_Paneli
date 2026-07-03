@@ -96,6 +96,185 @@ function getCategoryBadge($cat) {
         border-style: solid;
         border-color: var(--bg) transparent transparent transparent;
     }
+
+    @media (max-width: 900px) {
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] {
+            align-items: stretch !important;
+            flex-direction: column;
+            gap: 12px !important;
+            margin-bottom: 14px !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] > div:first-child {
+            gap: 10px !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] > div:first-child > div:first-child {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 12px !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] h3 {
+            font-size: 18px !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] p {
+            display: none;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] > .btn,
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] button {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
+            font-size: 12px !important;
+        }
+
+        .audit-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+            flex-wrap: nowrap;
+            transform: none !important;
+            animation: none !important;
+        }
+
+        .audit-sidebar,
+        .audit-main {
+            flex: none;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .audit-sidebar h4 {
+            margin-bottom: 8px !important;
+            font-size: 11px !important;
+        }
+
+        .report-card {
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .report-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .report-card h4 {
+            font-size: 13px !important;
+            line-height: 1.35;
+        }
+
+        .audit-main > div {
+            border-radius: 14px !important;
+        }
+
+        .audit-main > div > div {
+            padding: 14px !important;
+        }
+
+        .audit-main h2 {
+            font-size: 17px !important;
+            line-height: 1.25;
+        }
+
+        .audit-main div[style*="display: flex"][style*="gap: 16px"][style*="font-size: 13px"] {
+            flex-direction: column;
+            gap: 4px !important;
+        }
+
+        .audit-main form[method="POST"] {
+            width: 100%;
+        }
+
+        .audit-main select.form-control {
+            width: 100% !important;
+            min-height: 36px;
+            font-size: 12px !important;
+        }
+
+        .audit-main div[style*="display: flex; gap: 12px; align-items: center"] {
+            display: grid !important;
+            grid-template-columns: 1fr auto;
+            width: 100%;
+        }
+
+        .chat-bubble {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+
+        div[style*="display: flex; gap: 12px;"]:has(input[name="note"]) {
+            align-items: stretch !important;
+            flex-direction: column;
+        }
+
+        div[style*="display: flex; gap: 12px;"] input[name="note"],
+        div[style*="display: flex; gap: 12px;"] button[type="submit"] {
+            width: 100%;
+        }
+
+        div[style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"] {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+        }
+
+        #modal-submit-report {
+            align-items: stretch !important;
+            justify-content: stretch !important;
+            padding: 10px;
+            z-index: 5000 !important;
+        }
+
+        #modal-submit-report > .card {
+            width: 100% !important;
+            max-width: none !important;
+            max-height: calc(100dvh - 20px);
+            margin: 0 !important;
+            border-radius: 14px !important;
+            overflow: hidden;
+        }
+
+        #modal-submit-report .card-header {
+            padding: 14px 16px !important;
+        }
+
+        #modal-submit-report .card-body {
+            max-height: calc(100dvh - 76px) !important;
+            padding: 14px !important;
+        }
+
+        #modal-submit-report .form-row {
+            flex-direction: column;
+            gap: 12px !important;
+        }
+
+        #modal-submit-report .form-group {
+            margin-bottom: 12px !important;
+        }
+
+        #modal-submit-report textarea {
+            min-height: 120px;
+        }
+
+        #modal-submit-report form > div:last-child {
+            align-items: stretch !important;
+            flex-direction: column-reverse;
+            gap: 8px !important;
+        }
+
+        #modal-submit-report .btn {
+            width: 100%;
+            min-height: 38px;
+            border-radius: 10px !important;
+            font-size: 12px;
+        }
+    }
 </style>
 
 <!-- Header -->

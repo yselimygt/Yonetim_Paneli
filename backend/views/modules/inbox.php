@@ -1,606 +1,811 @@
-<?php $formTypes = defined('FORM_TYPES') ? FORM_TYPES : []; ?>
+<?php
+$formTypes = defined('FORM_TYPES') ? FORM_TYPES : [];
+$totalMessages = count($messages);
+$unreadCount = 0;
+$readCount = 0;
+
+foreach ($messages as $messageItem) {
+    if (($messageItem['status'] ?? '') === 'unread') {
+        $unreadCount++;
+    } else {
+        $readCount++;
+    }
+}
+?>
 
 <style>
-/* Split Pane Layout */
-.inbox-container {
-    display: flex;
-    gap: 20px;
-    height: calc(100vh - 200px); /* Adjust based on your header/footer */
-    min-height: 500px;
-}
-
-/* Left Pane: Message List */
-.inbox-list-pane {
-    flex: 0 0 350px; /* Fixed width, or you could use percentage */
+.inbox-v2 {
     display: flex;
     flex-direction: column;
-    background: var(--card);
+    gap: 12px;
+    min-height: 0;
+}
+
+.inbox-v2-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.inbox-v2-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.inbox-v2-subtitle {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.inbox-v2-count {
+    flex: 0 0 auto;
+    padding: 7px 10px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.inbox-v2-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 370px) minmax(0, 1fr);
+    gap: 12px;
+    height: calc(100vh - 184px);
+    min-height: 520px;
+}
+
+.inbox-v2-list,
+.inbox-v2-detail {
+    min-width: 0;
+    min-height: 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
     overflow: hidden;
 }
 
-.inbox-list-header {
-    padding: 16px;
+.inbox-v2-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.inbox-v2-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
     border-bottom: 1px solid var(--border);
     background: var(--card-alt);
 }
 
-.inbox-list-content {
-    flex: 1;
+.inbox-v2-toolbar-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.inbox-v2-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.inbox-v2-filter {
+    min-height: 32px;
+    padding: 6px 7px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.inbox-v2-filter.is-active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #061019;
+}
+
+.inbox-v2-cards {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
+    gap: 8px;
     overflow-y: auto;
-    padding: 12px;
+    padding: 10px;
+}
+
+.inbox-v2-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 9px;
+    width: 100%;
+    min-height: 62px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.inbox-v2-card.is-unread::before {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--accent, var(--primary));
+}
+
+.inbox-v2-card:hover,
+.inbox-v2-card.is-active {
+    border-color: var(--primary);
+    background: rgba(245, 158, 11, .08);
+}
+
+.inbox-v2-card.is-hidden {
+    display: none !important;
+}
+
+.inbox-v2-sender {
+    min-width: 0;
+    overflow: hidden;
+    padding-left: 12px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inbox-v2-date {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.inbox-v2-subject {
+    min-width: 0;
+    overflow: hidden;
+    padding-left: 12px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inbox-v2-type {
+    align-self: end;
+    justify-self: end;
+    padding: 3px 7px;
+    border: 1px solid rgba(59, 130, 246, .32);
+    border-radius: 999px;
+    background: rgba(59, 130, 246, .15);
+    color: #3b82f6;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.inbox-v2-empty-list,
+.inbox-v2-empty-detail {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 220px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.inbox-v2-empty-detail.is-hidden {
+    display: none !important;
+}
+
+.inbox-v2-empty-list i,
+.inbox-v2-empty-detail i {
+    font-size: 34px;
+    opacity: .3;
+}
+
+.inbox-v2-detail {
     display: flex;
     flex-direction: column;
+}
+
+.inbox-v2-detail-card {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
+    background: var(--bg);
+}
+
+.inbox-v2-detail-card.is-hidden {
+    display: none !important;
+}
+
+.inbox-v2-detail-head {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+}
+
+.inbox-v2-back {
+    display: none;
+}
+
+.inbox-v2-detail-title {
+    margin: 0;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inbox-v2-detail-meta {
+    margin-top: 3px;
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.inbox-v2-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
 }
 
-.msg-card {
+.inbox-v2-status-form,
+.inbox-v2-delete-form {
+    margin: 0;
+}
+
+.inbox-v2-action {
+    width: 100%;
+    min-height: 34px;
+    padding: 6px 10px;
+    border-radius: 10px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    white-space: nowrap;
+}
+
+.inbox-v2-delete {
+    border-color: rgba(218, 44, 46, .35) !important;
+    color: var(--danger) !important;
+}
+
+.inbox-v2-detail-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--bg);
+}
+
+.inbox-v2-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
     padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: var(--input-bg);
-    position: relative;
 }
 
-.msg-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-1px);
-}
-
-.msg-card.active {
-    background: rgba(244,166,23, 0.05); /* accent color lightened */
-    border-color: var(--accent);
-}
-
-.msg-card.unread {
-    font-weight: 600;
-}
-.msg-card.unread::before {
-    content: '';
-    position: absolute;
-    top: 16px;
-    left: 8px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-}
-
-.msg-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 4px;
-    padding-left: 12px; /* Space for unread dot */
-}
-
-.msg-sender {
-    font-size: 14px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px;
-}
-
-.msg-date {
-    font-size: 11px;
-    color: var(--muted);
-    flex-shrink: 0;
-}
-
-.msg-subject {
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 8px;
-    padding-left: 12px;
-}
-
-.msg-badge-row {
-    padding-left: 12px;
-}
-
-/* Right Pane: Message Details */
-.inbox-detail-pane {
-    flex: 1;
-    background: var(--card);
+.inbox-v2-info {
+    min-width: 0;
+    padding: 10px;
     border: 1px solid var(--border);
     border-radius: 12px;
-    display: flex;
-    flex-direction: column;
+    background: var(--card);
+}
+
+.inbox-v2-info-label {
+    margin-bottom: 4px;
+    color: #3b82f6;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .55px;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.inbox-v2-info-value {
     overflow: hidden;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.inbox-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: var(--muted);
-    text-align: center;
-    padding: 40px;
+.inbox-v2-contact {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    padding: 0 12px 12px;
 }
 
-.inbox-empty-state svg {
-    margin-bottom: 16px;
-    opacity: 0.5;
+.inbox-v2-contact-item {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
 }
 
-.inbox-detail-content {
-    display: none; /* Hidden by default until selected */
-    flex-direction: column;
-    height: 100%;
+.inbox-v2-contact-item.is-hidden {
+    display: none !important;
 }
 
-.detail-header {
-    padding: 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--card-alt);
+.inbox-v2-contact-link {
+    overflow: hidden;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.detail-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px;
+.inbox-v2-section-title {
+    margin: 0;
+    padding: 4px 12px 0;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 900;
 }
 
-.detail-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-    background: var(--card-alt);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.inbox-v2-message {
+    margin: 10px 12px 18px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre-wrap;
 }
 
-/* Responsive adjustments */
 @media (max-width: 900px) {
-    .inbox-page-head {
-        margin-bottom: 12px !important;
-    }
-
-    .inbox-page-head h3 {
-        font-size: 17px !important;
-        margin: 0;
-    }
-
-    .inbox-page-head p {
-        display: none;
-    }
-
-    .inbox-container {
-        display: block;
-        height: auto;
-        min-height: 0;
-    }
-
-    .inbox-list-pane {
-        flex: none;
-        max-height: none;
-        border-radius: 14px;
-    }
-
-    .inbox-list-header {
-        padding: 12px;
-    }
-
-    .inbox-list-content {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-        max-height: none;
-        padding: 10px;
-    }
-
-    .msg-card {
-        min-height: 74px;
-        padding: 10px 11px;
-        border-radius: 12px;
-    }
-
-    .msg-card:hover {
-        transform: none;
-    }
-
-    .msg-card.unread::before {
-        top: 13px;
-        left: 8px;
-        width: 6px;
-        height: 6px;
-    }
-
-    .msg-card-header {
-        margin-bottom: 3px;
-        padding-left: 10px;
-    }
-
-    .msg-sender {
-        max-width: 58vw;
-        font-size: 12px;
-    }
-
-    .msg-date {
-        font-size: 10px;
-    }
-
-    .msg-subject {
-        margin-bottom: 7px;
-        padding-left: 10px;
-        font-size: 11px;
-    }
-
-    .msg-badge-row {
-        padding-left: 10px;
-    }
-
-    .inbox-detail-pane {
-        position: fixed;
-        inset: 0;
-        z-index: 1450;
-        display: none;
-        min-height: 0;
-        border: 0;
-        border-radius: 0;
-        background: rgba(0,0,0,.58);
-        padding: 10px;
-        align-items: flex-end;
-        justify-content: center;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-    }
-
-    .inbox-detail-pane.mobile-open {
-        display: flex;
-    }
-
-    .inbox-empty-state {
-        display: none !important;
-    }
-
-    .inbox-detail-content {
-        width: 100%;
-        max-height: calc(92dvh - env(safe-area-inset-bottom));
-        border: 1px solid var(--border);
-        border-radius: 16px 16px 12px 12px;
-        overflow: hidden;
-        background: var(--card);
-    }
-
-    .detail-header {
-        padding: 13px 14px;
+    .inbox-v2 {
         gap: 10px;
     }
 
-    .detail-header h3 {
+    .inbox-v2-head {
+        align-items: center;
+    }
+
+    .inbox-v2-title {
+        font-size: 18px;
+    }
+
+    .inbox-v2-subtitle {
+        display: none;
+    }
+
+    .inbox-v2-layout {
+        display: block;
+        height: auto;
+        min-height: 0;
+        transform: none !important;
+        animation: none !important;
+    }
+
+    .inbox-v2-list {
+        border-radius: 14px;
+    }
+
+    .inbox-v2-card {
+        min-height: 58px;
+        padding: 9px 10px;
+    }
+
+    .inbox-v2-detail {
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+        display: none;
+        border: 0;
+        border-radius: 0;
+        background: var(--bg);
+    }
+
+    .inbox-v2-detail.is-open {
+        display: flex;
+    }
+
+    .inbox-v2-empty-detail {
+        display: none !important;
+    }
+
+    .inbox-v2-detail-card {
+        width: 100%;
+        height: 100dvh;
+        background: var(--bg);
+    }
+
+    .inbox-v2-detail-head {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 7px 9px;
+        padding: max(8px, env(safe-area-inset-top)) 10px 8px;
+    }
+
+    .inbox-v2-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        grid-column: 1;
+        grid-row: 1;
+        width: 34px;
+        min-width: 34px;
+        min-height: 34px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--input-bg);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    .inbox-v2-heading {
+        grid-column: 2;
+        grid-row: 1;
         min-width: 0;
-        font-size: 14px !important;
-        flex-wrap: wrap;
     }
 
-    .detail-mobile-close {
-        display: inline-flex !important;
+    .inbox-v2-detail-title {
+        font-size: 14px;
     }
 
-    .detail-body {
-        max-height: calc(92dvh - 132px - env(safe-area-inset-bottom));
-        padding: 14px;
-    }
-
-    .detail-body > div {
-        gap: 12px !important;
-    }
-
-    .inbox-meta-grid {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
-        padding: 12px !important;
-        border-radius: 12px !important;
-    }
-
-    .inbox-contact-row {
-        display: grid !important;
-        grid-template-columns: 1fr;
-        gap: 10px !important;
-        padding: 0 !important;
-    }
-
-    #msgText {
-        padding: 14px !important;
-        border-radius: 12px !important;
-        font-size: 13px !important;
-        line-height: 1.6 !important;
-    }
-
-    .detail-footer {
-        display: grid;
+    .inbox-v2-actions {
+        grid-column: 1 / -1;
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        gap: 7px;
+    }
+
+    .inbox-v2-action {
+        min-height: 32px;
+        padding: 5px 9px;
+        font-size: 10px !important;
+    }
+
+    .inbox-v2-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 8px 10px;
+    }
+
+    .inbox-v2-info {
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .inbox-v2-contact {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 0 10px 8px;
+    }
+
+    .inbox-v2-contact-item {
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .inbox-v2-section-title {
+        padding: 4px 10px 0;
+        font-size: 12px;
+    }
+
+    .inbox-v2-message {
+        margin: 8px 10px calc(18px + env(safe-area-inset-bottom));
         padding: 12px;
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 1.55;
     }
 
-    .detail-footer form,
-    .detail-footer > div {
-        width: 100%;
-    }
-
-    .detail-footer .btn {
-        width: 100%;
-        min-height: 38px;
-        font-size: 11px;
+    body.inbox-v2-detail-open {
+        overflow: hidden !important;
     }
 }
 </style>
 
-<div class="inbox-page-head" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-    <div>
-        <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><?= View::escape($app['name']) ?></h3>
-        <p style="font-size: 12px; color: var(--muted);"><?= View::escape($app['description'] ?? '') ?></p>
-    </div>
-</div>
-
-<div class="inbox-container fade-in-up stagger-1">
-    
-    <!-- LEFT PANE: MESSAGE LIST -->
-    <div class="inbox-list-pane">
-        <div class="inbox-list-header">
-            <h4 style="font-size: 14px; margin: 0; color: var(--text);">Gelen Kutusu (<?= count($messages) ?>)</h4>
+<div class="inbox-v2">
+    <header class="inbox-v2-head">
+        <div>
+            <h3 class="inbox-v2-title"><?= View::escape($app['name']) ?></h3>
+            <p class="inbox-v2-subtitle"><?= View::escape($app['description'] ?? '') ?></p>
         </div>
-        <div class="inbox-list-content">
-            <?php if (empty($messages)): ?>
-                <div style="text-align: center; padding: 30px 10px; color: var(--muted); font-size: 13px;">
-                    Henüz mesaj bulunmuyor.
+        <div class="inbox-v2-count"><?= $totalMessages ?> mesaj</div>
+    </header>
+
+    <div class="inbox-v2-layout">
+        <section class="inbox-v2-list" aria-label="Mesaj listesi">
+            <div class="inbox-v2-toolbar">
+                <div class="inbox-v2-toolbar-title">
+                    <span>Gelen Kutusu</span>
+                    <span><?= $totalMessages ?></span>
                 </div>
-            <?php else: ?>
-                <?php foreach ($messages as $msg): ?>
-                    <?php
-                        // Badge colors logic
-                        $typeKey   = $msg['type'] ?? '';
-                        $typeLabel = $formTypes[$typeKey] ?? $typeKey;
-                        $badgeColors = [
-                            'sponsorship'        => '#f4a61720',
-                            'contact'            => '#00bcd420',
-                            'membership'         => '#7c3aed20',
-                            'volunteer'          => '#10b98120',
-                            'partnership'        => '#3b82f620',
-                            'event_registration' => '#f9731620',
-                            'job_application'    => '#ec489920',
-                            'feedback'           => '#84cc1620',
-                            'press'              => '#64748b20',
-                        ];
-                        $badgeBorders = [
-                            'sponsorship'        => '#f4a61740',
-                            'contact'            => '#00bcd440',
-                            'membership'         => '#7c3aed40',
-                            'volunteer'          => '#10b98140',
-                            'partnership'        => '#3b82f640',
-                            'event_registration' => '#f9731640',
-                            'job_application'    => '#ec489940',
-                            'feedback'           => '#84cc1640',
-                            'press'              => '#64748b40',
-                        ];
-                        $bg     = $badgeColors[$typeKey]  ?? 'rgba(255,255,255,0.05)';
-                        $border = $badgeBorders[$typeKey] ?? 'var(--border)';
-                    ?>
-                    <div class="msg-card <?= $msg['status'] === 'unread' ? 'unread' : '' ?>" 
-                         onclick="viewMessage(this, <?= htmlspecialchars(json_encode($msg), ENT_QUOTES, 'UTF-8') ?>)">
-                        
-                        <div class="msg-card-header">
-                            <strong class="msg-sender"><?= View::escape($msg['sender_name'] ?: 'İsimsiz') ?></strong>
-                            <span class="msg-date"><?= date('d.m.Y', strtotime($msg['created_at'])) ?></span>
-                        </div>
-                        
-                        <div class="msg-subject">
-                            <?= View::escape($msg['company_name'] ?: '-') ?> &bull; <?= View::escape($msg['category'] ?: 'Genel') ?>
-                        </div>
-                        
-                        <div class="msg-badge-row">
-                            <span class="badge" style="background:<?= $bg ?>; border:1px solid <?= $border ?>; color:var(--text); font-size:10px; padding: 2px 6px;">
-                                <?= View::escape($typeLabel) ?>
-                            </span>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- RIGHT PANE: MESSAGE DETAILS -->
-    <div class="inbox-detail-pane">
-        
-        <!-- Empty State -->
-        <div id="emptyStatePane" class="inbox-empty-state">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
-                <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </svg>
-            <p>Okumak için listeden bir mesaj seçin</p>
-        </div>
-
-        <!-- Detail Content -->
-        <div id="detailContentPane" class="inbox-detail-content">
-            
-            <div class="detail-header">
-                <h3 style="margin:0; font-size:18px; display:flex; align-items:center; gap:10px;">
-                    Mesaj Detayı
-                    <span id="msgTypeBadge" style="display:none; font-size:11px; font-weight:500; padding:2px 10px; border-radius:20px; background:var(--accent-bg,rgba(244,166,23,0.15)); border:1px solid var(--accent,#f4a617); color:var(--accent,#f4a617);"></span>
-                </h3>
-                <div style="font-size: 13px; color: var(--muted);" id="msgDateFull"></div>
-                <button type="button" class="detail-mobile-close btn btn-outline" onclick="closeInboxDetail()" style="display:none; padding:7px 10px; border-radius:9px;">Kapat</button>
-            </div>
-
-            <div class="detail-body">
-                <div style="display:flex; flex-direction:column; gap:20px;">
-                    
-                    <!-- Meta Info Grid -->
-                    <div class="inbox-meta-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; background:var(--input-bg); padding:20px; border-radius:8px; border:1px solid var(--border);">
-                        <div>
-                            <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Gönderen</div>
-                            <strong id="msgSender" style="font-size:15px;"></strong>
-                        </div>
-                        <div>
-                            <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Kurum</div>
-                            <strong id="msgCompany" style="font-size:15px;"></strong>
-                        </div>
-                        <div>
-                            <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Kategori/Konu</div>
-                            <strong id="msgCategory" style="font-size:15px;"></strong>
-                        </div>
-                    </div>
-
-                    <!-- Contact Info -->
-                    <div class="inbox-contact-row" style="display:flex; gap:24px; padding:0 4px; flex-wrap:wrap;">
-                        <div id="emailContainer">
-                            <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">E-posta</div>
-                            <a id="msgEmail" href="#" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:6px; font-weight:500;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                <span id="msgEmailText"></span>
-                            </a>
-                        </div>
-                        <div id="phoneContainer">
-                            <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">Telefon</div>
-                            <a id="msgPhone" href="#" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:6px; font-weight:500;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                                <span id="msgPhoneText"></span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
-
-                    <!-- Message Body -->
-                    <div>
-                        <div style="font-size:12px; color:var(--muted); margin-bottom:12px; font-weight:500;">Mesaj İçeriği:</div>
-                        <div id="msgText" style="background:var(--input-bg); padding:24px; border-radius:8px; font-size:14px; line-height:1.7; white-space:pre-wrap; color:var(--text); border:1px solid var(--border);"></div>
-                    </div>
+                <div class="inbox-v2-filters" role="tablist" aria-label="Mesaj filtresi">
+                    <button type="button" class="inbox-v2-filter is-active" data-filter="all">Tümü</button>
+                    <button type="button" class="inbox-v2-filter" data-filter="unread">Okunmamış <?= $unreadCount ?></button>
+                    <button type="button" class="inbox-v2-filter" data-filter="read">Okunmuş <?= $readCount ?></button>
                 </div>
             </div>
 
-            <!-- Footer Actions -->
-            <div class="detail-footer">
-                <form method="POST" id="deleteForm" onsubmit="return confirm('Bu mesajı tamamen silmek istediğinize emin misiniz?');">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="message_id" id="deleteMsgId">
-                    <button type="submit" class="btn btn-outline" style="color:var(--danger); border-color:rgba(218,44,46, 0.3);">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        Mesajı Sil
-                    </button>
-                </form>
+            <div class="inbox-v2-cards" id="inboxList">
+                <?php if (empty($messages)): ?>
+                    <div class="inbox-v2-empty-list">
+                        <i class="fas fa-inbox"></i>
+                        <span>Henüz mesaj bulunmuyor.</span>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($messages as $message): ?>
+                        <?php
+                            $typeKey = $message['type'] ?? '';
+                            $typeLabel = $formTypes[$typeKey] ?? ($typeKey ?: 'Genel');
+                            $statusKey = ($message['status'] ?? '') === 'unread' ? 'unread' : 'read';
+                            $messageJson = htmlspecialchars(
+                                json_encode($message, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP),
+                                ENT_QUOTES,
+                                'UTF-8'
+                            );
+                        ?>
+                        <button
+                            type="button"
+                            class="inbox-v2-card <?= $statusKey === 'unread' ? 'is-unread' : '' ?>"
+                            data-message-card
+                            data-status="<?= $statusKey ?>"
+                            data-message="<?= $messageJson ?>"
+                        >
+                            <span class="inbox-v2-sender"><?= View::escape($message['sender_name'] ?: 'İsimsiz') ?></span>
+                            <span class="inbox-v2-date"><?= !empty($message['created_at']) ? date('d.m.Y', strtotime($message['created_at'])) : '-' ?></span>
+                            <span class="inbox-v2-subject"><?= View::escape($message['company_name'] ?: '-') ?> &bull; <?= View::escape($message['category'] ?: 'Genel') ?></span>
+                            <span class="inbox-v2-type"><?= View::escape($typeLabel) ?></span>
+                        </button>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </section>
 
-                <div>
-                    <form method="POST" id="statusForm">
-                        <input type="hidden" name="action" id="statusAction" value="mark_read">
-                        <input type="hidden" name="message_id" id="statusMsgId">
-                        <button type="submit" class="btn btn-primary" id="statusBtnText">Okundu İşaretle</button>
-                    </form>
+        <aside class="inbox-v2-detail" id="inboxDetailPanel" aria-label="Mesaj detayı">
+            <div class="inbox-v2-empty-detail" id="inboxEmptyDetail">
+                <i class="fas fa-envelope-open-text"></i>
+                <strong>Mesaj seçin</strong>
+                <span>Okumak için listeden bir mesaj seçin.</span>
+            </div>
+
+            <div class="inbox-v2-detail-card is-hidden" id="inboxDetailCard">
+                <div class="inbox-v2-detail-head">
+                    <button type="button" class="inbox-v2-back" onclick="closeInboxDetail()" aria-label="Mesaj listesine dön">‹</button>
+                    <div class="inbox-v2-heading">
+                        <h3 class="inbox-v2-detail-title" id="inboxDetailTitle">Mesaj Detayı</h3>
+                        <div class="inbox-v2-detail-meta" id="inboxDetailMeta">-</div>
+                    </div>
+
+                    <div class="inbox-v2-actions">
+                        <form method="POST" class="inbox-v2-delete-form" onsubmit="return confirm('Bu mesajı tamamen silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="message_id" id="deleteMessageId">
+                            <button type="submit" class="btn btn-outline inbox-v2-action inbox-v2-delete">Mesajı Sil</button>
+                        </form>
+
+                        <form method="POST" class="inbox-v2-status-form">
+                            <input type="hidden" name="action" id="messageStatusAction" value="mark_read">
+                            <input type="hidden" name="message_id" id="statusMessageId">
+                            <button type="submit" class="btn btn-primary inbox-v2-action" id="messageStatusButton">Okundu İşaretle</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="inbox-v2-detail-body" id="inboxDetailBody">
+                    <div class="inbox-v2-meta-grid">
+                        <div class="inbox-v2-info">
+                            <div class="inbox-v2-info-label">Gönderen</div>
+                            <div class="inbox-v2-info-value" id="detailSender">-</div>
+                        </div>
+                        <div class="inbox-v2-info">
+                            <div class="inbox-v2-info-label">Kurum</div>
+                            <div class="inbox-v2-info-value" id="detailCompany">-</div>
+                        </div>
+                        <div class="inbox-v2-info">
+                            <div class="inbox-v2-info-label">Kategori / Konu</div>
+                            <div class="inbox-v2-info-value" id="detailCategory">-</div>
+                        </div>
+                    </div>
+
+                    <div class="inbox-v2-contact">
+                        <div class="inbox-v2-contact-item" id="detailEmailBox">
+                            <div class="inbox-v2-info-label">E-posta</div>
+                            <a class="inbox-v2-contact-link" id="detailEmail" href="#">-</a>
+                        </div>
+                        <div class="inbox-v2-contact-item" id="detailPhoneBox">
+                            <div class="inbox-v2-info-label">Telefon</div>
+                            <a class="inbox-v2-contact-link" id="detailPhone" href="#">-</a>
+                        </div>
+                    </div>
+
+                    <h4 class="inbox-v2-section-title">Mesaj İçeriği</h4>
+                    <div class="inbox-v2-message" id="detailMessage">-</div>
                 </div>
             </div>
-            
-        </div>
+        </aside>
     </div>
 </div>
 
 <script>
 const INBOX_FORM_TYPES = <?= json_encode($formTypes) ?>;
 
-function getFormTypeLabel(key) {
-    return INBOX_FORM_TYPES[key] || key;
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.remove('inbox-v2-detail-open');
+
+    const cards = Array.from(document.querySelectorAll('[data-message-card]'));
+    const filters = Array.from(document.querySelectorAll('.inbox-v2-filter'));
+
+    filters.forEach((filterButton) => {
+        filterButton.addEventListener('click', () => {
+            const filter = filterButton.dataset.filter || 'all';
+            filters.forEach((button) => button.classList.toggle('is-active', button === filterButton));
+
+            cards.forEach((card) => {
+                const isVisible = filter === 'all' || card.dataset.status === filter;
+                card.classList.toggle('is-hidden', !isVisible);
+                if (!isVisible) {
+                    card.classList.remove('is-active');
+                }
+            });
+
+            if (!document.querySelector('[data-message-card].is-active')) {
+                resetInboxDetail();
+            }
+        });
+    });
+
+    cards.forEach((card) => {
+        card.addEventListener('click', () => {
+            try {
+                const message = JSON.parse(card.dataset.message || '{}');
+                openInboxDetail(message, card);
+            } catch (error) {
+                console.error('Mesaj verisi okunamadı:', error);
+            }
+        });
+    });
+});
+
+function setInboxText(id, value) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = value || '-';
+        element.title = value || '-';
+    }
 }
 
-function viewMessage(cardEl, msg) {
-    // Handle UI active states
-    document.querySelectorAll('.msg-card').forEach(el => el.classList.remove('active'));
-    cardEl.classList.add('active');
+function getInboxTypeLabel(key) {
+    return INBOX_FORM_TYPES[key] || key || 'Genel';
+}
 
-    // Switch panes
-    document.getElementById('emptyStatePane').style.display = 'none';
-    document.getElementById('detailContentPane').style.display = 'flex';
-    document.getElementById('detailContentPane').classList.add('mobile-open');
-
-    // Populate data
-    document.getElementById('msgSender').innerText = msg.sender_name || '-';
-    document.getElementById('msgCompany').innerText = msg.company_name || '-';
-    
-    let dateObj = new Date(msg.created_at);
-    document.getElementById('msgDateFull').innerText = dateObj.toLocaleDateString('tr-TR', { 
-        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' 
+function formatInboxDate(value) {
+    if (!value) return '-';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString('tr-TR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
-    
-    let emailEl = document.getElementById('msgEmail');
-    let emailTextEl = document.getElementById('msgEmailText');
-    let emailContainer = document.getElementById('emailContainer');
-    if(msg.email) {
-        emailTextEl.innerText = msg.email;
-        emailEl.href = 'mailto:' + msg.email;
-        emailContainer.style.display = 'block';
+}
+
+function setInboxContact(boxId, linkId, value, prefix) {
+    const box = document.getElementById(boxId);
+    const link = document.getElementById(linkId);
+    if (!box || !link) return;
+
+    if (value) {
+        box.classList.remove('is-hidden');
+        link.textContent = value;
+        link.title = value;
+        link.href = prefix + value;
     } else {
-        emailContainer.style.display = 'none';
+        box.classList.add('is-hidden');
+        link.textContent = '-';
+        link.removeAttribute('href');
     }
-    
-    let phoneEl = document.getElementById('msgPhone');
-    let phoneTextEl = document.getElementById('msgPhoneText');
-    let phoneContainer = document.getElementById('phoneContainer');
-    if(msg.phone) {
-        phoneTextEl.innerText = msg.phone;
-        phoneEl.href = 'tel:' + msg.phone;
-        phoneContainer.style.display = 'block';
+}
+
+function openInboxDetail(message, card) {
+    document.querySelectorAll('[data-message-card]').forEach((item) => item.classList.remove('is-active'));
+    card?.classList.add('is-active');
+
+    document.getElementById('inboxEmptyDetail')?.classList.add('is-hidden');
+    document.getElementById('inboxDetailCard')?.classList.remove('is-hidden');
+    document.getElementById('inboxDetailPanel')?.classList.add('is-open');
+    document.body.classList.add('inbox-v2-detail-open');
+
+    const typeLabel = getInboxTypeLabel(message.type || '');
+
+    setInboxText('inboxDetailTitle', message.sender_name || 'İsimsiz');
+    setInboxText('inboxDetailMeta', `${typeLabel} • ${formatInboxDate(message.created_at)}`);
+    setInboxText('detailSender', message.sender_name || 'İsimsiz');
+    setInboxText('detailCompany', message.company_name || '-');
+    setInboxText('detailCategory', message.category || 'Genel');
+    setInboxText('detailMessage', message.message || '-');
+
+    setInboxContact('detailEmailBox', 'detailEmail', message.email || '', 'mailto:');
+    setInboxContact('detailPhoneBox', 'detailPhone', message.phone || '', 'tel:');
+
+    const deleteId = document.getElementById('deleteMessageId');
+    const statusId = document.getElementById('statusMessageId');
+    const statusAction = document.getElementById('messageStatusAction');
+    const statusButton = document.getElementById('messageStatusButton');
+
+    if (deleteId) deleteId.value = message.id || '';
+    if (statusId) statusId.value = message.id || '';
+
+    if (message.status === 'unread') {
+        if (statusAction) statusAction.value = 'mark_read';
+        if (statusButton) statusButton.textContent = 'Okundu İşaretle';
     } else {
-        phoneContainer.style.display = 'none';
+        if (statusAction) statusAction.value = 'mark_unread';
+        if (statusButton) statusButton.textContent = 'Okunmadı İşaretle';
     }
 
-    document.getElementById('msgCategory').innerText = msg.category || '-';
-    document.getElementById('msgText').innerText = msg.message || '-';
+    document.getElementById('inboxDetailBody')?.scrollTo({ top: 0, behavior: 'auto' });
+}
 
-    // Form type badge
-    const typeLabel = getFormTypeLabel(msg.type || '');
-    const typeBadgeEl = document.getElementById('msgTypeBadge');
-    if (typeBadgeEl) {
-        typeBadgeEl.innerText = typeLabel;
-        typeBadgeEl.style.display = typeLabel ? 'inline-block' : 'none';
-    }
-
-    // Set form ids
-    document.getElementById('deleteMsgId').value = msg.id;
-    document.getElementById('statusMsgId').value = msg.id;
-
-    if (msg.status === 'unread') {
-        document.getElementById('statusAction').value = 'mark_read';
-        document.getElementById('statusBtnText').innerText = 'Okundu İşaretle';
-    } else {
-        document.getElementById('statusAction').value = 'mark_unread';
-        document.getElementById('statusBtnText').innerText = 'Okunmadı İşaretle';
-    }
-    
-    // On mobile, auto-scroll to detail pane
-    if (window.innerWidth <= 900) {
-        document.getElementById('detailContentPane').classList.add('mobile-open');
-        document.querySelector('.inbox-detail-pane')?.classList.add('mobile-open');
-        document.body.style.overflow = 'hidden';
-    }
+function resetInboxDetail() {
+    document.getElementById('inboxEmptyDetail')?.classList.remove('is-hidden');
+    document.getElementById('inboxDetailCard')?.classList.add('is-hidden');
+    closeInboxDetail();
 }
 
 function closeInboxDetail() {
-    document.querySelector('.inbox-detail-pane')?.classList.remove('mobile-open');
-    document.body.style.overflow = '';
+    document.getElementById('inboxDetailPanel')?.classList.remove('is-open');
+    document.body.classList.remove('inbox-v2-detail-open');
 }
 
-document.querySelector('.inbox-detail-pane')?.addEventListener('click', function(e) {
-    if (window.innerWidth <= 900 && e.target === this) {
-        closeInboxDetail();
-    }
-});
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
         closeInboxDetail();
     }
 });

@@ -1,837 +1,1031 @@
 <?php
 if (!defined('BASE_URL')) exit;
-// Data $applications is provided by ApplicationsModule
+
+$statusLabels = [
+    'pending' => 'Bekliyor',
+    'reviewing' => 'İnceleniyor',
+    'approved' => 'Onaylandı',
+    'rejected' => 'Reddedildi',
+];
+
+$totalApplications = count($applications);
+$managementCount = 0;
+$representativeCount = 0;
+
+foreach ($applications as $applicationItem) {
+    if (($applicationItem['type'] ?? '') === 'management') {
+        $managementCount++;
+    } else {
+        $representativeCount++;
+    }
+}
 ?>
 
-<div class="applications-module-head" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-    <div>
-        <h3 style="font-size: 16px; font-weight:600; color:var(--text);"><i class="fas fa-file-text text-primary me-2"></i> Başvurular</h3>
-        <p style="font-size: 12px; color: var(--muted);">Temsilcilik ve Yönetim Kurulu başvurularını buradan yönetebilirsiniz.</p>
-    </div>
-</div>
-
 <style>
-/* Split Pane Layout */
-.app-container {
-    display: flex;
-    gap: 20px;
-    height: calc(100vh - 200px);
-    min-height: 500px;
-}
-
-/* Left Pane: List */
-.app-list-pane {
-    flex: 0 0 350px;
+.applications-v2 {
     display: flex;
     flex-direction: column;
-    background: var(--card);
+    gap: 12px;
+    min-height: 0;
+}
+
+.applications-v2-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.applications-v2-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.applications-v2-subtitle {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.applications-v2-count {
+    flex: 0 0 auto;
+    padding: 7px 10px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.applications-v2-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 370px) minmax(0, 1fr);
+    gap: 12px;
+    height: calc(100vh - 184px);
+    min-height: 520px;
+}
+
+.applications-v2-list,
+.applications-v2-detail {
+    min-width: 0;
+    min-height: 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
     overflow: hidden;
 }
 
-.app-list-header {
-    padding: 16px;
+.applications-v2-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.applications-v2-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
     border-bottom: 1px solid var(--border);
     background: var(--card-alt);
 }
 
-.app-list-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.app-card {
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: var(--input-bg);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.app-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-.app-card.active {
-    border-color: var(--primary);
-    background: rgba(245, 158, 11, 0.05);
-    box-shadow: 0 0 0 1px var(--primary);
-}
-.app-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-.app-sender {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 180px;
-}
-.app-date {
-    font-size: 11px;
-    color: var(--muted);
-    flex-shrink: 0;
-}
-.app-subject {
-    font-size: 12px;
-    color: var(--text-secondary);
+.applications-v2-toolbar-title {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.applications-v2-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
 }
 
-.app-badge {
+.applications-v2-filter {
+    min-height: 32px;
+    padding: 6px 7px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text);
+    cursor: pointer;
     font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    align-self: flex-start;
+    font-weight: 700;
+    line-height: 1.1;
 }
-.badge-pending { background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
-.badge-reviewing { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
-.badge-approved { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-.badge-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-/* Right Pane: Details */
-.app-detail-pane {
-    flex: 1;
-    background: var(--card);
+.applications-v2-filter.is-active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #061019;
+}
+
+.applications-v2-cards {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.applications-v2-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 9px;
+    width: 100%;
+    min-height: 62px;
+    padding: 10px;
     border: 1px solid var(--border);
     border-radius: 12px;
+    background: var(--input-bg);
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.applications-v2-card:hover,
+.applications-v2-card.is-active {
+    border-color: var(--primary);
+    background: rgba(245, 158, 11, .08);
+}
+
+.applications-v2-card.is-hidden {
+    display: none !important;
+}
+
+.applications-v2-card-name {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.applications-v2-card-date {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.applications-v2-card-type {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.applications-v2-status {
+    align-self: end;
+    justify-self: end;
+    padding: 3px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.status-pending { background: rgba(234, 179, 8, .15); color: #eab308; border: 1px solid rgba(234, 179, 8, .32); }
+.status-reviewing { background: rgba(59, 130, 246, .15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, .32); }
+.status-approved { background: rgba(34, 197, 94, .15); color: #22c55e; border: 1px solid rgba(34, 197, 94, .32); }
+.status-rejected { background: rgba(239, 68, 68, .15); color: #ef4444; border: 1px solid rgba(239, 68, 68, .32); }
+
+.applications-v2-empty-list,
+.applications-v2-empty-detail {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 220px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.applications-v2-empty-detail.is-hidden {
+    display: none !important;
+}
+
+.applications-v2-empty-list i,
+.applications-v2-empty-detail i {
+    font-size: 34px;
+    opacity: .3;
+}
+
+.applications-v2-detail {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
-.app-detail-header {
-    padding: 24px;
-    border-bottom: 1px solid var(--border);
-    background: var(--card-alt);
+.applications-v2-detail-card {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.app-detail-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
     background: var(--bg);
 }
 
-.app-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: var(--text-muted);
-}
-.app-empty-state i {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.2;
+.applications-v2-detail-card.is-hidden {
+    display: none !important;
 }
 
-/* Detail Form Data Grid */
-.detail-grid {
+.applications-v2-detail-head {
+    flex: 0 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
-    padding: 24px;
-}
-.json-field {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
     background: var(--card);
-    padding: 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
 }
-.json-field.full-width {
+
+.applications-v2-back {
+    display: none;
+}
+
+.applications-v2-detail-name {
+    margin: 0;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.applications-v2-detail-meta {
+    margin-top: 3px;
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.applications-v2-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.applications-v2-status-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    margin: 0;
+}
+
+.applications-v2-delete-form {
+    margin: 0;
+}
+
+.applications-v2-select {
+    width: 100% !important;
+    min-height: 34px;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    background: var(--input-bg) !important;
+    color: var(--text) !important;
+    font-size: 12px;
+}
+
+.applications-v2-action {
+    min-height: 34px;
+    padding: 6px 10px;
+    border-radius: 10px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    white-space: nowrap;
+}
+
+.applications-v2-delete {
+    border: 1px solid #dc2626 !important;
+    background: #ef4444 !important;
+    color: #fff !important;
+}
+
+.applications-v2-detail-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--bg);
+}
+
+.applications-v2-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+    padding: 12px;
+}
+
+.applications-v2-info {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 9px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+}
+
+.applications-v2-info-icon {
+    display: flex;
+    flex: 0 0 30px;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(59, 130, 246, .25);
+    border-radius: 50%;
+    background: rgba(59, 130, 246, .10);
+    color: #3b82f6;
+    font-size: 12px;
+}
+
+.applications-v2-info-text {
+    min-width: 0;
+}
+
+.applications-v2-info-label {
+    margin-bottom: 2px;
+    color: #3b82f6;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .55px;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.applications-v2-info-value {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.applications-v2-section-title {
+    margin: 0;
+    padding: 4px 12px 0;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.applications-v2-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 10px 12px 18px;
+}
+
+.applications-v2-field {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+}
+
+.applications-v2-field.is-wide {
     grid-column: 1 / -1;
 }
-.json-field h6 {
-    margin-bottom: 10px;
-    color: #3b82f6 !important; /* Mavi renk (kesin) */
-    font-size: 12px;
-    font-weight: 600;
+
+.applications-v2-field-label {
+    margin: 0 0 7px;
+    color: #3b82f6;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .7px;
+    line-height: 1.25;
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.json-field p {
-    margin-bottom: 0;
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.5;
-    white-space: pre-wrap;
-}
-.json-field p.highlight {
-    font-weight: 600;
-    color: var(--primary);
 }
 
-/* Base Info Row */
-.base-info-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    padding: 20px 24px;
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
-}
-.info-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.info-item-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(59, 130, 246, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #3b82f6;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-.info-item-text div:first-child {
-    font-size: 11px;
-    color: #3b82f6;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-}
-.info-item-text div:last-child {
-    font-size: 14px;
-    font-weight: 500;
-    color: #f3f4f6;
-}
-.status-select-custom {
-    background-color: #1f2937 !important;
-    color: #f9fafb !important;
-    border: 1px solid #4b5563 !important;
+.applications-v2-field-value {
+    margin: 0;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.55;
+    white-space: pre-wrap;
 }
 
 @media (max-width: 900px) {
-    .applications-module-head {
-        margin-bottom: 12px !important;
+    .applications-v2 {
+        gap: 10px;
     }
 
-    .applications-module-head h3 {
-        margin: 0;
-        font-size: 17px !important;
+    .applications-v2-head {
+        align-items: center;
     }
 
-    .applications-module-head p {
+    .applications-v2-title {
+        font-size: 18px;
+    }
+
+    .applications-v2-subtitle {
         display: none;
     }
 
-    .app-container {
+    .applications-v2-layout {
         display: block;
         height: auto;
         min-height: 0;
+        transform: none !important;
+        animation: none !important;
     }
 
-    .app-list-pane {
-        flex: none;
-        max-height: none;
+    .applications-v2-list {
         border-radius: 14px;
     }
 
-    .app-list-header {
-        padding: 12px;
-        gap: 10px !important;
+    .applications-v2-card {
+        min-height: 58px;
+        padding: 9px 10px;
     }
 
-    .app-list-header h4 {
-        font-size: 13px !important;
-    }
-
-    .app-list-header .d-flex.gap-2 {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px !important;
-    }
-
-    .app-filter-btn {
-        min-height: 32px;
-        padding: 6px 7px;
-        border-radius: 9px;
-        font-size: 10px;
-    }
-
-    .app-list-content {
-        max-height: none;
-        padding: 10px;
-        gap: 8px;
-    }
-
-    .app-card {
-        min-height: 76px;
-        padding: 10px 11px;
-        border-radius: 12px;
-        gap: 5px;
-    }
-
-    .app-card:hover {
-        transform: none;
-        box-shadow: none;
-    }
-
-    .app-sender {
-        max-width: 57vw;
-        font-size: 12px;
-    }
-
-    .app-date {
-        font-size: 10px;
-    }
-
-    .app-subject {
-        font-size: 11px;
-    }
-
-    .app-badge {
-        padding: 2px 7px;
-        font-size: 9px;
-    }
-
-    .app-detail-pane {
+    .applications-v2-detail {
         position: fixed;
         inset: 0;
-        z-index: 1450;
+        z-index: 5000;
         display: none;
-        min-height: 0;
         border: 0;
         border-radius: 0;
-        background: rgba(0,0,0,.58);
-        padding: 10px;
-        align-items: flex-end;
-        justify-content: center;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
+        background: var(--bg);
     }
 
-    .app-detail-pane.mobile-open {
+    .applications-v2-detail.is-open {
         display: flex;
     }
 
-    .app-empty-state {
+    .applications-v2-empty-detail {
         display: none !important;
     }
 
-    #detailContent {
+    .applications-v2-detail-card {
         width: 100%;
-        height: auto !important;
-        max-height: calc(100dvh - 112px - env(safe-area-inset-bottom));
-        overflow: hidden;
+        height: 100dvh;
+        background: var(--bg);
+    }
+
+    .applications-v2-detail-head {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 7px 9px;
+        padding: max(8px, env(safe-area-inset-top)) 10px 8px;
+    }
+
+    .applications-v2-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        grid-column: 1;
+        grid-row: 1;
+        width: 34px;
+        min-width: 34px;
+        min-height: 34px;
         border: 1px solid var(--border);
-        border-radius: 16px 16px 12px 12px;
-        background: var(--card);
+        border-radius: 10px;
+        background: var(--input-bg);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 24px;
+        line-height: 1;
     }
 
-    .app-detail-header {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 10px;
-        padding: 13px 14px;
-        align-items: start;
-    }
-
-    .app-detail-header h3 {
-        font-size: 15px !important;
-        color: var(--text) !important;
-    }
-
-    #d-type-date {
-        font-size: 11px !important;
-    }
-
-    .application-mobile-close {
-        display: inline-flex !important;
+    .applications-v2-heading {
         grid-column: 2;
         grid-row: 1;
-        min-height: 32px;
-        padding: 7px 10px;
-        border-radius: 9px;
-        font-size: 11px;
+        min-width: 0;
     }
 
-    .app-detail-header > .d-flex {
+    .applications-v2-detail-name {
+        font-size: 14px;
+    }
+
+    .applications-v2-actions {
         grid-column: 1 / -1;
-        display: grid !important;
-        grid-template-columns: 1fr auto;
-        gap: 8px !important;
-        width: 100%;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 7px;
     }
 
-    .app-detail-header form {
-        width: 100%;
+    .applications-v2-status-form {
+        gap: 7px;
     }
 
-    .app-detail-header .application-status-form {
-        display: grid !important;
-        grid-template-columns: 1fr auto;
-        gap: 7px !important;
+    .applications-v2-select,
+    .applications-v2-action {
+        min-height: 32px;
+        font-size: 10px !important;
     }
 
-    .status-select-custom {
-        width: 100% !important;
-        min-height: 34px;
-        font-size: 11px;
-    }
-
-    .app-detail-header .btn {
-        min-height: 34px;
-        padding: 6px 9px !important;
-        font-size: 10px;
-        white-space: nowrap;
-    }
-
-    .app-detail-content {
-        flex: 0 1 auto;
-        max-height: calc(100dvh - 244px - env(safe-area-inset-bottom));
-        overflow-y: auto;
-    }
-
-    .base-info-row {
-        display: grid;
+    .applications-v2-info-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        gap: 7px;
+        padding: 8px 10px;
+    }
+
+    .applications-v2-info {
+        gap: 7px;
+        padding: 7px;
+        border-radius: 10px;
+    }
+
+    .applications-v2-info-icon {
+        flex-basis: 26px;
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+    }
+
+    .applications-v2-info-label {
+        font-size: 8px;
+    }
+
+    .applications-v2-info-value {
+        font-size: 10px;
+    }
+
+    .applications-v2-section-title {
+        padding: 4px 10px 0;
+        font-size: 12px;
+    }
+
+    .applications-v2-form-grid {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 8px 10px calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .applications-v2-field {
         padding: 10px;
+        border-radius: 10px;
     }
 
-    .info-item {
-        min-width: 0;
-        gap: 8px;
-        padding: 8px;
-        border: 1px solid var(--border);
-        border-radius: 11px;
-        background: var(--input-bg);
-    }
-
-    .info-item-icon {
-        width: 28px;
-        height: 28px;
-        flex: 0 0 auto;
-        font-size: 11px;
-    }
-
-    .info-item-text {
-        min-width: 0;
-    }
-
-    .info-item-text div:first-child {
+    .applications-v2-field-label {
+        margin-bottom: 6px;
         font-size: 9px;
     }
 
-    .info-item-text div:last-child {
-        overflow: hidden;
+    .applications-v2-field-value {
         font-size: 11px;
-        color: var(--text);
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        line-height: 1.45;
     }
 
-    .detail-grid {
-        grid-template-columns: 1fr;
-        gap: 9px;
-        padding: 10px;
-    }
-
-    .app-detail-content .px-4 {
-        padding: 8px 10px 4px !important;
-    }
-
-    .app-detail-content .px-4 h6 {
-        font-size: 12px !important;
-    }
-
-    .json-field {
-        padding: 12px;
-        border-radius: 11px;
-    }
-
-    .json-field h6 {
-        margin-bottom: 6px;
-        font-size: 10px;
-    }
-
-    .json-field p {
-        font-size: 12px;
-        line-height: 1.55;
+    body.applications-v2-detail-open {
+        overflow: hidden !important;
     }
 }
-.d-none { display: none !important; }
 </style>
 
-<div class="app-container fade-in-up stagger-1">
-    <!-- Sol Liste -->
-    <div class="app-list-pane">
-        <div class="app-list-header d-flex flex-column gap-3">
-            <h4 style="font-size: 14px; margin: 0; color: var(--text);">Gelen Başvurular (<?= count($applications) ?>)</h4>
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-primary app-filter-btn active" data-filter="all">Tümü</button>
-                <button class="btn btn-sm btn-outline-secondary app-filter-btn" data-filter="management">Yönetim</button>
-                <button class="btn btn-sm btn-outline-secondary app-filter-btn" data-filter="representative">Temsilci</button>
-            </div>
+<div class="applications-v2">
+    <header class="applications-v2-head">
+        <div>
+            <h3 class="applications-v2-title"><i class="fas fa-file-text text-primary me-2"></i>Başvurular</h3>
+            <p class="applications-v2-subtitle">Temsilcilik ve Yönetim Kurulu başvurularını yönetin.</p>
         </div>
-        <div class="app-list-content" id="appList">
-            <?php if(empty($applications)): ?>
-                <div style="text-align: center; padding: 30px 10px; color: var(--muted); font-size: 13px;">
-                    <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i><br>
-                    Henüz başvuru bulunmuyor.
-                </div>
-            <?php else: ?>
-                <?php foreach($applications as $app): 
-                    $isManagement = $app['type'] === 'management';
-                    $typeLabel = $isManagement ? 'Yönetim Kurulu' : 'Temsilcilik';
-                    $filterType = $isManagement ? 'management' : 'representative';
-                    $badgeClass = 'badge-' . $app['status'];
-                    $statusLabel = match($app['status']) {
-                        'pending' => 'Bekliyor',
-                        'reviewing' => 'İnceleniyor',
-                        'approved' => 'Onaylandı',
-                        'rejected' => 'Reddedildi',
-                        default => 'Bilinmiyor'
-                    };
-                ?>
-                    <div class="app-card" data-app-type="<?= $filterType ?>" onclick='showDetails(this, <?= json_encode($app, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
-                        <div class="app-card-header">
-                            <span class="app-sender"><?= htmlspecialchars($app['full_name']) ?></span>
-                            <span class="app-date"><?= date('d.m.Y H:i', strtotime($app['created_at'])) ?></span>
-                        </div>
-                        <div class="app-subject">
-                            <i class="fas fa-briefcase opacity-50"></i> <?= $typeLabel ?>
-                        </div>
-                        <span class="app-badge <?= $badgeClass ?>"><?= $statusLabel ?></span>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-    </div>
+        <div class="applications-v2-count"><?= $totalApplications ?> başvuru</div>
+    </header>
 
-    <!-- Sağ Detay -->
-    <div class="app-detail-pane" id="appDetailPane">
-        <div class="app-empty-state" id="emptyState">
-            <i class="fas fa-file-signature"></i>
-            <h5 style="color:var(--text);">Başvuru Seçin</h5>
-            <p style="font-size:13px;">Detayları görüntülemek için sol taraftan bir başvuru seçin.</p>
-        </div>
-        
-        <div id="detailContent" class="d-none" style="display: flex; flex-direction: column; height: 100%;">
-            <!-- Header -->
-            <div class="app-detail-header">
-                <div>
-                    <h3 class="mb-1 text-white fw-bold" id="d-name" style="font-size: 20px;">-</h3>
-                    <div class="fs-6" style="color: #60a5fa;" id="d-type-date">-</div>
+    <div class="applications-v2-layout">
+        <section class="applications-v2-list" aria-label="Başvuru listesi">
+            <div class="applications-v2-toolbar">
+                <div class="applications-v2-toolbar-title">
+                    <span>Gelen Başvurular</span>
+                    <span><?= $totalApplications ?></span>
                 </div>
-                <button type="button" class="application-mobile-close btn btn-outline" onclick="closeApplicationDetail()" style="display:none;">Kapat</button>
-                <div class="d-flex gap-2 align-items-center">
-                    <form method="POST" action="" id="statusForm" class="d-flex gap-2 align-items-center mb-0 application-status-form">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                        <input type="hidden" name="action" value="status">
-                        <input type="hidden" name="id" id="status_id">
-                        <select name="status" class="form-select form-select-sm w-auto status-select-custom" id="status_select">
-                            <option value="pending">Bekliyor</option>
-                            <option value="reviewing">İnceleniyor</option>
-                            <option value="approved">Onaylandı</option>
-                            <option value="rejected">Reddedildi</option>
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-primary">Güncelle</button>
-                    </form>
-                    <form method="POST" action="" onsubmit="return confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?');" class="mb-0">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" id="delete_id">
-                        <button type="submit" class="btn btn-sm" style="background-color: #ef4444; border-color: #dc2626; color: white; padding: 4px 10px;"><i class="fas fa-trash me-1"></i> Sil</button>
-                    </form>
+                <div class="applications-v2-filters" role="tablist" aria-label="Başvuru filtresi">
+                    <button type="button" class="applications-v2-filter is-active" data-filter="all">Tümü</button>
+                    <button type="button" class="applications-v2-filter" data-filter="management">Yönetim <?= $managementCount ?></button>
+                    <button type="button" class="applications-v2-filter" data-filter="representative">Temsilci <?= $representativeCount ?></button>
                 </div>
             </div>
 
-            <!-- Content -->
-            <div class="app-detail-content">
-                <!-- Temel Bilgiler -->
-                <div class="base-info-row">
-                    <div class="info-item">
-                        <div class="info-item-icon"><i class="fas fa-envelope"></i></div>
-                        <div class="info-item-text">
-                            <div>E-posta</div>
-                            <div id="d-email">-</div>
-                        </div>
+            <div class="applications-v2-cards" id="applicationsList">
+                <?php if (empty($applications)): ?>
+                    <div class="applications-v2-empty-list">
+                        <i class="fas fa-inbox"></i>
+                        <span>Henüz başvuru bulunmuyor.</span>
                     </div>
-                    <div class="info-item">
-                        <div class="info-item-icon"><i class="fas fa-phone"></i></div>
-                        <div class="info-item-text">
-                            <div>Telefon</div>
-                            <div id="d-phone">-</div>
-                        </div>
+                <?php else: ?>
+                    <?php foreach ($applications as $application): ?>
+                        <?php
+                            $isManagement = ($application['type'] ?? '') === 'management';
+                            $typeLabel = $isManagement ? 'Yönetim Kurulu' : 'Temsilcilik';
+                            $filterType = $isManagement ? 'management' : 'representative';
+                            $statusKey = $application['status'] ?? 'pending';
+                            $statusLabel = $statusLabels[$statusKey] ?? 'Bilinmiyor';
+                            $applicationJson = htmlspecialchars(
+                                json_encode($application, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP),
+                                ENT_QUOTES,
+                                'UTF-8'
+                            );
+                        ?>
+                        <button
+                            type="button"
+                            class="applications-v2-card"
+                            data-application-card
+                            data-type="<?= htmlspecialchars($filterType, ENT_QUOTES, 'UTF-8') ?>"
+                            data-application="<?= $applicationJson ?>"
+                        >
+                            <span class="applications-v2-card-name"><?= htmlspecialchars($application['full_name'] ?? '-') ?></span>
+                            <span class="applications-v2-card-date"><?= !empty($application['created_at']) ? date('d.m.Y H:i', strtotime($application['created_at'])) : '-' ?></span>
+                            <span class="applications-v2-card-type"><i class="fas fa-briefcase opacity-50"></i> <?= $typeLabel ?></span>
+                            <span class="applications-v2-status status-<?= htmlspecialchars($statusKey, ENT_QUOTES, 'UTF-8') ?>"><?= $statusLabel ?></span>
+                        </button>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <aside class="applications-v2-detail" id="applicationsDetailPanel" aria-label="Başvuru detayı">
+            <div class="applications-v2-empty-detail" id="applicationsEmptyDetail">
+                <i class="fas fa-file-signature"></i>
+                <strong>Başvuru seçin</strong>
+                <span>Detayları görüntülemek için listeden bir başvuru seçin.</span>
+            </div>
+
+            <div class="applications-v2-detail-card is-hidden" id="applicationsDetailCard">
+                <div class="applications-v2-detail-head">
+                    <button type="button" class="applications-v2-back" onclick="closeApplicationDetail()" aria-label="Başvuru listesine dön">‹</button>
+                    <div class="applications-v2-heading">
+                        <h3 class="applications-v2-detail-name" id="detailName">-</h3>
+                        <div class="applications-v2-detail-meta" id="detailMeta">-</div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-item-icon"><i class="fas fa-university"></i></div>
-                        <div class="info-item-text">
-                            <div>Üniversite</div>
-                            <div id="d-university">-</div>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-item-icon"><i class="fas fa-building"></i></div>
-                        <div class="info-item-text">
-                            <div>Fakülte</div>
-                            <div id="d-faculty">-</div>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-item-icon"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="info-item-text">
-                            <div>Bölüm</div>
-                            <div id="d-department">-</div>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-item-icon"><i class="fas fa-list-ol"></i></div>
-                        <div class="info-item-text">
-                            <div>Sınıf</div>
-                            <div id="d-grade">-</div>
-                        </div>
+
+                    <div class="applications-v2-actions">
+                        <form method="POST" action="" class="applications-v2-status-form">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                            <input type="hidden" name="action" value="status">
+                            <input type="hidden" name="id" id="statusApplicationId">
+                            <select name="status" class="form-select form-select-sm applications-v2-select" id="statusSelect">
+                                <option value="pending">Bekliyor</option>
+                                <option value="reviewing">İnceleniyor</option>
+                                <option value="approved">Onaylandı</option>
+                                <option value="rejected">Reddedildi</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary applications-v2-action">Güncelle</button>
+                        </form>
+
+                        <form method="POST" action="" class="applications-v2-delete-form" onsubmit="return confirm('Bu başvuruyu kalıcı olarak silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" id="deleteApplicationId">
+                            <button type="submit" class="btn btn-sm applications-v2-action applications-v2-delete">
+                                <i class="fas fa-trash me-1"></i> Sil
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                <!-- Dinamik Form Detayları -->
-                <div class="px-4 pt-4 pb-2">
-                    <h6 style="color:var(--text); font-weight:600; font-size:14px; margin:0;"><i class="fas fa-list-ul me-2 text-primary"></i> Form Detayları</h6>
-                </div>
-                <div class="detail-grid" id="d-formdata">
-                    <!-- JSON fields will be appended here -->
+                <div class="applications-v2-detail-body" id="applicationsDetailBody">
+                    <div class="applications-v2-info-grid">
+                        <div class="applications-v2-info">
+                            <div class="applications-v2-info-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="applications-v2-info-text">
+                                <div class="applications-v2-info-label">E-posta</div>
+                                <div class="applications-v2-info-value" id="detailEmail">-</div>
+                            </div>
+                        </div>
+                        <div class="applications-v2-info">
+                            <div class="applications-v2-info-icon"><i class="fas fa-phone"></i></div>
+                            <div class="applications-v2-info-text">
+                                <div class="applications-v2-info-label">Telefon</div>
+                                <div class="applications-v2-info-value" id="detailPhone">-</div>
+                            </div>
+                        </div>
+                        <div class="applications-v2-info">
+                            <div class="applications-v2-info-icon"><i class="fas fa-university"></i></div>
+                            <div class="applications-v2-info-text">
+                                <div class="applications-v2-info-label">Üniversite</div>
+                                <div class="applications-v2-info-value" id="detailUniversity">-</div>
+                            </div>
+                        </div>
+                        <div class="applications-v2-info">
+                            <div class="applications-v2-info-icon"><i class="fas fa-building"></i></div>
+                            <div class="applications-v2-info-text">
+                                <div class="applications-v2-info-label">Fakülte</div>
+                                <div class="applications-v2-info-value" id="detailFaculty">-</div>
+                            </div>
+                        </div>
+                        <div class="applications-v2-info">
+                            <div class="applications-v2-info-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="applications-v2-info-text">
+                                <div class="applications-v2-info-label">Bölüm</div>
+                                <div class="applications-v2-info-value" id="detailDepartment">-</div>
+                            </div>
+                        </div>
+                        <div class="applications-v2-info">
+                            <div class="applications-v2-info-icon"><i class="fas fa-list-ol"></i></div>
+                            <div class="applications-v2-info-text">
+                                <div class="applications-v2-info-label">Sınıf</div>
+                                <div class="applications-v2-info-value" id="detailGrade">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="applications-v2-section-title"><i class="fas fa-list-ul me-2 text-primary"></i>Form Detayları</h4>
+                    <div class="applications-v2-form-grid" id="applicationsFormData"></div>
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
 </div>
 
 <script>
+const APPLICATION_FIELD_LABELS = {
+    city: 'Şehir / İlçe',
+    district: 'İlçe',
+    department: 'Okunan Bölüm',
+    grade: 'Sınıf / Derece',
+    studentId: 'Öğrenci Numarası',
+    studentNumber: 'Öğrenci Numarası',
+    birthDate: 'Doğum Tarihi',
+    linkedin: 'LinkedIn',
+    github: 'GitHub',
+    portfolio: 'Portfolyo',
+    instagram: 'Instagram',
+    cv: 'CV',
+    motivation: 'Motivasyon',
+    experience: 'Deneyim',
+    skills: 'Yetenekler',
+    interests: 'İlgi Alanları',
+    availability: 'Uygunluk',
+    preferredRole: 'Tercih Edilen Rol',
+    preferredDepartment: 'Tercih Edilen Departman',
+    targetTeam: 'Hedef Ekip',
+    targetDepartment: 'Hedef Departman',
+    whyTeam: 'Bu Ekibi Neden İstiyorsunuz?',
+    previousExperience: 'Önceki Deneyimler',
+    clubExperience: 'Topluluk Deneyimi',
+    leadershipExperience: 'Liderlik Deneyimi',
+    teamworkExperience: 'Takım Çalışması Deneyimi',
+    contribution: 'Katkı',
+    goals: 'Hedefler',
+    strengths: 'Güçlü Yönler',
+    weaknesses: 'Gelişim Alanları',
+    notes: 'Notlar',
+    message: 'Mesaj',
+    argeTools: 'Kullandığı Araçlar / Programlar',
+    argePastProjectsDetails: 'Geçmiş Proje Detayları',
+    argeContribution: 'Ar-Ge Ekibine Katkısı / Beklentisi',
+    argeTubitak: 'TÜBİTAK vb. Proje Fikri',
+    argeWebsiteCritique: 'Web Sitesi İncelemesi / Eleştirisi',
+    whyInnomis: 'Neden İnnOmis?',
+    expectations: 'Beklentiler / Hedefler'
+};
+
+const APPLICATION_IGNORED_FIELDS = new Set([
+    'name',
+    'email',
+    'phone',
+    'university',
+    'faculty',
+    'agreed',
+    'securityCode',
+    'department',
+    'grade'
+]);
+
 document.addEventListener('DOMContentLoaded', () => {
-    const filterBtns = document.querySelectorAll('.app-filter-btn');
-    const cards = document.querySelectorAll('.app-card');
-    
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // Reset buttons
-            filterBtns.forEach(b => {
-                b.classList.remove('btn-primary', 'active');
-                b.classList.add('btn-outline-secondary');
-            });
-            e.target.classList.remove('btn-outline-secondary');
-            e.target.classList.add('btn-primary', 'active');
-            
-            const filter = e.target.getAttribute('data-filter');
-            
-            // Filter cards
-            cards.forEach(card => {
-                if (filter === 'all' || card.getAttribute('data-app-type') === filter) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
+    document.body.classList.remove('applications-v2-detail-open');
+
+    const cards = Array.from(document.querySelectorAll('[data-application-card]'));
+    const filters = Array.from(document.querySelectorAll('.applications-v2-filter'));
+
+    filters.forEach((filterButton) => {
+        filterButton.addEventListener('click', () => {
+            const filter = filterButton.dataset.filter || 'all';
+
+            filters.forEach((button) => button.classList.toggle('is-active', button === filterButton));
+
+            cards.forEach((card) => {
+                const isVisible = filter === 'all' || card.dataset.type === filter;
+                card.classList.toggle('is-hidden', !isVisible);
+                if (!isVisible) {
+                    card.classList.remove('is-active');
                 }
             });
-            
-            // If active card is hidden, reset details pane
-            const activeCard = document.querySelector('.app-card.active');
-            if (activeCard && activeCard.style.display === 'none') {
-                document.getElementById('emptyState').style.display = 'flex';
-                document.getElementById('detailContent').style.display = 'none';
-                activeCard.classList.remove('active');
+
+            if (!document.querySelector('[data-application-card].is-active')) {
+                resetApplicationDetail();
+            }
+        });
+    });
+
+    cards.forEach((card) => {
+        card.addEventListener('click', () => {
+            try {
+                const application = JSON.parse(card.dataset.application || '{}');
+                openApplicationDetail(application, card);
+            } catch (error) {
+                console.error('Başvuru verisi okunamadı:', error);
             }
         });
     });
 });
 
-function showDetails(cardEl, app) {
-    document.getElementById('emptyState').style.display = 'none';
-    document.getElementById('detailContent').style.display = 'flex';
-    document.getElementById('detailContent').classList.remove('d-none');
-    
-    document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
-    if (cardEl) {
-        cardEl.classList.add('active');
+function setApplicationText(id, value) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = value || '-';
+        element.title = value || '-';
+    }
+}
+
+function getApplicationTypeLabel(type) {
+    return type === 'management' ? 'Yönetim Kurulu' : 'Temsilcilik';
+}
+
+function formatApplicationDate(value) {
+    if (!value) return '-';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString('tr-TR');
+}
+
+function getReadableFieldLabel(key) {
+    if (APPLICATION_FIELD_LABELS[key]) {
+        return APPLICATION_FIELD_LABELS[key];
     }
 
-    if (window.innerWidth <= 900) {
-        document.getElementById('appDetailPane')?.classList.add('mobile-open');
-        document.body.style.overflow = 'hidden';
+    return key
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/_/g, ' ')
+        .replace(/\bid\b/gi, 'ID')
+        .replace(/\burl\b/gi, 'Bağlantı')
+        .replace(/\blink\b/gi, 'Bağlantı')
+        .replace(/\bname\b/gi, 'Ad')
+        .replace(/\bemail\b/gi, 'E-posta')
+        .replace(/\bphone\b/gi, 'Telefon')
+        .replace(/\buniversity\b/gi, 'Üniversite')
+        .replace(/\bfaculty\b/gi, 'Fakülte')
+        .replace(/\bdepartment\b/gi, 'Bölüm')
+        .replace(/\bgrade\b/gi, 'Sınıf')
+        .replace(/\bteam\b/gi, 'Ekip')
+        .replace(/\brole\b/gi, 'Rol')
+        .replace(/\bwhy\b/gi, 'Neden')
+        .replace(/\btools\b/gi, 'Araçlar')
+        .replace(/\bproject\b/gi, 'Proje')
+        .replace(/\bprojects\b/gi, 'Projeler')
+        .replace(/\bdetails\b/gi, 'Detaylar')
+        .replace(/\bexperience\b/gi, 'Deneyim')
+        .replace(/\bskills\b/gi, 'Yetenekler')
+        .replace(/\bexpectations\b/gi, 'Beklentiler')
+        .replace(/\bcontribution\b/gi, 'Katkı')
+        .split(' ')
+        .map((word) => word === 'ID' ? word : word.charAt(0).toLocaleUpperCase('tr-TR') + word.slice(1))
+        .join(' ');
+}
+
+function normalizeApplicationValue(value) {
+    if (Array.isArray(value)) {
+        return value.join(', ');
     }
 
-    const typeLabel = app.type === 'management' ? 'Yönetim Kurulu' : 'Temsilcilik';
-    const dateStr = new Date(app.created_at).toLocaleString('tr-TR');
+    if (typeof value === 'boolean') {
+        return value ? 'Evet' : 'Hayır';
+    }
 
-    document.getElementById('d-name').textContent = app.full_name;
-    document.getElementById('d-type-date').textContent = `${typeLabel} • ${dateStr}`;
-    document.getElementById('d-email').textContent = app.email || '-';
-    document.getElementById('d-phone').textContent = app.phone || '-';
-    document.getElementById('d-university').textContent = app.university || '-';
-    document.getElementById('d-faculty').textContent = app.faculty || '-';
-    
-    document.getElementById('status_id').value = app.id;
-    document.getElementById('delete_id').value = app.id;
-    document.getElementById('status_select').value = app.status;
+    if (value === null || typeof value === 'undefined') {
+        return '';
+    }
 
-    const fdContainer = document.getElementById('d-formdata');
-    fdContainer.innerHTML = '';
-    
-    // Extract department and grade from form_data
+    return String(value);
+}
+
+function renderApplicationFormData(application) {
+    const container = document.getElementById('applicationsFormData');
+    if (!container) return { department: '-', grade: '-' };
+
+    container.innerHTML = '';
+
+    let parsedData = {};
     let parsedDepartment = '-';
     let parsedGrade = '-';
 
-    if (app.form_data) {
+    if (application.form_data) {
         try {
-            const data = JSON.parse(app.form_data);
-            if (data.department) {
-                parsedDepartment = data.department;
-            }
-            if (data.grade) {
-                parsedGrade = data.grade;
-            }
-            const ignoreKeys = ['name', 'email', 'phone', 'university', 'faculty', 'agreed', 'securityCode', 'department', 'grade'];
-            
-            let hasFields = false;
-            
-            const keyMap = {
-                'city': 'Şehir / İlçe',
-                'district': 'İlçe',
-                'department': 'Okunan Bölüm',
-                'grade': 'Sınıf / Derece',
-                'studentId': 'Öğrenci Numarası',
-                'studentNumber': 'Öğrenci Numarası',
-                'birthDate': 'Doğum Tarihi',
-                'linkedin': 'LinkedIn',
-                'github': 'GitHub',
-                'portfolio': 'Portfolyo',
-                'instagram': 'Instagram',
-                'cv': 'CV',
-                'motivation': 'Motivasyon',
-                'experience': 'Deneyim',
-                'skills': 'Yetenekler',
-                'interests': 'İlgi Alanları',
-                'availability': 'Uygunluk',
-                'preferredRole': 'Tercih Edilen Rol',
-                'preferredDepartment': 'Tercih Edilen Departman',
-                'targetTeam': 'Hedef Ekip',
-                'targetDepartment': 'Hedef Departman',
-                'whyTeam': 'Bu Ekibi Neden İstiyorsunuz?',
-                'previousExperience': 'Önceki Deneyimler',
-                'clubExperience': 'Topluluk Deneyimi',
-                'leadershipExperience': 'Liderlik Deneyimi',
-                'teamworkExperience': 'Takım Çalışması Deneyimi',
-                'contribution': 'Katkı',
-                'goals': 'Hedefler',
-                'strengths': 'Güçlü Yönler',
-                'weaknesses': 'Gelişim Alanları',
-                'notes': 'Notlar',
-                'message': 'Mesaj',
-                'argeTools': 'Kullandığı Araçlar / Programlar',
-                'argePastProjectsDetails': 'Geçmiş Proje Detayları',
-                'argeContribution': 'Ar-Ge Ekibine Katkısı / Beklentisi',
-                'argeTubitak': 'TÜBİTAK vb. Proje Fikri',
-                'argeWebsiteCritique': 'Web Sitesi İncelemesi / Eleştirisi',
-                'whyInnomis': 'Neden İnnOmis?',
-                'expectations': 'Beklentiler / Hedefler'
-            };
-
-            for (const [key, value] of Object.entries(data)) {
-                if (ignoreKeys.includes(key) || !value || value.length === 0) continue;
-                
-                let formattedKey = keyMap[key];
-                if (!formattedKey) {
-                    formattedKey = key
-                        .replace(/([a-z])([A-Z])/g, '$1 $2')
-                        .replace(/_/g, ' ')
-                        .replace(/\bid\b/gi, 'ID')
-                        .replace(/\burl\b/gi, 'Bağlantı')
-                        .replace(/\blink\b/gi, 'Bağlantı')
-                        .replace(/\bname\b/gi, 'Ad')
-                        .replace(/\bemail\b/gi, 'E-posta')
-                        .replace(/\bphone\b/gi, 'Telefon')
-                        .replace(/\buniversity\b/gi, 'Üniversite')
-                        .replace(/\bfaculty\b/gi, 'Fakülte')
-                        .replace(/\bdepartment\b/gi, 'Bölüm')
-                        .replace(/\bgrade\b/gi, 'Sınıf')
-                        .replace(/\bteam\b/gi, 'Ekip')
-                        .replace(/\brole\b/gi, 'Rol')
-                        .replace(/\bwhy\b/gi, 'Neden')
-                        .replace(/\btools\b/gi, 'Araçlar')
-                        .replace(/\bproject\b/gi, 'Proje')
-                        .replace(/\bprojects\b/gi, 'Projeler')
-                        .replace(/\bdetails\b/gi, 'Detaylar')
-                        .replace(/\bexperience\b/gi, 'Deneyim')
-                        .replace(/\bskills\b/gi, 'Yetenekler')
-                        .replace(/\bexpectations\b/gi, 'Beklentiler')
-                        .replace(/\bcontribution\b/gi, 'Katkı');
-                    formattedKey = formattedKey.split(' ').map(w => w === 'ID' ? w : w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1)).join(' ');
-                }
-                
-                let displayValue = value;
-                if (Array.isArray(value)) {
-                    displayValue = value.join(', ');
-                } else if (typeof value === 'boolean') {
-                    displayValue = value ? 'Evet' : 'Hayır';
-                }
-
-                // Make long text take full width
-                const isLongText = typeof displayValue === 'string' && displayValue.length > 60;
-                
-                const fieldHtml = `
-                    <div class="json-field ${isLongText ? 'full-width' : ''}">
-                        <h6>${formattedKey}</h6>
-                        <p>${displayValue}</p>
-                    </div>
-                `;
-                fdContainer.insertAdjacentHTML('beforeend', fieldHtml);
-                hasFields = true;
-            }
-            
-            if (!hasFields) {
-                fdContainer.innerHTML = '<div style="grid-column: 1/-1;" class="text-muted text-center p-4 border border-secondary rounded">Görüntülenecek ek detay bulunmuyor.</div>';
-            }
-        } catch(e) {
-            fdContainer.innerHTML = `<div style="grid-column: 1/-1;"><pre class="text-muted">${app.form_data}</pre></div>`;
+            parsedData = JSON.parse(application.form_data);
+        } catch (error) {
+            parsedData = { raw: application.form_data };
         }
-    } else {
-        fdContainer.innerHTML = '<div style="grid-column: 1/-1;" class="text-muted text-center p-4 border border-secondary rounded">Ek detay bulunmuyor.</div>';
     }
 
-    document.getElementById('d-department').textContent = parsedDepartment;
-    document.getElementById('d-grade').textContent = parsedGrade;
+    if (parsedData.department) {
+        parsedDepartment = normalizeApplicationValue(parsedData.department);
+    }
+
+    if (parsedData.grade) {
+        parsedGrade = normalizeApplicationValue(parsedData.grade);
+    }
+
+    let renderedCount = 0;
+
+    Object.entries(parsedData).forEach(([key, rawValue]) => {
+        const value = normalizeApplicationValue(rawValue);
+        if (APPLICATION_IGNORED_FIELDS.has(key) || !value) return;
+
+        const field = document.createElement('div');
+        field.className = 'applications-v2-field';
+        if (value.length > 60) {
+            field.classList.add('is-wide');
+        }
+
+        const label = document.createElement('h5');
+        label.className = 'applications-v2-field-label';
+        label.textContent = key === 'raw' ? 'Form Verisi' : getReadableFieldLabel(key);
+
+        const text = document.createElement('p');
+        text.className = 'applications-v2-field-value';
+        text.textContent = value;
+
+        field.append(label, text);
+        container.appendChild(field);
+        renderedCount++;
+    });
+
+    if (renderedCount === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'applications-v2-field is-wide';
+        empty.innerHTML = '<h5 class="applications-v2-field-label">Detay</h5><p class="applications-v2-field-value">Görüntülenecek ek detay bulunmuyor.</p>';
+        container.appendChild(empty);
+    }
+
+    return { department: parsedDepartment, grade: parsedGrade };
+}
+
+function openApplicationDetail(application, card) {
+    document.querySelectorAll('[data-application-card]').forEach((item) => item.classList.remove('is-active'));
+    card?.classList.add('is-active');
+
+    const empty = document.getElementById('applicationsEmptyDetail');
+    const detail = document.getElementById('applicationsDetailCard');
+    const panel = document.getElementById('applicationsDetailPanel');
+
+    empty?.classList.add('is-hidden');
+    detail?.classList.remove('is-hidden');
+    panel?.classList.add('is-open');
+    document.body.classList.add('applications-v2-detail-open');
+
+    const typeLabel = getApplicationTypeLabel(application.type);
+    const dateLabel = formatApplicationDate(application.created_at);
+    const parsed = renderApplicationFormData(application);
+
+    setApplicationText('detailName', application.full_name || '-');
+    setApplicationText('detailMeta', `${typeLabel} • ${dateLabel}`);
+    setApplicationText('detailEmail', application.email || '-');
+    setApplicationText('detailPhone', application.phone || '-');
+    setApplicationText('detailUniversity', application.university || '-');
+    setApplicationText('detailFaculty', application.faculty || '-');
+    setApplicationText('detailDepartment', parsed.department);
+    setApplicationText('detailGrade', parsed.grade);
+
+    const statusId = document.getElementById('statusApplicationId');
+    const deleteId = document.getElementById('deleteApplicationId');
+    const statusSelect = document.getElementById('statusSelect');
+
+    if (statusId) statusId.value = application.id || '';
+    if (deleteId) deleteId.value = application.id || '';
+    if (statusSelect) statusSelect.value = application.status || 'pending';
+
+    document.getElementById('applicationsDetailBody')?.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function resetApplicationDetail() {
+    document.getElementById('applicationsEmptyDetail')?.classList.remove('is-hidden');
+    document.getElementById('applicationsDetailCard')?.classList.add('is-hidden');
+    closeApplicationDetail();
 }
 
 function closeApplicationDetail() {
-    document.getElementById('appDetailPane')?.classList.remove('mobile-open');
-    document.body.style.overflow = '';
+    document.getElementById('applicationsDetailPanel')?.classList.remove('is-open');
+    document.body.classList.remove('applications-v2-detail-open');
 }
 
-document.getElementById('appDetailPane')?.addEventListener('click', function(e) {
-    if (window.innerWidth <= 900 && e.target === this) {
-        closeApplicationDetail();
-    }
-});
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
         closeApplicationDetail();
     }
 });

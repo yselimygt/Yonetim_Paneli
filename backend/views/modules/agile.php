@@ -146,6 +146,173 @@ $appUrl = BASE_URL . "/panel/{$department['slug']}/apps/{$app['slug']}";
     .sprint-select:focus {
         border-color: var(--accent, #3b82f6);
     }
+
+    @media (max-width: 900px) {
+        .agile-container {
+            gap: 10px;
+            min-height: 0;
+            padding: 6px 0 18px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .kanban-column {
+            flex: 0 0 82vw;
+            min-width: 82vw;
+            max-height: calc(100dvh - 230px);
+            border-radius: 12px;
+            scroll-snap-align: start;
+        }
+
+        .kanban-header {
+            padding: 10px 12px;
+        }
+
+        .kanban-header span {
+            font-size: 12px !important;
+        }
+
+        .kanban-tasks {
+            gap: 10px;
+            min-height: 260px;
+            padding: 10px;
+        }
+
+        .kanban-task {
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .kanban-task:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .task-avatar {
+            width: 24px;
+            height: 24px;
+        }
+
+        .sprint-select {
+            width: 100%;
+            min-height: 36px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] {
+            align-items: stretch !important;
+            flex-direction: column;
+            gap: 12px !important;
+            margin-bottom: 14px !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] > div:first-child > div {
+            align-items: center !important;
+            gap: 10px !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] h3 {
+            font-size: 17px !important;
+            margin: 0 !important;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] p {
+            display: none;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] > div:last-child {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px !important;
+            width: 100%;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] form {
+            grid-column: 1 / -1;
+            width: 100%;
+        }
+
+        div[style*="margin-bottom: 30px"][style*="align-items: flex-end"] .btn {
+            width: 100%;
+            min-height: 36px;
+            padding: 7px 10px !important;
+            border-radius: 10px !important;
+            font-size: 11px !important;
+        }
+
+        div[style*="margin-bottom: 24px"] > div[style*="overflow-x: auto"] {
+            gap: 10px !important;
+        }
+
+        div[style*="margin-bottom: 24px"] > div[style*="overflow-x: auto"] .kanban-task {
+            min-width: 76vw !important;
+        }
+
+        #modal-create-sprint,
+        #modal-task,
+        #modal-view-task {
+            align-items: stretch !important;
+            justify-content: stretch !important;
+            padding: 10px;
+            z-index: 5000 !important;
+        }
+
+        #modal-create-sprint > .card,
+        #modal-task > .card,
+        #modal-view-task > .card {
+            width: 100% !important;
+            max-width: none !important;
+            max-height: calc(100dvh - 20px) !important;
+            margin: 0 !important;
+            border-radius: 14px !important;
+        }
+
+        #modal-create-sprint .card-header,
+        #modal-task .card-header,
+        #modal-view-task .card-header {
+            padding: 14px 16px !important;
+        }
+
+        #modal-create-sprint .card-body,
+        #modal-task .card-body,
+        #modal-view-task .card-body {
+            padding: 14px !important;
+        }
+
+        #modal-create-sprint .form-row,
+        #modal-task .form-row {
+            flex-direction: column;
+            gap: 12px !important;
+        }
+
+        #modal-task .card-body form > div:last-of-type,
+        #modal-create-sprint .card-body form > div:last-child {
+            align-items: stretch !important;
+            flex-direction: column;
+            gap: 8px !important;
+        }
+
+        #modal-task .btn,
+        #modal-create-sprint .btn,
+        #modal-view-task .btn {
+            width: 100%;
+            min-height: 36px;
+            padding: 7px 10px !important;
+            border-radius: 10px !important;
+            font-size: 11px !important;
+        }
+
+        #modal-view-task form > div {
+            padding: 10px !important;
+        }
+
+        #modal-view-task form > div > div:last-child {
+            align-items: stretch !important;
+            flex-direction: column;
+            gap: 8px !important;
+        }
+    }
 </style>
 
 <!-- Header & Sprint Selection -->

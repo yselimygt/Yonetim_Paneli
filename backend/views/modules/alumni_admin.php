@@ -127,6 +127,259 @@ if(!function_exists('getInitials')) {
 .job-type-badge.staj { background:rgba(245,158,11,0.1); color:#f59e0b; }
 
 #map { height: 350px; border-radius: 12px; margin-bottom:24px; background: #e5e5e5; z-index: 1; }
+
+@media (max-width: 900px) {
+    .alumni-container {
+        max-width: none;
+        width: 100%;
+        padding: 0;
+    }
+
+    .alumni-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .alumni-header h2 {
+        font-size: 18px !important;
+        line-height: 1.2;
+    }
+
+    .alumni-header p {
+        display: none;
+    }
+
+    .alumni-header > div:last-child {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .alumni-header .btn {
+        width: 100%;
+        min-height: 36px;
+        margin: 0 !important;
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    .tabs {
+        gap: 6px;
+        overflow-x: auto;
+        margin-bottom: 14px;
+        padding-bottom: 6px;
+        border-bottom: 0;
+        scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        min-height: 34px;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--card);
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .tab-btn.active {
+        border-color: var(--accent);
+        background: rgba(245, 158, 11, .08);
+    }
+
+    #map {
+        height: 220px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+    }
+
+    #tab-directory form[method="GET"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+    }
+
+    #tab-directory form[method="GET"] input[type="text"] {
+        grid-column: 1 / -1;
+        min-width: 0 !important;
+    }
+
+    #tab-directory form[method="GET"] select,
+    #tab-directory form[method="GET"] .btn {
+        width: 100% !important;
+        min-height: 36px;
+        font-size: 11px;
+    }
+
+    #tab-directory form[method="GET"] label {
+        grid-column: 1 / -1;
+        min-height: 34px;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--input-bg);
+        font-size: 12px !important;
+    }
+
+    .alumni-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .alumni-card {
+        align-items: center;
+        display: grid;
+        grid-template-columns: 58px minmax(0, 1fr);
+        gap: 8px 12px;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .alumni-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .alumni-avatar {
+        grid-row: span 3;
+        width: 58px;
+        height: 58px;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .alumni-name {
+        overflow: hidden;
+        margin: 0;
+        font-size: 14px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .alumni-title {
+        min-height: 0;
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    .alumni-meta {
+        justify-content: flex-start;
+        margin: 0;
+    }
+
+    .alumni-badge {
+        padding: 3px 7px;
+        font-size: 10px;
+    }
+
+    .badge-spotlight {
+        top: 8px;
+        left: 8px;
+        width: 26px;
+        height: 26px;
+    }
+
+    .alumni-card-actions {
+        grid-column: 1 / -1;
+        gap: 7px;
+    }
+
+    .alumni-card-actions .btn {
+        height: 34px;
+        padding: 6px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    .job-card {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .job-card > div {
+        min-width: 0;
+    }
+
+    .job-card > div:first-child {
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .job-card h4 {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 6px !important;
+        font-size: 13px !important;
+    }
+
+    .job-card > div:last-child {
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        width: 100%;
+    }
+
+    #tab-stats > div {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    #tab-stats canvas {
+        max-height: 220px;
+    }
+
+    .modal-overlay {
+        align-items: stretch;
+        justify-content: stretch;
+        padding: 10px;
+        z-index: 5000;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: none !important;
+        max-height: calc(100dvh - 20px);
+        margin: 0 !important;
+        border-radius: 14px !important;
+    }
+
+    .modal-header {
+        padding: 14px 16px;
+    }
+
+    .modal-header h3 {
+        font-size: 15px;
+    }
+
+    .modal-body {
+        padding: 14px !important;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .modal-body .btn,
+    .modal-content .btn {
+        min-height: 36px;
+        padding: 7px 10px !important;
+        border-radius: 10px !important;
+        font-size: 11px !important;
+    }
+}
 </style>
 
 <div class="alumni-container">
