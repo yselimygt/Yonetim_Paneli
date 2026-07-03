@@ -81,7 +81,7 @@ export default function DeptDashboardPage({ boot }) {
     renderedModules.add(modGroup);
     
     // Check director only
-    if (app.director_only && userRole !== 'director' && userRole !== 'super_admin') return;
+    if (app.director_only && !['director', 'president', 'vice_president', 'super_admin'].includes(userRole)) return;
     
     displayApps.push(app);
   });
@@ -159,7 +159,7 @@ export default function DeptDashboardPage({ boot }) {
                   <div className="dept-member-row__info">
                     <div className="dept-member-row__name">{m.name}</div>
                     <div className="dept-member-row__role">
-                      {m.role === 'director' ? 'Direktör' : 'Üye'}
+                      {m.role === 'director' ? 'Direktör' : m.role === 'president' ? 'Başkan' : m.role === 'vice_president' ? 'Başkan Yardımcısı' : 'Üye'}
                     </div>
                   </div>
                 </div>

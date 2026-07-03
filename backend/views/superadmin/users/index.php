@@ -398,6 +398,12 @@
                         } elseif ($ud['role'] === 'representative') {
                             $badgeClass = 'badge-representative';
                             $roleName = 'Kampüs Temsilcisi';
+                        } elseif ($ud['role'] === 'president') {
+                            $badgeClass = 'badge-president';
+                            $roleName = 'Başkan';
+                        } elseif ($ud['role'] === 'vice_president') {
+                            $badgeClass = 'badge-vice-president';
+                            $roleName = 'Başkan Yardımcısı';
                         }
                     ?>
                     <div class="user-assignment-card">
@@ -426,11 +432,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="assign_department_<?= (int) $u['id'] ?>">Departman</label>
-                        <select name="department_id" id="assign_department_<?= (int) $u['id'] ?>" class="form-control" required>
-                            <option value="">— Seç —</option>
+                        <select name="department_id" id="assign_department_<?= (int) $u['id'] ?>" class="form-control assign-dept-select" required>
+                            <option value="" data-management="0">— Seç —</option>
                             <?php foreach ($departments as $d): ?>
                             <?php $already = in_array((int) $d['id'], $assignedIds, true); ?>
-                            <option value="<?= (int) $d['id'] ?>" <?= $already ? 'style="color:#555"' : '' ?>>
+                            <option value="<?= (int) $d['id'] ?>" data-management="<?= $d['is_management'] ?? 0 ?>" <?= $already ? 'style="color:#555"' : '' ?>>
                                 <?= View::escape($d['name']) ?><?= $already ? ' ✓' : '' ?>
                             </option>
                             <?php endforeach; ?>
@@ -438,10 +444,12 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="assign_role_<?= (int) $u['id'] ?>">Rol</label>
-                        <select name="role" id="assign_role_<?= (int) $u['id'] ?>" class="form-control">
-                            <option value="member">Üye</option>
-                            <option value="representative">Kampüs Temsilcisi</option>
-                            <option value="director">Direktör</option>
+                        <select name="role" id="assign_role_<?= (int) $u['id'] ?>" class="form-control assign-role-select">
+                            <option value="member" class="role-normal">Üye</option>
+                            <option value="representative" class="role-normal">Kampüs Temsilcisi</option>
+                            <option value="director" class="role-normal">Direktör</option>
+                            <option value="president" class="role-mgmt" style="display:none;" disabled>Başkan</option>
+                            <option value="vice_president" class="role-mgmt" style="display:none;" disabled>Başkan Yardımcısı</option>
                         </select>
                     </div>
                 </div>
@@ -492,19 +500,21 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Departman (Opsiyonel)</label>
-                    <select name="department_id" class="form-control">
-                        <option value="">— Seç —</option>
+                    <select name="department_id" id="create_dept_select" class="form-control">
+                        <option value="" data-management="0">— Seç —</option>
                         <?php foreach ($departments as $d): ?>
-                        <option value="<?= $d['id'] ?>"><?= View::escape($d['name']) ?></option>
+                        <option value="<?= $d['id'] ?>" data-management="<?= $d['is_management'] ?? 0 ?>"><?= View::escape($d['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Rol</label>
-                    <select name="role" class="form-control">
-                        <option value="member">Üye</option>
-                        <option value="representative">Kampüs Temsilcisi</option>
-                        <option value="director">Direktör</option>
+                    <select name="role" id="create_role_select" class="form-control">
+                        <option value="member" class="role-normal">Üye</option>
+                        <option value="representative" class="role-normal">Kampüs Temsilcisi</option>
+                        <option value="director" class="role-normal">Direktör</option>
+                        <option value="president" class="role-mgmt" style="display:none;" disabled>Başkan</option>
+                        <option value="vice_president" class="role-mgmt" style="display:none;" disabled>Başkan Yardımcısı</option>
                     </select>
                 </div>
             </div>
@@ -537,6 +547,56 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var createDeptSelect = document.getElementById('create_dept_select');
+    var createRoleSelect = document.getElementById('create_role_select');
+    
+    if (createDeptSelect && createRoleSelect) {
+        createDeptSelect.addEventListener('change', function() {
+            var selected = this.options[this.selectedIndex];
+            var isMgmt = selected.getAttribute('data-management') === '1';
+            
+            var normalRoles = createRoleSelect.querySelectorAll('.role-normal');
+            var mgmtRoles = createRoleSelect.querySelectorAll('.role-mgmt');
+            
+            if (isMgmt) {
+                normalRoles.forEach(function(el) { el.style.display = 'none'; el.disabled = true; });
+                mgmtRoles.forEach(function(el) { el.style.display = 'block'; el.disabled = false; });
+                createRoleSelect.value = 'president';
+            } else {
+                normalRoles.forEach(function(el) { el.style.display = 'block'; el.disabled = false; });
+                mgmtRoles.forEach(function(el) { el.style.display = 'none'; el.disabled = true; });
+                createRoleSelect.value = 'member';
+            }
+        });
+    }
+
+    document.querySelectorAll('.assign-dept-select').forEach(function(select) {
+        select.addEventListener('change', function() {
+            var form = this.closest('form');
+            var roleSelect = form.querySelector('.assign-role-select');
+            
+            if (roleSelect) {
+                var selected = this.options[this.selectedIndex];
+                var isMgmt = selected.getAttribute('data-management') === '1';
+                
+                var normalRoles = roleSelect.querySelectorAll('.role-normal');
+                var mgmtRoles = roleSelect.querySelectorAll('.role-mgmt');
+                
+                if (isMgmt) {
+                    normalRoles.forEach(function(el) { el.style.display = 'none'; el.disabled = true; });
+                    mgmtRoles.forEach(function(el) { el.style.display = 'block'; el.disabled = false; });
+                    roleSelect.value = 'president';
+                } else {
+                    normalRoles.forEach(function(el) { el.style.display = 'block'; el.disabled = false; });
+                    mgmtRoles.forEach(function(el) { el.style.display = 'none'; el.disabled = true; });
+                    roleSelect.value = 'member';
+                }
+            }
+        });
+    });
+});
+
 function switchUserModal(fromId, toId) {
     closeModal(fromId);
     setTimeout(function() {

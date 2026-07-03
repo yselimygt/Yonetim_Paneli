@@ -74,8 +74,8 @@ export default function ManagementReportsPage({ boot }) {
                             <div className="mgmt-member-row__email">{m.email}</div>
                           </div>
                           <div className="mgmt-member-row__role">
-                            <span className={m.role === 'director' ? 'mgmt-role-badge dir' : 'mgmt-role-badge'}>
-                              {m.role === 'director' ? 'Direktör' : 'Üye'}
+                            <span className={['director', 'president', 'vice_president'].includes(m.role) ? 'mgmt-role-badge dir' : 'mgmt-role-badge'}>
+                              {m.role === 'director' ? 'Direktör' : m.role === 'president' ? 'Başkan' : m.role === 'vice_president' ? 'Başkan Yardımcısı' : 'Üye'}
                             </span>
                           </div>
                         </div>

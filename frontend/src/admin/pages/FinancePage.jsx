@@ -5,7 +5,7 @@ import StatPanel from '../components/StatPanel.jsx';
 
 export default function FinancePage({ boot }) {
   const { transactions = [], summary, members = [], actions, csrfToken, flash, userRole } = boot;
-  const isAdminOrDir = userRole === 'superadmin' || userRole === 'director';
+  const isAdminOrDir = ['director', 'president', 'vice_president', 'superadmin', 'super_admin'].includes(userRole);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({

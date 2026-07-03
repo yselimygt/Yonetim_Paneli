@@ -195,7 +195,7 @@ class Auth
     public static function isDirectorOf(string $slug): bool
     {
         foreach (($_SESSION['departments'] ?? []) as $dept) {
-            if ($dept['slug'] === $slug && $dept['role'] === 'director') {
+            if ($dept['slug'] === $slug && in_array($dept['role'], ['director', 'president', 'vice_president'], true)) {
                 return true;
             }
         }

@@ -41,6 +41,10 @@ function StatusBadge({ active }) {
 }
 
 function CreateUserForm({ action, csrfToken, departments }) {
+  const [deptId, setDeptId] = useState('');
+  const selectedDept = departments.find(d => String(d.id) === String(deptId));
+  const isMgmt = selectedDept ? Number(selectedDept.is_management) === 1 : false;
+
   return (
     <form action={action} method="POST" className="admin-form">
       <CsrfField token={csrfToken} />
@@ -64,7 +68,7 @@ function CreateUserForm({ action, csrfToken, departments }) {
         </label>
         <label>
           <span>Departman</span>
-          <select name="department_id" defaultValue="">
+          <select name="department_id" value={deptId} onChange={(e) => setDeptId(e.target.value)}>
             <option value="">Atama yapma</option>
             {departments.map((department) => (
               <option value={department.id} key={department.id}>
@@ -75,9 +79,18 @@ function CreateUserForm({ action, csrfToken, departments }) {
         </label>
         <label>
           <span>Rol</span>
-          <select name="role" defaultValue="member">
-            <option value="member">Üye</option>
-            <option value="director">Direktör</option>
+          <select name="role" defaultValue={isMgmt ? "president" : "member"} key={isMgmt ? "mgmt" : "normal"}>
+            {isMgmt ? (
+              <>
+                <option value="president">Başkan</option>
+                <option value="vice_president">Başkan Yardımcısı</option>
+              </>
+            ) : (
+              <>
+                <option value="member">Üye</option>
+                <option value="director">Direktör</option>
+              </>
+            )}
           </select>
         </label>
       </div>

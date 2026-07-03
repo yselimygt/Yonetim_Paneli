@@ -4,7 +4,12 @@ export default function PanelSelectPage({ boot }) {
   const { departments = [], isSuperAdmin, admin, assets, baseUrl } = boot;
   const [hovered, setHovered] = useState(null);
 
-  const roleLabel = (role) => role === 'director' ? 'Direktör' : 'Üye';
+  const roleLabel = (role) => {
+    if (role === 'director') return 'Direktör';
+    if (role === 'president') return 'Başkan';
+    if (role === 'vice_president') return 'Başkan Yardımcısı';
+    return 'Üye';
+  };
 
   return (
     <div className="psel-root">
@@ -19,7 +24,7 @@ export default function PanelSelectPage({ boot }) {
       {/* ── Department Grid ── */}
       <main className="psel-grid">
         {departments.map((dept) => {
-          const isDir = dept.role === 'director';
+          const isDir = ['director', 'president', 'vice_president'].includes(dept.role);
           return (
             <a
               key={dept.slug}

@@ -30,7 +30,7 @@ export default function ManagementDirectoryPage({ boot }) {
       <div className="mgmt-dir-chips">
         {parts.map((p, idx) => {
           const [dName, dRole] = p.split('|');
-          const isDir = dRole === 'director';
+          const isDir = ['director', 'president', 'vice_president'].includes(dRole);
           return (
             <span key={idx} className={`mgmt-dir-chip${isDir ? ' is-dir' : ''}`}>
               {dName}

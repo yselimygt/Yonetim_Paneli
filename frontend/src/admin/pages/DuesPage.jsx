@@ -16,7 +16,7 @@ export default function DuesPage({ boot }) {
     currentDept 
   } = boot;
   
-  const isDirector = userRole === 'director' || userRole === 'superadmin';
+  const isDirector = ['director', 'president', 'vice_president', 'superadmin', 'super_admin'].includes(userRole);
 
   const [showAddPeriod, setShowAddPeriod] = useState(false);
   const [showAddPayment, setShowAddPayment] = useState(false);

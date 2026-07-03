@@ -173,6 +173,10 @@
         </div>
     </div>
 
+            </form>
+        </div>
+    </div>
+
     <!-- Sağ: Departman Atamaları -->
     <div>
         <!-- Mevcut atamalar -->
@@ -197,6 +201,12 @@
                                 } elseif ($ud['role'] === 'representative') {
                                     $badgeClass = 'badge-representative';
                                     $roleName = 'Kampüs Temsilcisi';
+                                } elseif ($ud['role'] === 'president') {
+                                    $badgeClass = 'badge-president';
+                                    $roleName = 'Başkan';
+                                } elseif ($ud['role'] === 'vice_president') {
+                                    $badgeClass = 'badge-vice-president';
+                                    $roleName = 'Başkan Yardımcısı';
                                 }
                             ?>
                             <span class="badge <?= $badgeClass ?>" <?= $ud['role'] === 'representative' ? 'style="background:rgba(239,68,68,0.15); color:#f87171;"' : '' ?>>
@@ -228,11 +238,11 @@
 
                     <div class="form-group">
                         <label class="form-label">Departman</label>
-                        <select name="department_id" class="form-control" required>
-                            <option value="">— Seç —</option>
+                        <select name="department_id" class="form-control" id="deptSelect" required>
+                            <option value="" data-management="0">— Seç —</option>
                             <?php foreach ($departments as $d): ?>
                             <?php $already = in_array($d['id'], $assignedIds); ?>
-                            <option value="<?= $d['id'] ?>" <?= $already ? 'style="color:#555"' : '' ?>>
+                            <option value="<?= $d['id'] ?>" data-management="<?= $d['is_management'] ?? 0 ?>" <?= $already ? 'style="color:#555"' : '' ?>>
                                 <?= View::escape($d['name']) ?><?= $already ? ' ✓' : '' ?>
                             </option>
                             <?php endforeach; ?>
@@ -241,10 +251,12 @@
 
                     <div class="form-group">
                         <label class="form-label">Rol</label>
-                        <select name="role" class="form-control">
-                            <option value="member">Üye</option>
-                            <option value="representative">Kampüs Temsilcisi</option>
-                            <option value="director">Direktör</option>
+                        <select name="role" class="form-control" id="roleSelect">
+                            <option value="member" class="role-normal">Üye</option>
+                            <option value="representative" class="role-normal">Kampüs Temsilcisi</option>
+                            <option value="director" class="role-normal">Direktör</option>
+                            <option value="president" class="role-mgmt" style="display:none;" disabled>Başkan</option>
+                            <option value="vice_president" class="role-mgmt" style="display:none;" disabled>Başkan Yardımcısı</option>
                         </select>
                     </div>
 
@@ -255,3 +267,30 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var deptSelect = document.getElementById('deptSelect');
+    var roleSelect = document.getElementById('roleSelect');
+    
+    if (deptSelect && roleSelect) {
+        deptSelect.addEventListener('change', function() {
+            var selected = this.options[this.selectedIndex];
+            var isMgmt = selected.getAttribute('data-management') === '1';
+            
+            var normalRoles = roleSelect.querySelectorAll('.role-normal');
+            var mgmtRoles = roleSelect.querySelectorAll('.role-mgmt');
+            
+            if (isMgmt) {
+                normalRoles.forEach(function(el) { el.style.display = 'none'; el.disabled = true; });
+                mgmtRoles.forEach(function(el) { el.style.display = 'block'; el.disabled = false; });
+                roleSelect.value = 'president';
+            } else {
+                normalRoles.forEach(function(el) { el.style.display = 'block'; el.disabled = false; });
+                mgmtRoles.forEach(function(el) { el.style.display = 'none'; el.disabled = true; });
+                roleSelect.value = 'member';
+            }
+        });
+    }
+});
+</script>

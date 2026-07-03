@@ -276,8 +276,14 @@
 <div class="grid">
     <?php foreach ($departments as $dept): ?>
     <?php
-    $isDir = $dept['role'] === 'director';
-    $roleLabel = $isDir ? 'Direktör' : 'Üye';
+    $isDir = in_array($dept['role'], ['director', 'president', 'vice_president'], true);
+    if ($dept['role'] === 'president') {
+        $roleLabel = 'Başkan';
+    } elseif ($dept['role'] === 'vice_president') {
+        $roleLabel = 'Başkan Yardımcısı';
+    } else {
+        $roleLabel = $isDir ? 'Direktör' : 'Üye';
+    }
     $roleBg    = $isDir ? 'rgba(245,158,11,.12)' : 'rgba(0,188,212,.1)';
     $roleColor = $isDir ? '#fcd34d' : '#67e8f9';
     ?>

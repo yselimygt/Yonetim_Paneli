@@ -77,7 +77,7 @@ const APP_MAP = {
   mentorship: 'Mentor', social: 'İçerik', alumni: 'Mezunlar',
 };
 
-const ROLE_MAP   = { director: 'Yönetici', member: 'Üye' };
+const ROLE_MAP   = { director: 'Yönetici', member: 'Üye', president: 'Başkan', vice_president: 'Başkan Yardımcısı' };
 const STATUS_MAP = { paid: 'Ödendi', unpaid: 'Ödenmedi', pending: 'Bekliyor', delivered: 'Teslim Alındı' };
 
 const ENTITY_MAP = {

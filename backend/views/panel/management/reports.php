@@ -129,8 +129,22 @@
                 <tr class="mgmt-report-row">
                     <td data-label="Üye" style="font-weight:500;font-size:13px"><?= View::escape($m['user_name']) ?></td>
                     <td data-label="Rol">
-                        <span class="badge <?= $m['role'] === 'director' ? 'badge-director' : 'badge-member' ?>">
-                            <?= $m['role'] === 'director' ? 'Direktör' : 'Üye' ?>
+                        <?php
+                        $badgeClass = 'badge-member';
+                        $roleName = 'Üye';
+                        if ($m['role'] === 'director') {
+                            $badgeClass = 'badge-director';
+                            $roleName = 'Direktör';
+                        } elseif ($m['role'] === 'president') {
+                            $badgeClass = 'badge-president';
+                            $roleName = 'Başkan';
+                        } elseif ($m['role'] === 'vice_president') {
+                            $badgeClass = 'badge-vice-president';
+                            $roleName = 'Başkan Yardımcısı';
+                        }
+                        ?>
+                        <span class="badge <?= $badgeClass ?>">
+                            <?= $roleName ?>
                         </span>
                     </td>
                     <td data-label="E-posta" style="color:var(--muted);font-size:12px"><?= View::escape($m['email']) ?></td>
