@@ -36,17 +36,17 @@ const Team = () => {
         const department = teamStructure.departments?.find(d => d.id === dept);
         if (department) {
           if (department.director && createSlug(department.director.name) === slug) {
-            foundMember = {...department.director, universityLogo: department.director.universityLogo || '/innomis/assets/uni/neuLogo.png'};
+            foundMember = {...department.director, universityLogo: department.director.universityLogo || '/assets/uni/neuLogo.png'};
           } else {
             const member = department.members.find(m => createSlug(m.name) === slug);
-            if (member) foundMember = {...member, universityLogo: member.universityLogo || '/innomis/assets/uni/neuLogo.png'};
+            if (member) foundMember = {...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'};
           }
         }
       }
 
       if (foundMember) {
         if (dept === 'board') {
-          foundMember = {...foundMember, universityLogo: foundMember.universityLogo || '/innomis/assets/uni/neuLogo.png'};
+          foundMember = {...foundMember, universityLogo: foundMember.universityLogo || '/assets/uni/neuLogo.png'};
         }
         setSelectedMember(foundMember);
         setActiveTab(foundTab);
@@ -110,7 +110,7 @@ const Team = () => {
           <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             {teamStructure.board.map((member, idx) => (
               <div key={idx} className="w-full sm:w-[calc(50%-1rem)]">
-                <MemberCard member={{...member, universityLogo: member.universityLogo || '/innomis/assets/uni/neuLogo.png'}} isBoard={true} onClick={() => handleMemberClick(member, 'board')} />
+                <MemberCard member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} isBoard={true} onClick={() => handleMemberClick(member, 'board')} />
               </div>
             ))}
           </div>
@@ -130,7 +130,7 @@ const Team = () => {
                 <div className="flex justify-center">
                   <div className="relative group w-full max-w-[280px]">
                     <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-secondary opacity-20 rounded-2xl blur group-hover:opacity-40 transition-opacity"></div>
-                    <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/innomis/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director, dept.id)} />
+                    <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director, dept.id)} />
                   </div>
                 </div>
               ) : (
@@ -140,7 +140,7 @@ const Team = () => {
                   <div className="flex justify-center">
                     <div className="relative group w-full max-w-sm">
                       <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-secondary opacity-20 rounded-2xl blur group-hover:opacity-40 transition-opacity"></div>
-                      <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/innomis/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director, dept.id)} />
+                      <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director, dept.id)} />
                     </div>
                   </div>
                   
@@ -148,7 +148,7 @@ const Team = () => {
                   <div className="flex flex-wrap justify-center gap-4">
                     {dept.members.map((member, mIdx) => (
                       <div key={mIdx} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]">
-                        <MemberCard member={{...member, universityLogo: member.universityLogo || '/innomis/assets/uni/neuLogo.png'}} onClick={() => handleMemberClick(member, dept.id)} />
+                        <MemberCard member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} onClick={() => handleMemberClick(member, dept.id)} />
                       </div>
                     ))}
                   </div>

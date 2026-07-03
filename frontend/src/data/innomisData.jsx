@@ -42,11 +42,11 @@ import {
     '/innomis/assets/sponsor/redbull.png',
     '/innomis/assets/sponsor/sorbil.webp',
     '/innomis/assets/sponsor/techcareernet.png',
-    '/innomis/assets/uni/kgtuLogo.png',
-    '/innomis/assets/uni/ktoLogo.png',
-    '/innomis/assets/uni/ktunLogo.png',
-    '/innomis/assets/uni/neuLogo.png',
-    '/innomis/assets/uni/selcukLogo.png'
+    '/assets/uni/kgtuLogo.png',
+    '/assets/uni/ktoLogo.png',
+    '/assets/uni/ktunLogo.png',
+    '/assets/uni/neuLogo.png',
+    '/assets/uni/selcukLogo.png'
   ];
   
   export const values = [
@@ -243,7 +243,7 @@ import {
     board: [
       { name: 'Ahmet Yılmaz', role: 'Yönetim Kurulu Başkanı', initials: 'AY', linkedin: '#',
         faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Bilgisayar Mühendisliği', grade: '4. Sınıf',
-        email: 'ahmet.yilmaz@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+        email: 'ahmet.yilmaz@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
         communityHistory: [
           { period: 'Oca 2025 – Devam ediyor · 6 ay', title: 'Yönetim Kurulu Başkanı', dept: 'Yönetim Kurulu' },
           { period: 'Mar 2024 – Oca 2025 · 10 ay', title: 'Genel Koordinatör', dept: 'Organizasyon' },
@@ -252,7 +252,7 @@ import {
       },
       { name: 'Ayşe Demir', role: 'Başkan Yardımcısı', initials: 'AD', linkedin: '#',
         faculty: 'Sosyal ve Beşeri Bilimler Fakültesi', department: 'İşletme', grade: '3. Sınıf',
-        email: 'ayse.demir@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+        email: 'ayse.demir@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
         communityHistory: [
           { period: 'Şub 2025 – Devam ediyor · 5 ay', title: 'Başkan Yardımcısı', dept: 'Yönetim Kurulu' },
           { period: 'Eyl 2024 – Şub 2025 · 6 ay', title: 'İnsan Kaynakları Direktörü', dept: 'İnsan Kaynakları' },
@@ -289,7 +289,7 @@ import {
         name: 'İnsan Kaynakları',
         director: { name: 'Merve Çelik', role: 'İnsan Kaynakları Direktörü', initials: 'MÇ', linkedin: '#',
           faculty: 'Hukuk Fakültesi', department: 'Hukuk', grade: '3. Sınıf',
-          email: 'merve.celik@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+          email: 'merve.celik@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
           communityHistory: [
             { period: 'Kas 2025 – Devam ediyor · 7 ay', title: 'İnsan Kaynakları Direktörü', dept: 'İnsan Kaynakları' },
             { period: 'Mar 2025 – Kas 2025 · 8 ay', title: 'Üye Koordinatörü', dept: 'İnsan Kaynakları' },
@@ -299,7 +299,7 @@ import {
         members: [
           { name: 'Ceren Yıldız', role: 'Ekip Koordinatörü', initials: 'CY', linkedin: '#',
             faculty: 'Sosyal ve Beşeri Bilimler Fakültesi', department: 'Psikoloji', grade: '2. Sınıf',
-            email: 'ceren.yildiz@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'ceren.yildiz@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Oca 2025 – Devam ediyor · 6 ay', title: 'Ekip Koordinatörü', dept: 'İnsan Kaynakları' },
               { period: '2024', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -307,7 +307,7 @@ import {
           },
           { name: 'Fatma Gül', role: 'Üye İletişimi', initials: 'FG', linkedin: '#',
             faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Endüstri Mühendisliği', grade: '2. Sınıf',
-            email: 'fatma.gul@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'fatma.gul@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Şub 2025 – Devam ediyor · 5 ay', title: 'Üye İletişim Sorumlusu', dept: 'İnsan Kaynakları' },
               { period: '2024', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -320,7 +320,7 @@ import {
         name: 'Organizasyon',
         director: { name: 'Elif Şahin', role: 'Organizasyon Direktörü', initials: 'EŞ', linkedin: '#',
           faculty: 'Sosyal ve Beşeri Bilimler Fakültesi', department: 'Sosyoloji', grade: '3. Sınıf',
-          email: 'elif.sahin@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+          email: 'elif.sahin@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
           communityHistory: [
             { period: 'Eyl 2025 – Devam ediyor · 9 ay', title: 'Organizasyon Direktörü', dept: 'Organizasyon' },
             { period: 'Oca 2025 – Eyl 2025 · 8 ay', title: 'Etkinlik Planlama Sorumlusu', dept: 'Organizasyon' },
@@ -330,7 +330,7 @@ import {
         members: [
           { name: 'Burak Aydın', role: 'Sponsorluk Sorumlusu', initials: 'BA', linkedin: '#',
             faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Makine Mühendisliği', grade: '3. Sınıf',
-            email: 'burak.aydin@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'burak.aydin@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Oca 2025 – Devam ediyor · 6 ay', title: 'Sponsorluk Sorumlusu', dept: 'Organizasyon' },
               { period: '2024', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -338,7 +338,7 @@ import {
           },
           { name: 'Kaan Kaya', role: 'Etkinlik Planlama', initials: 'KK', linkedin: '#',
             faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Bilgisayar Mühendisliği', grade: '2. Sınıf',
-            email: 'kaan.kaya@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'kaan.kaya@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Şub 2025 – Devam ediyor · 5 ay', title: 'Etkinlik Planlama', dept: 'Organizasyon' },
               { period: '2024', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -346,7 +346,7 @@ import {
           },
           { name: 'Deniz Şen', role: 'Saha ve Lojistik', initials: 'DŞ', linkedin: '#',
             faculty: 'Sosyal ve Beşeri Bilimler Fakültesi', department: 'İktisat', grade: '2. Sınıf',
-            email: 'deniz.sen@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'deniz.sen@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Mar 2025 – Devam ediyor · 4 ay', title: 'Saha ve Lojistik Sorumlusu', dept: 'Organizasyon' },
               { period: '2024', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -354,28 +354,28 @@ import {
           },
           { name: 'Örnek İsim 1', role: 'Ekip Üyesi', initials: 'Öİ', linkedin: '#',
             faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Bilgisayar Mühendisliği', grade: '1. Sınıf',
-            email: 'uye1@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'uye1@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Nis 2025 – Devam ediyor · 3 ay', title: 'Ekip Üyesi', dept: 'Organizasyon' },
             ]
           },
           { name: 'Örnek İsim 2', role: 'Ekip Üyesi', initials: 'Öİ', linkedin: '#',
             faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Endüstri Mühendisliği', grade: '2. Sınıf',
-            email: 'uye2@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'uye2@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Nis 2025 – Devam ediyor · 3 ay', title: 'Ekip Üyesi', dept: 'Organizasyon' },
             ]
           },
           { name: 'Örnek İsim 3', role: 'Ekip Üyesi', initials: 'Öİ', linkedin: '#',
             faculty: 'Sosyal ve Beşeri Bilimler Fakültesi', department: 'Uluslararası İlişkiler', grade: '1. Sınıf',
-            email: 'uye3@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'uye3@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'May 2025 – Devam ediyor · 2 ay', title: 'Ekip Üyesi', dept: 'Organizasyon' },
             ]
           },
           { name: 'Örnek İsim 4', role: 'Ekip Üyesi', initials: 'Öİ', linkedin: '#',
             faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Bilgisayar Mühendisliği', grade: '1. Sınıf',
-            email: 'uye4@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'uye4@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'May 2025 – Devam ediyor · 2 ay', title: 'Ekip Üyesi', dept: 'Organizasyon' },
             ]
@@ -387,7 +387,7 @@ import {
         name: 'Sosyal Medya',
         director: { name: 'Can Demir', role: 'Sosyal Medya Direktörü', initials: 'CD', linkedin: '#',
           faculty: 'GüzeL Sanatlar Fakültesi', department: 'Grafik Tasarım', grade: '3. Sınıf',
-          email: 'can.demir@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+          email: 'can.demir@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
           communityHistory: [
             { period: 'Eyl 2025 – Devam ediyor · 9 ay', title: 'Sosyal Medya Direktörü', dept: 'Sosyal Medya' },
             { period: 'Nis 2025 – Eyl 2025 · 5 ay', title: 'İçerik Editörü', dept: 'Sosyal Medya' },
@@ -397,7 +397,7 @@ import {
         members: [
           { name: 'Ece Su', role: 'İçerik Editörü', initials: 'ES', linkedin: '#',
             faculty: 'Güzel Sanatlar Fakültesi', department: 'Görsel İletişim Tasarımı', grade: '2. Sınıf',
-            email: 'ece.su@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'ece.su@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Kas 2025 – Devam ediyor · 7 ay', title: 'İçerik Editörü', dept: 'Sosyal Medya' },
               { period: '2025', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -405,7 +405,7 @@ import {
           },
           { name: 'Kerem Işık', role: 'Kurgu ve Montaj', initials: 'KI', linkedin: '#',
             faculty: 'Güzel Sanatlar Fakültesi', department: 'Sinema ve Televizyon', grade: '2. Sınıf',
-            email: 'kerem.isik@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+            email: 'kerem.isik@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
             communityHistory: [
               { period: 'Oca 2026 – Devam ediyor · 6 ay', title: 'Kurgu ve Montaj Sorumlusu', dept: 'Sosyal Medya' },
               { period: '2025', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -418,7 +418,7 @@ import {
         name: 'Kurumsal İlişkiler',
         director: { name: 'Örnek İsim', role: 'Kurumsal İlişkiler Direktörü', initials: 'Öİ', linkedin: '#',
           faculty: 'Mühendislik Mimarlık Fakültesi', department: 'Yönetim Bilişim Sistemleri', grade: '3. Sınıf',
-          email: 'kurumsal.direktor@innomis.tr', universityLogo: '/innomis/assets/uni/neuLogo.png',
+          email: 'kurumsal.direktor@innomis.tr', universityLogo: '/assets/uni/neuLogo.png',
           communityHistory: [
             { period: 'Kas 2025 – Devam ediyor · 7 ay', title: 'Kurumsal İlişkiler Direktörü', dept: 'Kurumsal İlişkiler' },
             { period: '2024', title: 'Genel Üye', dept: 'InnoMIS Community' },
@@ -431,7 +431,7 @@ import {
       {
         id: 'selcuk',
         university: 'Selçuk Üniversitesi',
-        logo: '/innomis/assets/uni/selcukLogo.png',
+        logo: '/assets/uni/selcukLogo.png',
         representatives: [
           { name: 'Örnek İsim', role: 'Kampüs Temsilcisi', initials: 'Öİ', linkedin: '#',
             communityHistory: [
@@ -444,7 +444,7 @@ import {
       {
         id: 'ktun',
         university: 'Konya Teknik Üniversitesi',
-        logo: '/innomis/assets/uni/ktunLogo.png',
+        logo: '/assets/uni/ktunLogo.png',
         representatives: [
           { name: 'Örnek İsim', role: 'Kampüs Temsilcisi', initials: 'Öİ', linkedin: '#',
             communityHistory: [
@@ -457,7 +457,7 @@ import {
       {
         id: 'kto',
         university: 'KTO Karatay Üniversitesi',
-        logo: '/innomis/assets/uni/ktoLogo.png',
+        logo: '/assets/uni/ktoLogo.png',
         representatives: [
           { name: 'Örnek İsim', role: 'Kampüs Temsilcisi', initials: 'Öİ', linkedin: '#',
             communityHistory: [
@@ -470,7 +470,7 @@ import {
       {
         id: 'kgtu',
         university: 'Konya Gıda ve Tarım Üniversitesi',
-        logo: '/innomis/assets/uni/kgtuLogo.png',
+        logo: '/assets/uni/kgtuLogo.png',
         representatives: [
           { name: 'Örnek İsim', role: 'Kampüs Temsilcisi', initials: 'Öİ', linkedin: '#',
             communityHistory: [
@@ -494,7 +494,7 @@ import {
           currentJob: 'Yazılım Mühendisi @ Aselsan',
           faculty: 'Mühendislik Mimarlık Fakültesi',
           department: 'Bilgisayar Mühendisliği',
-          universityLogo: '/innomis/assets/uni/neuLogo.png',
+          universityLogo: '/assets/uni/neuLogo.png',
           companyLogo: '',
           email: 'ornek@mezun.com',
           phone: '+90 555 000 0000',

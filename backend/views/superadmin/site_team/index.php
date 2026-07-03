@@ -1154,29 +1154,48 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">Üniversite</label>
-                                <input type="text" name="university" id="profile_university" class="form-control">
+                                <select id="select_university" class="form-control" onchange="uniChanged()">
+                                    <option value="">Seçiniz...</option>
+                                </select>
+                                <input type="text" name="university" id="profile_university" class="form-control" style="display:none; margin-top:8px;" placeholder="Üniversite adını giriniz">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Fakülte</label>
-                                <input type="text" name="faculty" id="profile_faculty" class="form-control">
+                                <select id="select_faculty" class="form-control" onchange="facChanged()">
+                                    <option value="">Önce Üniversite Seçin</option>
+                                </select>
+                                <input type="text" name="faculty" id="profile_faculty" class="form-control" style="display:none; margin-top:8px;" placeholder="Fakülte/Yüksekokul adını giriniz">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">Okul Bölümü</label>
-                                <input type="text" name="school_department" id="profile_school_department" class="form-control">
+                                <select id="select_department" class="form-control" onchange="deptChanged()">
+                                    <option value="">Önce Fakülte Seçin</option>
+                                </select>
+                                <input type="text" name="school_department" id="profile_school_department" class="form-control" style="display:none; margin-top:8px;" placeholder="Bölüm adını giriniz">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Sınıf</label>
-                                <input type="text" name="grade" id="profile_grade" class="form-control">
+                                <select id="select_grade" class="form-control" onchange="gradeChanged()">
+                                    <option value="">Seçiniz...</option>
+                                    <option value="Hazırlık">Hazırlık</option>
+                                    <option value="1. Sınıf">1. Sınıf</option>
+                                    <option value="2. Sınıf">2. Sınıf</option>
+                                    <option value="3. Sınıf">3. Sınıf</option>
+                                    <option value="4. Sınıf">4. Sınıf</option>
+                                    <option value="Mezun">Mezun</option>
+                                    <option value="Diğer">Diğer...</option>
+                                </select>
+                                <input type="text" name="grade" id="profile_grade" class="form-control" style="display:none; margin-top:8px;" placeholder="Sınıf bilgisi giriniz">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Üniversite Logo URL</label>
-                                <input type="text" name="university_logo" id="profile_university_logo" class="form-control">
+                                <label class="form-label">Üniversite Logo URL <small>(Otomatik)</small></label>
+                                <input type="text" name="university_logo" id="profile_university_logo" class="form-control" readonly placeholder="Seçimden sonra otomatik atanacaktır">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Şirket / Kurum Logo URL</label>
@@ -1215,7 +1234,144 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
     </div>
 </div>
 
+<script src="<?= BASE_URL ?>/public/assets/admin/js/universities_data.js"></script>
 <script>
+// Initialize university select options
+document.addEventListener('DOMContentLoaded', () => {
+    const uniSelect = document.getElementById('select_university');
+    if (typeof KON_UNIS !== 'undefined') {
+        Object.keys(KON_UNIS).forEach(uni => {
+            const opt = document.createElement('option');
+            opt.value = uni;
+            opt.textContent = uni;
+            uniSelect.appendChild(opt);
+        });
+    }
+    const otherOpt = document.createElement('option');
+    otherOpt.value = 'Diğer';
+    otherOpt.textContent = 'Diğer...';
+    uniSelect.appendChild(otherOpt);
+});
+
+function getLogoForUniversity(uniName) {
+    if (!uniName) return '';
+    const uni = uniName.toLowerCase();
+    const base = '/innomis';
+    if (uni.includes('necmettin erbakan') || uni.includes('neu')) return base + '/assets/uni/neuLogo.png';
+    if (uni.includes('selçuk') || uni.includes('selcuk')) return base + '/assets/uni/selcukLogo.png';
+    if (uni.includes('teknik') || uni.includes('ktün') || uni.includes('ktun')) return base + '/assets/uni/ktunLogo.png';
+    if (uni.includes('kto') || uni.includes('karatay')) return base + '/assets/uni/ktoLogo.png';
+    if (uni.includes('gıda ve tarım') || uni.includes('gida ve tarim')) return base + '/assets/uni/kgtuLogo.png';
+    return '';
+}
+
+function uniChanged() {
+    const val = document.getElementById('select_university').value;
+    const input = document.getElementById('profile_university');
+    const facSelect = document.getElementById('select_faculty');
+    const deptSelect = document.getElementById('select_department');
+    const logoInput = document.getElementById('profile_university_logo');
+
+    facSelect.innerHTML = '<option value="">Önce Üniversite Seçin</option>';
+    deptSelect.innerHTML = '<option value="">Önce Fakülte Seçin</option>';
+    document.getElementById('profile_faculty').style.display = 'none';
+    document.getElementById('profile_school_department').style.display = 'none';
+
+    if (val === 'Diğer') {
+        input.style.display = 'block';
+        input.value = '';
+        facSelect.innerHTML = '<option value="Diğer">Diğer...</option>';
+        document.getElementById('profile_faculty').style.display = 'block';
+        document.getElementById('profile_faculty').value = '';
+        deptSelect.innerHTML = '<option value="Diğer">Diğer...</option>';
+        document.getElementById('profile_school_department').style.display = 'block';
+        document.getElementById('profile_school_department').value = '';
+        logoInput.value = '';
+    } else if (val) {
+        input.style.display = 'none';
+        input.value = val;
+        logoInput.value = getLogoForUniversity(val);
+        facSelect.innerHTML = '<option value="">Seçiniz...</option>';
+        if (typeof KON_UNIS !== 'undefined' && KON_UNIS[val]) {
+            Object.keys(KON_UNIS[val]).forEach(fac => {
+                const opt = document.createElement('option');
+                opt.value = fac;
+                opt.textContent = fac;
+                facSelect.appendChild(opt);
+            });
+        }
+        facSelect.innerHTML += '<option value="Diğer">Diğer...</option>';
+    } else {
+        input.style.display = 'none';
+        input.value = '';
+        logoInput.value = '';
+    }
+}
+
+function facChanged() {
+    const uniVal = document.getElementById('select_university').value;
+    const facVal = document.getElementById('select_faculty').value;
+    const input = document.getElementById('profile_faculty');
+    const deptSelect = document.getElementById('select_department');
+
+    deptSelect.innerHTML = '<option value="">Seçiniz...</option>';
+    document.getElementById('profile_school_department').style.display = 'none';
+
+    if (facVal === 'Diğer') {
+        input.style.display = 'block';
+        input.value = '';
+        deptSelect.innerHTML = '<option value="Diğer">Diğer...</option>';
+        document.getElementById('profile_school_department').style.display = 'block';
+        document.getElementById('profile_school_department').value = '';
+    } else if (facVal && uniVal && typeof KON_UNIS !== 'undefined' && KON_UNIS[uniVal]) {
+        input.style.display = 'none';
+        input.value = facVal;
+        if (KON_UNIS[uniVal][facVal]) {
+            KON_UNIS[uniVal][facVal].forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept;
+                opt.textContent = dept;
+                deptSelect.appendChild(opt);
+            });
+        }
+        deptSelect.innerHTML += '<option value="Diğer">Diğer...</option>';
+    } else {
+        input.style.display = 'none';
+        input.value = '';
+        deptSelect.innerHTML = '<option value="">Önce Fakülte Seçin</option>';
+    }
+}
+
+function deptChanged() {
+    const val = document.getElementById('select_department').value;
+    const input = document.getElementById('profile_school_department');
+    if (val === 'Diğer') {
+        input.style.display = 'block';
+        input.value = '';
+    } else if (val) {
+        input.style.display = 'none';
+        input.value = val;
+    } else {
+        input.style.display = 'none';
+        input.value = '';
+    }
+}
+
+function gradeChanged() {
+    const val = document.getElementById('select_grade').value;
+    const input = document.getElementById('profile_grade');
+    if (val === 'Diğer') {
+        input.style.display = 'block';
+        input.value = '';
+    } else if (val) {
+        input.style.display = 'none';
+        input.value = val;
+    } else {
+        input.style.display = 'none';
+        input.value = '';
+    }
+}
+
 function escapeAttr(value) {
     return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -1245,12 +1401,58 @@ function editProfile(admin) {
     document.getElementById('profile_image_url').value = admin.image_url || '';
     document.getElementById('profile_phone').value = admin.phone || '';
     document.getElementById('profile_website').value = admin.website || '';
-    document.getElementById('profile_university').value = admin.university || '';
-    document.getElementById('profile_faculty').value = admin.faculty || '';
-    document.getElementById('profile_school_department').value = admin.school_department || '';
-    document.getElementById('profile_grade').value = admin.grade || '';
     document.getElementById('profile_university_logo').value = admin.university_logo || '';
     document.getElementById('profile_company_logo').value = admin.company_logo || '';
+    
+    // Cascading dropdowns senkronizasyonu
+    const uSelect = document.getElementById('select_university');
+    if (admin.university && typeof KON_UNIS !== 'undefined' && KON_UNIS[admin.university]) {
+        uSelect.value = admin.university;
+        uniChanged();
+        const fSelect = document.getElementById('select_faculty');
+        if (admin.faculty && KON_UNIS[admin.university][admin.faculty]) {
+            fSelect.value = admin.faculty;
+            facChanged();
+            const dSelect = document.getElementById('select_department');
+            if (admin.school_department && KON_UNIS[admin.university][admin.faculty].includes(admin.school_department)) {
+                dSelect.value = admin.school_department;
+                deptChanged();
+            } else {
+                dSelect.value = 'Diğer';
+                deptChanged();
+                document.getElementById('profile_school_department').value = admin.school_department || '';
+            }
+        } else {
+            fSelect.value = 'Diğer';
+            facChanged();
+            document.getElementById('profile_faculty').value = admin.faculty || '';
+            document.getElementById('profile_school_department').value = admin.school_department || '';
+        }
+    } else if (admin.university) {
+        uSelect.value = 'Diğer';
+        uniChanged();
+        document.getElementById('profile_university').value = admin.university;
+        document.getElementById('profile_faculty').value = admin.faculty || '';
+        document.getElementById('profile_school_department').value = admin.school_department || '';
+    } else {
+        uSelect.value = '';
+        uniChanged();
+    }
+
+    const gSelect = document.getElementById('select_grade');
+    const validGrades = ["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf", "Mezun"];
+    if (admin.grade && validGrades.includes(admin.grade)) {
+        gSelect.value = admin.grade;
+        gradeChanged();
+    } else if (admin.grade) {
+        gSelect.value = 'Diğer';
+        gradeChanged();
+        document.getElementById('profile_grade').value = admin.grade;
+    } else {
+        gSelect.value = '';
+        gradeChanged();
+    }
+
     document.getElementById('profile_linkedin').value = admin.linkedin || '';
     document.getElementById('profile_github').value = admin.github || '';
     document.getElementById('profile_bio').value = admin.bio || '';

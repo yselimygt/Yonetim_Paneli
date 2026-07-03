@@ -74,8 +74,8 @@ const MemberModal = ({ member, onClose }) => {
           <div className="space-y-4">
             {/* Education Block */}
             {(member.universityLogo || member.companyLogo || member.university || member.faculty || member.department || member.grade) && (
-              <div className="flex gap-3 h-auto sm:h-32">
-                <div className="w-28 sm:w-32 shrink-0 bg-white border border-white/10 rounded-xl flex items-center justify-center p-3 sm:p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 shrink-0 bg-white border border-white/10 rounded-xl flex items-center justify-center p-3 sm:p-4">
                   {(member.companyLogo || member.universityLogo) ? (
                     <img src={member.companyLogo || member.universityLogo} alt="Kurum Logosu" className="w-full h-full object-contain drop-shadow-md" />
                   ) : (
@@ -85,7 +85,7 @@ const MemberModal = ({ member, onClose }) => {
                     </div>
                   )}
                 </div>
-                <div className="flex-1 flex flex-col gap-2">
+                <div className="flex-1 flex flex-col justify-between h-auto sm:min-h-32 gap-2">
                   {member.university && (
                     <div className="flex-1 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-2 py-1 min-h-[30px] overflow-hidden text-center">
                       <p className="text-[11px] sm:text-xs text-white font-medium truncate w-full" title={member.university}>{member.university}</p>

@@ -19,7 +19,7 @@ const Alumni = () => {
       if (yearGroup) {
         const member = yearGroup.members.find(m => createSlug(m.name) === slug);
         if (member) {
-          foundMember = {...member, universityLogo: member.universityLogo || '/innomis/assets/uni/neuLogo.png'};
+          foundMember = {...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'};
         }
       }
 
@@ -76,7 +76,7 @@ const Alumni = () => {
                   {yearGroup.members.map((member, mIdx) => (
                     <div key={mIdx} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]">
                       <MemberCard 
-                        member={{...member, universityLogo: member.universityLogo || '/innomis/assets/uni/neuLogo.png'}} 
+                        member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} 
                         onClick={() => handleMemberClick(member, yearGroup.year)} 
                       />
                     </div>

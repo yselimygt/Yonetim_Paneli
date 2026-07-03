@@ -364,7 +364,7 @@ class SiteTeamProfile extends Model
         }
 
         $uni = mb_strtolower(trim($universityName), 'UTF-8');
-        $base = defined('BASE_URL') ? rtrim(BASE_URL, '/') : '/innomis';
+        $base = '/innomis';
         
         if (str_contains($uni, 'necmettin erbakan') || str_contains($uni, 'neu')) {
             return $base . '/assets/uni/neuLogo.png';
