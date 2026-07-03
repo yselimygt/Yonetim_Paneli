@@ -64,7 +64,7 @@
                 <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     <?php foreach ($team['members'] as $m): ?>
                     <span style="padding:4px 8px; background:var(--bg-hover); border-radius:4px; font-size:12px;">
-                        <?= htmlspecialchars($m['first_name'] . ' ' . $m['last_name']) ?>
+                        <?= htmlspecialchars($m['name']) ?>
                     </span>
                     <?php endforeach; ?>
                 </div>
@@ -129,7 +129,7 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
         echo '          <h3 style="font-size:16px; font-weight:600; margin-bottom:4px;">'.htmlspecialchars($task['title']).'</h3>';
         echo '          <div style="font-size:12px; color:var(--muted); display:flex; gap:16px;">';
         echo '              <span><i data-lucide="calendar" style="width:14px; vertical-align:middle;"></i> Son: '.$dueDateStr.'</span>';
-        echo '              <span><i data-lucide="user" style="width:14px; vertical-align:middle;"></i> Açan: '.htmlspecialchars($task['creator_first'].' '.$task['creator_last']).'</span>';
+        echo '              <span><i data-lucide="user" style="width:14px; vertical-align:middle;"></i> Açan: '.htmlspecialchars($task['creator_name']).'</span>';
         echo '          </div>';
         echo '      </div>';
         echo '      <button class="btn btn-sm btn-outline" onclick="openTaskDetails('.htmlspecialchars(json_encode($task)).', '.(int)$currentUserId.', '.(int)$isManagement.')">Detaylar</button>';
@@ -254,7 +254,7 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
             <label>Kişilere Ata (Bireysel)</label>
             <select name="user_ids[]" class="form-control" multiple style="height:120px;">
                 <?php foreach ($allUsers as $u): ?>
-                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['first_name'].' '.$u['last_name']) ?></option>
+                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
                 <?php endforeach; ?>
             </select>
             <small style="color:var(--muted); display:block; margin-top:4px;">Birden fazla seçim için CTRL/CMD basılı tutun.</small>
@@ -287,7 +287,7 @@ function renderTasksList($tasks, $viewContext, $currentUserId, $isManagement) {
             <label>Takım Üyeleri</label>
             <select name="user_ids[]" class="form-control" multiple style="height:150px;" required>
                 <?php foreach ($allUsers as $u): ?>
-                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['first_name'].' '.$u['last_name']) ?></option>
+                <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -344,7 +344,7 @@ function openTaskDetails(task, currentUserId, isManagement) {
     
     document.getElementById('tdTitle').textContent = task.title;
     document.getElementById('tdDesc').textContent = task.description;
-    document.getElementById('tdCreator').textContent = task.creator_first + ' ' + task.creator_last;
+    document.getElementById('tdCreator').textContent = task.creator_name;
     document.getElementById('tdDue').textContent = task.due_date ? new Date(task.due_date).toLocaleString('tr-TR') : 'Süresiz';
     document.getElementById('tdTaskId').value = task.id;
     
@@ -367,8 +367,8 @@ function openTaskDetails(task, currentUserId, isManagement) {
         assigneesDiv.innerHTML += `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; background:var(--bg-hover); border-radius:6px;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="width:24px; height:24px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:10px;">${a.first_name[0]}${a.last_name[0]}</div>
-                    <span style="font-size:13px; font-weight:500;">${a.first_name} ${a.last_name}</span>
+                    <div style="width:24px; height:24px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:10px;">${a.name.substring(0,2).toUpperCase()}</div>
+                    <span style="font-size:13px; font-weight:500;">${a.name}</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:12px;">
                     ${statuses[a.status]}
@@ -435,7 +435,7 @@ function loadComments(taskId) {
                 commentsDiv.innerHTML += `
                     <div style="padding:12px; background:var(--bg-hover); border-radius:8px;">
                         <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                            <span style="font-size:12px; font-weight:600;">${c.first_name} ${c.last_name}</span>
+                            <span style="font-size:12px; font-weight:600;">${c.name}</span>
                             <span style="font-size:11px; color:var(--muted);">${date}</span>
                         </div>
                         <div style="font-size:13px; color:var(--text);">${c.comment}</div>

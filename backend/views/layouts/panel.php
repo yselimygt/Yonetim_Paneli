@@ -1158,6 +1158,7 @@
             'shortener_admin' => 'operations',
             'agile' => 'project',
             'ideahub' => 'project',
+            'task_manager' => 'project',
             'audit' => 'governance',
             'bylaws' => 'governance',
             'sponsor' => 'communication',

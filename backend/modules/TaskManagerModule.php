@@ -4,8 +4,8 @@ class TaskManagerModule extends BaseModule
 {
     public function render(): string
     {
-        $isManagement = Auth::isMemberOf('yonetim') || Auth::isSuperAdmin();
-        $isDirector = Auth::isDirectorOf($this->dept['slug']) || Auth::isSuperAdmin();
+        $isManagement = Auth::isManagement() || Auth::isSuperAdmin();
+        $isDirector = Auth::isDirectorOf($this->department['slug'] ?? '') || Auth::isSuperAdmin();
 
         $tasks = $this->getTasks($isManagement, $isDirector);
         $teams = $this->getTeams();
@@ -19,7 +19,7 @@ class TaskManagerModule extends BaseModule
     public function handlePost(array $data): void
     {
         $action = $data['action'] ?? '';
-        $isManagement = Auth::isMemberOf('yonetim') || Auth::isSuperAdmin();
+        $isManagement = Auth::isManagement() || Auth::isSuperAdmin();
         $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
         try {
@@ -52,7 +52,7 @@ class TaskManagerModule extends BaseModule
             $_SESSION['error_message'] = $e->getMessage();
         }
 
-        header("Location: " . BASE_URL . "/panel/" . View::escape($this->dept['slug']) . "/apps/" . View::escape($this->app['slug']));
+        header("Location: " . BASE_URL . "/panel/" . View::escape($this->department['slug'] ?? '') . "/apps/" . View::escape($this->app['slug'] ?? ''));
         exit;
     }
 
@@ -61,14 +61,14 @@ class TaskManagerModule extends BaseModule
         $userId = Auth::user()['id'];
         $query = "
             SELECT t.*, 
-                   u.first_name as creator_first, u.last_name as creator_last
+                   u.name as creator_name
             FROM app_tasks t
             JOIN users u ON t.created_by = u.id
             WHERE 1=1
         ";
 
         if (!$isManagement) {
-            if ($isDirector && $this->dept['slug']) {
+            if ($isDirector && !empty($this->department['slug'])) {
                 $query .= " AND t.id IN (
                     SELECT ta.task_id 
                     FROM app_task_assignees ta
@@ -90,8 +90,8 @@ class TaskManagerModule extends BaseModule
         $stmt = $this->pdo->prepare($query);
         $params = [];
         if (!$isManagement) {
-            if ($isDirector && $this->dept['slug']) {
-                $params['dept_slug'] = $this->dept['slug'];
+            if ($isDirector && !empty($this->department['slug'])) {
+                $params['dept_slug'] = $this->department['slug'];
             } else {
                 $params['user_id'] = $userId;
             }
@@ -105,7 +105,7 @@ class TaskManagerModule extends BaseModule
         if (!empty($taskIds)) {
             $inQuery = implode(',', array_fill(0, count($taskIds), '?'));
             $assigneeStmt = $this->pdo->prepare("
-                SELECT ta.*, u.first_name, u.last_name, u.profile_image 
+                SELECT ta.*, u.name, u.avatar 
                 FROM app_task_assignees ta
                 JOIN users u ON ta.user_id = u.id
                 WHERE ta.task_id IN ($inQuery)
@@ -134,7 +134,7 @@ class TaskManagerModule extends BaseModule
         if (!empty($teamIds)) {
             $inQuery = implode(',', array_fill(0, count($teamIds), '?'));
             $memberStmt = $this->pdo->prepare("
-                SELECT tm.team_id, u.id as user_id, u.first_name, u.last_name 
+                SELECT tm.team_id, u.id as user_id, u.name 
                 FROM app_task_team_members tm
                 JOIN users u ON tm.user_id = u.id
                 WHERE tm.team_id IN ($inQuery)
@@ -154,7 +154,7 @@ class TaskManagerModule extends BaseModule
 
     private function getAllUsers(): array
     {
-        $stmt = $this->pdo->query("SELECT id, first_name, last_name FROM users WHERE is_active = 1 ORDER BY first_name ASC");
+        $stmt = $this->pdo->query("SELECT id, name FROM users WHERE is_active = 1 ORDER BY name ASC");
         return $stmt->fetchAll();
     }
 
@@ -245,7 +245,7 @@ class TaskManagerModule extends BaseModule
     private function getComments(int $taskId): void
     {
         $stmt = $this->pdo->prepare("
-            SELECT c.*, u.first_name, u.last_name, u.profile_image 
+            SELECT c.*, u.name, u.avatar 
             FROM app_task_comments c
             JOIN users u ON c.user_id = u.id
             WHERE c.task_id = ?

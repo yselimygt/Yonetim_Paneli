@@ -247,7 +247,7 @@ class AppRunnerController extends Controller
             die("Geçersiz modül tipi: " . htmlspecialchars($type));
         }
 
-        $className = ucfirst($type) . 'Module';
+        $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $type))) . 'Module';
         $file = __DIR__ . "/../modules/{$className}.php";
 
         if (!file_exists($file)) {

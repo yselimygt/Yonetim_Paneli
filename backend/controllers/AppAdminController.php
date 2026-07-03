@@ -55,6 +55,7 @@ class AppAdminController extends Controller
         'inbox'        => ['name' => 'Gelen Kutusu',    'icon' => 'inbox'],
         'applications' => ['name' => 'Başvurular',      'icon' => 'file-text'],
         'media'        => ['name' => 'Medya Yöneticisi','icon' => 'image'],
+        'task_manager' => ['name' => 'Görev Yöneticisi','icon' => 'check-square'],
     ];
 
     public function __construct()
