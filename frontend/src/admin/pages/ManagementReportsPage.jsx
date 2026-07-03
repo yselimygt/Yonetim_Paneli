@@ -67,7 +67,11 @@ export default function ManagementReportsPage({ boot }) {
                       {dept.members.map((m, idx) => (
                         <div key={idx} className="mgmt-member-row">
                           <div className="mgmt-member-row__avatar">
-                            {m.user_name?.[0]?.toUpperCase()}
+                            {m.avatar ? (
+                              <img src={`/public/${m.avatar}`} alt="" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                            ) : (
+                              m.user_name?.[0]?.toUpperCase()
+                            )}
                           </div>
                           <div className="mgmt-member-row__info">
                             <div className="mgmt-member-row__name">{m.user_name}</div>

@@ -78,6 +78,7 @@ class TaskManagerModule extends BaseModule
         $query = "
             SELECT t.*, 
                    u.name as creator_name,
+                   u.avatar as creator_avatar,
                    d_creator.slug as creator_dept_slug
             FROM app_tasks t
             JOIN users u ON t.created_by = u.id

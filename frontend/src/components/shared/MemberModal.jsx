@@ -53,7 +53,11 @@ const MemberModal = ({ member, onClose }) => {
           {/* Avatar */}
           <div className="flex justify-center mb-6">
             <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
-              <span className="text-3xl font-display font-bold text-white/90">{member.initials}</span>
+              {member.image_url ? (
+                <img src={member.image_url} alt="" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <span className="text-3xl font-display font-bold text-white/90">{member.initials}</span>
+              )}
               <div className="absolute inset-0 rounded-full bg-primary/20 blur-md -z-10" />
             </div>
           </div>

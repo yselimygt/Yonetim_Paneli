@@ -9,7 +9,11 @@ const MemberCard = ({ member, isBoard = false, isDirector = false, onClick }) =>
     {/* Left: Avatar */}
     <div className={`relative shrink-0 ${isBoard ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-14 h-14 sm:w-16 sm:h-16'}`}>
       <div className={`w-full h-full rounded-full flex items-center justify-center border transition-all duration-300 ${isDirector || isBoard ? 'bg-primary/5 border-primary/20 group-hover:border-primary/40' : 'bg-white/5 border-white/10 group-hover:border-white/20'}`}>
-        <span className={`${isBoard ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'} font-display font-bold text-white/80 group-hover:text-white transition-colors`}>{member.initials}</span>
+        {member.image_url ? (
+          <img src={member.image_url} alt="" className="w-full h-full rounded-full object-cover" />
+        ) : (
+          <span className={`${isBoard ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'} font-display font-bold text-white/80 group-hover:text-white transition-colors`}>{member.initials}</span>
+        )}
       </div>
       <div className="absolute inset-0 rounded-full bg-primary/10 blur-md -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
     </div>

@@ -1280,8 +1280,10 @@
         <div class="sidebar-user">
             <div class="sidebar-user-info">
                 <?php 
-                    $userName = Auth::user()['name'] ?? 'Admin';
-                    $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($userName) . "&background=random&color=fff&size=128";
+                    $u = Auth::user();
+                    $userName = $u['name'] ?? 'Admin';
+                    $userAvatar = !empty($u['avatar']) ? BASE_URL . '/public/' . ltrim($u['avatar'], '/') : null;
+                    $avatarUrl = $userAvatar ?: "https://ui-avatars.com/api/?name=" . urlencode($userName) . "&background=random&color=fff&size=128";
                 ?>
                 <img src="<?= $avatarUrl ?>" alt="Avatar" class="sidebar-avatar">
                 <span class="sidebar-user-name"><?= View::escape($userName) ?></span>

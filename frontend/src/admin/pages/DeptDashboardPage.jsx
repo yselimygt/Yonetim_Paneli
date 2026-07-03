@@ -154,7 +154,11 @@ export default function DeptDashboardPage({ boot }) {
               {members.slice(0, 5).map(m => (
                 <div key={m.id} className="dept-member-row">
                   <div className="dept-member-row__avatar">
-                    {m.name?.[0]?.toUpperCase()}
+                    {m.avatar ? (
+                      <img src={`/public/${m.avatar}`} alt="" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                    ) : (
+                      m.name?.[0]?.toUpperCase()
+                    )}
                   </div>
                   <div className="dept-member-row__info">
                     <div className="dept-member-row__name">{m.name}</div>

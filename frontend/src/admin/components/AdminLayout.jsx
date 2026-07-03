@@ -77,7 +77,13 @@ function Sidebar({ boot, open, onClose }) {
 
         <div className="admin-sidebar__footer">
           <div className="admin-user">
-            <div className="admin-user__avatar">{initials}</div>
+            <div className="admin-user__avatar">
+              {boot.admin?.avatar ? (
+                <img src={`/public/${boot.admin.avatar}`} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+              ) : (
+                initials
+              )}
+            </div>
             <div className="admin-user__meta">
               <div className="admin-user__name">{boot.admin?.name || 'Admin'}</div>
               <div className="admin-user__role">{(boot.admin?.role || 'admin').replace('_', ' ')}</div>
