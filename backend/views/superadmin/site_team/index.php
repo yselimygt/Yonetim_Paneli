@@ -1256,7 +1256,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function getLogoForUniversity(uniName) {
     if (!uniName) return '';
     const uni = uniName.toLowerCase();
-    const base = '/innomis';
+    const base = '';
     if (uni.includes('necmettin erbakan') || uni.includes('neu')) return base + '/assets/uni/neuLogo.png';
     if (uni.includes('selçuk') || uni.includes('selcuk')) return base + '/assets/uni/selcukLogo.png';
     if (uni.includes('teknik') || uni.includes('ktün') || uni.includes('ktun')) return base + '/assets/uni/ktunLogo.png';
