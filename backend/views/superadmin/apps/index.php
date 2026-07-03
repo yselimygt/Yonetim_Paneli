@@ -147,6 +147,45 @@
 .mod-card.selected .mod-checkbox svg {
     opacity: 1;
 }
+.mod-sidebar-tools {
+    display: grid;
+    gap: 6px;
+    margin-top: 8px;
+}
+.mod-sidebar-row {
+    display: grid;
+    grid-template-columns: 1fr 58px;
+    gap: 6px;
+}
+.mod-sidebar-tools select,
+.mod-sidebar-tools input {
+    width: 100%;
+    min-width: 0;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text);
+    font-size: 11px;
+    padding: 6px;
+}
+.mod-primary-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 28px;
+    border: 1px solid rgba(16,185,129,0.28);
+    border-radius: 7px;
+    color: #10b981;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(16,185,129,0.055);
+}
+.mod-primary-toggle input {
+    width: 13px;
+    height: 13px;
+    accent-color: #10b981;
+}
 
 .save-bar {
     border-top: 1px solid var(--border);
@@ -459,6 +498,32 @@
         box-shadow: none !important;
     }
 
+    .mod-sidebar-tools {
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 4px;
+        margin-top: 6px;
+    }
+
+    .mod-sidebar-row {
+        grid-template-columns: minmax(0, 1fr) 42px;
+        gap: 4px;
+    }
+
+    .mod-sidebar-tools select,
+    .mod-sidebar-tools input {
+        min-height: 24px;
+        border-radius: 6px;
+        font-size: 9px;
+        padding: 3px 5px;
+    }
+
+    .mod-primary-toggle {
+        min-height: 24px;
+        border-radius: 6px;
+        font-size: 9px;
+    }
+
     .save-bar {
         align-items: stretch;
         flex-direction: column;
@@ -615,6 +680,11 @@
                             <?php 
                                 $currentName = $appData[$type]['name'] ?? $info['name'];
                                 $currentSort = $appData[$type]['sort_order'] ?? 0;
+                                $currentCategory = $appData[$type]['sidebar_category_key'] ?? '';
+                                $currentCategoryLabel = $appData[$type]['sidebar_category_label'] ?? '';
+                                $currentSidebarOrder = $appData[$type]['sidebar_order'] ?? ($currentSort ?: 100);
+                                $isPrimary = !empty($appData[$type]['is_primary']);
+                                $categorySelectValue = $isPrimary ? '' : (array_key_exists($currentCategory, $sidebarCategories) ? $currentCategory : ($currentCategory !== '' ? 'custom' : ''));
                             ?>
                             <div class="mod-inputs" style="margin-top: 8px;">
                                 <input type="text" name="names[<?= $type ?>]" value="<?= View::escape($currentName) ?>" 
@@ -628,9 +698,31 @@
                                            class="form-control form-control-sm" style="text-align:center; font-size:12px; width:50px; background:var(--input-bg); border:1px solid var(--border); border-radius:6px; padding:4px; color:var(--text);">
                                 </div>
                             </div>
+
+                            <div class="mod-sidebar-tools" onclick="event.stopPropagation()">
+                                <div class="mod-sidebar-row">
+                                    <select name="sidebar_categories[<?= $type ?>]" aria-label="Sidebar kategorisi">
+                                        <option value="">Varsayılan</option>
+                                        <?php foreach ($sidebarCategories as $categoryKey => $categoryLabel): ?>
+                                            <option value="<?= View::escape($categoryKey) ?>" <?= $categorySelectValue === $categoryKey ? 'selected' : '' ?>>
+                                                <?= View::escape($categoryLabel) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <input type="number" name="sidebar_orders[<?= $type ?>]" value="<?= (int)$currentSidebarOrder ?>" aria-label="Sidebar sırası">
+                                </div>
+                                <input type="text"
+                                       name="custom_category_labels[<?= $type ?>]"
+                                       value="<?= $categorySelectValue === 'custom' ? View::escape($currentCategoryLabel) : '' ?>"
+                                       placeholder="Özel kategori adı">
+                                <label class="mod-primary-toggle">
+                                    <input type="checkbox" name="primary_modules[]" value="<?= $type ?>" <?= $isPrimary ? 'checked' : '' ?>>
+                                    Ana uygulama
+                                </label>
+                            </div>
                             
                             <!-- Hidden input for form submission -->
-                            <input type="checkbox" name="modules[]" value="<?= $type ?>" style="display:none;" <?= $isSelected ? 'checked' : '' ?>>
+                            <input type="checkbox" class="module-select-input" name="modules[]" value="<?= $type ?>" style="display:none;" <?= $isSelected ? 'checked' : '' ?>>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -649,7 +741,8 @@
 
 <script>
 function toggleModule(card, type) {
-    const checkbox = card.querySelector('input[type="checkbox"]');
+    const checkbox = card.querySelector('.module-select-input');
+    if (!checkbox) return;
     checkbox.checked = !checkbox.checked;
     
     if (checkbox.checked) {

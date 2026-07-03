@@ -193,6 +193,83 @@
             box-shadow: inset 4px 0 0 var(--accent);
         }
 
+        .nav-link.primary {
+            opacity: .95;
+            background: color-mix(in srgb, var(--accent) 7%, transparent);
+        }
+
+        .nav-link.primary:not(.active) {
+            box-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 62%, transparent);
+        }
+
+        .nav-category {
+            margin: 10px 0 8px;
+        }
+
+        .nav-category:first-of-type {
+            margin-top: 2px;
+        }
+
+        .nav-category-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            padding: 7px 10px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .nav-category-toggle:hover {
+            background: rgba(255,255,255,.035);
+            color: var(--text);
+        }
+
+        .nav-category-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .nav-category-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 18px;
+            padding: 0 6px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 0;
+        }
+
+        .nav-category-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-category.active .nav-category-toggle {
+            color: var(--accent);
+        }
+
+        .nav-category.active .nav-category-count {
+            border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+            color: var(--accent);
+        }
+
         /* Yönetim özel nav */
         .nav-link.mgmt-link {
             color: #d97706;
@@ -922,6 +999,38 @@
                 padding: 14px 12px 28px;
             }
 
+            .nav-category {
+                margin: 8px 0;
+            }
+
+            .nav-category-toggle {
+                min-height: 34px;
+                padding: 8px 10px;
+                border: 1px solid var(--border);
+                background: rgba(255,255,255,.025);
+                font-size: 10px;
+            }
+
+            .nav-category-body {
+                display: none;
+                padding-top: 5px;
+            }
+
+            .nav-category.open .nav-category-body,
+            .nav-category.active .nav-category-body {
+                display: flex;
+            }
+
+            .nav-category.open .nav-category-toggle,
+            .nav-category.active .nav-category-toggle {
+                border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
+                background: rgba(255,255,255,.045);
+            }
+
+            .nav-category .nav-link {
+                margin-bottom: 3px;
+            }
+
             .panel-dept-sheet {
                 box-shadow: none;
             }
@@ -945,6 +1054,50 @@
         </div>
     </div>
 
+    <?php
+    if (!function_exists('panelSidebarIconPath')) {
+        function panelSidebarIconPath(string $icon): string
+        {
+            $paths = [
+                'form' => '<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
+                'file-text' => '<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
+                'calendar' => '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+                'check-square' => '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+                'megaphone' => '<path d="M22 17H2a3 3 0 000 3h20a3 3 0 000-3zM22 11H2M22 5H2"/>',
+                'bar-chart' => '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+                'users' => '<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',
+                'pie-chart' => '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path>',
+                'credit-card' => '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line>',
+                'map-pin' => '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+                'book-open' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+                'award' => '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>',
+                'archive' => '<polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line>',
+                'lock' => '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>',
+                'scissors' => '<circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line>',
+                'qr' => '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>',
+                'link' => '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>',
+                'volume-2' => '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>',
+                'flag' => '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+                'target' => '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+                'layers' => '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/>',
+                'video' => '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>',
+                'user-check' => '<path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/>',
+                'share-2' => '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+                'compass' => '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+                'folder' => '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>',
+                'lightbulb' => '<line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 5.5 8c0 1.5.6 2.89 1.62 3.84c.64.6 1.05 1.34 1.25 2.16"></path>',
+                'layout' => '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>',
+                'shield' => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+                'feather' => '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>',
+                'navigation' => '<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+                'gift' => '<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>',
+            ];
+
+            return $paths[$icon] ?? '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>';
+        }
+    }
+    ?>
+
     <nav class="sidebar-nav">
 
         <div class="nav-section">Panel</div>
@@ -962,88 +1115,252 @@
         <?php if (!empty($deptApps)): ?>
         <div class="nav-section">Uygulamalar</div>
         <?php 
-        $renderedModules = [];
-        // Mevcut kullanıcının departmandaki rolünü kontrol et
         $isDirectorOrAdmin = Auth::isSuperAdmin() || (($userRole ?? 'member') === 'director');
+        $currentDeptSlug = $currentDept['slug'] ?? '';
 
-        foreach ($deptApps as $app): 
+        $sidebarCategories = [
+            'people' => ['label' => 'Üyeler & Ağ', 'order' => 10],
+            'project' => ['label' => 'Proje Yönetimi', 'order' => 20],
+            'communication' => ['label' => 'İletişim & Başvurular', 'order' => 30],
+            'events' => ['label' => 'Etkinlik & Takvim', 'order' => 40],
+            'knowledge' => ['label' => 'Bilgi & Dosyalar', 'order' => 50],
+            'finance' => ['label' => 'Finans & Raporlama', 'order' => 60],
+            'operations' => ['label' => 'Operasyon & Araçlar', 'order' => 70],
+            'governance' => ['label' => 'Yönetim & Denetim', 'order' => 80],
+            'special' => ['label' => 'Departman Özel', 'order' => 90],
+        ];
+
+        $moduleCategories = [
+            'members' => 'people',
+            'members_public' => 'people',
+            'directory' => 'people',
+            'alumni' => 'people',
+            'alumni_admin' => 'people',
+            'mentorship' => 'people',
+            'applications' => 'communication',
+            'inbox' => 'communication',
+            'announcement' => 'communication',
+            'form' => 'communication',
+            'form_manager' => 'communication',
+            'form_grouped' => 'communication',
+            'calendar' => 'events',
+            'event' => 'events',
+            'bootcamp' => 'events',
+            'meeting' => 'events',
+            'drive' => 'knowledge',
+            'wiki' => 'knowledge',
+            'media' => 'knowledge',
+            'media_admin' => 'knowledge',
+            'links' => 'knowledge',
+            'links_admin' => 'knowledge',
+            'links_public' => 'knowledge',
+            'certificate' => 'knowledge',
+            'finance' => 'finance',
+            'dues' => 'finance',
+            'budget' => 'finance',
+            'report' => 'finance',
+            'inventory' => 'operations',
+            'passwords' => 'operations',
+            'qr' => 'operations',
+            'qr_admin' => 'operations',
+            'shortener' => 'operations',
+            'shortener_admin' => 'operations',
+            'agile' => 'project',
+            'ideahub' => 'project',
+            'audit' => 'governance',
+            'bylaws' => 'governance',
+            'sponsor' => 'communication',
+            'partner' => 'communication',
+            'social' => 'communication',
+            'trophy' => 'events',
+        ];
+
+        $departmentProfiles = [
+            'arge' => [
+                'order' => ['project', 'knowledge', 'operations', 'communication', 'people', 'events', 'finance', 'governance', 'special'],
+                'modules' => ['agile' => 'project', 'ideahub' => 'project', 'wiki' => 'knowledge', 'drive' => 'knowledge', 'inventory' => 'operations'],
+            ],
+            'teknoloji' => [
+                'order' => ['project', 'knowledge', 'operations', 'communication', 'people', 'events', 'finance', 'governance', 'special'],
+                'modules' => ['agile' => 'project', 'ideahub' => 'project', 'wiki' => 'knowledge', 'drive' => 'knowledge', 'passwords' => 'operations'],
+            ],
+            'insan' => [
+                'order' => ['people', 'communication', 'events', 'knowledge', 'operations', 'project', 'finance', 'governance', 'special'],
+                'modules' => ['members' => 'people', 'applications' => 'communication', 'alumni' => 'people', 'mentorship' => 'people'],
+            ],
+            'denetim' => [
+                'order' => ['governance', 'communication', 'knowledge', 'people', 'operations', 'project', 'events', 'finance', 'special'],
+                'modules' => ['audit' => 'governance', 'report' => 'governance', 'inbox' => 'communication'],
+            ],
+            'finans' => [
+                'order' => ['finance', 'operations', 'communication', 'people', 'knowledge', 'project', 'events', 'governance', 'special'],
+                'modules' => ['budget' => 'finance', 'report' => 'finance', 'inventory' => 'operations', 'dues' => 'finance'],
+            ],
+            'yonetim' => [
+                'order' => ['governance', 'communication', 'people', 'finance', 'events', 'knowledge', 'operations', 'project', 'special'],
+                'modules' => ['audit' => 'governance', 'announcement' => 'communication', 'members' => 'people', 'report' => 'governance'],
+            ],
+        ];
+
+        $activeProfile = ['order' => [], 'modules' => []];
+        foreach ($departmentProfiles as $slugNeedle => $profile) {
+            if (stripos($currentDeptSlug, $slugNeedle) !== false) {
+                $activeProfile = $profile;
+                break;
+            }
+        }
+
+        $categoryOrder = $activeProfile['order'] ?: array_keys($sidebarCategories);
+        $categoryOrder = array_values(array_unique($categoryOrder));
+        $categoryOrderMap = array_flip($categoryOrder);
+        $sidebarGroups = [];
+        $primaryItems = [];
+        $renderedModules = [];
+        $appIndex = 0;
+
+        foreach ($deptApps as $app) {
             $modGroup = $app['module_type'];
-            
-            // Eğer modül passwords ise ve kullanıcı director veya super admin değilse atla
+
             if ($modGroup === 'passwords' && !$isDirectorOrAdmin) {
                 continue;
             }
 
-            // Bireysel formları ayıklamak için slug kontrolü
-            // Ana form uygulamasının slug'ı her zaman 'form' veya 'form_manager' dır.
-            // Eğer slug farklıysa (örn. gfhx-1781094217) bu bireysel oluşturulmuş bir formdur.
             if ($app['module_type'] === 'form' && !in_array($app['slug'], ['form', 'form_manager'])) {
                 continue;
             }
 
-            if (in_array($modGroup, ['form', 'form_manager'])) $modGroup = 'form_grouped';
+            if (in_array($modGroup, ['form', 'form_manager'])) {
+                $modGroup = 'form_grouped';
+            }
 
-            if (in_array($modGroup, $renderedModules)) continue;
+            if (in_array($modGroup, $renderedModules)) {
+                continue;
+            }
             $renderedModules[] = $modGroup;
-        ?>
-            <?php
-            // Setup routing and highlighting based on module type
-            $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/apps/" . View::escape($app['slug']);
+
+            $href = BASE_URL . "/panel/" . View::escape($currentDeptSlug) . "/apps/" . View::escape($app['slug']);
             $isActive = ($activeApp ?? '') === $app['slug'];
-            
+
             if (in_array($app['module_type'], ['form', 'form_manager'])) {
-                $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/forms";
+                $href = BASE_URL . "/panel/" . View::escape($currentDeptSlug) . "/forms";
                 $isActive = ($activeSection ?? '') === 'forms';
             } elseif ($app['module_type'] === 'finance') {
-                $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/finance";
+                $href = BASE_URL . "/panel/" . View::escape($currentDeptSlug) . "/finance";
                 $isActive = ($activeSection ?? '') === 'finance';
             } elseif ($app['module_type'] === 'dues') {
-                $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/dues";
+                $href = BASE_URL . "/panel/" . View::escape($currentDeptSlug) . "/dues";
                 $isActive = ($activeSection ?? '') === 'dues';
             }
 
-            // Icons
-            $svgPath = '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>';
-            if (in_array($app['icon'], ['form', 'file-text'])) $svgPath = '<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>';
-            if ($app['icon'] === 'calendar') $svgPath = '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>';
-            if ($app['icon'] === 'check-square') $svgPath = '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>';
-            if ($app['icon'] === 'megaphone') $svgPath = '<path d="M22 17H2a3 3 0 000 3h20a3 3 0 000-3zM22 11H2M22 5H2"/>';
-            if ($app['icon'] === 'bar-chart') $svgPath = '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>';
-            if ($app['icon'] === 'users') $svgPath = '<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>';
-            if ($app['icon'] === 'pie-chart') $svgPath = '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path>';
-            if ($app['icon'] === 'credit-card') $svgPath = '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line>';
-            if ($app['icon'] === 'map-pin') $svgPath = '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>';
-            if ($app['icon'] === 'book-open') $svgPath = '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>';
-            if ($app['icon'] === 'award') $svgPath = '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>';
-            if ($app['icon'] === 'archive') $svgPath = '<polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line>';
-            if ($app['icon'] === 'lock') $svgPath = '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>';
-            if ($app['icon'] === 'scissors') $svgPath = '<circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line>';
-            if ($app['icon'] === 'qr') $svgPath = '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>';
-            if ($app['icon'] === 'link') $svgPath = '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>';
-            if ($app['icon'] === 'volume-2') $svgPath = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>';
-            if ($app['icon'] === 'flag') $svgPath = '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>';
-            if ($app['icon'] === 'target') $svgPath = '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>';
-            if ($app['icon'] === 'layers') $svgPath = '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/>';
-            if ($app['icon'] === 'video') $svgPath = '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>';
-            if ($app['icon'] === 'user-check') $svgPath = '<path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/>';
-            if ($app['icon'] === 'share-2') $svgPath = '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>';
-            if ($app['icon'] === 'compass') $svgPath = '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>';
-            if ($app['icon'] === 'folder') $svgPath = '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>';
-            if ($app['icon'] === 'lightbulb') $svgPath = '<line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 5.5 8c0 1.5.6 2.89 1.62 3.84c.64.6 1.05 1.34 1.25 2.16"></path>';
-            if ($app['icon'] === 'layout') $svgPath = '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>';
-            if ($app['icon'] === 'shield') $svgPath = '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>';
-            if ($app['icon'] === 'feather') $svgPath = '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>';
-            if ($app['icon'] === 'navigation') $svgPath = '<polygon points="3 11 22 2 13 21 11 13 3 11"/>';
-            if ($app['icon'] === 'gift') $svgPath = '<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>';
-            ?>
-            <a href="<?= $href ?>" class="nav-link <?= $isActive ? 'active' : '' ?>">
+            $dbCategoryKey = trim((string)($app['sidebar_category_key'] ?? ''));
+            $dbCategoryLabel = trim((string)($app['sidebar_category_label'] ?? ''));
+            $isPrimaryApp = !empty($app['is_primary']);
+            $sidebarOrder = (int)($app['sidebar_order'] ?? 100);
+            $categoryKey = $activeProfile['modules'][$modGroup] ?? $moduleCategories[$modGroup] ?? 'special';
+            if ($dbCategoryKey !== '') {
+                $categoryKey = $dbCategoryKey;
+            }
+            if ($isPrimaryApp) {
+                $primaryItems[] = [
+                    'href' => $href,
+                    'active' => $isActive,
+                    'icon' => panelSidebarIconPath($app['icon'] ?? ''),
+                    'label' => $app['module_type'] === 'form_manager' ? 'Form' : ($app['name'] ?? 'Uygulama'),
+                    'primary' => true,
+                    'order' => $sidebarOrder,
+                    'index' => $appIndex++,
+                ];
+                continue;
+            }
+            $categoryMeta = $sidebarCategories[$categoryKey] ?? [
+                'label' => $dbCategoryLabel !== '' ? $dbCategoryLabel : 'Departman Özel',
+                'order' => 95,
+            ];
+            if ($dbCategoryLabel !== '') {
+                $categoryMeta['label'] = $dbCategoryLabel;
+            }
+
+            $sidebarGroups[$categoryKey] ??= [
+                'meta' => $categoryMeta,
+                'items' => [],
+                'active' => false,
+                'order' => $categoryOrderMap[$categoryKey] ?? ($categoryMeta['order'] ?? 999),
+            ];
+            if (($categoryMeta['order'] ?? 999) < $sidebarGroups[$categoryKey]['order']) {
+                $sidebarGroups[$categoryKey]['order'] = $categoryMeta['order'];
+            }
+
+            $sidebarGroups[$categoryKey]['items'][] = [
+                'href' => $href,
+                'active' => $isActive,
+                'icon' => panelSidebarIconPath($app['icon'] ?? ''),
+                'label' => $app['module_type'] === 'form_manager' ? 'Form' : ($app['name'] ?? 'Uygulama'),
+                'primary' => $isPrimaryApp,
+                'order' => $sidebarOrder,
+                'index' => $appIndex++,
+            ];
+
+            if ($isActive) {
+                $sidebarGroups[$categoryKey]['active'] = true;
+            }
+        }
+
+        usort($primaryItems, function ($a, $b) {
+            if ($a['order'] === $b['order']) {
+                return $a['index'] <=> $b['index'];
+            }
+            return $a['order'] <=> $b['order'];
+        });
+
+        foreach ($sidebarGroups as &$group) {
+            usort($group['items'], function ($a, $b) {
+                if ($a['primary'] !== $b['primary']) {
+                    return $a['primary'] ? -1 : 1;
+                }
+                if ($a['order'] === $b['order']) {
+                    return $a['index'] <=> $b['index'];
+                }
+                return $a['order'] <=> $b['order'];
+            });
+        }
+        unset($group);
+
+        uasort($sidebarGroups, function ($a, $b) {
+            if ($a['order'] === $b['order']) {
+                return ($a['items'][0]['index'] ?? 0) <=> ($b['items'][0]['index'] ?? 0);
+            }
+            return $a['order'] <=> $b['order'];
+        });
+        ?>
+        <?php foreach ($primaryItems as $item): ?>
+            <a href="<?= $item['href'] ?>" class="nav-link <?= $item['active'] ? 'active' : '' ?> primary">
                 <span class="icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15">
-                        <?= $svgPath ?>
+                        <?= $item['icon'] ?>
                     </svg>
                 </span>
-                <?= View::escape($app['module_type'] === 'form_manager' ? 'Form' : $app['name']) ?>
+                <?= View::escape($item['label']) ?>
             </a>
+        <?php endforeach; ?>
+        <?php foreach ($sidebarGroups as $categoryKey => $group): ?>
+            <div class="nav-category <?= $group['active'] ? 'active open' : '' ?>" data-nav-category>
+                <button type="button" class="nav-category-toggle" onclick="toggleSidebarCategory(this)" aria-expanded="<?= $group['active'] ? 'true' : 'false' ?>">
+                    <span class="nav-category-title"><?= View::escape($group['meta']['label']) ?></span>
+                    <span class="nav-category-count"><?= count($group['items']) ?></span>
+                </button>
+                <div class="nav-category-body">
+                    <?php foreach ($group['items'] as $item): ?>
+                        <a href="<?= $item['href'] ?>" class="nav-link <?= $item['active'] ? 'active' : '' ?> <?= $item['primary'] ? 'primary' : '' ?>">
+                            <span class="icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15">
+                                    <?= $item['icon'] ?>
+                                </svg>
+                            </span>
+                            <?= View::escape($item['label']) ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         <?php endforeach; ?>
         <?php endif; ?>
 
@@ -1207,6 +1524,24 @@ function openPanelMenu() {
 
 function closePanelMenu() {
     document.body.classList.remove('panel-menu-open');
+}
+
+function toggleSidebarCategory(button) {
+    const category = button.closest('[data-nav-category]');
+    if (!category) return;
+
+    const isOpen = category.classList.contains('open');
+    const isActive = category.classList.contains('active');
+    document.querySelectorAll('[data-nav-category]').forEach((item) => {
+        if (!item.classList.contains('active')) {
+            item.classList.remove('open');
+            item.querySelector('.nav-category-toggle')?.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    const nextOpen = isActive ? true : !isOpen;
+    category.classList.toggle('open', nextOpen);
+    button.setAttribute('aria-expanded', String(nextOpen));
 }
 
 // Global Modal Functions
