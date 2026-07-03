@@ -524,4 +524,112 @@ class PublicApiController extends Controller
         }
         exit;
     }
+    public function submitMembership(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+        $fullName = trim($input['fullName'] ?? '');
+        $email = trim($input['email'] ?? '');
+        
+        if (empty($fullName) || empty($email)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Lütfen zorunlu alanları (Ad Soyad, E-posta) doldurun.']);
+            exit;
+        }
+
+        $phone = trim($input['phone'] ?? '');
+        $faculty = trim($input['faculty'] ?? '');
+        $department = trim($input['department'] ?? '');
+        $grade = trim($input['grade'] ?? '');
+        $studentId = trim($input['studentId'] ?? '');
+        // We don't have city in app_members, maybe map to university or leave out. We can put city in university if university isn't asked.
+        $university = trim($input['city'] ?? ''); // Use city as university since innomis usually operates in a single university or city.
+
+        // Split fullName into first_name and last_name
+        $lastSpacePos = mb_strrpos($fullName, ' ', 0, 'UTF-8');
+        if ($lastSpacePos !== false) {
+            $firstName = mb_substr($fullName, 0, $lastSpacePos, 'UTF-8');
+            $lastName = mb_substr($fullName, $lastSpacePos + 1, null, 'UTF-8');
+        } else {
+            $firstName = $fullName;
+            $lastName = '';
+        }
+
+        try {
+            $db = Database::getInstance();
+            
+            // Find target department from form_routing for 'membership'
+            $stmtSettings = $db->query("SELECT json_value FROM site_settings WHERE key_name = 'form_routing'");
+            $routingSetting = $stmtSettings->fetchColumn();
+            $routing = $routingSetting ? json_decode($routingSetting, true) : [];
+            
+            $rule = $routing['membership'] ?? ($routing['all'] ?? []);
+            
+            if (isset($rule['targets'])) {
+                $deptIds = array_column($rule['targets'], 'department_id');
+            } elseif (isset($rule['department_id'])) {
+                $deptIds = [(int)$rule['department_id']];
+            } elseif (is_array($rule) && (empty($rule) || array_keys($rule) === range(0, count($rule) - 1))) {
+                $deptIds = array_filter(array_map('intval', $rule));
+            } else {
+                $deptIds = [];
+            }
+
+            if (empty($deptIds)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Sistemde üye alımı yapılandırılmamış (Hedef departman yok).']);
+                exit;
+            }
+
+            $stmtApp = $db->prepare("SELECT id FROM apps WHERE department_id = ? AND module_type = 'members' AND is_active = 1 LIMIT 1");
+            
+            $inserted = 0;
+            $duplicateError = false;
+
+            $stmtInsert = $db->prepare("
+                INSERT INTO app_members 
+                (app_id, department_id, first_name, last_name, email, phone, university, faculty, department, grade, student_id, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
+            ");
+
+            foreach ($deptIds as $deptId) {
+                $deptId = (int)$deptId;
+                if ($deptId <= 0) continue;
+
+                $stmtApp->execute([$deptId]);
+                $appId = (int)$stmtApp->fetchColumn();
+                if (!$appId) continue; // Bu departmanda members uygulaması yok
+
+                try {
+                    $stmtInsert->execute([$appId, $deptId, $firstName, $lastName, $email, $phone, $university, $faculty, $department, $grade, $studentId]);
+                    $inserted++;
+                } catch (\PDOException $e) {
+                    // Check for duplicate entry (1062) for uq_app_email
+                    if ($e->getCode() == 23000 || strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                        $duplicateError = true;
+                    } else {
+                        throw $e;
+                    }
+                }
+            }
+            
+            if ($inserted === 0) {
+                if ($duplicateError) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'Bu e-posta adresi ile zaten kayıt oluşturulmuş.']);
+                    exit;
+                }
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Hedef departmanlarda aktif Üyeler uygulaması bulunamadı.']);
+                exit;
+            }
+
+            echo json_encode(['success' => true, 'message' => 'Kaydınız başarıyla tamamlandı. Aramıza hoş geldiniz!']);
+        } catch (\Throwable $e) {
+            http_response_code(200);
+            echo json_encode(['success' => false, 'message' => 'Hata: ' . $e->getMessage()]);
+        }
+        exit;
+    }
 }

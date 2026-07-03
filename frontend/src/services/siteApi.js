@@ -48,3 +48,7 @@ export function submitMessage(data) {
 export function submitApplication(data) {
   return postJson('/submit-application', data);
 }
+
+export function submitMembership(data) {
+  return postJson('/submit-membership', data);
+}

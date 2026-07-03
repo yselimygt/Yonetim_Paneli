@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronDown, Send } from 'lucide-react';
-import { submitMessage } from '../services/siteApi';
+import { submitMembership } from '../services/siteApi';
 
 const RegistrationForm = () => {
   const [captchaNum1, setCaptchaNum1] = useState(0);
@@ -59,14 +59,15 @@ const RegistrationForm = () => {
     setErrorMessage('');
 
     try {
-      const response = await submitMessage({
+      const response = await submitMembership({
         fullName: formData.name,
         email: formData.email,
         phone: formData.phone,
-        category: 'Üyelik Kaydı',
-        company: formData.department ? `${formData.faculty} / ${formData.department}` : formData.faculty,
-        message: `Şehir: ${formData.city}\nSınıf: ${formData.grade}\nÖğrenci No: ${formData.studentId}`,
-        type: 'membership'
+        faculty: formData.faculty,
+        department: formData.department,
+        grade: formData.grade,
+        studentId: formData.studentId,
+        city: formData.city
       });
 
       if (response.success) {

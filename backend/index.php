@@ -132,6 +132,7 @@ $router->get('/api/events', ['PublicApiController', 'getEvents']);
 $router->get('/api/site-data', ['PublicApiController', 'getSiteData']);
 $router->post('/api/submit-message', ['PublicApiController', 'submitMessage']);
 $router->post('/api/submit-application', ['PublicApiController', 'submitApplication']);
+$router->post('/api/submit-membership', ['PublicApiController', 'submitMembership']);
 
 // Kamuya Açık (Public) Rotalar
 $router->get('/f/{slug}/{app}',  ['AppRunnerController', 'runPublic']);
