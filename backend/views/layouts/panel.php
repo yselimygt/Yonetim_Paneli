@@ -1260,6 +1260,7 @@
                     'primary' => true,
                     'order' => $sidebarOrder,
                     'index' => $appIndex++,
+                    'color' => $app['color'] ?? null,
                 ];
                 continue;
             }
@@ -1289,6 +1290,7 @@
                 'primary' => $isPrimaryApp,
                 'order' => $sidebarOrder,
                 'index' => $appIndex++,
+                'color' => $app['color'] ?? null,
             ];
 
             if ($isActive) {
@@ -1324,7 +1326,7 @@
         });
         ?>
         <?php foreach ($primaryItems as $item): ?>
-            <a href="<?= $item['href'] ?>" class="nav-link <?= $item['active'] ? 'active' : '' ?> primary">
+            <a href="<?= $item['href'] ?>" class="nav-link <?= $item['active'] ? 'active' : '' ?> primary" <?= ($item['active'] && !empty($item['color'])) ? 'style="--accent: '.htmlspecialchars($item['color']).';"' : '' ?>>
                 <span class="icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15">
                         <?= $item['icon'] ?>
@@ -1341,7 +1343,7 @@
                 </button>
                 <div class="nav-category-body">
                     <?php foreach ($group['items'] as $item): ?>
-                        <a href="<?= $item['href'] ?>" class="nav-link <?= $item['active'] ? 'active' : '' ?> <?= $item['primary'] ? 'primary' : '' ?>">
+                        <a href="<?= $item['href'] ?>" class="nav-link <?= $item['active'] ? 'active' : '' ?> <?= $item['primary'] ? 'primary' : '' ?>" <?= ($item['active'] && !empty($item['color'])) ? 'style="--accent: '.htmlspecialchars($item['color']).';"' : '' ?>>
                             <span class="icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15">
                                     <?= $item['icon'] ?>
