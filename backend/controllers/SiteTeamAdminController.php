@@ -32,6 +32,47 @@ class SiteTeamAdminController extends Controller
             return;
         }
 
+        if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+            
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $realMime = finfo_file($finfo, $_FILES['avatar']['tmp_name']);
+            finfo_close($finfo);
+
+            if (in_array($ext, $allowed) && in_array($realMime, $allowedMimes)) {
+                require_once __DIR__ . '/../core/ImageOptimizer.php';
+                
+                $filename = 'avatar_' . $data['user_id'] . '_' . time() . '.webp';
+                $targetDir = __DIR__ . '/../public/uploads/avatars/';
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0755, true);
+                }
+                $targetPath = $targetDir . $filename;
+                
+                if (ImageOptimizer::optimizeAndSave($_FILES['avatar']['tmp_name'], $targetPath, 800, 80)) {
+                    $pdo = Database::getInstance();
+                    $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
+                    $stmt->execute([$data['user_id']]);
+                    $oldAvatar = $stmt->fetchColumn();
+                    
+                    if ($oldAvatar && file_exists(__DIR__ . '/../public/' . $oldAvatar)) {
+                        @unlink(__DIR__ . '/../public/' . $oldAvatar);
+                    }
+                    
+                    $avatarPath = 'uploads/avatars/' . $filename;
+                    $pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?")->execute([$avatarPath, $data['user_id']]);
+                    
+                    $data['image_url'] = '/' . $avatarPath;
+                }
+            } else {
+                $this->flashError('Profil fotoğrafı için sadece JPG, PNG ve GIF yüklenebilir.');
+                $this->redirect('/superadmin/site-team');
+                return;
+            }
+        }
+
         $this->teamModel->saveProfile($data);
         $this->teamModel->updateUserPublicProfile((int) $data['user_id'], $data);
         Logger::log('SAVE_SITE_TEAM_PROFILE', 'User', (int) $data['user_id'], [

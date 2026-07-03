@@ -1049,7 +1049,7 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
             </div>
             <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
         </div>
-        <form method="POST" action="<?= BASE_URL ?>/superadmin/site-team/profile">
+        <form method="POST" action="<?= BASE_URL ?>/superadmin/site-team/profile" enctype="multipart/form-data">
             <div class="modal-body profile-modal-body">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="user_id" id="profile_user_id">
@@ -1102,7 +1102,12 @@ $hiddenAdmins = max(0, $totalAdmins - $visibleAdmins);
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Fotoğraf URL</label>
+                                <label class="form-label">Profil Fotoğrafı Yükle</label>
+                                <input type="file" name="avatar" id="profile_avatar_upload" class="form-control" accept="image/*">
+                                <span class="hint">Yüklendiğinde, varsa URL ezilir ve kullanıcının genel profil fotoğrafı da güncellenir.</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Veya Fotoğraf URL</label>
                                 <input type="text" name="image_url" id="profile_image_url" class="form-control">
                             </div>
                             <div class="form-group">
