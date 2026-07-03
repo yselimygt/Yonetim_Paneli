@@ -1157,8 +1157,8 @@
             </button>
         </div>
         
-        <div class="modal-body" style="padding:0;">
-            <table class="members-table">
+        <div class="modal-body" style="padding:0; overflow-x:auto; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+            <table class="members-table" style="min-width:100%;">
                 <thead>
                     <tr>
                         <th>UZAKLAŞTIRILAN ÜYE</th>
