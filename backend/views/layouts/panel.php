@@ -1383,8 +1383,24 @@
                 <img src="<?= $avatarUrl ?>" alt="Avatar" class="sidebar-avatar">
                 <span class="sidebar-user-name"><?= View::escape($userName) ?></span>
             </div>
-            <span class="role-badge <?= ($userRole ?? 'member') === 'director' ? 'role-director' : 'role-member' ?>">
-                <?= ($userRole ?? 'member') === 'director' ? 'Direktör' : 'Üye' ?>
+            <?php
+                $r = $userRole ?? 'member';
+                if ($r === 'director') {
+                    $rClass = 'role-director';
+                    $rLabel = 'Direktör';
+                } elseif ($r === 'president') {
+                    $rClass = 'role-director';
+                    $rLabel = 'Başkan';
+                } elseif ($r === 'vice_president') {
+                    $rClass = 'role-director';
+                    $rLabel = 'Başkan Yardımcısı';
+                } else {
+                    $rClass = 'role-member';
+                    $rLabel = 'Üye';
+                }
+            ?>
+            <span class="role-badge <?= $rClass ?>">
+                <?= $rLabel ?>
             </span>
         </div>
         <a href="<?= BASE_URL ?>/profile" class="btn-logout" style="margin-bottom:6px;">Profilim</a>
@@ -1405,8 +1421,24 @@
         <img src="<?= $avatarUrl ?>" alt="Avatar" class="panel-mobile-bottom-avatar">
         <div style="min-width:0;">
             <span class="panel-mobile-bottom-name"><?= View::escape($userName) ?></span>
-            <span class="panel-mobile-bottom-role <?= ($userRole ?? 'member') === 'director' ? '' : 'member' ?>">
-                <?= ($userRole ?? 'member') === 'director' ? 'Direktör' : 'Üye' ?>
+            <?php
+                $mr = $userRole ?? 'member';
+                if ($mr === 'director') {
+                    $mrClass = '';
+                    $mrLabel = 'Direktör';
+                } elseif ($mr === 'president') {
+                    $mrClass = '';
+                    $mrLabel = 'Başkan';
+                } elseif ($mr === 'vice_president') {
+                    $mrClass = '';
+                    $mrLabel = 'Başkan Yardımcısı';
+                } else {
+                    $mrClass = 'member';
+                    $mrLabel = 'Üye';
+                }
+            ?>
+            <span class="panel-mobile-bottom-role <?= $mrClass ?>">
+                <?= $mrLabel ?>
             </span>
         </div>
     </div>
@@ -1488,7 +1520,16 @@
                 $deptSlug = $dept['slug'] ?? '';
                 $isActiveDept = $deptSlug === ($currentDept['slug'] ?? '');
                 $deptColor = $dept['color'] ?? ($currentDept['color'] ?? '#00BCD4');
-                $roleLabel = ($dept['role'] ?? 'member') === 'director' ? 'Direktör' : 'Üye';
+                $dr = $dept['role'] ?? 'member';
+                if ($dr === 'director') {
+                    $roleLabel = 'Direktör';
+                } elseif ($dr === 'president') {
+                    $roleLabel = 'Başkan';
+                } elseif ($dr === 'vice_president') {
+                    $roleLabel = 'Başkan Yardımcısı';
+                } else {
+                    $roleLabel = 'Üye';
+                }
                 ?>
                 <a href="<?= BASE_URL ?>/panel/<?= View::escape($deptSlug) ?>"
                    class="panel-dept-option <?= $isActiveDept ? 'active' : '' ?>"
