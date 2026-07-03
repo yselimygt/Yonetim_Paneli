@@ -168,12 +168,187 @@ function getTrophyBadge($type) {
     .trophy-action-btn.edit:hover {
         background: #e5e7eb;
     }
+
+    @media (max-width: 768px) {
+        .trophy-header {
+            margin-bottom: 16px !important;
+            align-items: center !important;
+            gap: 12px !important;
+        }
+        .trophy-header-main {
+            gap: 10px !important;
+            min-width: 0;
+        }
+        .trophy-header-icon {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 12px !important;
+            flex: 0 0 auto;
+        }
+        .trophy-header h3 {
+            font-size: 18px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .trophy-header p {
+            display: none;
+        }
+        .trophy-header .btn {
+            width: 100%;
+            min-height: 40px;
+            padding: 9px 12px !important;
+            border-radius: 12px !important;
+            font-size: 13px;
+        }
+        .trophy-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            padding-bottom: 18px;
+        }
+        .trophy-card {
+            height: auto;
+            min-width: 0;
+            border-radius: 14px;
+            box-shadow: none;
+        }
+        .trophy-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        .trophy-image-wrapper {
+            height: 120px;
+            background: #1f2933;
+        }
+        .trophy-image {
+            object-fit: contain;
+            opacity: 1;
+            padding: 4px;
+        }
+        .trophy-overlay {
+            height: 45%;
+        }
+        .trophy-badge {
+            top: 8px;
+            right: 8px;
+            transform: scale(0.78);
+            transform-origin: top right;
+            max-width: 88%;
+        }
+        .trophy-date {
+            bottom: 8px;
+            left: 8px;
+            font-size: 10px;
+        }
+        .trophy-content {
+            padding: 10px;
+        }
+        .trophy-title {
+            font-size: 13px;
+            line-height: 1.2;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .trophy-desc {
+            font-size: 10px;
+            line-height: 1.3;
+            -webkit-line-clamp: 2;
+        }
+        .trophy-action-btn {
+            opacity: 1;
+            transform: scale(1);
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+        }
+        .trophy-action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+        #modal-add-trophy,
+        #modal-edit-trophy {
+            padding: 14px;
+            align-items: center !important;
+            overflow-y: auto;
+            z-index: 2000 !important;
+        }
+        #modal-add-trophy > .card,
+        #modal-edit-trophy > .card {
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: calc(100vh - 28px);
+            margin: auto !important;
+            border-radius: 14px !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        #modal-add-trophy .card-header,
+        #modal-edit-trophy .card-header {
+            padding: 14px !important;
+            border-top-left-radius: 14px !important;
+            border-top-right-radius: 14px !important;
+        }
+        #modal-add-trophy .card-header span,
+        #modal-edit-trophy .card-header span {
+            font-size: 16px !important;
+        }
+        #modal-add-trophy .card-body,
+        #modal-edit-trophy .card-body {
+            padding: 14px !important;
+            max-height: none !important;
+            overflow-y: auto;
+        }
+        #modal-add-trophy form > div[style*="display: flex"],
+        #modal-edit-trophy form > div[style*="display: flex"] {
+            flex-direction: column;
+            gap: 0 !important;
+            margin-bottom: 12px !important;
+        }
+        #modal-add-trophy .form-group,
+        #modal-edit-trophy .form-group {
+            margin-bottom: 12px !important;
+        }
+        #modal-add-trophy .form-label,
+        #modal-edit-trophy .form-label {
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+        #modal-add-trophy .form-control,
+        #modal-edit-trophy .form-control {
+            min-height: 38px;
+            padding: 9px 10px !important;
+            border-radius: 9px !important;
+            font-size: 13px !important;
+        }
+        #modal-add-trophy textarea.form-control,
+        #modal-edit-trophy textarea.form-control {
+            min-height: 90px;
+        }
+        #modal-add-trophy form > div:last-child,
+        #modal-edit-trophy form > div:last-child {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px !important;
+        }
+        #modal-add-trophy .btn,
+        #modal-edit-trophy .btn {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
+            font-size: 12px;
+        }
+    }
 </style>
 
 <!-- Header -->
-<div style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-    <div style="display: flex; align-items: center; gap: 20px;">
-        <div style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
+<div class="trophy-header" style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
+    <div class="trophy-header-main" style="display: flex; align-items: center; gap: 20px;">
+        <div class="trophy-header-icon" style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
             <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" width="32" height="32" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                 <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
@@ -367,13 +542,21 @@ function getTrophyBadge($type) {
 </div>
 
 <script>
-    function openEditTrophyModal(trophy) {
+    window.openEditTrophyModal = function openEditTrophyModal(trophy) {
         document.getElementById('edit-trophy-id').value = trophy.id;
         document.getElementById('edit-trophy-title').value = trophy.title;
         document.getElementById('edit-trophy-type').value = trophy.award_type;
         document.getElementById('edit-trophy-date').value = trophy.award_date;
         document.getElementById('edit-trophy-desc').value = trophy.description;
         document.getElementById('modal-edit-trophy').style.display = 'flex';
-    }
+    };
+
+    document.querySelectorAll('#modal-add-trophy, #modal-edit-trophy').forEach(function(modal) {
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
 </script>
 <?php endif; ?>
