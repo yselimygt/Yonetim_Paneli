@@ -119,7 +119,8 @@ class SiteTeamProfile extends Model
                 u.company_logo AS user_company_logo,
                 u.community_history_json AS user_community_history_json,
                 ud.role AS department_role,
-                d.name AS department_name
+                d.name AS department_name,
+                d.is_management
             FROM site_team_profiles p
             JOIN users u ON u.id = p.user_id
             LEFT JOIN user_departments ud ON ud.user_id = p.user_id
@@ -165,6 +166,7 @@ class SiteTeamProfile extends Model
                 d.name AS department_name,
                 d.slug AS department_slug,
                 d.color AS department_color,
+                d.is_management,
                 p.display_name,
                 p.display_role,
                 p.display_department,
@@ -213,6 +215,7 @@ class SiteTeamProfile extends Model
                 NULL AS department_name,
                 'departmansiz-adminler' AS department_slug,
                 '#6b7280' AS department_color,
+                0 AS is_management,
                 p.display_name,
                 p.display_role,
                 p.display_department,
@@ -238,7 +241,7 @@ class SiteTeamProfile extends Model
 
     private function findProfile(int $userId, $departmentId): ?array
     {
-        if ($departmentId === null) {
+        if (empty($departmentId)) {
             $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE user_id = ? AND department_id IS NULL LIMIT 1");
             $stmt->execute([$userId]);
         } else {
@@ -253,7 +256,7 @@ class SiteTeamProfile extends Model
     private function preparePayload(array $data): array
     {
         return [
-            'department_id' => $data['department_id'],
+            'department_id' => empty($data['department_id']) ? null : $data['department_id'],
             'display_name' => $data['display_name'] ?: null,
             'display_role' => $data['display_role'] ?: null,
             'display_department' => $data['display_department'] ?: null,
@@ -271,6 +274,9 @@ class SiteTeamProfile extends Model
     private function normalizeAdmin(array $admin): array
     {
         $admin['display_type'] = $admin['display_type'] ?: 'department';
+        if (!empty($admin['is_management'])) {
+            $admin['display_type'] = 'board';
+        }
         $admin['is_visible'] = (int) ($admin['is_visible'] ?? 0);
         $admin['sort_order'] = (int) ($admin['sort_order'] ?? 0);
         $admin['display_role'] = $admin['display_role'] ?: $this->defaultRole($admin['department_role'], (bool) $admin['is_super_admin']);
@@ -312,7 +318,7 @@ class SiteTeamProfile extends Model
             'university' => $member['university'],
             'universityLogo' => $this->publicAssetUrl($member['user_university_logo']),
             'companyLogo' => $this->publicAssetUrl($member['user_company_logo']),
-            'type' => $member['display_type'] ?: 'department',
+            'type' => !empty($member['is_management']) ? 'board' : ($member['display_type'] ?: 'department'),
             'image_url' => $avatar,
             'image' => $avatar,
             'linkedin' => $member['linkedin'] ?: $member['user_linkedin'],
@@ -385,6 +391,14 @@ class SiteTeamProfile extends Model
     {
         if ($isSuperAdmin) {
             return 'Süper Admin';
+        }
+        
+        if ($departmentRole === 'president') {
+            return 'Başkan';
+        }
+        
+        if ($departmentRole === 'vice_president') {
+            return 'Başkan Yardımcısı';
         }
 
         return $departmentRole === 'director' ? 'Direktör' : 'Üye';
