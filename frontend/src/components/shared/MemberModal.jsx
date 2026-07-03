@@ -65,12 +65,15 @@ const MemberModal = ({ member, onClose }) => {
             {member.currentJob && (
               <p className="text-white/80 font-medium text-sm mt-1">{member.currentJob}</p>
             )}
+            {member.bio && (
+              <p className="text-white/70 text-xs sm:text-sm mt-3 leading-relaxed max-w-sm mx-auto">{member.bio}</p>
+            )}
           </div>
 
           {/* Details List */}
           <div className="space-y-4">
             {/* Education Block */}
-            {(member.universityLogo || member.companyLogo || member.faculty || member.department || member.grade) && (
+            {(member.universityLogo || member.companyLogo || member.university || member.faculty || member.department || member.grade) && (
               <div className="flex gap-3 h-auto sm:h-32">
                 <div className="w-28 sm:w-32 shrink-0 bg-white border border-white/10 rounded-xl flex items-center justify-center p-3 sm:p-4">
                   {(member.companyLogo || member.universityLogo) ? (
@@ -83,6 +86,11 @@ const MemberModal = ({ member, onClose }) => {
                   )}
                 </div>
                 <div className="flex-1 flex flex-col gap-2">
+                  {member.university && (
+                    <div className="flex-1 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-2 py-1 min-h-[30px] overflow-hidden text-center">
+                      <p className="text-[11px] sm:text-xs text-white font-medium truncate w-full" title={member.university}>{member.university}</p>
+                    </div>
+                  )}
                   {member.faculty && (
                     <div className="flex-1 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center px-2 py-1 min-h-[30px] overflow-hidden text-center">
                       <p className="text-[11px] sm:text-xs text-white font-medium truncate w-full" title={member.faculty}>{member.faculty}</p>

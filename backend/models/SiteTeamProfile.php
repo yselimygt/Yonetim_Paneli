@@ -285,10 +285,8 @@ class SiteTeamProfile extends Model
         $admin['linkedin'] = $admin['linkedin'] ?: ($admin['user_linkedin'] ?? null);
         $admin['github'] = $admin['github'] ?: ($admin['user_github'] ?? null);
         $admin['bio'] = $admin['bio'] ?: ($admin['user_bio'] ?? null);
-        $admin['community_history_json'] = $this->profileJsonOrUserJson(
-            $admin['community_history_json'] ?? null,
-            $admin['user_community_history_json'] ?? null
-        );
+        $admin['community_history_json'] = $this->profileJsonOrUserJson($admin['community_history_json'], $admin['user_community_history_json']);
+        $admin['university_logo_resolved'] = $this->resolveUniversityLogo($admin['user_university_logo'] ?? null, $admin['university'] ?? null);
 
         return $admin;
     }
@@ -316,7 +314,7 @@ class SiteTeamProfile extends Model
             'faculty' => $member['faculty'],
             'grade' => $member['grade'],
             'university' => $member['university'],
-            'universityLogo' => $this->publicAssetUrl($member['user_university_logo']),
+            'universityLogo' => $this->resolveUniversityLogo($member['user_university_logo'] ?? null, $member['university'] ?? null),
             'companyLogo' => $this->publicAssetUrl($member['user_company_logo']),
             'type' => !empty($member['is_management']) ? 'board' : ($member['display_type'] ?: 'department'),
             'image_url' => $avatar,
@@ -352,6 +350,39 @@ class SiteTeamProfile extends Model
         }
 
         return BASE_URL . '/public/' . ltrim($path, '/');
+    }
+
+    private function resolveUniversityLogo(?string $userLogo, ?string $universityName): ?string
+    {
+        $userLogoUrl = $this->publicAssetUrl($userLogo);
+        if ($userLogoUrl) {
+            return $userLogoUrl;
+        }
+
+        if (empty($universityName)) {
+            return null;
+        }
+
+        $uni = mb_strtolower(trim($universityName), 'UTF-8');
+        $base = defined('BASE_URL') ? rtrim(BASE_URL, '/') : '/innomis';
+        
+        if (str_contains($uni, 'necmettin erbakan') || str_contains($uni, 'neu')) {
+            return $base . '/assets/uni/neuLogo.png';
+        }
+        if (str_contains($uni, 'selçuk') || str_contains($uni, 'selcuk')) {
+            return $base . '/assets/uni/selcukLogo.png';
+        }
+        if (str_contains($uni, 'teknik') || str_contains($uni, 'ktün') || str_contains($uni, 'ktun')) {
+            return $base . '/assets/uni/ktunLogo.png';
+        }
+        if (str_contains($uni, 'karatay') || str_contains($uni, 'kto')) {
+            return $base . '/assets/uni/ktoLogo.png';
+        }
+        if (str_contains($uni, 'gıda') || str_contains($uni, 'kgtü') || str_contains($uni, 'kgtu')) {
+            return $base . '/assets/uni/kgtuLogo.png';
+        }
+
+        return null;
     }
 
     private function normalizeHistory(string $historyJson, string $department): array
