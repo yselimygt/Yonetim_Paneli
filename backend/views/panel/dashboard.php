@@ -674,12 +674,34 @@
             const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
             const allEvents = calendarData.events.filter(e => e.date === dateStr);
             const hasHolidays = allEvents.filter(e => e.is_holiday);
-            const hasEvents = allEvents.filter(e => !e.is_holiday);
+            const hasExams = allEvents.filter(e => e.is_exam);
+            const hasEvents = allEvents.filter(e => e.is_academic_event || (!e.is_holiday && !e.is_exam));
+            
+            // Check connections
+            const prevDateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day - 1).padStart(2, '0');
+            const nextDateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day + 1).padStart(2, '0');
+            const prevEvents = calendarData.events.filter(e => e.date === prevDateStr);
+            const nextEvents = calendarData.events.filter(e => e.date === nextDateStr);
+            
+            let connectLeft = false;
+            let connectRight = false;
+            
+            if (hasHolidays.length > 0) {
+                connectLeft = prevEvents.some(e => e.is_holiday && hasHolidays.some(h => h.title === e.title));
+                connectRight = nextEvents.some(e => e.is_holiday && hasHolidays.some(h => h.title === e.title));
+            } else if (hasExams.length > 0) {
+                connectLeft = prevEvents.some(e => e.is_exam && hasExams.some(h => h.title === e.title));
+                connectRight = nextEvents.some(e => e.is_exam && hasExams.some(h => h.title === e.title));
+            } else if (hasEvents.length > 0) {
+                connectLeft = prevEvents.some(e => (e.is_academic_event || (!e.is_holiday && !e.is_exam)) && hasEvents.some(h => h.title === e.title));
+                connectRight = nextEvents.some(e => (e.is_academic_event || (!e.is_holiday && !e.is_exam)) && hasEvents.some(h => h.title === e.title));
+            }
             
             let bg = 'var(--bg)';
             let color = 'var(--text)';
             let border = '1px solid transparent';
             let iconHtml = '';
+            let bridgeHtml = '';
             
             const isToday = (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear());
             const isSelected = (day === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear());
@@ -687,44 +709,137 @@
             if (isToday) border = '1px solid var(--text)';
             if (isSelected) border = '2px solid var(--accent)';
             
-            if (hasHolidays.length > 0) {
-                bg = 'linear-gradient(135deg, rgba(249,115,22,0.15), rgba(234,88,12,0.05))';
-                color = '#ea580c';
-                border = isSelected ? '2px solid #ea580c' : '1px solid rgba(249,115,22,0.4)';
-                let holidayIcon = hasHolidays[0].icon || '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="16" height="11" style="vertical-align: middle; border-radius: 2px; display: inline-block;"><rect width="1200" height="800" fill="#E30A17"/><circle cx="425" cy="400" r="200" fill="#fff"/><circle cx="475" cy="400" r="160" fill="#E30A17"/><polygon points="800,400 644.25,450.45 693.4,304.5 561.6,400 725,495.5" fill="#fff"/></svg>';
-                iconHtml = `<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">${holidayIcon}</div>`;
-                let extra = [];
-                if (hasBirthdays.length > 0) extra.push('🎂');
-                if (hasEvents.length > 0) extra.push('📅');
-                if (extra.length > 0) {
-                    iconHtml = `<div style="position:absolute; top:-4px; right:-4px; font-size:12px; display:flex; gap:2px;"><span>${holidayIcon}</span><span>${extra.join('</span><span>')}</span></div>`;
-                }
-            } else if (hasBirthdays.length > 0 && hasEvents.length > 0) {
-                bg = 'linear-gradient(135deg, rgba(236,72,153,0.15) 50%, rgba(59,130,246,0.15) 50%)';
-                color = 'var(--text)';
-                border = isSelected ? '2px solid var(--accent)' : '1px solid rgba(236,72,153,0.4)';
-                iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:12px; display:flex; gap:2px;"><span>🎂</span><span>📅</span></div>';
-            } else if (hasBirthdays.length > 0) {
-                bg = 'linear-gradient(135deg, rgba(236,72,153,0.15), rgba(219,39,119,0.05))';
-                color = '#ec4899';
-                border = isSelected ? '2px solid #ec4899' : '1px solid rgba(236,72,153,0.4)';
-                iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">🎂</div>';
-            } else if (hasEvents.length > 0) {
-                bg = 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(37,99,235,0.05))';
-                color = '#3b82f6';
-                border = isSelected ? '2px solid #3b82f6' : '1px solid rgba(59,130,246,0.4)';
-                iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">📅</div>';
+            let brTopLeft = '10px';
+            let brBottomLeft = '10px';
+            let brTopRight = '10px';
+            let brBottomRight = '10px';
+            
+            if (connectLeft && day > 1) {
+                brTopLeft = '0';
+                brBottomLeft = '0';
+            }
+            if (connectRight && day < daysInMonth) {
+                brTopRight = '0';
+                brBottomRight = '0';
             }
             
-            const fontWeight = (hasBirthdays.length > 0 || hasEvents.length > 0 || hasHolidays.length > 0) ? '700' : '500';
+            // User requested emojis only at the beginning (connectLeft = false) or end (connectRight = false)
+            const showEmoji = (!connectLeft || !connectRight);
+            
+            let activeTypes = [];
+            
+            if (hasHolidays.length > 0) {
+                activeTypes.push({
+                    color: '#ea580c',
+                    bgBase: 'rgba(249,115,22,0.15)',
+                    bgFade: 'rgba(234,88,12,0.05)',
+                    borderRgba: 'rgba(249,115,22,0.4)',
+                    icon: hasHolidays[0].icon || '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="16" height="11" style="vertical-align: middle; border-radius: 2px; display: inline-block;"><rect width="1200" height="800" fill="#E30A17"/><circle cx="425" cy="400" r="200" fill="#fff"/><circle cx="475" cy="400" r="160" fill="#E30A17"/><polygon points="800,400 644.25,450.45 693.4,304.5 561.6,400 725,495.5" fill="#fff"/></svg>',
+                    isPrimary: true
+                });
+            }
+            if (hasExams.length > 0) {
+                activeTypes.push({
+                    color: '#2563eb',
+                    bgBase: 'rgba(59,130,246,0.15)',
+                    bgFade: 'rgba(37,99,235,0.05)',
+                    borderRgba: 'rgba(59,130,246,0.4)',
+                    icon: '📝',
+                    isPrimary: true
+                });
+            }
+            if (hasEvents.length > 0) {
+                activeTypes.push({
+                    color: '#059669',
+                    bgBase: 'rgba(16,185,129,0.15)',
+                    bgFade: 'rgba(5,150,105,0.05)',
+                    borderRgba: 'rgba(16,185,129,0.4)',
+                    icon: '📅',
+                    isPrimary: true
+                });
+            }
+            if (hasBirthdays.length > 0) {
+                activeTypes.push({
+                    color: '#ec4899',
+                    bgBase: 'rgba(236,72,153,0.15)',
+                    bgFade: 'rgba(219,39,119,0.05)',
+                    borderRgba: 'rgba(236,72,153,0.4)',
+                    icon: '🎂',
+                    isPrimary: false
+                });
+            }
+            
+            if (activeTypes.length === 1) {
+                let t = activeTypes[0];
+                bg = `linear-gradient(135deg, ${t.bgBase}, ${t.bgFade})`;
+                baseColor = t.bgBase;
+                bridgeColor = t.bgBase; // using base for bridge
+                color = t.color;
+                border = isSelected ? `2px solid ${t.color}` : `1px solid ${t.borderRgba}`;
+                if (showEmoji || !t.isPrimary) {
+                    iconHtml = `<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">${t.icon}</div>`;
+                }
+            } else if (activeTypes.length > 1) {
+                let stops = [];
+                let step = 100 / activeTypes.length;
+                let iconsArr = [];
+                
+                for (let i = 0; i < activeTypes.length; i++) {
+                    let start = i * step;
+                    let end = (i + 1) * step;
+                    stops.push(`${activeTypes[i].bgBase} ${start}%`);
+                    stops.push(`${activeTypes[i].bgBase} ${end}%`);
+                    if (showEmoji || !activeTypes[i].isPrimary) {
+                        iconsArr.push(`<span>${activeTypes[i].icon}</span>`);
+                    }
+                }
+                
+                bg = `linear-gradient(135deg, ${stops.join(', ')})`;
+                color = 'var(--text)';
+                border = isSelected ? '2px solid var(--accent)' : '1px solid rgba(150,150,150,0.3)';
+                
+                // Do not bridge when multiple events exist to prevent weird multi-color bridges
+                baseColor = '';
+                bridgeColor = '';
+                connectLeft = false;
+                connectRight = false;
+                brTopLeft = '10px'; brBottomLeft = '10px'; brTopRight = '10px'; brBottomRight = '10px';
+                
+                if (iconsArr.length > 0) {
+                    iconHtml = `<div style="position:absolute; top:-4px; right:-4px; font-size:12px; display:flex; gap:2px; flex-direction:column; align-items:flex-end;">${iconsArr.join('')}</div>`;
+                }
+            }
+            
+            // Visual bridges
+            if (connectRight && day < daysInMonth && baseColor) {
+                bridgeHtml += `<div style="position:absolute; top:-1px; right:-6px; bottom:-1px; width:6px; background:${bridgeColor}; border-top:1px solid ${border.split('solid ')[1]}; border-bottom:1px solid ${border.split('solid ')[1]}; z-index:1;"></div>`;
+            }
+            
+            if (connectLeft && day > 1) {
+                border = border.replace('solid ', 'solid transparent'); // don't draw left border
+                // We'll fix the border via inline style specifically if needed
+            }
+            if (connectRight && day < daysInMonth) {
+                // don't draw right border natively
+            }
+            
+            const fontWeight = (hasBirthdays.length > 0 || hasEvents.length > 0 || hasHolidays.length > 0 || hasExams.length > 0) ? '700' : '500';
             const cursor = 'pointer';
             
             const cell = document.createElement('div');
-            cell.style.cssText = `background:${bg}; color:${color}; border:${border}; border-radius:10px; aspect-ratio: 1/1; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:${fontWeight}; position:relative; transition: transform 0.2s; cursor:${cursor}; box-sizing:border-box;`;
-            cell.innerHTML = `<span>${day}</span>${iconHtml}`;
+            cell.style.cssText = `background:${bg}; color:${color}; border:${border}; border-radius:${brTopLeft} ${brTopRight} ${brBottomRight} ${brBottomLeft}; aspect-ratio: 1/1; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:${fontWeight}; position:relative; transition: transform 0.2s; cursor:${cursor}; box-sizing:border-box;`;
             
-            cell.onmouseover = () => cell.style.transform = 'translateY(-2px)';
-            cell.onmouseout = () => cell.style.transform = 'translateY(0)';
+            if (connectLeft && day > 1 && baseColor) {
+                cell.style.borderLeft = 'none';
+            }
+            if (connectRight && day < daysInMonth && baseColor) {
+                cell.style.borderRight = 'none';
+            }
+            
+            cell.innerHTML = `<span>${day}</span>${iconHtml}${bridgeHtml}`;
+            
+            cell.onmouseover = () => { if (!connectLeft && !connectRight) cell.style.transform = 'translateY(-2px)' };
+            cell.onmouseout = () => { if (!connectLeft && !connectRight) cell.style.transform = 'translateY(0)' };
             
             cell.onclick = () => {
                 selectedDate = new Date(currentYear, currentMonth, day);

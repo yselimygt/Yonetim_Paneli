@@ -216,6 +216,67 @@ class PanelController extends Controller
             }
         }
 
+        // 6. Akademik Takvim (from JSON)
+        $academicFile = dirname(__DIR__, 2) . '/docs/neu_akademik_takvim_sade_2026_2027.json';
+        if (file_exists($academicFile)) {
+            $academicJson = file_get_contents($academicFile);
+            $academicData = json_decode($academicJson, true);
+            if ($academicData && isset($academicData['etkinlikler'])) {
+                foreach ($academicData['etkinlikler'] as $etkinlik) {
+                    $start_date = new \DateTime($etkinlik['baslangic_tarihi']);
+                    $end_date = (isset($etkinlik['bitis_tarihi']) && $etkinlik['bitis_tarihi']) ? new \DateTime($etkinlik['bitis_tarihi']) : null;
+                    
+                    $is_exam = ($etkinlik['kategori'] === 'sinav');
+                    $is_lesson = ($etkinlik['kategori'] === 'ders');
+                    
+                    if ($is_lesson) {
+                        // For lessons, only add start and end date as single day events
+                        $dates_to_add = [$start_date];
+                        if ($end_date && $start_date->format('Y-m-d') !== $end_date->format('Y-m-d')) {
+                            $dates_to_add[] = clone $end_date;
+                        }
+                        
+                        foreach ($dates_to_add as $dt) {
+                            $suffix = ($dt === $start_date) ? ' (Başlangıç)' : ' (Bitiş)';
+                            $calendarData['events'][] = [
+                                'id' => 'acad_' . $etkinlik['id'] . '_' . $dt->format('Y-m-d'),
+                                'title' => $etkinlik['baslik'] . $suffix,
+                                'date' => $dt->format('Y-m-d'),
+                                'time' => $etkinlik['saat'] ?? null,
+                                'type' => 'academic',
+                                'category' => $etkinlik['kategori'],
+                                'source' => 'academic',
+                                'is_exam' => false,
+                                'is_academic_event' => true
+                            ];
+                        }
+                    } else {
+                        // For exams and other events, span the full date range
+                        if (!$end_date) {
+                            $end_date = clone $start_date;
+                        }
+                        $end_date_modified = clone $end_date;
+                        $end_date_modified->modify('+1 day'); // DatePeriod is exclusive
+                        $period = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date_modified);
+                        
+                        foreach ($period as $dt) {
+                            $calendarData['events'][] = [
+                                'id' => 'acad_' . $etkinlik['id'] . '_' . $dt->format('Y-m-d'),
+                                'title' => $etkinlik['baslik'],
+                                'date' => $dt->format('Y-m-d'),
+                                'time' => $etkinlik['saat'] ?? null,
+                                'type' => 'academic',
+                                'category' => $etkinlik['kategori'],
+                                'source' => 'academic',
+                                'is_exam' => $is_exam,
+                                'is_academic_event' => !$is_exam
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
         $data['calendarData'] = json_encode($calendarData, JSON_UNESCAPED_UNICODE);
 
         $this->view('panel/dashboard', $data, 'panel');
