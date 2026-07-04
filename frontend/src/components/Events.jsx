@@ -261,8 +261,9 @@ const Events = () => {
     }
   }, [selectedEvent]);
 
-  // Extract unique categories
-  const allCategories = ['Tümü', ...new Set(events.map(e => e.category))];
+  // Extract unique categories for the active tab
+  const activeEventsForTab = events.filter(e => e.status === activeTab);
+  const allCategories = ['Tümü', ...new Set(activeEventsForTab.map(e => e.category))];
 
   const filteredEvents = events.filter(event => 
     event.status === activeTab && 
