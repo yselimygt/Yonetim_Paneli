@@ -959,7 +959,10 @@
             col.innerHTML = '<div style="font-weight:600; color:#3b82f6; margin-bottom:8px;">📅 Bu Ayki Etkinlikler</div>';
             const list = document.createElement('div');
             list.style.cssText = 'display:flex; flex-direction:column; gap:6px;';
+            const seenTitles = new Set();
             evts.forEach(e => {
+                if (seenTitles.has(e.title)) return;
+                seenTitles.add(e.title);
                 const day = parseInt(e.date.split('-')[2]);
                 let timeStr = e.time ? e.time.substring(0,5) + ' ' : '';
                 list.innerHTML += `<div><span style="color:var(--muted); margin-right:8px; display:inline-block; width:20px;">${day}</span> ${timeStr}<b>${e.title}</b></div>`;
