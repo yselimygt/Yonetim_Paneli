@@ -1,0 +1,287 @@
+{
+  "ulke": "Türkiye",
+  "kapsam": "Dini ve milli bayramlar ile resmi tatiller",
+  "notlar": [
+    "Ramazan Bayramı arifesi saat 13.00'ten itibaren yarım gündür.",
+    "Kurban Bayramı arifesi saat 13.00'ten itibaren yarım gündür.",
+    "Cumhuriyet Bayramı 28 Ekim saat 13.00'ten itibaren başlar ve 29 Ekim devam eder.",
+    "2027 yılında 19 Mayıs, Kurban Bayramı'nın 4. günü ile aynı güne denk gelmektedir."
+  ],
+  "yillar": [
+    {
+      "yil": 2026,
+      "tatiller": [
+        {
+          "tarih": "2026-01-01",
+          "gun": "Perşembe",
+          "ad": "Yılbaşı",
+          "kategori": "resmi",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-03-19",
+          "gun": "Perşembe",
+          "ad": "Ramazan Bayramı Arifesi",
+          "kategori": "dini",
+          "sure": "yarım gün",
+          "yarim_gun": true
+        },
+        {
+          "tarih": "2026-03-20",
+          "gun": "Cuma",
+          "ad": "Ramazan Bayramı 1. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-03-21",
+          "gun": "Cumartesi",
+          "ad": "Ramazan Bayramı 2. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-03-22",
+          "gun": "Pazar",
+          "ad": "Ramazan Bayramı 3. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-04-23",
+          "gun": "Perşembe",
+          "ad": "Ulusal Egemenlik ve Çocuk Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-05-01",
+          "gun": "Cuma",
+          "ad": "Emek ve Dayanışma Günü",
+          "kategori": "resmi",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-05-19",
+          "gun": "Salı",
+          "ad": "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-05-26",
+          "gun": "Salı",
+          "ad": "Kurban Bayramı Arifesi",
+          "kategori": "dini",
+          "sure": "yarım gün",
+          "yarim_gun": true
+        },
+        {
+          "tarih": "2026-05-27",
+          "gun": "Çarşamba",
+          "ad": "Kurban Bayramı 1. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-05-28",
+          "gun": "Perşembe",
+          "ad": "Kurban Bayramı 2. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-05-29",
+          "gun": "Cuma",
+          "ad": "Kurban Bayramı 3. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-05-30",
+          "gun": "Cumartesi",
+          "ad": "Kurban Bayramı 4. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-07-15",
+          "gun": "Çarşamba",
+          "ad": "Demokrasi ve Millî Birlik Günü",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-08-30",
+          "gun": "Pazar",
+          "ad": "Zafer Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2026-10-28",
+          "gun": "Çarşamba",
+          "ad": "Cumhuriyet Bayramı Arifesi",
+          "kategori": "milli",
+          "sure": "yarım gün",
+          "yarim_gun": true
+        },
+        {
+          "tarih": "2026-10-29",
+          "gun": "Perşembe",
+          "ad": "Cumhuriyet Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        }
+      ]
+    },
+    {
+      "yil": 2027,
+      "tatiller": [
+        {
+          "tarih": "2027-01-01",
+          "gun": "Cuma",
+          "ad": "Yılbaşı",
+          "kategori": "resmi",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-03-08",
+          "gun": "Pazartesi",
+          "ad": "Ramazan Bayramı Arifesi",
+          "kategori": "dini",
+          "sure": "yarım gün",
+          "yarim_gun": true
+        },
+        {
+          "tarih": "2027-03-09",
+          "gun": "Salı",
+          "ad": "Ramazan Bayramı 1. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-03-10",
+          "gun": "Çarşamba",
+          "ad": "Ramazan Bayramı 2. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-03-11",
+          "gun": "Perşembe",
+          "ad": "Ramazan Bayramı 3. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-04-23",
+          "gun": "Cuma",
+          "ad": "Ulusal Egemenlik ve Çocuk Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-05-01",
+          "gun": "Cumartesi",
+          "ad": "Emek ve Dayanışma Günü",
+          "kategori": "resmi",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-05-15",
+          "gun": "Cumartesi",
+          "ad": "Kurban Bayramı Arifesi",
+          "kategori": "dini",
+          "sure": "yarım gün",
+          "yarim_gun": true
+        },
+        {
+          "tarih": "2027-05-16",
+          "gun": "Pazar",
+          "ad": "Kurban Bayramı 1. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-05-17",
+          "gun": "Pazartesi",
+          "ad": "Kurban Bayramı 2. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-05-18",
+          "gun": "Salı",
+          "ad": "Kurban Bayramı 3. Gün",
+          "kategori": "dini",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-05-19",
+          "gun": "Çarşamba",
+          "ad": "Kurban Bayramı 4. Gün + Atatürk'ü Anma, Gençlik ve Spor Bayramı",
+          "kategori": "dini+milli",
+          "sure": "1 gün",
+          "yarim_gun": false,
+          "not": "İki resmi tatil aynı güne denk gelmektedir."
+        },
+        {
+          "tarih": "2027-07-15",
+          "gun": "Perşembe",
+          "ad": "Demokrasi ve Millî Birlik Günü",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-08-30",
+          "gun": "Pazartesi",
+          "ad": "Zafer Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        },
+        {
+          "tarih": "2027-10-28",
+          "gun": "Perşembe",
+          "ad": "Cumhuriyet Bayramı Arifesi",
+          "kategori": "milli",
+          "sure": "yarım gün",
+          "yarim_gun": true
+        },
+        {
+          "tarih": "2027-10-29",
+          "gun": "Cuma",
+          "ad": "Cumhuriyet Bayramı",
+          "kategori": "milli",
+          "sure": "1 gün",
+          "yarim_gun": false
+        }
+      ]
+    }
+  ]
+}
