@@ -69,10 +69,24 @@ class PublicApiController extends Controller
             $agenda = $event['agenda'] ? json_decode($event['agenda'], true) : [];
             
             $dateObj = new DateTime($event['event_date']);
-            $formatter = new IntlDateFormatter('tr_TR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-            $formatter->setPattern('dd MMM yyyy, HH:mm'); 
             
-            $displayDate = $formatter->format($dateObj);
+            if (class_exists('IntlDateFormatter')) {
+                $formatter = new IntlDateFormatter('tr_TR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                $formatter->setPattern('dd MMM yyyy, HH:mm'); 
+                $displayDate = $formatter->format($dateObj);
+            } else {
+                $months = [
+                    '01' => 'Oca', '02' => 'Şub', '03' => 'Mar', '04' => 'Nis', 
+                    '05' => 'May', '06' => 'Haz', '07' => 'Tem', '08' => 'Ağu', 
+                    '09' => 'Eyl', '10' => 'Eki', '11' => 'Kas', '12' => 'Ara'
+                ];
+                $day = $dateObj->format('d');
+                $monthStr = clone $dateObj; // To get the month index
+                $month = $months[$monthStr->format('m')];
+                $year = $dateObj->format('Y');
+                $time = $dateObj->format('H:i');
+                $displayDate = "$day $month $year, $time";
+            }
             $tagColorClass = 'bg-primary/20 text-primary border-primary/30';
             if ($event['tag_color'] === 'blue') {
                 $tagColorClass = 'bg-blue-500/20 text-blue-500 border-blue-500/30';

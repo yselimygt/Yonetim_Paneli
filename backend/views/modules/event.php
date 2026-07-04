@@ -54,8 +54,8 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
                 <?php if($loc): ?>
                     <div class="evt-row">
                         <svg class="evt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <?php if($link): ?>
-                            <a href="<?= $link ?>" target="_blank" style="color:inherit; text-decoration:underline; cursor:pointer;" title="Harita/Yayın Linkine Git"><?= $loc ?></a>
+                        <?php if(!empty($event['location_link'])): ?>
+                            <a href="<?= htmlspecialchars($event['location_link']) ?>" target="_blank" style="color:inherit; text-decoration:underline; cursor:pointer;" title="Harita/Yayın Linkine Git"><?= $loc ?></a>
                         <?php else: ?>
                             <span><?= $loc ?></span>
                         <?php endif; ?>
@@ -883,7 +883,23 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
                 </div>
                 
                 <div class="form-group" style="flex:1;">
-                    <label id="lblLink">Kayıt / Form Linki</label>
+                    <label id="lblLocationLink">Konum / Yayın Linki</label>
+                    <input type="url" name="location_link" id="inpLocationLink" class="form-control" placeholder="Harita / Toplantı linki...">
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:16px;">
+                <div class="form-group" style="flex:1;">
+                    <label id="lblLink">Kayıt / Katılım Linki
+                        <?php if(!empty($forms)): ?>
+                            <select style="margin-left: 8px; font-size: 11px; padding: 2px 4px; border: 1px solid var(--evt-border); border-radius: 4px; background: var(--bg); color: var(--text); cursor: pointer;" onchange="if(this.value) { document.querySelector('input[name=\'link\']').value = this.value; this.value=''; }">
+                                <option value="">Sistemden Form Seç</option>
+                                <?php foreach($forms as $f): ?>
+                                    <option value="<?= BASE_URL ?>/f/<?= htmlspecialchars($f['slug']) ?>"><?= htmlspecialchars($f['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    </label>
                     <input type="url" name="link" class="form-control" placeholder="https://...">
                 </div>
             </div>
@@ -941,6 +957,7 @@ function openEventEditModal(evt) {
     document.getElementById('selCategory').value = evt.category || '';
     document.getElementById('evtIsGlobal').value = '1';
     document.querySelector('input[name="link"]').value = evt.link || '';
+    document.getElementById('inpLocationLink').value = evt.location_link || '';
     document.querySelector('textarea[name="description"]').value = evt.description || '';
     
     document.getElementById('evtModal').classList.add('active');
@@ -994,7 +1011,7 @@ function applyPartnerLocation() {
         
         document.getElementById('inpLocation').value = venueName;
         if (mapLink) {
-            document.querySelector('input[name="link"]').value = mapLink;
+            document.getElementById('inpLocationLink').value = mapLink;
         }
     }
 }

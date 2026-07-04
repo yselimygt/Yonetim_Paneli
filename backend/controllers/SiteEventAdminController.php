@@ -38,7 +38,10 @@ class SiteEventAdminController extends Controller
             return strtotime($b['event_date']) - strtotime($a['event_date']);
         });
         
-        $this->view('superadmin/site_events/index', compact('events'), 'superadmin');
+        $stmtForms = $pdo->query("SELECT id, name, slug FROM apps WHERE module_type = 'form' AND status = 1 ORDER BY name ASC");
+        $forms = $stmtForms->fetchAll(PDO::FETCH_ASSOC);
+        
+        $this->view('superadmin/site_events/index', compact('events', 'forms'), 'superadmin');
     }
 
     // POST /superadmin/site-events
@@ -55,6 +58,8 @@ class SiteEventAdminController extends Controller
         $tag_color   = trim($_POST['tag_color'] ?? '');
         $status      = trim($_POST['status'] ?? 'upcoming');
         $image_url   = trim($_POST['image_url'] ?? '');
+        $registration_link = trim($_POST['registration_link'] ?? '');
+        $location_link     = trim($_POST['location_link'] ?? '');
         
         if (empty($title)) {
             $this->flashError('Etkinlik başlığı zorunludur.');
@@ -70,6 +75,8 @@ class SiteEventAdminController extends Controller
             'tag_color'   => $tag_color,
             'status'      => $status,
             'image_url'   => $image_url,
+            'registration_link' => $registration_link,
+            'location_link'     => $location_link,
         ]);
 
         Logger::log('CREATE_SITE_EVENT', 'SiteEvent', null, ['title' => $title]);
@@ -95,6 +102,8 @@ class SiteEventAdminController extends Controller
         $tag_color   = trim($_POST['tag_color'] ?? '');
         $status      = trim($_POST['status'] ?? 'upcoming');
         $image_url   = trim($_POST['image_url'] ?? '');
+        $registration_link = trim($_POST['registration_link'] ?? '');
+        $location_link     = trim($_POST['location_link'] ?? '');
 
         if (empty($title)) {
             $this->flashError('Etkinlik başlığı zorunludur.');
@@ -109,8 +118,8 @@ class SiteEventAdminController extends Controller
             }
         } elseif ($eventType === 'app_event') {
             $dateOnly = $event_date ? date('Y-m-d', strtotime($event_date)) : null;
-            $stmt = $pdo->prepare("UPDATE app_events SET title = ?, description = ?, event_date = ?, location_or_platform = ?, category = ?, image_path = ? WHERE id = ?");
-            if ($stmt->execute([$title, $description, $dateOnly, $location, $category, $image_url, $id])) {
+            $stmt = $pdo->prepare("UPDATE app_events SET title = ?, description = ?, event_date = ?, location_or_platform = ?, category = ?, image_path = ?, link = ?, location_link = ? WHERE id = ?");
+            if ($stmt->execute([$title, $description, $dateOnly, $location, $category, $image_url, $registration_link, $location_link, $id])) {
                 $this->flashSuccess("'{$title}' modül etkinliği güncellendi.");
             }
         } else {
@@ -120,7 +129,8 @@ class SiteEventAdminController extends Controller
                 $this->redirect('/superadmin/site-events');
             }
 
-            $this->siteEvent->update((int)$id, [
+            // Using updateById based on the model we saw
+            $this->siteEvent->updateById((int)$id, [
                 'title'       => $title,
                 'description' => $description,
                 'event_date'  => $event_date ?: null,
@@ -129,6 +139,8 @@ class SiteEventAdminController extends Controller
                 'tag_color'   => $tag_color,
                 'status'      => $status,
                 'image_url'   => $image_url,
+                'registration_link' => $registration_link,
+                'location_link'     => $location_link,
             ]);
 
             Logger::log('UPDATE_SITE_EVENT', 'SiteEvent', (int)$id, ['title' => $title]);

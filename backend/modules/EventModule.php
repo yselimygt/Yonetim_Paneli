@@ -98,11 +98,15 @@ class EventModule extends BaseModule
 
         $currentDeptId = $this->department['id'];
 
+        $stmtForms = $this->pdo->prepare("SELECT id, name, slug FROM apps WHERE module_type = 'form' ORDER BY name ASC");
+        $stmtForms->execute();
+        $forms = $stmtForms->fetchAll();
+
         return $this->renderView('event', compact(
             'physicalUpcoming', 'physicalPast', 
             'onlineUpcoming', 'onlinePast', 
             'categorizedEvents',
-            'canEdit', 'partners', 'currentDeptId'
+            'canEdit', 'partners', 'currentDeptId', 'forms'
         ));
     }
 
@@ -136,7 +140,8 @@ class EventModule extends BaseModule
             if (empty($eventTime)) $eventTime = null;
 
             // Handle Image Upload
-            $imagePath = null;
+            $imagePath = null;            $locationLink = trim($postData['location_link'] ?? '');
+
             if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = __DIR__ . '/../public/uploads/events/';
                 if (!is_dir($uploadDir)) {
@@ -158,8 +163,8 @@ class EventModule extends BaseModule
             }
 
             $stmt = $this->pdo->prepare("
-                INSERT INTO app_events (app_id, department_id, type, title, event_date, event_time, location_or_platform, description, link, image_path, category, status, created_by, is_global)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO app_events (app_id, department_id, type, title, event_date, event_time, location_or_platform, description, link, location_link, image_path, category, status, created_by, is_global)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 $this->app['id'],
@@ -171,6 +176,7 @@ class EventModule extends BaseModule
                 $locationOrPlatform,
                 $description,
                 $link,
+                $locationLink,
                 $imagePath,
                 $category,
                 $status,
@@ -191,6 +197,7 @@ class EventModule extends BaseModule
             $description = trim($postData['description'] ?? '');
             $locationOrPlatform = trim($postData['location_or_platform'] ?? '');
             $link = trim($postData['link'] ?? '');
+            $locationLink = trim($postData['location_link'] ?? '');
             $category = trim($postData['category'] ?? '');
             $isGlobal = 1;
 
@@ -236,13 +243,13 @@ class EventModule extends BaseModule
             $stmt = $this->pdo->prepare("
                 UPDATE app_events SET 
                     type=?, title=?, event_date=?, event_time=?, 
-                    location_or_platform=?, description=?, link=?, 
+                    location_or_platform=?, description=?, link=?, location_link=?, 
                     image_path=?, category=?, is_global=?
                 WHERE id=?
             ");
             $stmt->execute([
                 $type, $title, $eventDate, $eventTime,
-                $locationOrPlatform, $description, $link,
+                $locationOrPlatform, $description, $link, $locationLink,
                 $imagePath, $category, $isGlobal,
                 $eventId
             ]);

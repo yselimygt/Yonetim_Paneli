@@ -330,6 +330,27 @@
                 <input type="url" name="image_url" class="form-control" placeholder="https://...">
             </div>
 
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Konum / Yayın Linki</label>
+                    <input type="url" name="location_link" class="form-control" placeholder="Harita veya platform linki...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="display:flex; justify-content:space-between;">
+                        <span>Kayıt Linki</span>
+                        <?php if(!empty($forms)): ?>
+                            <select style="font-size: 11px; padding: 2px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);" onchange="if(this.value) { this.closest('.form-group').querySelector('input[name=\'registration_link\']').value = this.value; this.value=''; }">
+                                <option value="">Sistemden Form Seç</option>
+                                <?php foreach($forms as $f): ?>
+                                    <option value="<?= BASE_URL ?>/f/<?= htmlspecialchars($f['slug']) ?>"><?= htmlspecialchars($f['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    </label>
+                    <input type="url" name="registration_link" class="form-control" placeholder="Kayıt formu veya dış link...">
+                </div>
+            </div>
+
             <div class="event-modal-actions" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button type="button" onclick="closeModal('create-event-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Kaydet</button>
@@ -395,6 +416,27 @@
                 <input type="url" name="image_url" id="edit_image_url" class="form-control">
             </div>
 
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Konum / Yayın Linki</label>
+                    <input type="url" name="location_link" id="edit_location_link" class="form-control" placeholder="Harita veya platform linki...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="display:flex; justify-content:space-between;">
+                        <span>Kayıt Linki</span>
+                        <?php if(!empty($forms)): ?>
+                            <select style="font-size: 11px; padding: 2px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);" onchange="if(this.value) { this.closest('.form-group').querySelector('input[name=\'registration_link\']').value = this.value; this.value=''; }">
+                                <option value="">Sistemden Form Seç</option>
+                                <?php foreach($forms as $f): ?>
+                                    <option value="<?= BASE_URL ?>/f/<?= htmlspecialchars($f['slug']) ?>"><?= htmlspecialchars($f['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    </label>
+                    <input type="url" name="registration_link" id="edit_registration_link" class="form-control" placeholder="Kayıt formu veya dış link...">
+                </div>
+            </div>
+
             <div class="event-modal-actions" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button type="button" onclick="closeModal('edit-event-modal')" class="btn btn-outline">İptal</button>
                 <button type="submit" class="btn btn-primary">Güncelle</button>
@@ -426,6 +468,8 @@ function editEvent(e) {
     document.getElementById('edit_tag_color').value = e.tag_color || '';
     document.getElementById('edit_status').value = e.status || 'upcoming';
     document.getElementById('edit_image_url').value = e.image_url || '';
+    document.getElementById('edit_registration_link').value = e.registration_link || e.link || '';
+    document.getElementById('edit_location_link').value = e.location_link || '';
 
     openModal('edit-event-modal');
 }
