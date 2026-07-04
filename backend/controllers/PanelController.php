@@ -217,7 +217,7 @@ class PanelController extends Controller
         }
 
         // 6. Akademik Takvim (from JSON)
-        $academicFile = dirname(__DIR__, 2) . '/docs/neu_akademik_takvim_sade_2026_2027.json';
+        $academicFile = dirname(__DIR__, 2) . '/docs/neu_akademik_takvim_2026_2027.json';
         if (file_exists($academicFile)) {
             $academicJson = file_get_contents($academicFile);
             $academicData = json_decode($academicJson, true);
