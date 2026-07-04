@@ -6,7 +6,7 @@ import MemberCard from './shared/MemberCard';
 import MemberModal from './shared/MemberModal';
 
 const Team = () => {
-  const { dept, slug } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('management');
   const [selectedMember, setSelectedMember] = useState(null);
@@ -16,52 +16,66 @@ const Team = () => {
 
   // Parse URL on mount or URL change
   useEffect(() => {
-    if (dept && slug && teamStructure.board) {
+    if (slug && teamStructure.board) {
       let foundMember = null;
       let foundTab = 'management';
       
-      if (dept === 'board') {
-        foundMember = teamStructure.board.find(m => createSlug(m.name) === slug);
-      } else if (dept.startsWith('campus-')) {
-        foundTab = 'campus';
-        const campusId = dept.replace('campus-', '');
-        const campus = teamStructure.campusRepresentatives?.find(c => createSlug(c.university) === campusId);
-        if (campus) {
-          foundMember = campus.representatives.find(m => createSlug(m.name) === slug);
-          if (foundMember) {
-             foundMember = {...foundMember, universityLogo: foundMember.universityLogo || campus.logo};
+      // 1. Check Board
+      foundMember = teamStructure.board.find(m => m.uniqueSlug === slug);
+      if (foundMember) {
+        foundMember = {...foundMember, universityLogo: foundMember.universityLogo || '/assets/uni/neuLogo.png'};
+      }
+
+      // 2. Check Departments
+      if (!foundMember && teamStructure.departments) {
+        for (const department of teamStructure.departments) {
+          if (department.director && department.director.uniqueSlug === slug) {
+            foundMember = {...department.director, universityLogo: department.director.universityLogo || '/assets/uni/neuLogo.png'};
+            break;
+          }
+          if (department.members) {
+            const member = department.members.find(m => m.uniqueSlug === slug);
+            if (member) {
+              foundMember = {...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'};
+              break;
+            }
           }
         }
-      } else {
-        const department = teamStructure.departments?.find(d => d.id === dept);
-        if (department) {
-          if (department.director && createSlug(department.director.name) === slug) {
-            foundMember = {...department.director, universityLogo: department.director.universityLogo || '/assets/uni/neuLogo.png'};
-          } else {
-            const member = department.members.find(m => createSlug(m.name) === slug);
-            if (member) foundMember = {...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'};
+      }
+
+      // 3. Check Campus Representatives
+      if (!foundMember && teamStructure.campusRepresentatives) {
+        for (const campus of teamStructure.campusRepresentatives) {
+          if (campus.representatives) {
+            const member = campus.representatives.find(m => m.uniqueSlug === slug);
+            if (member) {
+              foundTab = 'campus';
+              foundMember = {...member, universityLogo: member.universityLogo || campus.logo};
+              break;
+            }
           }
         }
       }
 
       if (foundMember) {
-        if (dept === 'board') {
-          foundMember = {...foundMember, universityLogo: foundMember.universityLogo || '/assets/uni/neuLogo.png'};
-        }
         setSelectedMember(foundMember);
         setActiveTab(foundTab);
         
         setTimeout(() => {
            document.getElementById('team')?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
+      } else {
+        setSelectedMember(null);
       }
     } else {
       setSelectedMember(null);
     }
-  }, [dept, slug, teamStructure]);
+  }, [slug, teamStructure]);
 
-  const handleMemberClick = (member, deptId) => {
-    navigate(`/team/${deptId}/${createSlug(member.name)}`, { replace: true });
+  const handleMemberClick = (member) => {
+    if (member && member.uniqueSlug) {
+      navigate(`/team/${member.uniqueSlug}`, { replace: true });
+    }
   };
 
   const closeModal = () => {
@@ -110,7 +124,7 @@ const Team = () => {
           <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             {teamStructure.board.map((member, idx) => (
               <div key={idx} className="w-full sm:w-[calc(50%-1rem)]">
-                <MemberCard member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} isBoard={true} onClick={() => handleMemberClick(member, 'board')} />
+                <MemberCard member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} isBoard={true} onClick={() => handleMemberClick(member)} />
               </div>
             ))}
           </div>
@@ -130,7 +144,7 @@ const Team = () => {
                 <div className="flex justify-center">
                   <div className="relative group w-full max-w-[280px]">
                     <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-secondary opacity-20 rounded-2xl blur group-hover:opacity-40 transition-opacity"></div>
-                    <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director, dept.id)} />
+                    <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director)} />
                   </div>
                 </div>
               ) : (
@@ -140,7 +154,7 @@ const Team = () => {
                   <div className="flex justify-center">
                     <div className="relative group w-full max-w-sm">
                       <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-secondary opacity-20 rounded-2xl blur group-hover:opacity-40 transition-opacity"></div>
-                      <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director, dept.id)} />
+                      <MemberCard member={{...dept.director, universityLogo: dept.director.universityLogo || '/assets/uni/neuLogo.png'}} isDirector={true} onClick={() => handleMemberClick(dept.director)} />
                     </div>
                   </div>
                   
@@ -148,7 +162,7 @@ const Team = () => {
                   <div className="flex flex-wrap justify-center gap-4">
                     {dept.members.map((member, mIdx) => (
                       <div key={mIdx} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]">
-                        <MemberCard member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} onClick={() => handleMemberClick(member, dept.id)} />
+                        <MemberCard member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} onClick={() => handleMemberClick(member)} />
                       </div>
                     ))}
                   </div>
@@ -179,7 +193,7 @@ const Team = () => {
                 <div className="flex flex-wrap justify-center gap-4">
                   {campus.representatives.map((member, mIdx) => (
                     <div key={mIdx} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]">
-                      <MemberCard member={{...member, universityLogo: member.universityLogo || campus.logo}} onClick={() => handleMemberClick(member, `campus-${createSlug(campus.university)}`)} />
+                      <MemberCard member={{...member, universityLogo: member.universityLogo || campus.logo}} onClick={() => handleMemberClick(member)} />
                     </div>
                   ))}
                 </div>

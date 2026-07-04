@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getSiteData } from '../services/siteApi';
+import { createSlug } from '../utils/helpers';
 import {
   popupConfig as defaultPopupConfig,
   stats as defaultStats,
@@ -103,7 +104,7 @@ const normalizeSiteData = (data = {}) => {
     }
   };
 
-  return {
+  const normalizedData = {
     settings: {
       ...defaultSiteSettings,
       ...incomingSettings,
@@ -116,8 +117,47 @@ const normalizeSiteData = (data = {}) => {
     gallery: data.gallery || [],
     achievements: data.achievements || [],
     awards: data.awards || [],
-    team: data.team || { board: [], departments: [], campusRepresentatives: [] }
   };
+
+  const team = data.team || { board: [], departments: [], campusRepresentatives: [] };
+  
+  // Assign unique slugs
+  const slugCounts = {};
+  const assignUniqueSlug = (member) => {
+    if (!member || !member.name) return member;
+    const baseSlug = createSlug(member.name);
+    if (slugCounts[baseSlug] === undefined) {
+      slugCounts[baseSlug] = 0;
+      member.uniqueSlug = baseSlug;
+    } else {
+      slugCounts[baseSlug] += 1;
+      member.uniqueSlug = `${baseSlug}-${slugCounts[baseSlug]}`;
+    }
+    return member;
+  };
+
+  if (team.board) {
+    team.board = team.board.map(assignUniqueSlug);
+  }
+  
+  if (team.departments) {
+    team.departments = team.departments.map(dept => {
+      if (dept.director) dept.director = assignUniqueSlug(dept.director);
+      if (dept.members) dept.members = dept.members.map(assignUniqueSlug);
+      return dept;
+    });
+  }
+  
+  if (team.campusRepresentatives) {
+    team.campusRepresentatives = team.campusRepresentatives.map(campus => {
+      if (campus.representatives) campus.representatives = campus.representatives.map(assignUniqueSlug);
+      return campus;
+    });
+  }
+
+  normalizedData.team = team;
+
+  return normalizedData;
 };
 
 export const SiteDataProvider = ({ children }) => {
