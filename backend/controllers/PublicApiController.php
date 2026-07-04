@@ -249,7 +249,16 @@ class PublicApiController extends Controller
         $history = (new SiteHistory())->getAllHistory();
 
         $achievements = array_values(array_filter($history, fn($h) => $h['type'] === 'achievement'));
-        $awards = array_values(array_filter($history, fn($h) => $h['type'] === 'award'));
+        $awardsRaw = array_values(array_filter($history, fn($h) => $h['type'] === 'award'));
+        $awards = array_map(function($award) {
+            if (!empty($award['image_path'])) {
+                $award['image_url'] = BASE_URL . '/public/uploads/trophies/' . ltrim($award['image_path'], '/');
+            }
+            if (!empty($award['institution_logo'])) {
+                $award['institution_logo_url'] = BASE_URL . '/public/uploads/trophies/' . ltrim($award['institution_logo'], '/');
+            }
+            return $award;
+        }, $awardsRaw);
 
         $teamModel = new SiteTeamProfile();
         $members = $teamModel->hasVisibleProfiles()

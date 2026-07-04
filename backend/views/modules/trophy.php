@@ -418,6 +418,14 @@ function getTrophyBadge($type) {
                     <p class="trophy-desc" title="<?= View::escape($trophy['description']) ?>">
                         <?= View::escape($trophy['description']) ?>
                     </p>
+                    <?php if (!empty($trophy['institution_name'])): ?>
+                    <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); padding-top: 8px;">
+                        <?php if (!empty($trophy['institution_logo'])): ?>
+                            <img src="<?= htmlspecialchars(BASE_URL . '/public/uploads/trophies/' . $trophy['institution_logo']) ?>" alt="Logo" style="width: 20px; height: 20px; object-fit: contain; border-radius: 4px;">
+                        <?php endif; ?>
+                        <span style="font-size: 12px; font-weight: 600; color: var(--text); opacity: 0.8;"><?= View::escape($trophy['institution_name']) ?></span>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -465,6 +473,17 @@ function getTrophyBadge($type) {
                     <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,0,0,0.02);">
                         <input type="file" name="image" accept="image/jpeg,image/png,image/webp" required style="width: 100%; cursor: pointer;">
                         <p style="font-size: 12px; color: var(--muted); margin: 8px 0 0 0;">Yalnızca JPG, PNG veya WEBP. İdeal oran 16:9 yatay görsellerdir.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Alınan Kurum Adı (Opsiyonel)</label>
+                        <input type="text" name="institution_name" class="form-control" placeholder="Örn: NEÜ" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Kurum Logosu (Opsiyonel)</label>
+                        <input type="file" name="institution_logo" accept="image/jpeg,image/png,image/webp,image/svg+xml" class="form-control" style="padding: 9px 16px; border-radius: 12px; font-size: 14px; cursor: pointer;">
                     </div>
                 </div>
 
@@ -527,6 +546,17 @@ function getTrophyBadge($type) {
                     </div>
                 </div>
 
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Alınan Kurum Adı (Opsiyonel)</label>
+                        <input type="text" name="institution_name" id="edit-institution-name" class="form-control" placeholder="Örn: NEÜ" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Kurum Logosu (Değiştirmek istemiyorsanız boş bırakın)</label>
+                        <input type="file" name="institution_logo" accept="image/jpeg,image/png,image/webp,image/svg+xml" class="form-control" style="padding: 9px 16px; border-radius: 12px; font-size: 14px; cursor: pointer;">
+                    </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 24px;">
                     <label class="form-label" style="font-weight: 600;">Hikayesi / Açıklama <span style="color:var(--danger);">*</span></label>
                     <textarea name="description" id="edit-trophy-desc" class="form-control" rows="4" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;" required></textarea>
@@ -548,6 +578,7 @@ function getTrophyBadge($type) {
         document.getElementById('edit-trophy-type').value = trophy.award_type;
         document.getElementById('edit-trophy-date').value = trophy.award_date;
         document.getElementById('edit-trophy-desc').value = trophy.description;
+        document.getElementById('edit-institution-name').value = trophy.institution_name || '';
         document.getElementById('modal-edit-trophy').style.display = 'flex';
     };
 

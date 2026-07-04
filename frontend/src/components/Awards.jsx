@@ -42,6 +42,25 @@ const Awards = () => {
               
               <h3 className="text-xl font-display font-bold text-white mb-3 relative z-10">{item.title}</h3>
               <p className="text-text-secondary leading-relaxed relative z-10">{item.description}</p>
+
+              {item.institution_name && (
+                <div className="mt-5 flex items-center gap-2 bg-white/5 border border-white/5 py-1.5 px-3 rounded-lg w-fit relative z-10">
+                  {item.institution_logo_url && (
+                    <img src={item.institution_logo_url} alt="Kurum Logosu" className="w-5 h-5 object-contain" />
+                  )}
+                  <span className="text-xs font-semibold text-white/90">{item.institution_name}</span>
+                </div>
+              )}
+
+              {item.image_url && (
+                <div className="mt-6 relative z-10 w-full flex justify-center bg-white/5 rounded-xl p-2 border border-white/5">
+                  <img 
+                    src={item.image_url} 
+                    alt={item.title} 
+                    className="w-full h-auto object-contain rounded-lg max-h-64" 
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>

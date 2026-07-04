@@ -123,6 +123,8 @@ class SiteHistory extends Model
                     t.award_type,
                     t.award_date,
                     t.image_path,
+                    t.institution_name,
+                    t.institution_logo,
                     t.created_at,
                     d.name AS department_name
                 FROM app_trophies t
@@ -149,6 +151,8 @@ class SiteHistory extends Model
                 'award_type' => $trophy['award_type'] ?: 'other',
                 'award_date' => $awardDate,
                 'image_path' => $trophy['image_path'],
+                'institution_name' => $trophy['institution_name'] ?? '',
+                'institution_logo' => $trophy['institution_logo'] ?? '',
                 'department_name' => $trophy['department_name'] ?? '',
                 'sort_date' => $awardDate ?: ''
             ];
