@@ -1,0 +1,1 @@
+<?php require 'backend/config/app.php'; require 'backend/config/database.php'; require 'backend/core/Database.php'; print_r(Database::getInstance()->query('SELECT * FROM departments')->fetchAll(PDO::FETCH_ASSOC));

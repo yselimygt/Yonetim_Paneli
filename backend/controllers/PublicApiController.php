@@ -29,6 +29,7 @@ class PublicApiController extends Controller
                 'image_url' => $bc['image_path'],
                 'target_date' => $bc['start_date'],
                 'registration_link' => $bc['link'],
+                'location_link' => null,
                 'speakers' => null,
                 'agenda' => null
             ];
@@ -52,6 +53,7 @@ class PublicApiController extends Controller
                 'image_url' => $ae['image_path'],
                 'target_date' => $ae['event_date'],
                 'registration_link' => null,
+                'location_link' => $ae['location_link'] ?? null,
                 'speakers' => null,
                 'agenda' => null
             ];
@@ -111,6 +113,7 @@ class PublicApiController extends Controller
                 'image' => $event['image_url'] ?: null,
                 'targetDate' => !empty($event['target_date']) ? str_replace(' ', 'T', $event['target_date']) : null,
                 'registrationLink' => $event['registration_link'] ?? null,
+                'locationLink' => $event['location_link'] ?? null,
                 'speakers' => is_array($speakers) ? $speakers : [],
                 'agenda' => is_array($agenda) ? $agenda : [],
             ];

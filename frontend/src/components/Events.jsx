@@ -127,7 +127,13 @@ const EventModal = ({ event, onClose }) => {
                     <MapPin className="w-5 h-5 text-primary shrink-0" />
                     <div>
                       <div className="text-sm text-text-secondary mb-1">Konum</div>
-                      <div className="font-medium text-white">{event.location}</div>
+                      {event.locationLink ? (
+                        <a href={event.locationLink} target="_blank" rel="noopener noreferrer" className="font-medium text-white hover:text-primary transition-colors hover:underline">
+                          {event.location}
+                        </a>
+                      ) : (
+                        <div className="font-medium text-white">{event.location}</div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -187,7 +193,19 @@ const EventCard = ({ event, onOpenModal }) => (
         {event.location && (
           <div className="flex items-center gap-1.5">
             <MapPin className="w-4 h-4 text-primary" />
-            <span className="font-medium">{event.location}</span>
+            {event.locationLink ? (
+              <a 
+                href={event.locationLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="font-medium hover:text-primary transition-colors hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {event.location}
+              </a>
+            ) : (
+              <span className="font-medium">{event.location}</span>
+            )}
           </div>
         )}
       </div>

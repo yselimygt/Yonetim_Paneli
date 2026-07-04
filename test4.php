@@ -1,0 +1,1 @@
+<?php require 'backend/config/app.php'; require 'backend/config/database.php'; require 'backend/core/Database.php'; require 'backend/core/Model.php'; require 'backend/core/Controller.php'; require 'backend/controllers/PublicApiController.php'; \ = new PublicApiController(); \->getSiteData();
