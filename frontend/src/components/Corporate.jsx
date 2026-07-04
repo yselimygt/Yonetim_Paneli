@@ -156,12 +156,12 @@ const Corporate = () => {
             {sponsors.map((sponsor, idx) => (
               <div 
                 key={idx} 
-                className="w-36 sm:w-48 h-20 sm:h-24 bg-white rounded-xl flex items-center justify-center p-2 sm:p-4 shadow-md hover:-translate-y-2 hover:scale-105 hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] transition-all duration-300 group"
+                className="w-36 sm:w-48 h-20 sm:h-24 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl flex items-center justify-center p-2 sm:p-4 hover:-translate-y-2 hover:scale-105 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group cursor-pointer"
               >
                 <img 
                   src={sponsor} 
                   alt="Sponsor Logo" 
-                  className="max-h-full max-w-full object-contain transition-opacity"
+                  className="max-h-full max-w-full object-contain"
                 />
               </div>
             ))}
