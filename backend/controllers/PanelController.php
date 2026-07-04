@@ -179,6 +179,43 @@ class PanelController extends Controller
             // site_events table might not exist in some setups, ignore if missing.
         }
 
+        // 5. Resmi Tatiller (from JSON)
+        $holidaysFile = dirname(__DIR__, 2) . '/docs/turkiye_resmi_tatiller_2026_2027.json';
+        if (file_exists($holidaysFile)) {
+            $holidaysJson = file_get_contents($holidaysFile);
+            $holidaysData = json_decode($holidaysJson, true);
+            if ($holidaysData && isset($holidaysData['yillar'])) {
+                foreach ($holidaysData['yillar'] as $yilData) {
+                    foreach ($yilData['tatiller'] as $tatil) {
+                        $trFlag = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="16" height="11" style="vertical-align: middle; border-radius: 2px; display: inline-block;"><rect width="1200" height="800" fill="#E30A17"/><circle cx="425" cy="400" r="200" fill="#fff"/><circle cx="475" cy="400" r="160" fill="#E30A17"/><polygon points="800,400 644.25,450.45 693.4,304.5 561.6,400 725,495.5" fill="#fff"/></svg>';
+                        $icon = $trFlag; // Default for national holidays
+                        $ad_lower = mb_strtolower($tatil['ad']);
+                        if (strpos($ad_lower, 'kurban') !== false) {
+                            $icon = '🐑';
+                        } elseif (strpos($ad_lower, 'ramazan') !== false) {
+                            $icon = '🌙';
+                        } elseif (strpos($ad_lower, 'yılbaşı') !== false || strpos($ad_lower, 'yilbasi') !== false) {
+                            $icon = '🎆';
+                        } elseif (strpos($ad_lower, 'emek') !== false) {
+                            $icon = '👷‍♂️';
+                        }
+                        
+                        $calendarData['events'][] = [
+                            'id' => 'hol_' . md5($tatil['tarih'] . $tatil['ad']),
+                            'title' => $tatil['ad'],
+                            'date' => $tatil['tarih'],
+                            'time' => null,
+                            'type' => 'holiday',
+                            'category' => 'Resmi Tatil',
+                            'source' => 'holiday',
+                            'is_holiday' => true,
+                            'icon' => $icon
+                        ];
+                    }
+                }
+            }
+        }
+
         $data['calendarData'] = json_encode($calendarData, JSON_UNESCAPED_UNICODE);
 
         $this->view('panel/dashboard', $data, 'panel');

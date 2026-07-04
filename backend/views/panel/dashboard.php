@@ -672,7 +672,9 @@
             const hasBirthdays = calendarData.birthdays.filter(b => b.month === currentMonth + 1 && b.day === day);
             
             const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-            const hasEvents = calendarData.events.filter(e => e.date === dateStr);
+            const allEvents = calendarData.events.filter(e => e.date === dateStr);
+            const hasHolidays = allEvents.filter(e => e.is_holiday);
+            const hasEvents = allEvents.filter(e => !e.is_holiday);
             
             let bg = 'var(--bg)';
             let color = 'var(--text)';
@@ -685,7 +687,19 @@
             if (isToday) border = '1px solid var(--text)';
             if (isSelected) border = '2px solid var(--accent)';
             
-            if (hasBirthdays.length > 0 && hasEvents.length > 0) {
+            if (hasHolidays.length > 0) {
+                bg = 'linear-gradient(135deg, rgba(249,115,22,0.15), rgba(234,88,12,0.05))';
+                color = '#ea580c';
+                border = isSelected ? '2px solid #ea580c' : '1px solid rgba(249,115,22,0.4)';
+                let holidayIcon = hasHolidays[0].icon || '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="16" height="11" style="vertical-align: middle; border-radius: 2px; display: inline-block;"><rect width="1200" height="800" fill="#E30A17"/><circle cx="425" cy="400" r="200" fill="#fff"/><circle cx="475" cy="400" r="160" fill="#E30A17"/><polygon points="800,400 644.25,450.45 693.4,304.5 561.6,400 725,495.5" fill="#fff"/></svg>';
+                iconHtml = `<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">${holidayIcon}</div>`;
+                let extra = [];
+                if (hasBirthdays.length > 0) extra.push('🎂');
+                if (hasEvents.length > 0) extra.push('📅');
+                if (extra.length > 0) {
+                    iconHtml = `<div style="position:absolute; top:-4px; right:-4px; font-size:12px; display:flex; gap:2px;"><span>${holidayIcon}</span><span>${extra.join('</span><span>')}</span></div>`;
+                }
+            } else if (hasBirthdays.length > 0 && hasEvents.length > 0) {
                 bg = 'linear-gradient(135deg, rgba(236,72,153,0.15) 50%, rgba(59,130,246,0.15) 50%)';
                 color = 'var(--text)';
                 border = isSelected ? '2px solid var(--accent)' : '1px solid rgba(236,72,153,0.4)';
@@ -702,7 +716,7 @@
                 iconHtml = '<div style="position:absolute; top:-4px; right:-4px; font-size:14px;">📅</div>';
             }
             
-            const fontWeight = (hasBirthdays.length > 0 || hasEvents.length > 0) ? '700' : '500';
+            const fontWeight = (hasBirthdays.length > 0 || hasEvents.length > 0 || hasHolidays.length > 0) ? '700' : '500';
             const cursor = 'pointer';
             
             const cell = document.createElement('div');
@@ -743,16 +757,32 @@
         
         const bdays = calendarData.birthdays.filter(b => b.month === month + 1 && b.day === day);
         const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        const evts = calendarData.events.filter(e => e.date === dateStr);
+        const allEvts = calendarData.events.filter(e => e.date === dateStr);
+        const evts = allEvts.filter(e => !e.is_holiday);
+        const holidays = allEvts.filter(e => e.is_holiday);
         
-        if (bdays.length === 0 && evts.length === 0) {
+        if (bdays.length === 0 && allEvts.length === 0) {
             contentEl.innerHTML = '<div style="color:var(--muted); text-align:center; padding:20px 0;">Bu güne ait detay bulunmuyor.</div>';
             return;
         }
         
+        if (holidays.length > 0) {
+            const block = document.createElement('div');
+            block.style.cssText = 'padding:10px; background:rgba(249,115,22,0.1); border-radius:8px; border:1px solid rgba(249,115,22,0.2); margin-bottom:10px;';
+            block.innerHTML = `<div style="font-weight:600; color:#ea580c; margin-bottom:6px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="16" height="11" style="vertical-align: middle; border-radius: 2px; display: inline-block;"><rect width="1200" height="800" fill="#E30A17"/><circle cx="425" cy="400" r="200" fill="#fff"/><circle cx="475" cy="400" r="160" fill="#E30A17"/><polygon points="800,400 644.25,450.45 693.4,304.5 561.6,400 725,495.5" fill="#fff"/></svg> Resmi Tatiller</div>`;
+            holidays.forEach(h => {
+                let hIcon = h.icon || '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="16" height="11" style="vertical-align: middle; border-radius: 2px; display: inline-block;"><rect width="1200" height="800" fill="#E30A17"/><circle cx="425" cy="400" r="200" fill="#fff"/><circle cx="475" cy="400" r="160" fill="#E30A17"/><polygon points="800,400 644.25,450.45 693.4,304.5 561.6,400 725,495.5" fill="#fff"/></svg>';
+                block.innerHTML += `<div style="margin-bottom:6px;">
+                    <div style="font-weight:600;">${hIcon} ${h.title}</div>
+                    <div style="font-size:11px; color:var(--muted);">${h.category || ''}</div>
+                </div>`;
+            });
+            contentEl.appendChild(block);
+        }
+        
         if (bdays.length > 0) {
             const block = document.createElement('div');
-            block.style.cssText = 'padding:10px; background:rgba(236,72,153,0.1); border-radius:8px; border:1px solid rgba(236,72,153,0.2);';
+            block.style.cssText = 'padding:10px; background:rgba(236,72,153,0.1); border-radius:8px; border:1px solid rgba(236,72,153,0.2); margin-bottom:10px;';
             block.innerHTML = `<div style="font-weight:600; color:#ec4899; margin-bottom:6px;">🎂 Doğum Günleri</div>`;
             bdays.forEach(b => {
                 block.innerHTML += `<div>&bull; ${b.name}</div>`;
