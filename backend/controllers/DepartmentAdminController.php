@@ -30,6 +30,7 @@ class DepartmentAdminController extends Controller
         $description = trim($_POST['description']   ?? '');
         $icon        = trim($_POST['icon']          ?? 'folder');
         $color       = trim($_POST['color']         ?? '#00BCD4');
+        $tag         = trim($_POST['tag']           ?? 'main');
         $is_mgmt     = isset($_POST['is_management']) ? 1 : 0;
         $slug        = Department::generateSlug($name);
 
@@ -49,6 +50,7 @@ class DepartmentAdminController extends Controller
             'description'  => $description,
             'icon'         => $icon,
             'color'        => $color,
+            'tag'          => $tag,
             'is_management'=> $is_mgmt,
             'is_active'    => 1,
             'created_by'   => Auth::user()['id'],
@@ -88,6 +90,7 @@ class DepartmentAdminController extends Controller
         $description = trim($_POST['description']   ?? '');
         $icon        = trim($_POST['icon']          ?? 'folder');
         $color       = trim($_POST['color']         ?? '#00BCD4');
+        $tag         = trim($_POST['tag']           ?? 'main');
         $is_mgmt     = isset($_POST['is_management']) ? 1 : 0;
         $is_active   = isset($_POST['is_active'])    ? 1 : 0;
         $slug        = Department::generateSlug($name);
@@ -108,6 +111,7 @@ class DepartmentAdminController extends Controller
             'description'  => $description,
             'icon'         => $icon,
             'color'        => $color,
+            'tag'          => $tag,
             'is_management'=> $is_mgmt,
             'is_active'    => $is_active,
         ]);

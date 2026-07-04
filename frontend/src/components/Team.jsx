@@ -102,7 +102,7 @@ const Team = () => {
               onClick={() => setActiveTab('management')}
               className={`px-6 sm:px-10 py-3 text-sm sm:text-base font-semibold rounded-full transition-all duration-300 ${activeTab === 'management' ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg' : 'text-text-secondary hover:text-white hover:bg-white/5'}`}
             >
-              Yönetim Ekibi
+              Ana Ekip
             </button>
             <button 
               onClick={() => setActiveTab('campus')}

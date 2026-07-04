@@ -119,7 +119,7 @@ const normalizeSiteData = (data = {}) => {
     awards: data.awards || [],
   };
 
-  const team = data.team || { board: [], departments: [], campusRepresentatives: [] };
+  const team = data.team || { board: [], departments: [], campusRepresentatives: [], alumni: [] };
   
   // Assign unique slugs
   const slugCounts = {};
@@ -152,6 +152,13 @@ const normalizeSiteData = (data = {}) => {
     team.campusRepresentatives = team.campusRepresentatives.map(campus => {
       if (campus.representatives) campus.representatives = campus.representatives.map(assignUniqueSlug);
       return campus;
+    });
+  }
+
+  if (team.alumni) {
+    team.alumni = team.alumni.map(yearGroup => {
+      if (yearGroup.members) yearGroup.members = yearGroup.members.map(assignUniqueSlug);
+      return yearGroup;
     });
   }
 

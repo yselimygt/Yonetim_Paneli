@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { alumniData } from '../data/innomisData';
-import { createSlug } from '../utils/helpers';
+import { useSiteData } from '../context/SiteDataContext';
 import MemberCard from './shared/MemberCard';
 import MemberModal from './shared/MemberModal';
 
@@ -9,15 +8,18 @@ const Alumni = () => {
   const { year, slug } = useParams();
   const navigate = useNavigate();
   const [selectedMember, setSelectedMember] = useState(null);
+  
+  const { siteData } = useSiteData();
+  const alumniData = siteData?.team?.alumni || [];
 
   // Parse URL on mount or URL change
   useEffect(() => {
-    if (year && slug) {
+    if (year && slug && alumniData.length > 0) {
       let foundMember = null;
       
       const yearGroup = alumniData.find(g => g.year === year);
       if (yearGroup) {
-        const member = yearGroup.members.find(m => createSlug(m.name) === slug);
+        const member = yearGroup.members.find(m => m.uniqueSlug === slug);
         if (member) {
           foundMember = {...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'};
         }
@@ -32,10 +34,12 @@ const Alumni = () => {
     } else {
       setSelectedMember(null);
     }
-  }, [year, slug]);
+  }, [year, slug, alumniData]);
 
   const handleMemberClick = (member, yearId) => {
-    navigate(`/alumni/${yearId}/${createSlug(member.name)}`, { replace: true });
+    if (member && member.uniqueSlug) {
+      navigate(`/alumni/${yearId}/${member.uniqueSlug}`, { replace: true });
+    }
   };
 
   const closeModal = () => {
@@ -64,16 +68,16 @@ const Alumni = () => {
           </div>
         ) : (
           <div className="space-y-16">
-            {[...alumniData].sort((a, b) => parseInt(b.year) - parseInt(a.year)).map((yearGroup, idx) => (
+            {alumniData.map((yearGroup, idx) => (
               <div key={idx} className="bg-white/5 border border-white/5 rounded-3xl p-6 sm:p-8 hover:border-white/10 transition-colors animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
                 <h3 className="text-xl sm:text-2xl font-display font-bold text-white mb-6 sm:mb-8 flex items-center justify-center gap-4 text-center">
                   <span className="w-8 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></span>
-                  {yearGroup.year} Mezunları
+                  {yearGroup.name}
                   <span className="w-8 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></span>
                 </h3>
                 
                 <div className="flex flex-wrap justify-center gap-4">
-                  {yearGroup.members.map((member, mIdx) => (
+                  {yearGroup.members && yearGroup.members.map((member, mIdx) => (
                     <div key={mIdx} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]">
                       <MemberCard 
                         member={{...member, universityLogo: member.universityLogo || '/assets/uni/neuLogo.png'}} 

@@ -78,6 +78,16 @@
                 <p class="form-hint">feathericons.com'dan bir ikon adı girin</p>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">Departman Etiketi</label>
+                <select name="tag" class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);">
+                    <option value="main" <?= ($department['tag'] ?? 'main') === 'main' ? 'selected' : '' ?>>Ana Ekip</option>
+                    <option value="campus" <?= ($department['tag'] ?? '') === 'campus' ? 'selected' : '' ?>>Kampüs Temsilcileri</option>
+                    <option value="alumni" <?= ($department['tag'] ?? '') === 'alumni' ? 'selected' : '' ?>>Mezunlar</option>
+                </select>
+                <p class="form-hint">Web sitesinde nerede listeleneceğini belirler.</p>
+            </div>
+
             <div class="form-row department-edit-checks">
                 <div class="form-group">
                     <div class="check-group">

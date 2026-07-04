@@ -155,6 +155,7 @@
                 <th>Ad</th>
                 <th>Slug</th>
                 <th>Açıklama</th>
+                <th>Etiket</th>
                 <th>Tip</th>
                 <th>Durum</th>
                 <th></th>
@@ -173,6 +174,16 @@
                 <td data-label="Slug" class="dept-slug" style="color:var(--muted);font-size:12px;font-family:monospace"><?= View::escape($d['slug']) ?></td>
                 <td data-label="Açıklama" class="dept-description" style="color:var(--muted);font-size:12px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                     <?= View::escape($d['description'] ?? '—') ?>
+                </td>
+                <td data-label="Etiket">
+                    <?php
+                        $tagLabels = [
+                            'main' => 'Ana Ekip',
+                            'campus' => 'Kampüs Temsilcileri',
+                            'alumni' => 'Mezunlar'
+                        ];
+                        echo $tagLabels[$d['tag']] ?? 'Bilinmiyor';
+                    ?>
                 </td>
                 <td data-label="Tip">
                     <?php if ($d['is_management']): ?>
@@ -233,6 +244,16 @@
                 <label class="form-label">İkon (Feather adı)</label>
                 <input type="text" name="icon" class="form-control" placeholder="share-2" value="folder">
                 <p class="form-hint">feathericons.com'dan bir ikon adı girin</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Departman Etiketi</label>
+                <select name="tag" class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main);">
+                    <option value="main">Ana Ekip</option>
+                    <option value="campus">Kampüs Temsilcileri</option>
+                    <option value="alumni">Mezunlar</option>
+                </select>
+                <p class="form-hint">Web sitesinde nerede listeleneceğini belirler.</p>
             </div>
 
             <div class="form-group">

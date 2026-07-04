@@ -120,7 +120,8 @@ class SiteTeamProfile extends Model
                 u.community_history_json AS user_community_history_json,
                 ud.role AS department_role,
                 d.name AS department_name,
-                d.is_management
+                d.is_management,
+                d.tag AS department_tag
             FROM site_team_profiles p
             JOIN users u ON u.id = p.user_id
             LEFT JOIN user_departments ud ON ud.user_id = p.user_id
@@ -317,6 +318,7 @@ class SiteTeamProfile extends Model
             'universityLogo' => $this->resolveUniversityLogo($member['user_university_logo'] ?? null, $member['university'] ?? null),
             'companyLogo' => $this->publicAssetUrl($member['user_company_logo']),
             'type' => !empty($member['is_management']) ? 'board' : ($member['display_type'] ?: 'department'),
+            'department_tag' => $member['department_tag'] ?? 'main',
             'image_url' => $avatar,
             'image' => $avatar,
             'linkedin' => $member['linkedin'] ?: $member['user_linkedin'],

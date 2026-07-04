@@ -322,6 +322,7 @@ class PublicApiController extends Controller
         $board = [];
         $departmentsMap = [];
         $campusMap = [];
+        $alumniMap = [];
 
         foreach ($members as $member) {
             if ($member['type'] === 'board') {
@@ -329,16 +330,31 @@ class PublicApiController extends Controller
                 continue;
             }
 
-            if ($member['type'] === 'campus') {
+            $tag = $member['department_tag'] ?? 'main';
+
+            if ($tag === 'campus' || $member['type'] === 'campus' || $member['type'] === 'campus_rep') {
                 $campusName = $member['team_department'] ?? ($member['department'] ?: 'Bilinmeyen Kampüs');
                 if (!isset($campusMap[$campusName])) {
                     $campusMap[$campusName] = ['university' => $campusName, 'logo' => null, 'representatives' => []];
                 }
-
                 $campusMap[$campusName]['representatives'][] = $member;
                 continue;
             }
 
+            if ($tag === 'alumni') {
+                $yearName = $member['team_department'] ?? 'Geçmiş Mezunlar';
+                // Extract year from department name if possible (e.g., "2023 Mezunları")
+                preg_match('/(20\d{2})/', $yearName, $matches);
+                $year = $matches[1] ?? 'Mezun';
+                
+                if (!isset($alumniMap[$yearName])) {
+                    $alumniMap[$yearName] = ['year' => $year, 'name' => $yearName, 'members' => []];
+                }
+                $alumniMap[$yearName]['members'][] = $member;
+                continue;
+            }
+
+            // main
             $deptName = $member['team_department'] ?? ($member['department'] ?: 'Genel');
             if (!isset($departmentsMap[$deptName])) {
                 $departmentsMap[$deptName] = ['id' => md5($deptName), 'name' => $deptName, 'director' => null, 'members' => []];
@@ -357,10 +373,17 @@ class PublicApiController extends Controller
             }
         }
 
+        // Sort alumni by year descending
+        $alumniList = array_values($alumniMap);
+        usort($alumniList, function($a, $b) {
+            return (int)$b['year'] <=> (int)$a['year'];
+        });
+
         return [
             'board' => $board,
             'departments' => array_values($departmentsMap),
-            'campusRepresentatives' => array_values($campusMap)
+            'campusRepresentatives' => array_values($campusMap),
+            'alumni' => $alumniList
         ];
     }
 
