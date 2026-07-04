@@ -4,7 +4,7 @@
     "name": "x"
   },
   "index.html": {
-    "file": "assets/main-BWqtIhJe.js",
+    "file": "assets/main-DkZBXbsa.js",
     "name": "main",
     "src": "index.html",
     "isEntry": true,
@@ -12,11 +12,11 @@
       "_x-Bh-8zeuG.js"
     ],
     "css": [
-      "assets/main-CIJPO5Cn.css"
+      "assets/main-mfyZQcbt.css"
     ]
   },
   "src/admin/main.jsx": {
-    "file": "assets/admin-C7NQVUFc.js",
+    "file": "assets/admin-Dp-DtfXl.js",
     "name": "admin",
     "src": "src/admin/main.jsx",
     "isEntry": true,
@@ -24,7 +24,7 @@
       "_x-Bh-8zeuG.js"
     ],
     "css": [
-      "assets/admin-D2v7FGEU.css"
+      "assets/admin-CwVE4Yd9.css"
     ]
   }
 }

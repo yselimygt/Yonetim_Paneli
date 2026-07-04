@@ -130,6 +130,41 @@
             font-weight: 600;
         }
 
+        .sidebar-search {
+            padding: 16px 12px 0 12px;
+        }
+        
+        .sidebar-search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-search-wrapper svg {
+            position: absolute;
+            left: 10px;
+            color: var(--muted);
+            opacity: 0.7;
+        }
+        
+        .sidebar-search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px 8px 34px;
+            color: var(--text);
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        
+        .sidebar-search-input:focus {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
+        }
+
         .sidebar-nav {
             flex: 1;
             padding: 16px 12px;
@@ -1091,6 +1126,16 @@
     }
     ?>
 
+    <div class="sidebar-search">
+        <div class="sidebar-search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="appSearchInput" class="sidebar-search-input" placeholder="Uygulama ara..." autocomplete="off">
+        </div>
+    </div>
+
     <nav class="sidebar-nav">
 
         <div class="nav-section">Panel</div>
@@ -1645,6 +1690,47 @@ if (panelDeptModal) {
         if (e.target === this) {
             closePanelDeptModal();
         }
+    });
+}
+
+// Sidebar Search Logic
+const appSearchInput = document.getElementById('appSearchInput');
+if (appSearchInput) {
+    appSearchInput.addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        
+        document.querySelectorAll('.sidebar-nav > .nav-link').forEach(link => {
+            if (link.textContent.toLowerCase().includes(term)) {
+                link.style.display = '';
+            } else {
+                link.style.display = 'none';
+            }
+        });
+        
+        document.querySelectorAll('.sidebar-nav .nav-category').forEach(category => {
+            const links = category.querySelectorAll('.nav-link');
+            let hasVisibleLink = false;
+            
+            links.forEach(link => {
+                if (link.textContent.toLowerCase().includes(term)) {
+                    link.style.display = '';
+                    hasVisibleLink = true;
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+            
+            if (hasVisibleLink || term === '') {
+                category.style.display = '';
+                if (term !== '') {
+                    category.classList.add('open');
+                } else if (!category.classList.contains('active')) {
+                    category.classList.remove('open');
+                }
+            } else {
+                category.style.display = 'none';
+            }
+        });
     });
 }
 

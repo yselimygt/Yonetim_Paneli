@@ -1,4 +1,4 @@
-import { LogOut, Menu, X } from 'lucide-react';
+import { LogOut, Menu, X, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import ViperaDevSignature from './ViperaDevSignature.jsx';
 
@@ -24,7 +24,21 @@ function getInitials(name = 'Admin') {
 }
 
 function Sidebar({ boot, open, onClose }) {
-  const groupedApps = useMemo(() => normalizeApps(boot.allowedApps), [boot.allowedApps]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const groupedApps = useMemo(() => {
+    let apps = normalizeApps(boot.allowedApps);
+    
+    if (searchTerm.trim()) {
+      const lowerTerm = searchTerm.toLowerCase();
+      apps = apps.map(section => ({
+        ...section,
+        apps: section.apps.filter(app => (app.name || '').toLowerCase().includes(lowerTerm))
+      })).filter(section => section.apps.length > 0);
+    }
+    
+    return apps;
+  }, [boot.allowedApps, searchTerm]);
   const activeRoute = boot.currentRoute || '';
   const logo = boot.assets?.logoWhite || '/public/assets/logo/Yatay-Beyaz.png';
   const logoutUrl = `${boot.baseUrl || ''}/logout`;
@@ -41,6 +55,19 @@ function Sidebar({ boot, open, onClose }) {
       <aside className={`admin-sidebar ${open ? 'is-open' : ''}`}>
         <div className="admin-sidebar__brand">
           <img src={logo} alt="InnoMIS Community" className="admin-sidebar__logo" />
+        </div>
+
+        <div className="admin-sidebar__search">
+          <div className="admin-sidebar__search-input-wrapper">
+            <Search size={16} className="admin-sidebar__search-icon" />
+            <input
+              type="text"
+              placeholder="Uygulama ara..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="admin-sidebar__search-input"
+            />
+          </div>
         </div>
 
         <nav className="admin-sidebar__nav" aria-label="Admin menüsü">

@@ -81,6 +81,39 @@ body.admin-react-page textarea {
   height: auto;
 }
 
+.admin-sidebar__search {
+  padding: 16px 12px 0 12px;
+}
+
+.admin-sidebar__search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.admin-sidebar__search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--admin-muted);
+}
+
+.admin-sidebar__search-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 8px 12px 8px 36px;
+  color: var(--admin-text);
+  font-size: 0.84rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.admin-sidebar__search-input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--admin-primary);
+}
+
 .admin-sidebar__nav {
   flex: 1;
   overflow-y: auto;
