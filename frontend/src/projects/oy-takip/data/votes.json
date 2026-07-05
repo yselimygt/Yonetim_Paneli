@@ -1,0 +1,12 @@
+[
+  {
+    "id": "vote_001",
+    "communityId": "com_001",
+    "change": 50,
+    "totalAfterChange": 2230,
+    "type": "manual_add",
+    "note": "Instagram duyurusu sonrası gelen oylar",
+    "createdAt": "2026-07-05T18:30:00.000Z",
+    "createdBy": "Topluluk Yetkilisi"
+  }
+]

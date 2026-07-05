@@ -24,6 +24,9 @@ import ApplicationHub from './components/ApplicationHub';
 import ManagementForm from './components/ManagementForm';
 import RepresentativeForm from './components/RepresentativeForm';
 
+// Projects
+import OyTakipApp from './projects/oy-takip/OyTakipApp';
+
 // Yasal Metin Sayfaları
 import Privacy from './components/legal/Privacy';
 import Terms from './components/legal/Terms';
@@ -72,11 +75,20 @@ const ScrollToTop = () => {
 function App() {
   const location = useLocation();
   const isLinksPage = location.pathname === '/links';
+  const isOyTakipPage = location.pathname.startsWith('/projects/oy-takip');
 
   if (isLinksPage) {
     return (
       <Routes>
         <Route path="/links" element={<LinksPage />} />
+      </Routes>
+    );
+  }
+
+  if (isOyTakipPage) {
+    return (
+      <Routes>
+        <Route path="/projects/oy-takip/*" element={<OyTakipApp />} />
       </Routes>
     );
   }

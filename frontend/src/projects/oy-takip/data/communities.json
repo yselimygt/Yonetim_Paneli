@@ -1,0 +1,15 @@
+[
+  {
+    "id": "com_001",
+    "applicationId": "app_000",
+    "name": "Örnek Topluluk",
+    "university": "Demo Üniversitesi",
+    "category": "En Aktif Topluluk",
+    "status": "active",
+    "currentVotes": 2180,
+    "targetVotes": 5000,
+    "planId": "plus",
+    "createdAt": "2026-07-01T10:00:00.000Z",
+    "updatedAt": "2026-07-05T12:00:00.000Z"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "app_001",
+    "communityName": "Örnek Bilişim Topluluğu",
+    "university": "Örnek Üniversitesi",
+    "managerName": "Ahmet Yılmaz",
+    "email": "ahmet@ornek.edu.tr",
+    "phone": "5551234567",
+    "category": "Yılın Bilişim Topluluğu",
+    "currentVotes": 1500,
+    "targetVotes": 5000,
+    "competitors": "Rakip 1, Rakip 2",
+    "description": "Deneme başvurusu.",
+    "status": "pending",
+    "createdAt": "2026-07-05T10:00:00.000Z"
+  }
+]

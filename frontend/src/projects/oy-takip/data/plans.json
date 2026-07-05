@@ -1,0 +1,35 @@
+[
+  {
+    "id": "basic",
+    "name": "Basic",
+    "price": 50,
+    "features": [
+      "Manuel oy sayacı",
+      "Oy geçmişi",
+      "Tek kullanıcı"
+    ]
+  },
+  {
+    "id": "plus",
+    "name": "Plus",
+    "price": 100,
+    "features": [
+      "Manuel oy sayacı",
+      "Oy geçmişi",
+      "Rakip takibi",
+      "Günlük artış analizi"
+    ]
+  },
+  {
+    "id": "pro",
+    "name": "Pro",
+    "price": 250,
+    "features": [
+      "Manuel oy sayacı",
+      "Rakip takibi",
+      "Gelişmiş geçmiş",
+      "Ekip üyesi desteği",
+      "Raporlama"
+    ]
+  }
+]
