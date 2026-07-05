@@ -80,11 +80,19 @@ const Apply = () => {
 
         <div className="relative z-10">
           <div className="mb-6 flex flex-col items-center sm:items-start text-center sm:text-left">
-            <img 
-              src="https://www.gmtoplulukodulleri.com/gmalogov1.png" 
-              alt="Logo" 
-              className="w-24 mb-6 sm:hidden drop-shadow-md"
-            />
+            <div className="flex items-center justify-center gap-4 mb-6 sm:hidden">
+              <img 
+                src="https://www.gmtoplulukodulleri.com/gmalogov1.png" 
+                alt="GM Topluluk Ödülleri Logo" 
+                className="w-20 drop-shadow-md"
+              />
+              <div className="h-10 w-px bg-white/20"></div>
+              <img 
+                src="/assets/logo/Ana-Logo-Arma.png" 
+                alt="Innomis Logo" 
+                className="w-20 drop-shadow-md"
+              />
+            </div>
             <Link to="/projects/oy-takip" className="text-[#ffb74d] hover:text-[#DA2F81] transition-colors text-sm mb-4 inline-block font-medium">
               &larr; Ana Sayfaya Dön
             </Link>

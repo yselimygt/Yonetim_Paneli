@@ -11,12 +11,24 @@ const Home = () => {
       <div className="relative z-10 flex flex-col items-center w-full max-w-4xl mx-auto mt-8 md:mt-0">
         
         {/* Logo Section */}
-        <div className="mb-8 relative group">
+        <div className="mb-8 relative group flex items-center justify-center gap-6 md:gap-10">
           <div className="absolute inset-0 bg-[#DA2F81]/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          {/* GM Topluluk Ödülleri Logo */}
           <img 
             src="https://www.gmtoplulukodulleri.com/gmalogov1.png" 
             alt="GM Topluluk Ödülleri Logo" 
-            className="w-32 md:w-48 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] relative z-10"
+            className="w-24 md:w-40 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] relative z-10"
+          />
+
+          {/* Separator Line */}
+          <div className="h-16 md:h-24 w-px bg-white/20 relative z-10 hidden sm:block"></div>
+
+          {/* Innomis Logo */}
+          <img 
+            src="/assets/logo/Ana-Logo-Arma.png" 
+            alt="Innomis Logo" 
+            className="w-24 md:w-36 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] relative z-10"
           />
         </div>
 
