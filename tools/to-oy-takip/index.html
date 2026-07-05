@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOPLULUK ÖDÜLLERİ OY SAYACI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Sahadan toplanan oyları anlık takip etmek için tasarlanmış küçük oy takip aracı.">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo-container">
+                <img src="logo/topluluk-odulleri-logo.png" alt="Topluluk Ödülleri" class="main-logo left-logo">
+                <div class="logo-divider"></div>
+                <img src="logo/innomis-logo.png" alt="Innomis" class="main-logo right-logo">
+            </div>
+            <h1>TOPLULUK ÖDÜLLERİ OY SAYACI</h1>
+            <p>Sahadan toplanan oyları anlık olarak sayaçla takip edin.</p>
+        </header>
+
+        <main id="category-container">
+            <!-- Kategoriler JS ile buraya yüklenecek -->
+            <div id="loading" style="text-align: center; padding: 20px;">
+                <i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--primary);"></i>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <a href="https://yavuzselimyigit.com" target="_blank" class="signature">by yselimygt</a>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Toplu Oy Girişi Modalı -->
+    <div id="batch-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title">Toplu Oy Ekle</h2>
+            <input type="number" id="batch-input" placeholder="Sayı girin..." min="1" step="1">
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel" id="btn-modal-cancel">İptal</button>
+                <button class="modal-btn btn-confirm" id="btn-modal-confirm">Ekle</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
