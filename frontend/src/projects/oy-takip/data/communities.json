@@ -4,10 +4,13 @@
     "applicationId": "app_000",
     "name": "Örnek Topluluk",
     "university": "Demo Üniversitesi",
-    "category": "Yılın En İlgi Çekici Topluluğu",
+    "category": "Yılın En İlgi Çekici Topluluğu, Yılın En Aktif Topluluğu, Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
+    "categoryVotes": {
+      "Yılın En İlgi Çekici Topluluğu": { "current": 5000, "target": 10000 },
+      "Yılın En Aktif Topluluğu": { "current": 1500, "target": 5000 },
+      "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 2500, "target": 8000 }
+    },
     "status": "active",
-    "currentVotes": 2180,
-    "targetVotes": 5000,
     "planId": "plus",
     "createdAt": "2026-07-01T10:00:00.000Z",
     "updatedAt": "2026-07-05T12:00:00.000Z"
@@ -17,10 +20,13 @@
     "applicationId": "app_001",
     "name": "İkinci Örnek Topluluğu",
     "university": "Örnek Üniversitesi",
-    "category": "Yılın En İlgi Çekici Topluluğu",
+    "category": "Yılın En İlgi Çekici Topluluğu, Yılın En Aktif Topluluğu, Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
+    "categoryVotes": {
+      "Yılın En İlgi Çekici Topluluğu": { "current": 2000, "target": 10000 },
+      "Yılın En Aktif Topluluğu": { "current": 6000, "target": 10000 },
+      "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 1000, "target": 5000 }
+    },
     "status": "active",
-    "currentVotes": 1500,
-    "targetVotes": 5000,
     "planId": "basic",
     "createdAt": "2026-07-02T10:00:00.000Z",
     "updatedAt": "2026-07-05T12:00:00.000Z"
@@ -30,10 +36,13 @@
     "applicationId": "app_002",
     "name": "Üçüncü Örnek Topluluk",
     "university": "Test Üniversitesi",
-    "category": "Yılın En İlgi Çekici Topluluğu",
+    "category": "Yılın En İlgi Çekici Topluluğu, Yılın En Aktif Topluluğu, Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
+    "categoryVotes": {
+      "Yılın En İlgi Çekici Topluluğu": { "current": 1000, "target": 5000 },
+      "Yılın En Aktif Topluluğu": { "current": 3000, "target": 5000 },
+      "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 7000, "target": 12000 }
+    },
     "status": "active",
-    "currentVotes": 950,
-    "targetVotes": 5000,
     "planId": "plus",
     "createdAt": "2026-07-03T10:00:00.000Z",
     "updatedAt": "2026-07-05T12:00:00.000Z"

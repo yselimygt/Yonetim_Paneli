@@ -7,6 +7,8 @@ import Input from '../../components/ui/Input';
 
 const VoteTracker = () => {
   const [community, setCommunity] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [categories, setCategories] = useState([]);
   const [note, setNote] = useState('');
   const [customAmount, setCustomAmount] = useState('');
   const [totalSet, setTotalSet] = useState('');
@@ -15,7 +17,15 @@ const VoteTracker = () => {
   const loadCommunity = () => {
     if (user && user.communityId) {
       const comms = getStorage('communities');
-      setCommunity(comms.find(c => c.id === user.communityId));
+      const com = comms.find(c => c.id === user.communityId);
+      if (com) {
+        setCommunity(com);
+        const cats = com.category ? com.category.split(',').map(s => s.trim()) : [];
+        setCategories(cats);
+        if (cats.length > 0 && !selectedCategory) {
+          setSelectedCategory(cats[0]);
+        }
+      }
     }
   };
 
@@ -24,9 +34,9 @@ const VoteTracker = () => {
   }, [user]);
 
   const handleAction = (change, type) => {
-    if (!community) return;
+    if (!community || !selectedCategory) return;
     try {
-      addVoteLog(community.id, change, type, note);
+      addVoteLog(community.id, selectedCategory, change, type, note);
       setNote('');
       setCustomAmount('');
       setTotalSet('');
@@ -40,13 +50,30 @@ const VoteTracker = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Oy Girişi</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold">Oy Girişi</h2>
+        
+        {/* Category Selector */}
+        {categories.length > 0 && (
+          <select 
+            value={selectedCategory} 
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="bg-[#0d0a1a] border border-[#DA2F81]/30 hover:border-[#DA2F81] rounded-xl px-4 py-2 text-white outline-none shadow-lg transition-colors w-full sm:w-auto"
+          >
+            {categories.map((cat, idx) => (
+              <option key={idx} value={cat}>{cat}</option>
+            ))}
+          </select>
+        )}
+      </div>
       
       <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-10 backdrop-blur-md mb-8 text-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#DA2F81] to-[#ffb74d]"></div>
-        <h2 className="text-gray-400 font-medium mb-2 uppercase tracking-wider text-sm">Toplam Oy Sayınız</h2>
+        <h2 className="text-gray-400 font-medium mb-2 uppercase tracking-wider text-sm">
+          {selectedCategory} <br/><span className="text-[#DA2F81] mt-1 block">Oy Sayınız</span>
+        </h2>
         <div className="text-7xl md:text-8xl font-black bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent">
-          {community.currentVotes}
+          {community.categoryVotes?.[selectedCategory]?.current || 0}
         </div>
       </div>
 

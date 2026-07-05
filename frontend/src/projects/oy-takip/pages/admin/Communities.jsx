@@ -15,6 +15,11 @@ const Communities = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const getTotalVotes = (com) => {
+    if (!com.categoryVotes) return Number(com.currentVotes) || 0;
+    return Object.values(com.categoryVotes).reduce((acc, val) => acc + (val.current || 0), 0);
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Topluluklar</h2>
@@ -34,7 +39,7 @@ const Communities = () => {
               <tr key={com.id} className="hover:bg-white/[0.02]">
                 <td className="p-4 font-medium">{com.name}</td>
                 {!isMobile && <td className="p-4 text-gray-400">{com.university}</td>}
-                {!isMobile && <td className="p-4 font-bold text-[#DA2F81]">{com.currentVotes}</td>}
+                {!isMobile && <td className="p-4 font-bold text-[#DA2F81]">{getTotalVotes(com)}</td>}
                 {!isMobile && <td className="p-4"><StatusBadge status={com.status} /></td>}
                 <td className="p-4">
                   {isMobile ? (
@@ -91,8 +96,8 @@ const Communities = () => {
                 <p className="text-gray-300">{selectedCom.university}</p>
               </div>
               <div className="flex justify-between items-center bg-white/[0.02] p-3 rounded-lg border border-white/5">
-                <label className="text-xs text-gray-500 uppercase">Güncel Oy Sayısı</label>
-                <p className="font-bold text-xl text-[#DA2F81]">{selectedCom.currentVotes}</p>
+                <label className="text-xs text-gray-500 uppercase">Toplam Oy Sayısı</label>
+                <p className="font-bold text-xl text-[#DA2F81]">{getTotalVotes(selectedCom)}</p>
               </div>
               <div>
                 <label className="text-xs text-gray-500 uppercase">Durum</label>

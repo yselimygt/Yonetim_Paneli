@@ -23,6 +23,17 @@ const Rankings = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const communities = getStorage('communities') || [];
 
+  // Yardımcı fonksiyonlar
+  const getTotalVotes = (com) => {
+    if (!com.categoryVotes) return Number(com.currentVotes) || 0;
+    return Object.values(com.categoryVotes).reduce((acc, val) => acc + (val.current || 0), 0);
+  };
+
+  const getCategoryVotes = (com, category) => {
+    if (!com.categoryVotes) return Number(com.currentVotes) || 0;
+    return com.categoryVotes[category]?.current || 0;
+  };
+
   // Sıralamayı hesapla
   const rankedList = useMemo(() => {
     let filtered = communities.filter(c => c.status === 'active');
@@ -34,10 +45,12 @@ const Rankings = () => {
         const cats = c.category.split(',').map(s => s.trim());
         return cats.includes(selectedCategory);
       });
+      // Seçili kategoriye göre azalan sırada sırala
+      return filtered.sort((a, b) => getCategoryVotes(b, selectedCategory) - getCategoryVotes(a, selectedCategory));
     }
 
-    // Oylara göre azalan sırada sırala
-    return filtered.sort((a, b) => (Number(b.currentVotes) || 0) - (Number(a.currentVotes) || 0));
+    // Genel toplam oylara göre azalan sırada sırala
+    return filtered.sort((a, b) => getTotalVotes(b) - getTotalVotes(a));
   }, [communities, selectedCategory]);
 
   const getRankIcon = (index) => {
@@ -122,7 +135,7 @@ const Rankings = () => {
             </div>
             <div className="text-right">
               <div className="text-xl md:text-2xl font-black text-[#DA2F81] drop-shadow-[0_0_10px_rgba(218,47,129,0.3)]">
-                {com.currentVotes}
+                {selectedCategory === CATEGORIES[0] ? getTotalVotes(com) : getCategoryVotes(com, selectedCategory)}
               </div>
               <div className="text-[10px] md:text-xs text-gray-500 font-medium uppercase tracking-wider">Oy</div>
             </div>
