@@ -4,7 +4,7 @@ const Button = ({ children, variant = 'primary', className = '', ...props }) => 
   const baseStyles = "px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2";
   
   const variants = {
-    primary: "bg-gradient-to-r from-[#f49f20] to-[#da2c2e] text-white hover:opacity-90 shadow-lg hover:shadow-[#f49f20]/20",
+    primary: "bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] text-white hover:opacity-90 shadow-lg hover:shadow-[#DA2F81]/20",
     secondary: "bg-white/10 text-white hover:bg-white/20 border border-white/10",
     danger: "bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/20",
     success: "bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/20",

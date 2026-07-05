@@ -40,7 +40,7 @@ const OyTakipApp = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#06040d] text-white font-sans selection:bg-[#f49f20]/30 selection:text-white">
+    <div className="min-h-screen bg-[#1B1E27] text-white font-sans selection:bg-[#DA2F81]/30 selection:text-white">
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
