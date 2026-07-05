@@ -11,20 +11,6 @@
     {
       "id": "cat_etkinlik",
       "name": "Yılın En Yüksek Katılımlı Etkinliğini Düzenleyen Topluluğu Aday Toplulukları"
-    },
-    {
-      "id": "cat_aktif",
-      "name": "Yılın En Aktif Topluluğu Aday Toplulukları",
-      "logo": "logo/teknofest-logo.png",
-      "logoText": "NEÜ TEKNOFEST TOPLULUĞU",
-      "isAlliance": true
-    },
-    {
-      "id": "cat_eglenceli",
-      "name": "Yılın En Eğlenceli Etkinliklerini Düzenleyen Topluluk Aday Toplulukları",
-      "logo": "logo/selcuk-espor.png",
-      "logoText": "SÜ ELEKTRONİK SPOR TOPLULUĞU",
-      "isAlliance": true
     }
   ]
 }
