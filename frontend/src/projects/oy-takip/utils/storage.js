@@ -11,9 +11,10 @@ export const initStorage = () => {
   if (!localStorage.getItem(`${PREFIX}applications`)) {
     localStorage.setItem(`${PREFIX}applications`, JSON.stringify(applicationsData));
   }
-  if (!localStorage.getItem(`${PREFIX}communities`)) {
-    localStorage.setItem(`${PREFIX}communities`, JSON.stringify(communitiesData));
-  }
+  
+  // Test verilerini zorla yenilemek için geçici kod:
+  localStorage.setItem(`${PREFIX}communities`, JSON.stringify(communitiesData));
+  
   if (!localStorage.getItem(`${PREFIX}votes`)) {
     localStorage.setItem(`${PREFIX}votes`, JSON.stringify(votesData));
   }

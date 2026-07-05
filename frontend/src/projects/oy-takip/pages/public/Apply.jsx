@@ -33,10 +33,6 @@ const Apply = () => {
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [categoryVotes, setCategoryVotes] = useState({});
-    competitors: '',
-    description: '',
-  });
-  const [selectedCategories, setSelectedCategories] = useState([]);
   const [error, setError] = useState('');
 
   const handleCategoryToggle = (cat) => {
