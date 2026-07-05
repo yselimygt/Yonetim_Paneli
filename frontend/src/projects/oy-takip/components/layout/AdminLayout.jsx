@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { logout } from '../../utils/auth';
-import { LayoutDashboard, Users, FileText, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, LogOut, Menu, X, Trophy } from 'lucide-react';
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -52,6 +52,10 @@ const AdminLayout = () => {
           <Link onClick={closeSidebar} to="/projects/oy-takip/admin/communities" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
             <Users size={20} />
             <span>Topluluklar</span>
+          </Link>
+          <Link onClick={closeSidebar} to="/projects/oy-takip/admin/rankings" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-[#ffb74d] hover:bg-white/5 rounded-lg transition-colors">
+            <Trophy size={20} />
+            <span>Sıralama</span>
           </Link>
         </nav>
         

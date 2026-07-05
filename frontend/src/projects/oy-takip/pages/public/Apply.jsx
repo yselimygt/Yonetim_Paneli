@@ -28,8 +28,11 @@ const Apply = () => {
     managerName: '',
     email: '',
     phone: '',
-    currentVotes: '',
-    targetVotes: '',
+    competitors: '',
+    description: '',
+  });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categoryVotes, setCategoryVotes] = useState({});
     competitors: '',
     description: '',
   });
@@ -58,12 +61,15 @@ const Apply = () => {
       return;
     }
 
-    addItem('applications', {
+    const applicationData = {
       ...formData,
       category: selectedCategories.join(', '),
+      categoryVotes: categoryVotes,
       status: 'pending',
       createdAt: new Date().toISOString()
-    });
+    };
+
+    addItem('applications', applicationData);
     navigate('/projects/oy-takip/success');
   };
 
@@ -158,11 +164,35 @@ const Apply = () => {
             </div>
 
             <div className="bg-white/[0.03] border border-white/5 p-5 md:p-6 rounded-2xl">
-               <h3 className="text-lg md:text-xl font-bold mb-4 border-b border-white/5 pb-2">Topluluk Durumu</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                <Input label="Mevcut Bilinen Oy Sayısı" type="number" name="currentVotes" value={formData.currentVotes} onChange={handleChange} required />
-                <Input label="Hedef Oy Sayısı" type="number" name="targetVotes" value={formData.targetVotes} onChange={handleChange} required />
-              </div>
+               <h3 className="text-lg md:text-xl font-bold mb-4 border-b border-white/5 pb-2">Kategori Bazlı Oy Durumu</h3>
+              
+              {selectedCategories.length === 0 ? (
+                <div className="text-gray-500 text-sm italic py-4">Lütfen yukarıdan en az 1 kategori seçiniz.</div>
+              ) : (
+                <div className="space-y-6">
+                  {selectedCategories.map((cat, idx) => (
+                    <div key={idx} className="bg-white/[0.02] p-4 rounded-xl border border-white/5">
+                      <h4 className="text-[#DA2F81] font-bold text-sm mb-3">{cat}</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Input 
+                          label="Mevcut Bilinen Oy Sayısı" 
+                          type="number" 
+                          value={categoryVotes[cat]?.current || ''} 
+                          onChange={(e) => setCategoryVotes({...categoryVotes, [cat]: {...categoryVotes[cat], current: Number(e.target.value)}})} 
+                          required 
+                        />
+                        <Input 
+                          label="Hedef Oy Sayısı" 
+                          type="number" 
+                          value={categoryVotes[cat]?.target || ''} 
+                          onChange={(e) => setCategoryVotes({...categoryVotes, [cat]: {...categoryVotes[cat], target: Number(e.target.value)}})} 
+                          required 
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="mt-4 md:mt-6">
                 <Input label="Rakip Topluluklar" name="competitors" value={formData.competitors} onChange={handleChange} placeholder="Örn: X Topluluğu, Y Topluluğu" />
               </div>

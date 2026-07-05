@@ -12,6 +12,7 @@ import Login from './pages/public/Login';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Applications from './pages/admin/Applications';
 import Communities from './pages/admin/Communities';
+import Rankings from './pages/admin/Rankings';
 
 import CommunityDashboard from './pages/community/CommunityDashboard';
 import VoteTracker from './pages/community/VoteTracker';
@@ -57,6 +58,7 @@ const OyTakipApp = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="applications" element={<Applications />} />
           <Route path="communities" element={<Communities />} />
+          <Route path="rankings" element={<Rankings />} />
         </Route>
 
         {/* Community Routes */}

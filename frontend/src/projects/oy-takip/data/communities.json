@@ -4,12 +4,38 @@
     "applicationId": "app_000",
     "name": "Örnek Topluluk",
     "university": "Demo Üniversitesi",
-    "category": "En Aktif Topluluk",
+    "category": "Yılın En İlgi Çekici Topluluğu",
     "status": "active",
     "currentVotes": 2180,
     "targetVotes": 5000,
     "planId": "plus",
     "createdAt": "2026-07-01T10:00:00.000Z",
+    "updatedAt": "2026-07-05T12:00:00.000Z"
+  },
+  {
+    "id": "com_002",
+    "applicationId": "app_001",
+    "name": "İkinci Örnek Topluluğu",
+    "university": "Örnek Üniversitesi",
+    "category": "Yılın En İlgi Çekici Topluluğu",
+    "status": "active",
+    "currentVotes": 1500,
+    "targetVotes": 5000,
+    "planId": "basic",
+    "createdAt": "2026-07-02T10:00:00.000Z",
+    "updatedAt": "2026-07-05T12:00:00.000Z"
+  },
+  {
+    "id": "com_003",
+    "applicationId": "app_002",
+    "name": "Üçüncü Örnek Topluluk",
+    "university": "Test Üniversitesi",
+    "category": "Yılın En İlgi Çekici Topluluğu",
+    "status": "active",
+    "currentVotes": 950,
+    "targetVotes": 5000,
+    "planId": "plus",
+    "createdAt": "2026-07-03T10:00:00.000Z",
     "updatedAt": "2026-07-05T12:00:00.000Z"
   }
 ]
