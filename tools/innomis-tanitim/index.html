@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innomis | Geleceğin Liderleri</title>
+    <!-- Premium Fonts: Geist (via CDN) or Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Advanced Fluid Background Layer -->
+    <div class="glow-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <!-- Subliminal Background Emblem -->
+        <img src="../assets/image/amblem.svg" alt="" class="bg-emblem">
+    </div>
+    
+    <!-- Subtle Grid Overlay -->
+    <div class="grid-overlay"></div>
+
+    <main class="split-layout">
+        <!-- LEFT: Typography, Value Prop & CTA -->
+        <section class="content-side">
+            <!-- Brand -->
+            <div class="brand fade-in-up" style="--delay: 0.1s">
+                <div class="partnership-logos">
+                    <img src="../assets/image/koyu-tema-logo.svg" alt="Innomis" class="logo">
+                    <span class="partnership-x"><i class="fa-solid fa-xmark"></i></span>
+                    <img src="../assets/image/mtkb-logo.svg" alt="MTKB" class="logo mtkb-logo">
+                </div>
+
+            </div>
+
+            <!-- Headline -->
+            <div class="hero-text fade-in-up" style="--delay: 0.2s">
+                <h1 class="gradient-text">Bilişimde Yeniliğe,<br>İnovasyonda Zirveye!</h1>
+                <p class="subtitle">Teknoloji ve inovasyon dolu bu ekosistemde yerini al. Geleceğin projelerini üret, güçlü bir network kur ve kendi kariyerinin lideri ol.</p>
+            </div>
+
+            <!-- Quick Features -->
+            <div class="features-list fade-in-up" style="--delay: 0.3s">
+                <div class="feature-item">
+                    <div class="icon-box"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <span>Teknik ve Sosyal Geziler</span>
+                </div>
+                <div class="feature-item">
+                    <div class="icon-box"><i class="fa-solid fa-users-viewfinder"></i></div>
+                    <span>Networking Etkinlikleri</span>
+                </div>
+                <div class="feature-item">
+                    <div class="icon-box"><i class="fa-solid fa-masks-theater"></i></div>
+                    <span>Sosyal ve Teknik Etkinlikler</span>
+                </div>
+                <div class="feature-item">
+                    <div class="icon-box"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <span>Seminerler, Konferanslar</span>
+                </div>
+            </div>
+
+            <!-- CTA / Registration Box -->
+            <div class="cta-wrapper fade-in-up" style="--delay: 0.4s">
+                <div class="action-card glass-panel">
+                    <div class="action-text">
+                        <h3>Aramıza Katıl</h3>
+                        <p>Kariyerine ilk adımı at, Innomis ekosistemine dahil ol.</p>
+                        <a href="https://forms.gle/YWfX1jZAmarGjkfr6" target="_blank" class="cyber-button">
+                            <span>Üye Ol</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="qr-container-wrapper">
+                        <div class="qr-container" id="qr-trigger" title="Büyütmek için tıkla">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://forms.gle/YWfX1jZAmarGjkfr6&color=f97316" alt="Kayıt QR Kod" class="qr-code">
+                            <div class="qr-scan-line"></div>
+                        </div>
+                        <button class="icon-btn enlarge-btn" id="qr-enlarge-btn" title="QR Kodu Büyüt">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT: Visual Identity & Proof -->
+        <section class="visual-side fade-in-left" style="--delay: 0.5s">
+            <div class="perspective-container">
+                <div class="glass-frame main-image">
+                    <!-- Default to first gallery image -->
+                    <div class="img-wrapper slider-wrapper">
+                         <div class="slide bg-zoom active" style="background-image: url('../assets/image/gallery/misconnect25-innomis.png');"></div>
+                         <div class="slide bg-zoom" style="background-image: url('../assets/image/gallery/google-cloud-sonrası.png');"></div>
+                         <div class="slide bg-zoom" style="background-image: url('../assets/image/gallery/konya.png');"></div>
+                         <div class="slide bg-zoom" style="background-image: url('../assets/image/gallery/misconnect25.jpg');"></div>
+                    </div>
+                    
+                    <div class="frame-content">
+                        <div class="glass-pill">
+                            <i class="fa-solid fa-star" style="color:#fbbf24;"></i>
+                            <span>#InnoMISCommunity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mascot moved outside the 3D frame, positioned to the right of the gallery -->
+            <div class="floating-mascot">
+                <img src="../assets/image/kollar-bagdasmis-innox.svg" alt="Innox">
+            </div>
+        </section>
+    </main>
+
+    <!-- QR Modal -->
+    <div class="qr-modal" id="qr-modal">
+        <div class="modal-backdrop" id="modal-backdrop"></div>
+        <div class="modal-content glass-panel fade-in-up" style="--delay: 0s">
+            <button class="close-modal" id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Hemen Kaydol</h2>
+            <p>Telefonunun kamerasını okut ve Innomis'e katıl.</p>
+            <div class="qr-large-wrapper">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://forms.gle/YWfX1jZAmarGjkfr6&color=f97316" alt="Büyük QR Kod" class="qr-code-large">
+                <div class="qr-scan-line large-scan"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-simple fade-in-up" style="--delay: 0.6s; text-align: center; padding: 20px; font-size: 13px; color: rgba(255,255,255,0.4);">
+        &copy; 2026 InnoMIS Community. <a href="https://yavuzselimyigit.com" target="_blank" style="color: #f97316; text-decoration: none; font-weight: 600;">by yselimygt</a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
