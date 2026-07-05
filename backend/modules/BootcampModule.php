@@ -34,7 +34,11 @@ class BootcampModule extends BaseModule
         $stmtPartners->execute([$this->department['id']]);
         $partners = $stmtPartners->fetchAll();
 
-        return $this->renderView('bootcamp', compact('upcoming', 'past', 'canEdit', 'partners'));
+        $stmtForms = $this->pdo->prepare("SELECT id, name, slug FROM apps WHERE module_type = 'form' ORDER BY name ASC");
+        $stmtForms->execute();
+        $forms = $stmtForms->fetchAll();
+
+        return $this->renderView('bootcamp', compact('upcoming', 'past', 'canEdit', 'partners', 'forms'));
     }
 
     public function handlePost(array $postData): void
@@ -57,6 +61,7 @@ class BootcampModule extends BaseModule
             $instructor = trim($postData['instructor'] ?? '');
             $quota = !empty($postData['quota']) ? (int)$postData['quota'] : null;
             $link = trim($postData['link'] ?? '');
+            $locationLink = trim($postData['location_link'] ?? '');
             $category = trim($postData['category'] ?? '');
             $status = 1;
 
@@ -86,12 +91,12 @@ class BootcampModule extends BaseModule
             }
 
             $stmt = $this->pdo->prepare("
-                INSERT INTO app_bootcamps (app_id, department_id, title, type, location, description, start_date, end_date, instructor, quota, link, category, image_path, status, created_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO app_bootcamps (app_id, department_id, title, type, location, description, start_date, end_date, instructor, quota, link, location_link, category, image_path, status, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 $this->app['id'], $this->department['id'], $title, $type, $location, $description, 
-                $startDate, $endDate, $instructor, $quota, $link, $category, 
+                $startDate, $endDate, $instructor, $quota, $link, $locationLink, $category, 
                 $imagePath, $status, $this->user['id']
             ]);
 
@@ -110,6 +115,7 @@ class BootcampModule extends BaseModule
             $instructor = trim($postData['instructor'] ?? '');
             $quota = !empty($postData['quota']) ? (int)$postData['quota'] : null;
             $link = trim($postData['link'] ?? '');
+            $locationLink = trim($postData['location_link'] ?? '');
             $category = trim($postData['category'] ?? '');
 
             if (empty($title) || empty($startDate) || empty($endDate)) {
@@ -151,12 +157,12 @@ class BootcampModule extends BaseModule
             $stmt = $this->pdo->prepare("
                 UPDATE app_bootcamps SET 
                     title=?, type=?, location=?, description=?, start_date=?, end_date=?, 
-                    instructor=?, quota=?, link=?, category=?, image_path=?
+                    instructor=?, quota=?, link=?, location_link=?, category=?, image_path=?
                 WHERE id=?
             ");
             $stmt->execute([
                 $title, $type, $location, $description, $startDate, $endDate, 
-                $instructor, $quota, $link, $category, $imagePath,
+                $instructor, $quota, $link, $locationLink, $category, $imagePath,
                 $id
             ]);
 

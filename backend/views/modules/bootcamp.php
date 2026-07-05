@@ -590,7 +590,24 @@ function renderBootcampCard($bc, $canEdit) {
                 </div>
 
                 <div class="form-group" style="flex:1;">
-                    <label style="display:flex; align-items:center; min-height:24px;">Başvuru / Link (Konum Harita Linki veya Toplantı Linki)</label>
+                    <label id="lblLocationLink" style="display:flex; align-items:center; min-height:24px;">Konum / Yayın Linki</label>
+                    <input type="url" name="location_link" id="inpLocationLink" class="form-control" placeholder="Harita / Toplantı linki...">
+                </div>
+            </div>
+
+            <div style="display:flex; gap:16px;">
+                <div class="form-group" style="flex:1;">
+                    <label id="lblLink" style="display:flex; align-items:center; min-height:24px;">
+                        <span id="lblLinkText">Başvuru / Kayıt Linki</span>
+                        <?php if(!empty($forms)): ?>
+                            <select style="margin-left: 8px; font-size: 11px; padding: 2px 4px; border: 1px solid var(--bc-border); border-radius: 4px; background: var(--bg); color: var(--text); cursor: pointer;" onchange="if(this.value) { document.querySelector('input[name=\'link\']').value = this.value; this.value=''; }">
+                                <option value="">Sistemden Form Seç</option>
+                                <?php foreach($forms as $f): ?>
+                                    <option value="<?= BASE_URL ?>/f/<?= htmlspecialchars($f['slug']) ?>"><?= htmlspecialchars($f['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    </label>
                     <input type="url" name="link" class="form-control" placeholder="https://...">
                 </div>
             </div>
@@ -628,7 +645,7 @@ function toggleBcFields() {
 function applyPartnerLocation() {
     const sel = document.getElementById('partnerSelect');
     const inp = document.getElementById('inpLocation');
-    const lnk = document.querySelector('input[name="link"]');
+    const lnk = document.getElementById('inpLocationLink');
     
     if (sel.value) {
         inp.value = sel.value;
@@ -670,6 +687,7 @@ function openBcEditModal(bc) {
     document.querySelector('input[name="quota"]').value = bc.quota || '';
     document.getElementById('selCategory').value = bc.category || '';
     document.querySelector('input[name="link"]').value = bc.link || '';
+    document.getElementById('inpLocationLink').value = bc.location_link || '';
     document.querySelector('textarea[name="description"]').value = bc.description || '';
     
     document.getElementById('bcModal').classList.add('active');
