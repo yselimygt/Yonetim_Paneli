@@ -59,4 +59,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
     if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
 
+    // Fullscreen Prompt Logic
+    const fsModal = document.getElementById('fullscreen-modal');
+    const fsAcceptBtn = document.getElementById('fs-accept-btn');
+    const fsDeclineBtn = document.getElementById('fs-decline-btn');
+    const fsBackdrop = document.getElementById('fs-modal-backdrop');
+
+    function closeFsModal() {
+        if(fsModal) fsModal.classList.remove('active');
+    }
+
+    if (fsAcceptBtn) {
+        fsAcceptBtn.addEventListener('click', () => {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Tam ekran moduna geçilemedi: ${err.message}`);
+                });
+            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+                document.documentElement.msRequestFullscreen();
+            }
+            closeFsModal();
+        });
+    }
+
+    if (fsDeclineBtn) fsDeclineBtn.addEventListener('click', closeFsModal);
+    if (fsBackdrop) fsBackdrop.addEventListener('click', closeFsModal);
+
 });

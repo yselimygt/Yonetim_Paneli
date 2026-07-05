@@ -423,9 +423,9 @@ body {
 /* Floating Mascot - Now explicitly outside the frame, large on the right corner */
 .floating-mascot {
     position: fixed;
-    bottom: -5%;
+    bottom: -10%;
     right: 0%; /* Hugging the right edge of the screen */
-    width: 350px; /* Made it larger as requested "büyük bir şekilde" */
+    width: 550px; /* Made it significantly larger */
     z-index: 50; /* Bring above almost everything */
     filter: drop-shadow(-10px 10px 30px rgba(0,0,0,0.8)); /* Left shadow since it's on the right */
     animation: float-large 8s ease-in-out infinite;
@@ -587,7 +587,7 @@ body {
     .split-layout { 
         flex-direction: column; 
         height: auto; 
-        padding: 4rem 2rem; 
+        padding: 4rem 2rem 15rem 2rem; /* Added bottom padding to make room for mascot */
         gap: 4rem;
     }
     body { overflow-y: auto; height: auto; }
@@ -596,6 +596,11 @@ body {
         max-width: 100%; 
         align-items: center; 
         text-align: center; 
+    }
+    
+    .visual-side {
+        position: relative;
+        width: 100%;
     }
     
     .brand { justify-content: center; }
@@ -629,10 +634,19 @@ body {
     .perspective-container:hover .glass-frame { transform: none; }
     
     .floating-mascot {
-        right: 0;
-        bottom: -15%;
-        width: 250px;
+        position: absolute;
+        right: 50%;
+        transform: translateX(50%);
+        bottom: -35%;
+        width: 350px;
+        animation: float-mobile 8s ease-in-out infinite;
     }
+}
+
+@keyframes float-mobile {
+    0% { transform: translateX(50%) translateY(0) rotate(0deg); }
+    50% { transform: translateX(50%) translateY(-20px) rotate(-2deg); }
+    100% { transform: translateX(50%) translateY(0) rotate(0deg); }
 }
 
 /* Mobile Phones */
@@ -673,12 +687,12 @@ body {
     .perspective-container {
         height: 45vh;
         margin-top: 1.5rem;
+        margin-bottom: 3rem;
     }
 
     .floating-mascot {
-        width: 180px;
-        right: -10%;
-        bottom: -10%;
+        width: 250px;
+        bottom: -40%;
     }
 
     .modal-content {

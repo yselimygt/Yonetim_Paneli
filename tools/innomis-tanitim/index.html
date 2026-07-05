@@ -128,6 +128,23 @@
         </div>
     </div>
 
+    <!-- Fullscreen Prompt Modal -->
+    <div class="qr-modal active" id="fullscreen-modal" style="z-index: 200;">
+        <div class="modal-backdrop" id="fs-modal-backdrop"></div>
+        <div class="modal-content glass-panel fade-in-up" style="--delay: 0.5s;">
+            <h2>Daha İyi Bir Deneyim</h2>
+            <p>Sistemi en iyi şekilde görüntülemek için tam ekran moduna geçmek ister misiniz?</p>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <button id="fs-accept-btn" class="cyber-button" style="background: var(--brand); color: #fff; box-shadow: 0 4px 15px var(--brand-glow); border: none; cursor: pointer;">
+                    <i class="fa-solid fa-expand"></i> Tam Ekrana Geç
+                </button>
+                <button id="fs-decline-btn" class="cyber-button" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;">
+                    Hayır, Teşekkürler
+                </button>
+            </div>
+        </div>
+    </div>
+
 
 
     <script src="script.js"></script>
