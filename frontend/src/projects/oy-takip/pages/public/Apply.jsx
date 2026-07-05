@@ -1,3 +1,4 @@
+import innomisLogo from './innomis.png';
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { addItem, getStorage } from '../../utils/storage';
@@ -41,10 +42,6 @@ const Apply = () => {
   const allCommunities = getStorage('communities') || [];
   const uniqueUniversities = [...new Set(allCommunities.map(c => c.university).filter(Boolean))];
   
-  // Seçili üniversiteye göre filtrelenmiş topluluklar
-  const filteredCommunities = formData.university 
-    ? allCommunities.filter(c => c.university === formData.university)
-    : [];
 
   const handleCategoryToggle = (cat) => {
     if (selectedCategories.includes(cat)) {
@@ -101,7 +98,7 @@ const Apply = () => {
               />
               <div className="h-10 w-px bg-white/20"></div>
               <img 
-                src="/assets/logo/Ana-Logo-Arma.png" 
+                src={innomisLogo} 
                 alt="Innomis Logo" 
                 className="w-20 drop-shadow-md"
               />
@@ -129,9 +126,7 @@ const Apply = () => {
                   <select 
                     name="university"
                     value={formData.university}
-                    onChange={(e) => {
-                      setFormData(prev => ({ ...prev, university: e.target.value, communityName: '', image: '' }));
-                    }}
+                    onChange={handleChange}
                     required
                     className="w-full bg-[#0d0a1a]/50 border border-white/10 hover:border-white/20 focus:border-[#DA2F81] rounded-lg px-4 py-3 text-white appearance-none outline-none transition-colors"
                   >
@@ -142,42 +137,7 @@ const Apply = () => {
                   </select>
                 </div>
 
-                <div className="flex flex-col gap-1 relative">
-                  <label className="text-sm font-medium text-gray-300">Topluluk Seçiniz</label>
-                  <div className="relative">
-                    <select 
-                      name="communityName"
-                      value={formData.communityName}
-                      onChange={(e) => {
-                        const selected = filteredCommunities.find(c => c.name === e.target.value);
-                        setFormData(prev => ({ 
-                          ...prev, 
-                          communityName: e.target.value,
-                          image: selected ? selected.image : ''
-                        }));
-                      }}
-                      required
-                      disabled={!formData.university}
-                      className="w-full bg-[#0d0a1a]/50 border border-white/10 hover:border-white/20 focus:border-[#DA2F81] rounded-lg pl-12 pr-4 py-3 text-white appearance-none outline-none transition-colors disabled:opacity-50"
-                    >
-                      <option value="" disabled>
-                        {formData.university ? "Topluluk Seçin..." : "Önce Üniversite Seçin"}
-                      </option>
-                      {filteredCommunities.map((com, idx) => (
-                        <option key={idx} value={com.name}>{com.name}</option>
-                      ))}
-                    </select>
-                    
-                    {/* Selected Logo Preview or Placeholder inside the select box */}
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full overflow-hidden bg-white/10 pointer-events-none flex items-center justify-center">
-                      {formData.image ? (
-                        <img src={formData.image} alt="logo" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-[10px] text-gray-400">?</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <Input label="Topluluk Adı" name="communityName" value={formData.communityName} onChange={handleChange} placeholder="Örn: Bilişim Topluluğu" required />
 
                 <Input label="Yetkili Adı Soyadı" name="managerName" value={formData.managerName} onChange={handleChange} required />
                 <Input label="E-posta" type="email" name="email" value={formData.email} onChange={handleChange} required />
