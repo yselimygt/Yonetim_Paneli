@@ -1,4 +1,21 @@
-<?php $pageTitle = 'Dashboard'; $activeSection = 'dashboard'; ?>
+<?php 
+$pageTitle = 'Dashboard'; 
+$activeSection = 'dashboard'; 
+
+if (isset($members) && is_array($members)) {
+    usort($members, function($a, $b) {
+        $roles = [
+            'president' => 4,
+            'vice_president' => 3,
+            'director' => 2,
+            'coordinator' => 1
+        ];
+        $weightA = isset($roles[$a['role']]) ? $roles[$a['role']] : 0;
+        $weightB = isset($roles[$b['role']]) ? $roles[$b['role']] : 0;
+        return $weightB - $weightA;
+    });
+}
+?>
 
 <style>
     @media (max-width: 700px) {
@@ -224,6 +241,130 @@
             font-size: 11px !important;
         }
     }
+
+    /* Departman Üyeleri Modal Styles */
+    .members-modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .members-modal-overlay.show {
+        display: flex;
+        opacity: 1;
+    }
+    .members-modal {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 100%;
+        max-width: 500px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+    .members-modal-overlay.show .members-modal {
+        transform: translateY(0);
+    }
+    .members-modal-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .members-modal-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    .members-modal-close {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .members-modal-close:hover {
+        background: var(--bg);
+        color: var(--text);
+    }
+    .members-modal-body {
+        padding: 0;
+        overflow-y: auto;
+    }
+    .members-modal-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .members-modal-list li {
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .members-modal-list li:last-child {
+        border-bottom: none;
+    }
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 14px;
+        flex-shrink: 0;
+        border: 2px solid var(--card);
+        object-fit: cover;
+    }
+    .member-info {
+        flex-grow: 1;
+        min-width: 0;
+    }
+    .member-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0 0 2px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .member-email {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .panel-dashboard-members-strip {
+        transition: background 0.2s, transform 0.2s;
+    }
+    .panel-dashboard-members-strip:hover {
+        background: var(--bg);
+        transform: translateY(-2px);
+    }
 </style>
 
 <!-- Hoş Geldiniz -->
@@ -369,7 +510,7 @@
     <?php endif; ?>
     
     <!-- Departman Üyeleri -->
-    <div class="panel-dashboard-members-strip stat-card" style="flex-grow: 1; min-width: 300px; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px;">
+    <div class="panel-dashboard-members-strip stat-card" style="flex-grow: 1; min-width: 300px; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; cursor: pointer;" onclick="openMembersModal()">
         <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px; display:flex; align-items:center; gap:8px;">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
             Departman Üyeleri
@@ -1040,3 +1181,75 @@
     </div>
 </div>
 <?php endif; ?>
+
+<!-- Departman Üyeleri Modal -->
+<div id="membersModal" class="members-modal-overlay" onclick="if(event.target === this) closeMembersModal()">
+    <div class="members-modal">
+        <div class="members-modal-header">
+            <h3>Departman Üyeleri</h3>
+            <button class="members-modal-close" onclick="closeMembersModal()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="members-modal-body">
+            <?php if (empty($members)): ?>
+                <div style="padding: 24px; text-align: center; color: var(--muted);">Üye bulunamadı.</div>
+            <?php else: ?>
+                <ul class="members-modal-list">
+                    <?php foreach ($members as $m): ?>
+                        <li>
+                            <?php if (!empty($m['avatar'])): ?>
+                                <img src="<?= BASE_URL . '/public/' . htmlspecialchars($m['avatar']) ?>" class="member-avatar" alt="">
+                            <?php else: ?>
+                                <div class="member-avatar"><?= mb_strtoupper(mb_substr($m['user_name'], 0, 1)) ?></div>
+                            <?php endif; ?>
+                            <div class="member-info">
+                                <p class="member-name"><?= View::escape($m['user_name']) ?></p>
+                                <p class="member-email"><?= View::escape($m['email']) ?></p>
+                            </div>
+                            <div>
+                                <?php
+                                $badgeClass = 'badge-member';
+                                $roleName = 'Üye';
+                                if ($m['role'] === 'director') {
+                                    $badgeClass = 'badge-director';
+                                    $roleName = 'Direktör';
+                                } elseif ($m['role'] === 'president') {
+                                    $badgeClass = 'badge-president';
+                                    $roleName = 'Başkan';
+                                } elseif ($m['role'] === 'vice_president') {
+                                    $badgeClass = 'badge-vice-president';
+                                    $roleName = 'Başkan Yardımcısı';
+                                }
+                                ?>
+                                <span class="badge <?= $badgeClass ?>" style="font-size: 10px; padding: 2px 6px;">
+                                    <?= $roleName ?>
+                                </span>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<script>
+function openMembersModal() {
+    const modal = document.getElementById('membersModal');
+    modal.style.display = 'flex';
+    // Trigger reflow
+    void modal.offsetWidth;
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeMembersModal() {
+    const modal = document.getElementById('membersModal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }, 300);
+}
+</script>
