@@ -577,7 +577,7 @@ function renderBootcampCard($bc, $canEdit) {
                 </div>
                 
                 <div class="form-group" id="grpLocationOnline" style="display:none; flex:1;">
-                    <label>Platform</label>
+                    <label style="display:flex; align-items:center; min-height:24px;">Platform</label>
                     <select name="location_or_platform_online" id="selPlatform" class="form-control">
                         <option value="">Platform Seçiniz</option>
                         <option value="Zoom">Zoom</option>
@@ -590,7 +590,7 @@ function renderBootcampCard($bc, $canEdit) {
                 </div>
 
                 <div class="form-group" style="flex:1;">
-                    <label>Başvuru / Link (Konum Harita Linki veya Toplantı Linki)</label>
+                    <label style="display:flex; align-items:center; min-height:24px;">Başvuru / Link (Konum Harita Linki veya Toplantı Linki)</label>
                     <input type="url" name="link" class="form-control" placeholder="https://...">
                 </div>
             </div>

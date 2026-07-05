@@ -867,7 +867,7 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
                 </div>
                 
                 <div class="form-group" id="grpLocationOnline" style="display:none; flex:1;">
-                    <label>Platform</label>
+                    <label style="display:flex; align-items:center; min-height:24px;">Platform</label>
                     <select name="location_or_platform_online" id="selPlatform" class="form-control">
                         <option value="">Platform Seçiniz</option>
                         <option value="Zoom">Zoom</option>
@@ -883,14 +883,15 @@ function renderEventCard($event, $canEdit, $currentDeptId) {
                 </div>
                 
                 <div class="form-group" style="flex:1;">
-                    <label id="lblLocationLink">Konum / Yayın Linki</label>
+                    <label id="lblLocationLink" style="display:flex; align-items:center; min-height:24px;">Konum / Yayın Linki</label>
                     <input type="url" name="location_link" id="inpLocationLink" class="form-control" placeholder="Harita / Toplantı linki...">
                 </div>
             </div>
             
             <div style="display:flex; gap:16px;">
                 <div class="form-group" style="flex:1;">
-                    <label id="lblLink">Kayıt / Katılım Linki
+                    <label id="lblLink" style="display:flex; align-items:center; min-height:24px;">
+                        <span id="lblLinkText">Kayıt / Katılım Linki</span>
                         <?php if(!empty($forms)): ?>
                             <select style="margin-left: 8px; font-size: 11px; padding: 2px 4px; border: 1px solid var(--evt-border); border-radius: 4px; background: var(--bg); color: var(--text); cursor: pointer;" onchange="if(this.value) { document.querySelector('input[name=\'link\']').value = this.value; this.value=''; }">
                                 <option value="">Sistemden Form Seç</option>
@@ -980,7 +981,7 @@ function toggleEventFields() {
     const grpLocOnline = document.getElementById('grpLocationOnline');
     const inpLocation = document.getElementById('inpLocation');
     const selPlatform = document.getElementById('selPlatform');
-    const lblLink = document.getElementById('lblLink');
+    const lblLinkText = document.getElementById('lblLinkText');
     const grpCat = document.getElementById('grpCategory');
     
     if(type === 'physical') {
@@ -989,7 +990,7 @@ function toggleEventFields() {
         inpLocation.name = 'location_or_platform';
         selPlatform.name = 'location_or_platform_online'; // disabled from submit basically
         
-        lblLink.textContent = 'Kayıt / Form Linki';
+        if(lblLinkText) lblLinkText.textContent = 'Kayıt / Form Linki';
         grpCat.style.display = 'block';
     } else {
         grpLocPhysical.style.display = 'none';
@@ -997,7 +998,7 @@ function toggleEventFields() {
         selPlatform.name = 'location_or_platform';
         inpLocation.name = 'location_or_platform_physical'; // disabled from submit basically
         
-        lblLink.textContent = 'Katılım Linki';
+        if(lblLinkText) lblLinkText.textContent = 'Katılım Linki';
         grpCat.style.display = 'block';
     }
 }
