@@ -126,6 +126,18 @@ const Rankings = () => {
               <div className="w-10 flex justify-center">
                 {getRankIcon(index)}
               </div>
+              
+              {/* Community Logo */}
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-white/5 rounded-full overflow-hidden border border-white/10 flex-shrink-0">
+                {com.image ? (
+                  <img src={com.image} alt={com.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[#DA2F81] font-bold text-lg">
+                    {com.name.substring(0, 2).toUpperCase()}
+                  </div>
+                )}
+              </div>
+
               <div>
                 <h3 className={`font-bold text-base md:text-lg ${index < 3 ? 'text-white' : 'text-gray-200'}`}>
                   {com.name}

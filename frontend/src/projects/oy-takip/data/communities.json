@@ -1,50 +1,112 @@
 [
   {
-    "id": "com_001",
-    "applicationId": "app_000",
-    "name": "Örnek Topluluk",
-    "university": "Demo Üniversitesi",
-    "category": "Yılın En İlgi Çekici Topluluğu, Yılın En Aktif Topluluğu, Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
-    "categoryVotes": {
-      "Yılın En İlgi Çekici Topluluğu": { "current": 5000, "target": 10000 },
-      "Yılın En Aktif Topluluğu": { "current": 1500, "target": 5000 },
-      "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 2500, "target": 8000 }
-    },
+    "id": "com_101",
+    "applicationId": "app_101",
+    "name": "ODTÜ Robotik Topluluğu",
+    "university": "Orta Doğu Teknik Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=ODT&backgroundColor=1E88E5",
+    "category": "Yılın En İlgi Çekici Topluluğu",
+    "categoryVotes": { "Yılın En İlgi Çekici Topluluğu": { "current": 1250, "target": 5000 } },
     "status": "active",
-    "planId": "plus",
-    "createdAt": "2026-07-01T10:00:00.000Z",
-    "updatedAt": "2026-07-05T12:00:00.000Z"
+    "createdAt": "2026-07-01T10:00:00.000Z"
   },
   {
-    "id": "com_002",
-    "applicationId": "app_001",
-    "name": "İkinci Örnek Topluluğu",
-    "university": "Örnek Üniversitesi",
-    "category": "Yılın En İlgi Çekici Topluluğu, Yılın En Aktif Topluluğu, Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
-    "categoryVotes": {
-      "Yılın En İlgi Çekici Topluluğu": { "current": 2000, "target": 10000 },
-      "Yılın En Aktif Topluluğu": { "current": 6000, "target": 10000 },
-      "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 1000, "target": 5000 }
-    },
+    "id": "com_102",
+    "applicationId": "app_102",
+    "name": "İTÜ Yapay Zeka Kulübü",
+    "university": "İstanbul Teknik Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=ITU&backgroundColor=43A047",
+    "category": "Yılın En Aktif Topluluğu",
+    "categoryVotes": { "Yılın En Aktif Topluluğu": { "current": 3400, "target": 10000 } },
     "status": "active",
-    "planId": "basic",
-    "createdAt": "2026-07-02T10:00:00.000Z",
-    "updatedAt": "2026-07-05T12:00:00.000Z"
+    "createdAt": "2026-07-01T11:00:00.000Z"
   },
   {
-    "id": "com_003",
-    "applicationId": "app_002",
-    "name": "Üçüncü Örnek Topluluk",
-    "university": "Test Üniversitesi",
-    "category": "Yılın En İlgi Çekici Topluluğu, Yılın En Aktif Topluluğu, Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
-    "categoryVotes": {
-      "Yılın En İlgi Çekici Topluluğu": { "current": 1000, "target": 5000 },
-      "Yılın En Aktif Topluluğu": { "current": 3000, "target": 5000 },
-      "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 7000, "target": 12000 }
-    },
+    "id": "com_103",
+    "applicationId": "app_103",
+    "name": "Boğaziçi İşletme ve Ekonomi Kulübü",
+    "university": "Boğaziçi Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=BU&backgroundColor=E53935",
+    "category": "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu",
+    "categoryVotes": { "Yılın Sosyal Medyayı En İyi Yöneten Topluluğu": { "current": 5200, "target": 15000 } },
     "status": "active",
-    "planId": "plus",
-    "createdAt": "2026-07-03T10:00:00.000Z",
-    "updatedAt": "2026-07-05T12:00:00.000Z"
+    "createdAt": "2026-07-02T09:00:00.000Z"
+  },
+  {
+    "id": "com_104",
+    "applicationId": "app_104",
+    "name": "Bilkent Müzik Kulübü",
+    "university": "Bilkent Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=BMK&backgroundColor=8E24AA",
+    "category": "Yılın En Eğlenceli Etkinliklerini Düzenleyen Topluluk",
+    "categoryVotes": { "Yılın En Eğlenceli Etkinliklerini Düzenleyen Topluluk": { "current": 4100, "target": 8000 } },
+    "status": "active",
+    "createdAt": "2026-07-02T14:30:00.000Z"
+  },
+  {
+    "id": "com_105",
+    "applicationId": "app_105",
+    "name": "Hacettepe Doğa ve Gezi Topluluğu",
+    "university": "Hacettepe Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=HAC&backgroundColor=FFB300",
+    "category": "Yılın En Aktif Topluluğu",
+    "categoryVotes": { "Yılın En Aktif Topluluğu": { "current": 2900, "target": 7500 } },
+    "status": "active",
+    "createdAt": "2026-07-03T08:15:00.000Z"
+  },
+  {
+    "id": "com_106",
+    "applicationId": "app_106",
+    "name": "Ege Üniversitesi IEEE Öğrenci Kolu",
+    "university": "Ege Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=EGE&backgroundColor=039BE5",
+    "category": "Yılın En İyi Proje Fikrine Sahip Topluluğu",
+    "categoryVotes": { "Yılın En İyi Proje Fikrine Sahip Topluluğu": { "current": 6100, "target": 12000 } },
+    "status": "active",
+    "createdAt": "2026-07-03T16:45:00.000Z"
+  },
+  {
+    "id": "com_107",
+    "applicationId": "app_107",
+    "name": "Selçuk Üniversitesi Girişimcilik Topluluğu",
+    "university": "Selçuk Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=SEL&backgroundColor=D81B60",
+    "category": "Yılın En Tanınır ve En İyi Çıkış Yapan Topluluğu",
+    "categoryVotes": { "Yılın En Tanınır ve En İyi Çıkış Yapan Topluluğu": { "current": 850, "target": 3000 } },
+    "status": "active",
+    "createdAt": "2026-07-04T11:20:00.000Z"
+  },
+  {
+    "id": "com_108",
+    "applicationId": "app_108",
+    "name": "Gazi Siber Güvenlik Topluluğu",
+    "university": "Gazi Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=GAZI&backgroundColor=3949AB",
+    "category": "Yılın En İlgi Çekici Topluluğu",
+    "categoryVotes": { "Yılın En İlgi Çekici Topluluğu": { "current": 4800, "target": 10000 } },
+    "status": "active",
+    "createdAt": "2026-07-04T13:10:00.000Z"
+  },
+  {
+    "id": "com_109",
+    "applicationId": "app_109",
+    "name": "Marmara Hukuk ve Araştırma Kulübü",
+    "university": "Marmara Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=MAR&backgroundColor=546E7A",
+    "category": "Yılın Topluluk İçi İletişimi ve Dayanışması En İyi Olan Topluluk",
+    "categoryVotes": { "Yılın Topluluk İçi İletişimi ve Dayanışması En İyi Olan Topluluk": { "current": 1500, "target": 4000 } },
+    "status": "active",
+    "createdAt": "2026-07-05T09:30:00.000Z"
+  },
+  {
+    "id": "com_110",
+    "applicationId": "app_110",
+    "name": "Ankara Üniversitesi Astronomi Topluluğu",
+    "university": "Ankara Üniversitesi",
+    "image": "https://api.dicebear.com/7.x/initials/svg?seed=ANK&backgroundColor=00ACC1",
+    "category": "Yılın Tematik Etkinliklerde En Başarılı Topluluğu",
+    "categoryVotes": { "Yılın Tematik Etkinliklerde En Başarılı Topluluğu": { "current": 2200, "target": 6000 } },
+    "status": "active",
+    "createdAt": "2026-07-05T14:00:00.000Z"
   }
 ]
