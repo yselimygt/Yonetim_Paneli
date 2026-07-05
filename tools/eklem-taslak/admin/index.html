@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>InnoMIS | Yönetim Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0c0c14;
+        --surface: rgba(19, 19, 31, 0.7);
+        --surface2: rgba(26, 26, 46, 0.9);
+        --border: rgba(42, 42, 69, 0.8);
+        --border-hi: rgba(0, 209, 209, 0.3);
+        --text: #f1f1f8;
+        --text-muted: #8888aa;
+        --accent: #00d1d1;
+        --accent-dim: rgba(0, 209, 209, 0.1);
+        --accent-hover: #00b8b8;
+        --red: #ef4444;
+        --amber: #f59e0b;
+        --green: #22c55e;
+        --radius: 16px;
+        
+        /* Tema Dinamikleri */
+        --input-bg: rgba(0,0,0,0.4);
+        --detail-group-bg: rgba(0,0,0,0.2);
+        --btn-text: #000;
+        --mesh-center: rgba(0, 209, 209, 0.08);
+        --mesh-edge: rgba(0, 209, 209, 0.05);
+        --shadow-color: rgba(0,0,0,0.5);
+      }
+      
+      [data-theme="light"] {
+        --bg: #f8f9fa;
+        --surface: rgba(255, 255, 255, 0.9);
+        --surface2: rgba(241, 243, 245, 0.95);
+        --border: rgba(206, 212, 218, 0.8);
+        --border-hi: rgba(245, 124, 0, 0.4);
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --accent: #f57c00;
+        --accent-dim: rgba(245, 124, 0, 0.1);
+        --accent-hover: #e65100;
+        
+        /* Tema Dinamikleri */
+        --input-bg: #ffffff;
+        --detail-group-bg: rgba(241, 243, 245, 0.8);
+        --btn-text: #ffffff;
+        --mesh-center: rgba(245, 124, 0, 0.08);
+        --mesh-edge: rgba(245, 124, 0, 0.03);
+        --shadow-color: rgba(0,0,0,0.08);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Montserrat", sans-serif; -webkit-tap-highlight-color: transparent; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        /* Cyberpunk mesh gradient background */
+        background-image: 
+          radial-gradient(circle at 15% 50%, var(--mesh-center), transparent 25%),
+          radial-gradient(circle at 85% 30%, var(--mesh-edge), transparent 25%);
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      /* ===== LAYOUT & HEADER ===== */
+      .header {
+        position: sticky; top: 0; z-index: 100;
+        background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        padding: 20px; border-bottom: 1px solid var(--border);
+        display: flex; justify-content: center; align-items: center;
+        transition: background 0.3s, border-color 0.3s;
+      }
+      .header h1 { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: 1px; }
+      
+      .theme-btn {
+        position: absolute; right: 20px; border: none; background: transparent; 
+        padding: 8px; cursor: pointer; color: var(--text); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; transition: 0.2s;
+      }
+      .theme-btn:hover { background: var(--surface2); }
+      
+      .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+      /* ===== LOGIN SCREEN ===== */
+      #login-screen {
+        position: fixed; inset: 0; background: var(--bg); z-index: 1000;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+        background-image: radial-gradient(circle at 50% 50%, var(--accent-dim), transparent 50%);
+        transition: background-color 0.3s;
+      }
+      .login-box {
+        background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        padding: 40px 30px; border-radius: var(--radius); border: 1px solid var(--border-hi);
+        width: 100%; max-width: 360px; text-align: center;
+        box-shadow: 0 10px 40px var(--shadow-color);
+        transition: background 0.3s, border-color 0.3s;
+      }
+      .login-box h2 { font-weight: 800; margin-bottom: 8px; font-size: 24px; color: var(--text); }
+      .login-box p.subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 25px; }
+      
+      .login-input {
+        width: 100%; padding: 14px 16px; border-radius: 12px;
+        background: var(--input-bg); border: 1px solid var(--border);
+        color: var(--text); font-size: 16px; margin-bottom: 20px; outline: none; transition: 0.3s;
+        text-align: center; letter-spacing: 2px;
+      }
+      .login-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
+      
+      /* Shake Animation */
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+      }
+      .shake { animation: shake 0.4s ease-in-out; border-color: var(--red) !important; }
+
+      /* ===== CARDS GRID ===== */
+      .grid {
+        display: grid; gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: var(--surface); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 16px; cursor: pointer; transition: all 0.3s ease;
+        display: flex; flex-direction: column; position: relative; overflow: hidden;
+      }
+      .card:hover { border-color: var(--border-hi); transform: translateY(-3px); box-shadow: 0 10px 20px var(--shadow-color); }
+      .card::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--text-muted);
+      }
+      .card.status-Onaylandı::before { background: var(--green); }
+      .card.status-Beklemede::before { background: var(--amber); }
+      .card.status-Reddedildi::before { background: var(--red); }
+
+      .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+      .card-date { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; }
+      
+      .badge {
+        padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+      }
+      .badge.Beklemede { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+      .badge.Onaylandı { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.3); }
+      .badge.Reddedildi { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+      .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+      .card-person { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+      .card-person svg { width: 14px; height: 14px; fill: currentColor; }
+
+      /* ===== BUTTONS ===== */
+      .btn {
+        background: var(--accent); color: var(--btn-text); border: none; padding: 14px; border-radius: 12px;
+        font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
+      }
+      .btn:hover { background: var(--accent-hover); transform: scale(0.98); }
+      .btn:active { transform: scale(0.95); }
+
+      /* ===== MODAL (BOTTOM SHEET ON MOBILE) ===== */
+      .modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500;
+        backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        opacity: 0; visibility: hidden; transition: 0.3s;
+      }
+      .modal-overlay.active { opacity: 1; visibility: visible; }
+
+      .modal-content {
+        position: fixed; bottom: -100%; left: 0; width: 100%; height: 90vh;
+        background: var(--surface2); border-radius: 24px 24px 0 0;
+        z-index: 501; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        display: flex; flex-direction: column; border-top: 1px solid var(--border);
+      }
+      .modal-overlay.active .modal-content { bottom: 0; }
+      
+      @media (min-width: 600px) {
+        .modal-content {
+          bottom: auto !important; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+          width: 90%; max-width: 500px; height: 85vh; border-radius: 20px; border: 1px solid var(--border);
+        }
+        .modal-overlay.active .modal-content { transform: translate(-50%, -50%) scale(1); }
+      }
+
+      .modal-header {
+        padding: 20px 24px; border-bottom: 1px solid var(--border);
+        display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+      }
+      .modal-header h3 { font-size: 18px; font-weight: 700; }
+      .close-btn { background: var(--detail-group-bg); border: none; color: var(--text); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+      .close-btn:hover { background: var(--border); }
+      
+      .modal-body {
+        padding: 24px; overflow-y: auto; flex: 1;
+      }
+      
+      /* Grouped Details */
+      .detail-group { margin-bottom: 24px; background: var(--detail-group-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border); }
+      .group-title { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+      .group-title svg { width: 14px; height: 14px; fill: currentColor; }
+      
+      .detail-item { margin-bottom: 12px; }
+      .detail-item:last-child { margin-bottom: 0; }
+      .d-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+      .d-value { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; word-break: break-word; }
+
+      /* Sticky Footer */
+      .modal-footer {
+        padding: 16px 24px 24px; border-top: 1px solid var(--border); background: var(--surface2);
+        display: flex; gap: 12px; flex-shrink: 0;
+      }
+      .btn-reject { background: rgba(239, 68, 68, 0.1); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+      .btn-reject:hover { background: rgba(239, 68, 68, 0.2); }
+      
+      .btn-wait { background: rgba(245, 158, 11, 0.1); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+      .btn-wait:hover { background: rgba(245, 158, 11, 0.2); }
+      
+      .btn-approve { background: var(--green); color: #fff; }
+
+      /* Empty State */
+      .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+      .empty-state svg { width: 48px; height: 48px; fill: var(--border); margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Giriş</h2>
+            <p class="subtitle">Yetkili personel şifresi gerekli</p>
+            <input type="password" id="admin-pwd" class="login-input" placeholder="••••••••" onkeypress="if(event.key === 'Enter') login()" />
+            <button class="btn" onclick="login()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C9.24 2 7 4.24 7 7V9H6C4.9 9 4 9.9 4 11V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V11C20 9.9 19.1 9 18 9H17V7C17 4.24 14.76 2 12 2ZM12 4C13.66 4 15 5.34 15 7V9H9V7C9 5.34 10.34 4 12 4ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17Z"/></svg>
+                Yetkilendir
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app" style="display: none;">
+        <header class="header">
+            <h1>EKLEM Yönetim Paneli</h1>
+            <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" title="Temayı Değiştir">
+                <svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <!-- Default to Sun -->
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0l1.06-1.06z"/>
+                </svg>
+            </button>
+        </header>
+
+        <div class="container">
+            <div class="grid" id="draft-list">
+                <!-- Cards will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILS MODAL -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Talep Detayları</h3>
+                <button class="close-btn" onclick="closeModal()">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
+            </div>
+            
+            <div class="modal-body" id="detail-body">
+                <!-- Details injected here -->
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-reject" onclick="updateStatus('Reddedildi')">Reddet</button>
+                <button class="btn btn-wait" onclick="updateStatus('Beklemede')">Beklet</button>
+                <button class="btn btn-approve" onclick="updateStatus('Onaylandı')">Onayla</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let drafts = [];
+        let currentDraftId = null;
+        let adminPassword = '';
+
+        const iconMoon = '<path d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zM12 5c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7z"/>';
+        const iconSun = '<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0l1.06-1.06z"/>';
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('eklem-admin-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').innerHTML = savedTheme === 'light' ? iconMoon : iconSun;
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('eklem-admin-theme', target);
+            document.getElementById('theme-icon').innerHTML = target === 'light' ? iconMoon : iconSun;
+        }
+        
+        // Temayı başlangıçta hemen yükle ki flash olmasın
+        initTheme();
+
+        const icons = {
+            info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',
+            needs: '<path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>'
+        };
+
+        function login() {
+            const pwdInput = document.getElementById('admin-pwd');
+            adminPassword = pwdInput.value;
+            if(!adminPassword) return;
+            
+            fetch('../update_status.php', {
+                method: 'POST',
+                body: JSON.stringify({ id: 'test', status: 'test', password: adminPassword })
+            }).then(res => res.json()).then(data => {
+                if(data.message === 'Hatalı şifre!') {
+                    pwdInput.classList.add('shake');
+                    setTimeout(() => pwdInput.classList.remove('shake'), 400);
+                    pwdInput.value = '';
+                } else {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    loadDrafts();
+                }
+            }).catch(e => {
+                console.error(e);
+                alert("Sunucuya bağlanılamadı.");
+            });
+        }
+
+        async function loadDrafts() {
+            try {
+                const res = await fetch('../database.json?t=' + Date.now());
+                drafts = await res.json();
+                renderCards();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('draft-list').innerHTML = `
+                    <div class="empty-state">
+                        <p>Veritabanına ulaşılamıyor.</p>
+                    </div>`;
+            }
+        }
+
+        function renderCards() {
+            const list = document.getElementById('draft-list');
+            if (!drafts || drafts.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/><path d="M7 12h2v5H7zm4-3h2v8h-2zm4-3h2v11h-2z"/></svg>
+                        <p>Henüz hiç kayıt oluşturulmamış.</p>
+                    </div>`;
+                return;
+            }
+            
+            const sortedDrafts = drafts.slice().reverse();
+            
+            list.innerHTML = sortedDrafts.map(d => {
+                const date = d.date ? new Date(d.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                const name = (d.answers && d.answers['event-name']) || 'İsimsiz Etkinlik';
+                const person = (d.answers && d.answers['person-name']) || 'Belirtilmedi';
+                const status = d.status || 'Beklemede';
+                
+                return `
+                    <div class="card status-${status}" onclick="showDetails('${d.id}')">
+                        <div class="card-header">
+                            <span class="card-date">${date}</span>
+                            <span class="badge ${status}">${status}</span>
+                        </div>
+                        <h4 class="card-title">${name}</h4>
+                        <div class="card-person">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            ${person}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getGroupedData(answers) {
+            const groups = {
+                "Etkinlik Bilgileri": {
+                    icon: icons.info,
+                    keys: ["event-name", "person-name", "team-name", "event-purpose", "target-audience", "estimated-participants", "event-date", "event-time", "event-duration", "event-location"]
+                },
+                "İhtiyaç & Bütçe": {
+                    icon: icons.needs,
+                    keys: ["needs-budget", "needs-tech", "needs-catering"]
+                }
+            };
+            
+            let html = '';
+            
+            for (const [groupName, groupData] of Object.entries(groups)) {
+                let groupHtml = '';
+                groupData.keys.forEach(k => {
+                    if (answers[k]) {
+                        const label = k.replace(/-/g, ' ').toUpperCase();
+                        groupHtml += `
+                            <div class="detail-item">
+                                <div class="d-label">${label}</div>
+                                <div class="d-value">${answers[k].replace(/\n/g, '<br>')}</div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (groupHtml) {
+                    html += `
+                        <div class="detail-group">
+                            <div class="group-title">
+                                <svg viewBox="0 0 24 24">${groupData.icon}</svg>
+                                ${groupName}
+                            </div>
+                            ${groupHtml}
+                        </div>
+                    `;
+                }
+            }
+            
+            let otherHtml = '';
+            const knownKeys = [...groups["Etkinlik Bilgileri"].keys, ...groups["İhtiyaç & Bütçe"].keys];
+            Object.keys(answers).forEach(k => {
+                if(!knownKeys.includes(k) && answers[k]) {
+                    otherHtml += `
+                        <div class="detail-item">
+                            <div class="d-label">${k.replace(/-/g, ' ').toUpperCase()}</div>
+                            <div class="d-value">${answers[k].replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                }
+            });
+            if(otherHtml) {
+                html += `<div class="detail-group"><div class="group-title">Diğer Bilgiler</div>${otherHtml}</div>`;
+            }
+            
+            return html;
+        }
+
+        function showDetails(id) {
+            currentDraftId = id;
+            const draft = drafts.find(d => d.id === id);
+            if(!draft) return;
+            
+            let detailsHtml = '';
+            if (draft.answers) {
+                detailsHtml = getGroupedData(draft.answers);
+            } else {
+                detailsHtml = '<p style="color: var(--text-muted)">Detay bulunamadı.</p>';
+            }
+            
+            document.getElementById('detail-body').innerHTML = detailsHtml;
+            document.getElementById('detail-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.remove('active');
+            currentDraftId = null;
+        }
+
+        async function updateStatus(newStatus) {
+            if(!currentDraftId) return;
+            
+            try {
+                const res = await fetch('../update_status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: currentDraftId, status: newStatus, password: adminPassword })
+                });
+                const result = await res.json();
+                if(result.status === 'success') {
+                    closeModal();
+                    loadDrafts(); 
+                } else {
+                    alert('Hata: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Güncelleme başarısız oldu.");
+            }
+        }
+    </script>
+</body>
+</html>
