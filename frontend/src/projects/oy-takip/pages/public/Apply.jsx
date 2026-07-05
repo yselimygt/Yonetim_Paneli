@@ -85,8 +85,8 @@ const Apply = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1B1E27] pb-24 md:pb-12 pt-6 md:pt-12 px-4 flex justify-center items-start relative">
-      <div className="w-full max-w-4xl bg-black/40 border border-white/10 rounded-3xl p-5 md:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+    <div className="min-h-screen bg-[#1B1E27] pb-12 md:pb-12 pt-0 md:pt-12 px-0 md:px-4 flex justify-center items-start relative">
+      <div className="w-full max-w-4xl bg-[#1B1E27] md:bg-black/40 border-0 md:border border-white/10 rounded-none md:rounded-3xl p-5 md:p-10 shadow-none md:shadow-2xl relative overflow-hidden backdrop-blur-xl">
         {/* Glow Effects */}
         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#DA2F81]/15 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#ffb74d]/10 blur-[100px] rounded-full pointer-events-none" />
@@ -253,30 +253,11 @@ const Apply = () => {
                   ))}
                 </div>
               )}
-              <div className="mt-4 md:mt-6">
-                <Input label="Rakip Topluluklar" name="competitors" value={formData.competitors} onChange={handleChange} placeholder="Örn: X Topluluğu, Y Topluluğu" />
-              </div>
-              <div className="mt-4 md:mt-6">
-                <label className="block text-sm font-medium text-gray-300 mb-1">Açıklama</label>
-                <textarea 
-                  name="description" 
-                  value={formData.description} 
-                  onChange={handleChange}
-                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#DA2F81] focus:outline-none focus:ring-1 focus:ring-[#DA2F81] transition-all text-sm md:text-base"
-                  rows={4}
-                  placeholder="Başvurunuzla ilgili eklemek istedikleriniz..."
-                />
-              </div>
             </div>
             
-            {/* Desktop Button */}
-            <div className="hidden md:block pt-4">
-              <Button type="submit" className="w-full py-4 text-lg">Başvuruyu Tamamla ve Gönder</Button>
-            </div>
-
-            {/* Mobile Sticky Button */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[#1B1E27]/90 border-t border-white/10 backdrop-blur-lg z-50">
-               <Button type="submit" className="w-full py-4 text-base font-bold shadow-[0_-5px_20px_rgba(218,47,129,0.15)]">Başvuruyu Tamamla</Button>
+            {/* Unified Submit Button */}
+            <div className="pt-6 px-4 md:px-0">
+              <Button type="submit" className="w-full py-4 text-base md:text-lg shadow-[0_5px_20px_rgba(218,47,129,0.3)] bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] text-white">Başvuruyu Tamamla ve Gönder</Button>
             </div>
           </form>
         </div>
