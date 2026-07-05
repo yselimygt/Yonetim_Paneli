@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { addItem } from '../../utils/storage';
+import { addItem, getStorage } from '../../utils/storage';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import { Check, AlertCircle } from 'lucide-react';
@@ -30,10 +30,21 @@ const Apply = () => {
     phone: '',
     competitors: '',
     description: '',
+    image: '', // To store selected logo
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [categoryVotes, setCategoryVotes] = useState({});
   const [error, setError] = useState('');
+  
+  // Olası Üniversite ve Topluluk listesini storage üzerinden çekiyoruz
+  // Gerçek senaryoda bu bir API üzerinden rehberden çekilebilir.
+  const allCommunities = getStorage('communities') || [];
+  const uniqueUniversities = [...new Set(allCommunities.map(c => c.university).filter(Boolean))];
+  
+  // Seçili üniversiteye göre filtrelenmiş topluluklar
+  const filteredCommunities = formData.university 
+    ? allCommunities.filter(c => c.university === formData.university)
+    : [];
 
   const handleCategoryToggle = (cat) => {
     if (selectedCategories.includes(cat)) {
@@ -113,8 +124,61 @@ const Apply = () => {
             <div className="bg-white/[0.03] border border-white/5 p-5 md:p-6 rounded-2xl">
               <h3 className="text-lg md:text-xl font-bold mb-4 border-b border-white/5 pb-2">İletişim Bilgileri</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                <Input label="Topluluk Adı" name="communityName" value={formData.communityName} onChange={handleChange} required />
-                <Input label="Üniversite" name="university" value={formData.university} onChange={handleChange} required />
+                <div className="flex flex-col gap-1 relative">
+                  <label className="text-sm font-medium text-gray-300">Üniversite Seçiniz</label>
+                  <select 
+                    name="university"
+                    value={formData.university}
+                    onChange={(e) => {
+                      setFormData(prev => ({ ...prev, university: e.target.value, communityName: '', image: '' }));
+                    }}
+                    required
+                    className="w-full bg-[#0d0a1a]/50 border border-white/10 hover:border-white/20 focus:border-[#DA2F81] rounded-lg px-4 py-3 text-white appearance-none outline-none transition-colors"
+                  >
+                    <option value="" disabled>Üniversite Seçin...</option>
+                    {uniqueUniversities.map((uni, idx) => (
+                      <option key={idx} value={uni}>{uni}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1 relative">
+                  <label className="text-sm font-medium text-gray-300">Topluluk Seçiniz</label>
+                  <div className="relative">
+                    <select 
+                      name="communityName"
+                      value={formData.communityName}
+                      onChange={(e) => {
+                        const selected = filteredCommunities.find(c => c.name === e.target.value);
+                        setFormData(prev => ({ 
+                          ...prev, 
+                          communityName: e.target.value,
+                          image: selected ? selected.image : ''
+                        }));
+                      }}
+                      required
+                      disabled={!formData.university}
+                      className="w-full bg-[#0d0a1a]/50 border border-white/10 hover:border-white/20 focus:border-[#DA2F81] rounded-lg pl-12 pr-4 py-3 text-white appearance-none outline-none transition-colors disabled:opacity-50"
+                    >
+                      <option value="" disabled>
+                        {formData.university ? "Topluluk Seçin..." : "Önce Üniversite Seçin"}
+                      </option>
+                      {filteredCommunities.map((com, idx) => (
+                        <option key={idx} value={com.name}>{com.name}</option>
+                      ))}
+                    </select>
+                    
+                    {/* Selected Logo Preview or Placeholder inside the select box */}
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full overflow-hidden bg-white/10 pointer-events-none flex items-center justify-center">
+                      {formData.image ? (
+                        <img src={formData.image} alt="logo" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[10px] text-gray-400">?</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 <Input label="Yetkili Adı Soyadı" name="managerName" value={formData.managerName} onChange={handleChange} required />
                 <Input label="E-posta" type="email" name="email" value={formData.email} onChange={handleChange} required />
                 <Input label="Telefon" name="phone" value={formData.phone} onChange={handleChange} required />
