@@ -43,9 +43,9 @@ const VoteTracker = () => {
       <h2 className="text-2xl font-bold mb-6">Oy Girişi</h2>
       
       <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-10 backdrop-blur-md mb-8 text-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#f49f20] to-[#da2c2e]"></div>
-        <p className="text-gray-400 mb-2 uppercase tracking-wider font-semibold text-sm">Güncel Oy Sayısı</p>
-        <div className="text-7xl md:text-8xl font-black bg-gradient-to-r from-[#f49f20] to-[#da2c2e] bg-clip-text text-transparent">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#DA2F81] to-[#ffb74d]"></div>
+        <h2 className="text-gray-400 font-medium mb-2 uppercase tracking-wider text-sm">Toplam Oy Sayınız</h2>
+        <div className="text-7xl md:text-8xl font-black bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent">
           {community.currentVotes}
         </div>
       </div>
