@@ -8,8 +8,8 @@ const Communities = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Topluluklar</h2>
-      <div className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden">
-        <table className="w-full text-left">
+      <div className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-x-auto">
+        <table className="w-full text-left whitespace-nowrap">
           <thead className="bg-white/[0.05] text-gray-400">
             <tr>
               <th className="p-4 font-medium">Topluluk Adı</th>
@@ -23,7 +23,7 @@ const Communities = () => {
               <tr key={com.id} className="hover:bg-white/[0.02]">
                 <td className="p-4">{com.name}</td>
                 <td className="p-4 text-gray-400">{com.university}</td>
-                <td className="p-4 font-bold text-[#f49f20]">{com.currentVotes}</td>
+                <td className="p-4 font-bold text-[#DA2F81]">{com.currentVotes}</td>
                 <td className="p-4"><StatusBadge status={com.status} /></td>
               </tr>
             ))}

@@ -29,8 +29,8 @@ const Applications = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Başvurular</h2>
-      <div className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden">
-        <table className="w-full text-left">
+      <div className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-x-auto">
+        <table className="w-full text-left whitespace-nowrap">
           <thead className="bg-white/[0.05] text-gray-400">
             <tr>
               <th className="p-4 font-medium">Topluluk Adı</th>

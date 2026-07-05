@@ -1,38 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { logout } from '../../utils/auth';
-import { LayoutDashboard, Users, FileText, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, LogOut, Menu, X } from 'lucide-react';
 
 const AdminLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[#1B1E27]">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#1B1E27] border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <h1 className="text-lg font-bold bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent">
+          Admin Panel
+        </h1>
+        <button onClick={toggleSidebar} className="text-gray-300 hover:text-white p-2">
+          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
+          onClick={closeSidebar}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white/[0.02] border-r border-white/[0.05] flex flex-col">
-        <div className="p-6">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[#f49f20] to-[#da2c2e] bg-clip-text text-transparent">
+      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#1B1E27] border-r border-white/10 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="p-6 hidden md:block">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent">
             Admin Panel
           </h1>
         </div>
         
-        <nav className="flex-1 px-4 space-y-2">
-          <Link to="/projects/oy-takip/admin" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+        {/* Mobile top spacer */}
+        <div className="h-16 md:hidden"></div>
+
+        <nav className="flex-1 px-4 space-y-2 mt-4 md:mt-0 overflow-y-auto">
+          <Link onClick={closeSidebar} to="/projects/oy-takip/admin" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
             <LayoutDashboard size={20} />
             <span>Dashboard</span>
           </Link>
-          <Link to="/projects/oy-takip/admin/applications" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+          <Link onClick={closeSidebar} to="/projects/oy-takip/admin/applications" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
             <FileText size={20} />
             <span>Başvurular</span>
           </Link>
-          <Link to="/projects/oy-takip/admin/communities" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+          <Link onClick={closeSidebar} to="/projects/oy-takip/admin/communities" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
             <Users size={20} />
             <span>Topluluklar</span>
           </Link>
         </nav>
         
-        <div className="p-4 border-t border-white/[0.05]">
+        <div className="p-4 border-t border-white/10">
           <button 
             onClick={() => { logout(); window.location.href = '/projects/oy-takip/login'; }}
-            className="flex items-center gap-3 w-full px-4 py-3 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+            className="flex items-center gap-3 w-full px-4 py-3 text-gray-400 hover:text-[#DA2F81] hover:bg-[#DA2F81]/10 rounded-lg transition-colors"
           >
             <LogOut size={20} />
             <span>Çıkış Yap</span>
@@ -41,8 +67,14 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-[#06040d] to-[#0d0a1a] p-8">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto bg-[#1B1E27] p-4 pt-20 md:p-8 md:pt-8 relative">
+        {/* Glow Effects */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#DA2F81]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#ffb74d]/5 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="relative z-10">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
