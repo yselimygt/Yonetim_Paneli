@@ -13,9 +13,14 @@ const AdminLayout = () => {
     <div className="flex h-screen overflow-hidden bg-[#1B1E27]">
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#1B1E27] border-b border-white/10 z-50 flex items-center justify-between px-4">
-        <h1 className="text-lg font-bold bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent">
-          Admin Panel
-        </h1>
+        <div className="flex items-center gap-2">
+          <img src="https://www.gmtoplulukodulleri.com/gmalogov1.png" alt="GM Logo" className="w-8 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]" />
+          <div className="h-5 w-px bg-white/20"></div>
+          <img src="/assets/logo/Ana-Logo-Amblem.png" alt="Innomis Logo" className="w-8 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]" />
+          <h1 className="text-lg font-bold bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent ml-2">
+            Admin Panel
+          </h1>
+        </div>
         <button onClick={toggleSidebar} className="text-gray-300 hover:text-white p-2">
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -31,7 +36,12 @@ const AdminLayout = () => {
 
       {/* Sidebar */}
       <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#1B1E27] border-r border-white/10 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-        <div className="p-6 hidden md:block">
+        <div className="p-6 hidden md:block border-b border-white/5">
+          <div className="flex items-center gap-4 mb-4">
+            <img src="https://www.gmtoplulukodulleri.com/gmalogov1.png" alt="GM Logo" className="w-12 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
+            <div className="h-8 w-px bg-white/20"></div>
+            <img src="/assets/logo/Ana-Logo-Amblem.png" alt="Innomis Logo" className="w-12 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
+          </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-[#DA2F81] to-[#ffb74d] bg-clip-text text-transparent">
             Admin Panel
           </h1>

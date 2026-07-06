@@ -13,5 +13,13 @@
     "role": "community_admin",
     "communityId": "com_001",
     "name": "Örnek Topluluk Yöneticisi"
+  },
+  {
+    "id": "usr_com2",
+    "email": "deneme@demo.com",
+    "password": "deneme",
+    "role": "community_admin",
+    "communityId": "com_002",
+    "name": "Deneme Topluluk"
   }
 ]

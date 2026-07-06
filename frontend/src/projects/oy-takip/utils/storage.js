@@ -21,9 +21,7 @@ export const initStorage = () => {
   if (!localStorage.getItem(`${PREFIX}competitors`)) {
     localStorage.setItem(`${PREFIX}competitors`, JSON.stringify(competitorsData));
   }
-  if (!localStorage.getItem(`${PREFIX}users`)) {
-    localStorage.setItem(`${PREFIX}users`, JSON.stringify(usersData));
-  }
+  localStorage.setItem(`${PREFIX}users`, JSON.stringify(usersData));
   if (!localStorage.getItem(`${PREFIX}plans`)) {
     localStorage.setItem(`${PREFIX}plans`, JSON.stringify(plansData));
   }

@@ -12,7 +12,7 @@ const Home = () => {
         
         {/* Logo Section */}
         <div className="mb-8 relative group flex items-center justify-center gap-6 md:gap-10">
-          <div className="absolute inset-0 bg-[#DA2F81]/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#DA2F81]/30 to-[#ffb74d]/30 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           
           {/* GM Topluluk Ödülleri Logo */}
           <img 
@@ -26,7 +26,7 @@ const Home = () => {
 
           {/* Innomis Logo */}
           <img 
-            src="/assets/logo/Ana-Logo-Arma.png" 
+            src="/assets/logo/Ana-Logo-Amblem.png" 
             alt="Innomis Logo" 
             className="w-24 md:w-36 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] relative z-10"
           />

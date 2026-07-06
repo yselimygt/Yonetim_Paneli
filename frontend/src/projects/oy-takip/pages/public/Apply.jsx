@@ -1,4 +1,3 @@
-import innomisLogo from './innomis.png';
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { addItem, getStorage } from '../../utils/storage';
@@ -98,7 +97,7 @@ const Apply = () => {
               />
               <div className="h-10 w-px bg-white/20"></div>
               <img 
-                src={innomisLogo} 
+                src="/assets/logo/Ana-Logo-Amblem.png" 
                 alt="Innomis Logo" 
                 className="w-20 drop-shadow-md"
               />
