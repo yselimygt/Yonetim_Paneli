@@ -62,7 +62,7 @@ $brandImageFields = [
         <div class="card-body">
             <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Ana sayfanın giriş başlığı, açıklaması ve çağrı butonları.</p>
 
-            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/hero">
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/hero" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
                 <div class="form-row">
@@ -126,7 +126,7 @@ $brandImageFields = [
                                 <button type="button" class="btn btn-outline image-picker__library" onclick="openImageLibrary('heroGallery_<?= $idx ?>')" style="padding:4px 8px; font-size:11px;">Dosyadan Seç</button>
                             </div>
                             <label class="image-picker__drop" for="heroGallery_<?= $idx ?>_file">
-                                <input type="file" id="heroGallery_<?= $idx ?>_file" name="heroGallery_file_<?= $idx ?>" accept="image/*" onchange="previewPickedImage(this, 'heroGallery_<?= $idx ?>')">
+                                <input type="file" id="heroGallery_<?= $idx ?>_file" name="heroGallery_<?= $idx ?>_file" accept="image/*" onchange="previewPickedImage(this, 'heroGallery_<?= $idx ?>')">
                                 <span class="image-picker__preview" id="heroGallery_<?= $idx ?>_preview_wrap">
                                     <?php if (trim($gImage) !== ''): ?>
                                         <img id="heroGallery_<?= $idx ?>_preview" src="<?= View::escape($gImage) ?>" alt="">
@@ -191,7 +191,7 @@ $brandImageFields = [
                                 <button type="button" class="btn btn-outline image-picker__library" onclick="openImageLibrary('heroGallery_${idx}')" style="padding:4px 8px; font-size:11px;">Dosyadan Seç</button>
                             </div>
                             <label class="image-picker__drop" for="heroGallery_${idx}_file">
-                                <input type="file" id="heroGallery_${idx}_file" name="heroGallery_file_${idx}" accept="image/*" onchange="previewPickedImage(this, 'heroGallery_${idx}')">
+                                <input type="file" id="heroGallery_${idx}_file" name="heroGallery_${idx}_file" accept="image/*" onchange="previewPickedImage(this, 'heroGallery_${idx}')">
                                 <span class="image-picker__preview" id="heroGallery_${idx}_preview_wrap">
                                     <img id="heroGallery_${idx}_preview" src="" alt="" style="display:none;">
                                     <small>Görsel Yok</small>
