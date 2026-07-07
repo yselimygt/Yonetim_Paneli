@@ -1068,6 +1068,8 @@ input:checked + .toggle-slider:before {
 }
 
 @media (max-width: 700px) {
+
+@media (max-width: 700px) {
     .settings-page-header {
         margin-bottom: 10px;
     }
@@ -1085,61 +1087,139 @@ input:checked + .toggle-slider:before {
 
     .settings-tabs {
         display: grid !important;
-        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(4, 1fr) !important;
         gap: 6px !important;
-        margin: 0 0 12px !important;
+        margin-bottom: 16px !important;
         padding: 0 !important;
         border: 0 !important;
-        border-radius: 0 !important;
         background: transparent !important;
-        overflow: visible !important;
     }
 
     .settings-tabs .tab-btn {
         display: flex !important;
         flex-direction: column !important;
-        flex: none !important;
-        grid-column: span 2 !important;
         justify-content: center !important;
-        gap: 3px !important;
-        min-width: 0 !important;
+        align-items: center !important;
+        gap: 4px !important;
         width: 100% !important;
-        min-height: 34px !important;
-        padding: 5px 4px !important;
+        padding: 8px 4px !important;
         border-radius: 8px !important;
         background: rgba(255,255,255,0.025) !important;
-        font-size: 8px !important;
-        line-height: 1.05 !important;
+        font-size: 9px !important;
+        line-height: 1.1 !important;
         text-align: center !important;
         color: rgba(255,255,255,0.56) !important;
         white-space: normal !important;
-        overflow: hidden !important;
-        word-break: normal !important;
+        box-shadow: none !important;
     }
 
     .settings-tabs .tab-btn svg {
         flex: 0 0 auto;
-        width: 13px;
-        height: 13px;
+        width: 14px;
+        height: 14px;
+        margin: 0 auto;
     }
 
     .settings-tabs .tab-label {
-        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        white-space: normal;
     }
 
     .settings-tabs .tab-btn.active {
         background: rgba(0,188,212,0.22) !important;
         color: var(--accent) !important;
-        box-shadow: none !important;
     }
 
-    .settings-tabs .tab-btn:nth-child(7) {
-        grid-column: span 6 !important;
+    .tab-content .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
+
+    .settings-save-bar {
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+    }
+    .settings-save-bar .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .tab-content .card {
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .tab-content .card-header {
+        display: none;
+    }
+
+    .tab-content .card-body {
+        padding: 0;
+    }
+
+    .tab-content .card-body > p {
+        display: none;
+    }
+
+    .tab-content .form-row {
+        gap: 8px;
+    }
+
+    .tab-content .form-group {
+        margin-bottom: 10px;
+        max-width: none !important;
+    }
+
+    .tab-content .form-label {
+        margin-bottom: 5px;
+        font-size: 10px;
+        letter-spacing: 0.04em;
+        color: rgba(255,255,255,0.5);
+    }
+
+    .tab-content .form-control {
+        min-height: 36px;
+        border-radius: 9px;
+        font-size: 12px;
+        background: rgba(255,255,255,0.035);
+        border-color: rgba(255,255,255,0.055);
+    }
+
+    .dynamic-item {
+        margin-bottom: 9px;
+        padding: 11px !important;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.02);
+        border-color: rgba(255,255,255,0.055);
+        box-shadow: none;
+    }
+
+    .item-header {
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+        margin-bottom: 8px;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .item-header strong {
+        min-width: 0;
+        font-size: 12px;
+    }
+
+    .item-header strong svg {
+        width: 13px;
+        height: 13px;
+    }
+
 
     .settings-tabs .tab-btn.active svg {
         transform: none;
