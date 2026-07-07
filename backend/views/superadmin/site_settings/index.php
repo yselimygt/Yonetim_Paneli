@@ -358,7 +358,7 @@ $brandImageFields = [
                     </div>
                 </div>
 
-                <div class="form-group mt-4">
+                <div class="form-group mt-4 image-picker" data-picker="popupConfig_image">
                     <?php $pImg = $popupConfig['image'] ?? ''; ?>
                     <div class="image-picker__head">
                         <label class="form-label">Duyuru Görseli (Opsiyonel)</label>
