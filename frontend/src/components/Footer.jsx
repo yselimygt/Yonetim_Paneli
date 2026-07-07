@@ -165,7 +165,7 @@ const Footer = () => {
               <img 
                 src="https://viperadev.com/ViperaDev-Logo.png" 
                 alt="ViperaDev" 
-                className="h-6 sm:h-7 w-auto opacity-70 brightness-0 invert group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                className="h-6 sm:h-7 w-auto opacity-70 brightness-0 dark:invert group-hover:opacity-100 group-hover:brightness-100 dark:group-hover:invert-0 transition-all duration-300" 
               />
             </a>
           </div>

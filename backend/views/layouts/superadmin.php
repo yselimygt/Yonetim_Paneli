@@ -722,7 +722,7 @@
             .mobile-bottom-powered img {
                 height: 12px;
                 opacity: .72;
-                filter: brightness(0) invert(1);
+                
             }
 
             [data-theme="light"] .mobile-bottom-menu {
@@ -773,8 +773,7 @@
 
             [data-theme="light"] .mobile-bottom-powered img {
                 opacity: .72;
-                filter: none;
-            }
+                }
 
             .sidebar-user {
                 align-items: flex-start;
@@ -1139,6 +1138,27 @@
             }
         }
 
+    
+        .vipera-link {
+            display: flex;
+            align-items: center;
+        }
+        .vipera-logo {
+            height: 18px;
+            opacity: 0.7;
+            
+            transition: all 0.3s;
+        }
+        .vipera-link:hover .vipera-logo {
+            opacity: 1;
+            filter: brightness(1) invert(0);
+        }
+        [data-theme="light"] .vipera-logo {
+            filter: brightness(0);
+        }
+        [data-theme="light"] .vipera-link:hover .vipera-logo {
+            filter: brightness(1);
+        }
     </style>
 </head>
 <body>
@@ -1294,8 +1314,8 @@
         <a href="<?= BASE_URL ?>/logout" class="btn-logout">Çıkış Yap</a>
         <div style="font-size: 11px; text-align: center; color: var(--muted); margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 4px;">
             <span>Powered by</span>
-            <a href="https://viperadev.com" target="_blank" style="display: flex; align-items: center;">
-                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 18px; opacity: 0.7; filter: brightness(0) invert(1); transition: all 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none';" onmouseout="this.style.opacity='0.7'; this.style.filter='brightness(0) invert(1)';">
+            <a href="https://viperadev.com" target="_blank" class="vipera-link">
+                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" class="vipera-logo">
             </a>
         </div>
     </div>
@@ -1319,8 +1339,8 @@
 
     <div class="mobile-bottom-powered">
         <span>Powered by</span>
-        <a href="https://viperadev.com" target="_blank" style="display:flex;align-items:center;">
-            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev">
+        <a href="https://viperadev.com" target="_blank" class="vipera-link">
+            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" class="vipera-logo">
         </a>
     </div>
 </div>
@@ -1423,3 +1443,4 @@ window.addEventListener('keydown', function(e) {
 </script>
 </body>
 </html>
+
