@@ -32,7 +32,7 @@ const Awards = () => {
                   {(item.institution_name || item.organization) ? (
                     <div className="inline-flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
                       {item.institution_logo_url && (
-                        <img src={item.institution_logo_url} alt="Kurum" className="w-5 h-5 object-contain" />
+                        <img src={item.institution_logo_url} alt="Kurum" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
                       )}
                       <span className="text-xs sm:text-sm font-medium text-white/90">
                         {item.institution_name || item.organization}
