@@ -125,6 +125,7 @@ class SiteHistory extends Model
                     t.image_path,
                     t.institution_name,
                     t.institution_logo,
+                    t.institution_url,
                     t.pdf_url,
                     t.link,
                     t.created_at,
@@ -155,6 +156,7 @@ class SiteHistory extends Model
                 'award_date' => $awardDate,
                 'image_path' => $trophy['image_path'],
                 'institution_name' => $trophy['institution_name'] ?? '',
+                'institution_url' => $trophy['institution_url'] ?? '',
                 'institution_logo' => $trophy['institution_logo'] ?? '',
                 'department_name' => $trophy['department_name'] ?? '',
                 'sort_date' => $awardDate ?: ''

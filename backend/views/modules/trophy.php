@@ -489,6 +489,13 @@ function getTrophyBadge($type) {
                         <input type="text" name="institution_name" class="form-control" placeholder="Örn: NEÜ" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
                     </div>
                     <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Kurum Sitesi (Opsiyonel)</label>
+                        <input type="url" name="institution_url" class="form-control" placeholder="https://..." style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
                         <label class="form-label" style="font-weight: 600;">Kurum Logosu (Opsiyonel)</label>
                         <input type="file" name="institution_logo" accept="image/jpeg,image/png,image/webp,image/svg+xml" class="form-control" style="padding: 9px 16px; border-radius: 12px; font-size: 14px; cursor: pointer;">
                     </div>
@@ -577,6 +584,13 @@ function getTrophyBadge($type) {
                         <input type="text" name="institution_name" id="edit-institution-name" class="form-control" placeholder="Örn: NEÜ" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
                     </div>
                     <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Kurum Sitesi (Opsiyonel)</label>
+                        <input type="url" name="institution_url" id="edit-institution-url" class="form-control" placeholder="https://..." style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
                         <label class="form-label" style="font-weight: 600;">Kurum Logosu (Değiştirmek istemiyorsanız boş bırakın)</label>
                         <input type="file" name="institution_logo" accept="image/jpeg,image/png,image/webp,image/svg+xml" class="form-control" style="padding: 9px 16px; border-radius: 12px; font-size: 14px; cursor: pointer;">
                     </div>
@@ -615,6 +629,7 @@ function getTrophyBadge($type) {
         document.getElementById('edit-trophy-date').value = trophy.award_date;
         document.getElementById('edit-trophy-desc').value = trophy.description;
         document.getElementById('edit-institution-name').value = trophy.institution_name || '';
+        document.getElementById('edit-institution-url').value = trophy.institution_url || '';
         document.getElementById('edit-trophy-link').value = trophy.link || '';
         document.getElementById('edit-trophy-ranking').value = trophy.ranking || '';
         document.getElementById('modal-edit-trophy').style.display = 'flex';

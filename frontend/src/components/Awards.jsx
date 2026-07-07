@@ -27,29 +27,42 @@ const Awards = () => {
             <div key={idx} className="group relative flex flex-col h-full bg-[#0a0a0a] border border-white/10 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-2">
               
               <div className="flex flex-col h-full p-6 sm:p-8 relative z-10 pb-4">
-                {/* Top Section - Organization */}
-                <div className="mb-4">
+                {/* Top Section - Organization & Year */}
+                <div className="flex flex-wrap items-center gap-3 mb-6">
+                  {/* Organization - Red Part */}
                   {(item.institution_name || item.organization) ? (
-                    <div className="inline-flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
-                      {item.institution_logo_url && (
-                        <img src={item.institution_logo_url} alt="Kurum" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-                      )}
-                      <span className="text-xs sm:text-sm font-medium text-white/90">
-                        {item.institution_name || item.organization}
-                      </span>
-                    </div>
+                    item.institution_url ? (
+                      <a href={item.institution_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-3 bg-red-500/10 border border-red-500/20 py-2.5 px-5 rounded-xl backdrop-blur-sm hover:bg-red-500/20 transition-colors cursor-pointer group/inst">
+                        {item.institution_logo_url && (
+                          <img src={item.institution_logo_url} alt="Kurum" className="w-16 h-16 sm:w-20 sm:h-20 object-contain transition-transform group-hover/inst:scale-110" />
+                        )}
+                        <span className="text-sm sm:text-base font-bold text-red-400 group-hover/inst:text-red-300 flex items-center gap-1.5">
+                          {item.institution_name || item.organization}
+                          <ExternalLink className="w-4 h-4 opacity-70 group-hover/inst:opacity-100" />
+                        </span>
+                      </a>
+                    ) : (
+                      <div className="inline-flex items-center gap-3 bg-red-500/10 border border-red-500/20 py-2.5 px-5 rounded-xl backdrop-blur-sm">
+                        {item.institution_logo_url && (
+                          <img src={item.institution_logo_url} alt="Kurum" className="w-16 h-16 sm:w-20 sm:h-20 object-contain" />
+                        )}
+                        <span className="text-sm sm:text-base font-bold text-red-400">
+                          {item.institution_name || item.organization}
+                        </span>
+                      </div>
+                    )
                   ) : (
-                    <div className="inline-flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
-                       <span className="text-xs sm:text-sm font-medium text-white/90">InnoMIS Community</span>
+                    <div className="inline-flex items-center gap-3 bg-red-500/10 border border-red-500/20 py-2.5 px-5 rounded-xl backdrop-blur-sm">
+                       <span className="text-sm sm:text-base font-bold text-red-400">InnoMIS Community</span>
                     </div>
                   )}
-                </div>
 
-                {/* Year Section */}
-                <div className="mb-6">
-                  <span className="inline-flex px-4 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-white/80 shadow-sm">
-                    {item.year}
-                  </span>
+                  {/* Year Section - Yellow Part */}
+                  {item.year && (
+                    <span className="inline-flex items-center justify-center px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-sm sm:text-base font-bold text-yellow-400 shadow-sm">
+                      {item.year}
+                    </span>
+                  )}
                 </div>
 
                 {/* Content */}
