@@ -353,6 +353,44 @@ class SiteSettingsAdminController extends Controller
             return $fallback;
         }
 
+        try {
+            $pdo = Database::getInstance();
+            $stmt = $pdo->query("SELECT id, department_id FROM apps WHERE module_type = 'drive' LIMIT 1");
+            $driveApp = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($driveApp) {
+                $stmt = $pdo->prepare("SELECT id FROM drive_items WHERE app_id = ? AND type = 'folder' AND name = 'upload' LIMIT 1");
+                $stmt->execute([$driveApp['id']]);
+                $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $userId = $_SESSION['user_id'] ?? null;
+                if (!$folder) {
+                    $stmt = $pdo->prepare("INSERT INTO drive_items (app_id, department_id, created_by, parent_id, type, name) VALUES (?, ?, ?, NULL, 'folder', 'upload')");
+                    $stmt->execute([$driveApp['id'], $driveApp['department_id'], $userId]);
+                    $folderId = $pdo->lastInsertId();
+                } else {
+                    $folderId = $folder['id'];
+                }
+
+                $fileSize = filesize($destPath);
+                $filePathRel = 'uploads/site-settings/' . $fileName;
+                
+                $stmt = $pdo->prepare("INSERT INTO drive_items (app_id, department_id, created_by, parent_id, type, name, file_path, file_size, mime_type) VALUES (?, ?, ?, ?, 'file', ?, ?, ?, ?)");
+                $stmt->execute([
+                    $driveApp['id'],
+                    $driveApp['department_id'],
+                    $userId,
+                    $folderId,
+                    $originalName,
+                    $filePathRel,
+                    $fileSize,
+                    $mimeType
+                ]);
+            }
+        } catch (Throwable $e) {
+            // Sessizce yut, ayarların kaydedilmesini engellemesin
+        }
+
         return BASE_URL . '/public/uploads/site-settings/' . $fileName;
     }
 
