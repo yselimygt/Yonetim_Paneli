@@ -117,12 +117,29 @@ $brandImageFields = [
                         if (empty($heroGallery)): $heroGallery = ['']; endif; 
                         ?>
                         <?php foreach ($heroGallery as $idx => $gImage): ?>
-                        <div class="hero-gallery-item" style="display:flex; gap:8px; align-items:center;">
-                            <input type="text" id="heroGallery_<?= $idx ?>" name="heroGallery[]" class="form-control" value="<?= View::escape($gImage) ?>" placeholder="Görsel URL">
-                            <button type="button" class="btn btn-outline" onclick="openImageLibrary('heroGallery_<?= $idx ?>')" style="flex-shrink:0; padding:8px 12px; font-size:12px;">Dosyadan Seç</button>
-                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.hero-gallery-item').remove()" title="Sil" style="flex-shrink:0;">
+                        <div class="hero-gallery-item dynamic-item" style="padding:12px; background:var(--bg); border-radius:6px; margin-bottom:12px; position:relative;">
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.hero-gallery-item').remove()" title="Sil" style="position:absolute; top:8px; right:8px; z-index:10;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
+                            <div class="image-picker" data-picker="heroGallery_<?= $idx ?>" style="width:100%; max-width:400px; margin-top:16px;">
+                                <div class="image-picker__head">
+                                    <label class="form-label" for="heroGallery_url_<?= $idx ?>">Galeri Görseli</label>
+                                    <button type="button" class="btn btn-outline image-picker__library" onclick="openImageLibrary('heroGallery_<?= $idx ?>')">Dosyadan Seç</button>
+                                </div>
+                                <label class="image-picker__drop" for="heroGallery_<?= $idx ?>_file">
+                                    <input type="file" id="heroGallery_<?= $idx ?>_file" name="heroGallery_file_<?= $idx ?>" accept="image/*" onchange="previewPickedImage(this, 'heroGallery_<?= $idx ?>')">
+                                    <span class="image-picker__preview" id="heroGallery_<?= $idx ?>_preview_wrap">
+                                        <?php if (trim($gImage) !== ''): ?>
+                                            <img id="heroGallery_<?= $idx ?>_preview" src="<?= View::escape($gImage) ?>" alt="">
+                                        <?php else: ?>
+                                            <img id="heroGallery_<?= $idx ?>_preview" src="" alt="" style="display:none;">
+                                            <small>Görsel Yok</small>
+                                        <?php endif; ?>
+                                    </span>
+                                    <span class="image-picker__hint">Sürükle bırak veya dokun</span>
+                                </label>
+                                <input type="text" id="heroGallery_<?= $idx ?>" name="heroGallery_url_<?= $idx ?>" class="form-control image-picker__url" value="<?= View::escape($gImage) ?>" placeholder="Görsel URL">
+                            </div>
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -133,19 +150,66 @@ $brandImageFields = [
                 </div>
 
                 <script>
+                function initDropZone(dropZone) {
+                    const picker = dropZone.closest('.image-picker');
+                    const fileInput = dropZone.querySelector('input[type="file"]');
+                    if (!picker || !fileInput) return;
+                    const target = picker.getAttribute('data-picker');
+
+                    ['dragenter', 'dragover'].forEach(eventName => {
+                        dropZone.addEventListener(eventName, event => {
+                            event.preventDefault();
+                            dropZone.classList.add('is-dragover');
+                        });
+                    });
+
+                    ['dragleave', 'drop'].forEach(eventName => {
+                        dropZone.addEventListener(eventName, event => {
+                            event.preventDefault();
+                            dropZone.classList.remove('is-dragover');
+                        });
+                    });
+
+                    dropZone.addEventListener('drop', event => {
+                        const file = event.dataTransfer.files && event.dataTransfer.files[0];
+                        if (!file || !file.type.startsWith('image/')) return;
+                        const transfer = new DataTransfer();
+                        transfer.items.add(file);
+                        fileInput.files = transfer.files;
+                        previewPickedImage(fileInput, target);
+                    });
+                }
+
                 function addHeroGalleryItem() {
                     const container = document.getElementById('hero-gallery-container');
                     const idx = Date.now();
                     const html = `
-                        <div class="hero-gallery-item" style="display:flex; gap:8px; align-items:center;">
-                            <input type="text" id="heroGallery_${idx}" name="heroGallery[]" class="form-control" placeholder="Görsel URL">
-                            <button type="button" class="btn btn-outline" onclick="openImageLibrary('heroGallery_${idx}')" style="flex-shrink:0; padding:8px 12px; font-size:12px;">Dosyadan Seç</button>
-                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.hero-gallery-item').remove()" title="Sil" style="flex-shrink:0;">
+                        <div class="hero-gallery-item dynamic-item" style="padding:12px; background:var(--bg); border-radius:6px; margin-bottom:12px; position:relative;">
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.hero-gallery-item').remove()" title="Sil" style="position:absolute; top:8px; right:8px; z-index:10;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
+                            <div class="image-picker" data-picker="heroGallery_${idx}" style="width:100%; max-width:400px; margin-top:16px;">
+                                <div class="image-picker__head">
+                                    <label class="form-label" for="heroGallery_url_${idx}">Galeri Görseli</label>
+                                    <button type="button" class="btn btn-outline image-picker__library" onclick="openImageLibrary('heroGallery_${idx}')">Dosyadan Seç</button>
+                                </div>
+                                <label class="image-picker__drop" for="heroGallery_${idx}_file">
+                                    <input type="file" id="heroGallery_${idx}_file" name="heroGallery_file_${idx}" accept="image/*" onchange="previewPickedImage(this, 'heroGallery_${idx}')">
+                                    <span class="image-picker__preview" id="heroGallery_${idx}_preview_wrap">
+                                        <img id="heroGallery_${idx}_preview" src="" alt="" style="display:none;">
+                                        <small>Görsel Yok</small>
+                                    </span>
+                                    <span class="image-picker__hint">Sürükle bırak veya dokun</span>
+                                </label>
+                                <input type="text" id="heroGallery_${idx}" name="heroGallery_url_${idx}" class="form-control image-picker__url" placeholder="Görsel URL">
+                            </div>
                         </div>
                     `;
                     container.insertAdjacentHTML('beforeend', html);
+                    const newDropZone = container.lastElementChild.querySelector('.image-picker__drop');
+                    if (newDropZone) {
+                        initDropZone(newDropZone);
+                    }
                 }
                 </script>
 

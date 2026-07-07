@@ -62,7 +62,18 @@ class SiteSettingsAdminController extends Controller
         Auth::requireSuperAdmin();
         $this->csrfCheck();
 
-        $heroGallery = array_values(array_filter(array_map('trim', $_POST['heroGallery'] ?? [])));
+        $heroGallery = [];
+        foreach ($_POST as $key => $value) {
+            if (str_starts_with($key, 'heroGallery_url_')) {
+                $idx = substr($key, 16);
+                $fileField = 'heroGallery_file_' . $idx;
+                $url = $this->handleSiteImageUpload($fileField, trim($value));
+                if ($url !== '') {
+                    $heroGallery[] = $url;
+                }
+            }
+        }
+        $heroGallery = array_values(array_unique(array_filter($heroGallery)));
 
         $hero = [
             'titleLine1' => trim($_POST['titleLine1'] ?? ''),
