@@ -98,7 +98,37 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             border-color: var(--accent);
         }
 
-        .bento-title {
+        /* Sekme (Tab) Menüsü - Sadece mobilde görünecek */
+        .profile-tabs-mobile {
+            display: none;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .bento-header {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 24px;
@@ -107,20 +137,40 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             align-items: center;
             gap: 8px;
         }
-        .bento-title i {
+        .bento-header i {
             color: var(--accent);
             font-size: 18px;
         }
 
         /* Specific Cards */
-        .card-personal { grid-column: span 4; }
-        .card-contact { grid-column: span 8; }
-        .card-education { grid-column: span 6; }
-        .card-history { grid-column: span 6; }
-        .card-preferences { grid-column: span 12; }
+        .personal-info { grid-column: span 4; }
+        .contact-info { grid-column: span 8; }
+        .education-info { grid-column: span 6; }
+        .community-info { grid-column: span 6; }
+        .security-info { grid-column: span 12; }
 
         @media (max-width: 1024px) {
-            .card-personal, .card-contact, .card-education, .card-history { grid-column: span 12; }
+            .personal-info, .contact-info, .education-info, .community-info, .security-info { grid-column: span 12; }
+        }
+
+        @media (max-width: 768px) {
+            .profile-tabs-mobile { 
+                display: grid; 
+                grid-template-columns: repeat(6, 1fr);
+            }
+            .profile-tabs-mobile .tab-btn:nth-child(1),
+            .profile-tabs-mobile .tab-btn:nth-child(2),
+            .profile-tabs-mobile .tab-btn:nth-child(3) {
+                grid-column: span 2;
+            }
+            .profile-tabs-mobile .tab-btn:nth-child(4),
+            .profile-tabs-mobile .tab-btn:nth-child(5) {
+                grid-column: span 3;
+            }
+            
+            .profile-grid { display: block; }
+            .bento-card { display: none; }
+            .bento-card.tab-active { display: flex; }
         }
 
         /* Avatar Uploader */
@@ -252,41 +302,47 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
 </head>
 <body>
 
-<form method="POST" action="<?= BASE_URL ?>/profile" enctype="multipart/form-data" id="profileForm">
-    <input type="hidden" name="csrf_token" value="<?= View::escape($_SESSION['csrf_token']) ?>">
-    <input type="file" name="avatar" id="avatarInput" accept="image/*">
-
-    <div class="container">
-        
-        <div class="header">
-            <div>
-                <h1><i class="ri-user-settings-line"></i> Profil Ayarları</h1>
-                <p>Hesap bilgilerinizi ve tercihlerinizi yönetin.</p>
-            </div>
-            <div class="header-actions">
-                <button type="button" class="btn btn-outline" onclick="toggleTheme()"><i class="ri-moon-line"></i> Tema</button>
-                <?php if (Auth::isSuperAdmin()): ?>
-                    <a href="<?= BASE_URL ?>/superadmin" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
-                <?php elseif (count($departments) === 1): ?>
-                    <a href="<?= BASE_URL ?>/panel/<?= View::escape($departments[0]['slug']) ?>" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
-                <?php else: ?>
-                    <a href="<?= BASE_URL ?>/panel" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
-                <?php endif; ?>
-            </div>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1><i class="ri-user-settings-line"></i> Profil Ayarları</h1>
+            <p>Hesap bilgilerinizi ve tercihlerinizi yönetin.</p>
         </div>
+        <div class="header-actions">
+            <button type="button" class="btn btn-outline" onclick="toggleTheme()"><i class="ri-moon-line"></i> Tema</button>
+            <?php if (Auth::isSuperAdmin()): ?>
+                <a href="<?= BASE_URL ?>/superadmin" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
+            <?php elseif (count($departments) === 1): ?>
+                <a href="<?= BASE_URL ?>/panel/<?= View::escape($departments[0]['slug']) ?>" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
+            <?php else: ?>
+                <a href="<?= BASE_URL ?>/panel" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
+            <?php endif; ?>
+        </div>
+    </div>
 
-        <?php if (isset($_SESSION['flash'])): ?>
-            <div class="flash <?= View::escape($_SESSION['flash']['type']) ?>">
-                <i class="ri-information-line"></i> <?= View::escape($_SESSION['flash']['message']) ?>
-            </div>
-            <?php unset($_SESSION['flash']); ?>
-        <?php endif; ?>
+    <?php if (isset($_SESSION['flash'])): ?>
+        <div class="flash <?= View::escape($_SESSION['flash']['type']) ?>">
+            <i class="ri-information-line"></i> <?= View::escape($_SESSION['flash']['message']) ?>
+        </div>
+        <?php unset($_SESSION['flash']); ?>
+    <?php endif; ?>
+
+    <div class="profile-tabs-mobile" id="mobileTabs">
+        <button type="button" class="tab-btn active" onclick="switchProfileTab('card-personal', this)"><i class="ri-user-line"></i> Temel</button>
+        <button type="button" class="tab-btn" onclick="switchProfileTab('card-contact', this)"><i class="ri-contacts-line"></i> İletişim</button>
+        <button type="button" class="tab-btn" onclick="switchProfileTab('card-education', this)"><i class="ri-graduation-cap-line"></i> Eğitim</button>
+        <button type="button" class="tab-btn" onclick="switchProfileTab('card-history', this)"><i class="ri-history-line"></i> Geçmiş</button>
+        <button type="button" class="tab-btn" onclick="switchProfileTab('card-security', this)"><i class="ri-lock-line"></i> Güvenlik</button>
+    </div>
+
+    <form method="POST" action="<?= BASE_URL ?>/profile" enctype="multipart/form-data" id="profileForm">
+        <input type="hidden" name="csrf_token" value="<?= View::escape($_SESSION['csrf_token']) ?>">
+        <input type="file" name="avatar" id="avatarInput" accept="image/*">
 
         <div class="profile-grid">
             
-            <!-- Profil & Bio -->
-            <div class="bento-card card-personal">
-                <div class="bento-title"><i class="ri-id-card-line"></i> Temel Bilgiler</div>
+            <div class="bento-card personal-info tab-active" id="card-personal">
+                <div class="bento-header"><i class="ri-id-card-line"></i> Temel Bilgiler</div>
                 
                 <div class="avatar-uploader" onclick="document.getElementById('avatarInput').click()">
                     <div class="avatar-wrapper">
@@ -313,9 +369,8 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                 </div>
             </div>
 
-            <!-- İletişim & Sosyal Medya -->
-            <div class="bento-card card-contact">
-                <div class="bento-title"><i class="ri-contacts-book-line"></i> İletişim ve Sosyal Medya</div>
+            <div class="bento-card contact-info" id="card-contact">
+                <div class="bento-header"><i class="ri-contacts-book-line"></i> İletişim ve Sosyal Medya</div>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -345,9 +400,8 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                 </div>
             </div>
 
-            <!-- Eğitim Bilgileri -->
-            <div class="bento-card card-education">
-                <div class="bento-title"><i class="ri-graduation-cap-line"></i> Eğitim Bilgileri</div>
+            <div class="bento-card education-info" id="card-education">
+                <div class="bento-header"><i class="ri-graduation-cap-line"></i> Eğitim Bilgileri</div>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -396,9 +450,8 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                 </div>
             </div>
 
-            <!-- Topluluk Geçmişi -->
-            <div class="bento-card card-history">
-                <div class="bento-title"><i class="ri-history-line"></i> Topluluk Kariyer Geçmişi</div>
+            <div class="bento-card community-info" id="card-history">
+                <div class="bento-header"><i class="ri-history-line"></i> Topluluk Kariyer Geçmişi</div>
                 
                 <?php
                 $months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
@@ -412,7 +465,6 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                 ?>
                 <div id="historyList" class="history-list">
                     <?php if (empty($communityHistory)): ?>
-                        <!-- Boşken JS üzerinden tetikleyeceğiz, script'e bırakalım -->
                     <?php else: ?>
                         <?php foreach ($communityHistory as $item): 
                             $is_current = !empty($item['is_current']);
@@ -491,9 +543,8 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                 <button type="button" class="btn btn-outline btn-sm" style="margin-top:16px; align-self:flex-start;" onclick="addHistoryItem()"><i class="ri-add-line"></i> Yeni Geçmiş Ekle</button>
             </div>
 
-            <!-- Tercihler ve Güvenlik -->
-            <div class="bento-card card-preferences">
-                <div class="bento-title"><i class="ri-settings-3-line"></i> Tercihler ve Güvenlik</div>
+            <div class="bento-card security-info" id="card-security">
+                <div class="bento-header"><i class="ri-settings-3-line"></i> Tercihler ve Güvenlik</div>
                 
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;">
@@ -520,16 +571,15 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             </div>
 
         </div>
-    </div>
 
-    <!-- Sticky Footer -->
-    <div class="sticky-footer">
-        <div class="sticky-footer-inner">
-            <button type="reset" class="btn btn-outline"><i class="ri-close-line"></i> Formu Temizle</button>
-            <button type="submit" class="btn btn-primary"><i class="ri-save-3-line"></i> Değişiklikleri Kaydet</button>
+        <div class="sticky-footer">
+            <div class="sticky-footer-inner">
+                <button type="reset" class="btn btn-outline"><i class="ri-close-line"></i> Formu Temizle</button>
+                <button type="submit" class="btn btn-primary"><i class="ri-save-3-line"></i> Değişiklikleri Kaydet</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <script src="<?= BASE_URL ?>/public/assets/admin/js/universities_data.js"></script>
 <script>
@@ -721,6 +771,30 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
     }
+    
+    // Mobil Sekme Değiştirme
+    function switchProfileTab(cardId, btnEl) {
+        if (window.innerWidth > 768) return;
+        
+        const tabs = document.querySelectorAll('.profile-tabs-mobile .tab-btn');
+        tabs.forEach(t => t.classList.remove('active'));
+        
+        btnEl.classList.add('active');
+        
+        const cards = document.querySelectorAll('.bento-card');
+        cards.forEach(c => c.classList.remove('tab-active'));
+        
+        const target = document.getElementById(cardId);
+        if(target) target.classList.add('tab-active');
+    }
+
+    // Sayfa boyutu değiştiğinde sekme durumunu yönetmek için (masaüstünde sekmeler kalkar, her şey görünür)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            // Masaüstü görünümde, display sınıfları media query ile zaten temizleniyor.
+            // Fakat active tab vs resetlenebilir.
+        }
+    });
 
     function escapeAttr(value) {
         return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
