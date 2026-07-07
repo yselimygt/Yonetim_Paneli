@@ -154,6 +154,21 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
         }
 
         @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .header-actions {
+                width: 100%;
+                display: flex;
+            }
+            .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
             .profile-tabs-mobile { 
                 display: grid; 
                 grid-template-columns: repeat(6, 1fr);
