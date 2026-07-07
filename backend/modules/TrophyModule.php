@@ -62,6 +62,23 @@ class TrophyModule extends BaseModule
                 }
             }
 
+            // Handle Background Image Upload
+            $bgImagePath = '';
+            if (isset($_FILES['bg_image']) && $_FILES['bg_image']['error'] === UPLOAD_ERR_OK) {
+                $fileTmp = $_FILES['bg_image']['tmp_name'];
+                $fileName = basename($_FILES['bg_image']['name']);
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $allowed = ['jpg','jpeg','png','webp'];
+                
+                if (in_array($ext, $allowed)) {
+                    $newName = uniqid('trophy_bg_') . '.' . $ext;
+                    $destPath = __DIR__ . '/../public/uploads/trophies/' . $newName;
+                    if (move_uploaded_file($fileTmp, $destPath)) {
+                        $bgImagePath = $newName;
+                    }
+                }
+            }
+
             // Handle Institution Logo Upload
             $institutionLogo = '';
             if (isset($_FILES['institution_logo']) && $_FILES['institution_logo']['error'] === UPLOAD_ERR_OK) {
@@ -99,8 +116,8 @@ class TrophyModule extends BaseModule
             $link = trim($data['link'] ?? '');
 
             if ($title) {
-                $stmt = $this->pdo->prepare("INSERT INTO app_trophies (app_id, department_id, title, description, award_type, award_date, image_path, institution_name, institution_logo, pdf_url, link, ranking, institution_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$this->app['id'], $this->department['id'], $title, $description, $awardType, $awardDate, $imagePath ?: null, $institutionName, $institutionLogo, $pdfUrl, $link, $ranking, $institutionUrl]);
+                $stmt = $this->pdo->prepare("INSERT INTO app_trophies (app_id, department_id, title, description, award_type, award_date, image_path, institution_name, institution_logo, pdf_url, link, ranking, institution_url, bg_image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$this->app['id'], $this->department['id'], $title, $description, $awardType, $awardDate, $imagePath ?: null, $institutionName, $institutionLogo, $pdfUrl, $link, $ranking, $institutionUrl, $bgImagePath ?: null]);
             }
         }
         if ($action === 'edit_trophy') {
@@ -133,6 +150,38 @@ class TrophyModule extends BaseModule
                         $oldImage = $stmt->fetchColumn();
                         if ($oldImage) {
                             $oldFilePath = __DIR__ . '/../public/uploads/trophies/' . $oldImage;
+                            if (file_exists($oldFilePath)) {
+                                @unlink($oldFilePath);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Handle Background Image Upload
+            $bgImagePath = '';
+            $updateBgSql = '';
+            $bgParams = [];
+            if (isset($_FILES['bg_image']) && $_FILES['bg_image']['error'] === UPLOAD_ERR_OK) {
+                $fileTmp = $_FILES['bg_image']['tmp_name'];
+                $fileName = basename($_FILES['bg_image']['name']);
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $allowed = ['jpg','jpeg','png','webp'];
+                
+                if (in_array($ext, $allowed)) {
+                    $newName = uniqid('trophy_bg_') . '.' . $ext;
+                    $destPath = __DIR__ . '/../public/uploads/trophies/' . $newName;
+                    if (move_uploaded_file($fileTmp, $destPath)) {
+                        $bgImagePath = $newName;
+                        $updateBgSql = ", bg_image_path=?";
+                        $bgParams[] = $bgImagePath;
+                        
+                        // Delete old bg image
+                        $stmt = $this->pdo->prepare("SELECT bg_image_path FROM app_trophies WHERE id = ?");
+                        $stmt->execute([$trophyId]);
+                        $oldBgImage = $stmt->fetchColumn();
+                        if ($oldBgImage) {
+                            $oldFilePath = __DIR__ . '/../public/uploads/trophies/' . $oldBgImage;
                             if (file_exists($oldFilePath)) {
                                 @unlink($oldFilePath);
                             }
@@ -226,6 +275,11 @@ class TrophyModule extends BaseModule
                     $baseSql .= $updatePdfSql;
                     $params = array_merge($params, $pdfParams);
                 }
+                
+                if ($updateBgSql) {
+                    $baseSql .= $updateBgSql;
+                    $params = array_merge($params, $bgParams);
+                }
 
                 $baseSql .= " WHERE id=?";
                 $params[] = $trophyId;
@@ -246,6 +300,16 @@ class TrophyModule extends BaseModule
                     $filePath = __DIR__ . '/../public/uploads/trophies/' . $trophy['image_path'];
                     if ($trophy['image_path'] && file_exists($filePath)) {
                         @unlink($filePath);
+                    }
+                    // Get bg image path to delete file
+                    $stmtBg = $this->pdo->prepare("SELECT bg_image_path FROM app_trophies WHERE id = ? AND app_id = ?");
+                    $stmtBg->execute([$trophyId, $this->app['id']]);
+                    $bgPathName = $stmtBg->fetchColumn();
+                    if ($bgPathName) {
+                        $bgFilePath = __DIR__ . '/../public/uploads/trophies/' . $bgPathName;
+                        if (file_exists($bgFilePath)) {
+                            @unlink($bgFilePath);
+                        }
                     }
                     if (!empty($trophy['institution_logo'])) {
                         $logoPath = __DIR__ . '/../public/uploads/trophies/' . $trophy['institution_logo'];

@@ -483,6 +483,14 @@ function getTrophyBadge($type) {
                     </div>
                 </div>
 
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label" style="font-weight: 600;">Üst Kısım Arka Plan Görseli (Opsiyonel)</label>
+                    <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,0,0,0.02);">
+                        <input type="file" name="bg_image" accept="image/jpeg,image/png,image/webp" style="width: 100%; cursor: pointer;">
+                        <p style="font-size: 12px; color: var(--muted); margin: 8px 0 0 0;">Kartın üst kısmında bulanık (blur) efektiyle gösterilecek arka plan görseli.</p>
+                    </div>
+                </div>
+
                 <div style="display: flex; gap: 16px; margin-bottom: 20px;">
                     <div class="form-group" style="flex: 1; margin: 0;">
                         <label class="form-label" style="font-weight: 600;">Alınan Kurum Adı (Opsiyonel)</label>
@@ -575,6 +583,13 @@ function getTrophyBadge($type) {
                     <label class="form-label" style="font-weight: 600;">Vitrin Görseli (Değiştirmek istemiyorsanız boş bırakın)</label>
                     <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,0,0,0.02);">
                         <input type="file" name="image" accept="image/jpeg,image/png,image/webp" style="width: 100%; cursor: pointer;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label" style="font-weight: 600;">Üst Kısım Arka Plan Görseli (Değiştirmek istemiyorsanız boş bırakın)</label>
+                    <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,0,0,0.02);">
+                        <input type="file" name="bg_image" accept="image/jpeg,image/png,image/webp" style="width: 100%; cursor: pointer;">
                     </div>
                 </div>
 

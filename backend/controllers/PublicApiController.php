@@ -257,6 +257,9 @@ class PublicApiController extends Controller
             if (!empty($award['institution_logo'])) {
                 $award['institution_logo_url'] = BASE_URL . '/public/uploads/trophies/' . ltrim($award['institution_logo'], '/');
             }
+            if (!empty($award['bg_image_path'])) {
+                $award['bg_image_url'] = BASE_URL . '/public/uploads/trophies/' . ltrim($award['bg_image_path'], '/');
+            }
             return $award;
         }, $awardsRaw);
 
