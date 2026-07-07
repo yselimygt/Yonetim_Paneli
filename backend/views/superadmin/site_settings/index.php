@@ -344,7 +344,7 @@ $brandImageFields = [
         <div class="card-body">
             <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Sitenin girişinde görünen duyuru modalını buradan yönetebilirsiniz.</p>
             
-            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/popup">
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/popup" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 
                 <div class="form-group" style="display:flex; align-items:center; gap:12px; background:var(--input-bg); padding:16px; border-radius:12px; border:1px solid var(--border);">
@@ -355,6 +355,31 @@ $brandImageFields = [
                     <div>
                         <strong style="display:block; font-size:14px;">Duyuruyu Aktif Et</strong>
                         <span style="font-size:12px; color:var(--muted);">Kullanıcılar siteye girdiğinde pop-up olarak gösterilir.</span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <?php $pImg = $popupConfig['image'] ?? ''; ?>
+                    <div class="image-picker__head">
+                        <label class="form-label">Duyuru Görseli (Opsiyonel)</label>
+                        <button type="button" class="btn btn-outline image-picker__library" onclick="openImageLibrary('popupConfig_image')" style="padding:4px 8px; font-size:11px;">Dosyadan Seç</button>
+                    </div>
+                    <label class="image-picker__drop" for="popupConfig_image_file">
+                        <input type="file" id="popupConfig_image_file" name="popupConfig_image_file" accept="image/*" onchange="previewPickedImage(this, 'popupConfig_image')">
+                        <span class="image-picker__preview" id="popupConfig_image_preview_wrap">
+                            <?php if (trim($pImg) !== ''): ?>
+                                <img id="popupConfig_image_preview" src="<?= View::escape($pImg) ?>" alt="">
+                            <?php else: ?>
+                                <img id="popupConfig_image_preview" src="" alt="" style="display:none;">
+                                <small>Sürükle bırak veya seç</small>
+                            <?php endif; ?>
+                        </span>
+                    </label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="popupConfig_image" name="popupConfig_image_url" class="form-control image-picker__url" value="<?= View::escape($pImg) ?>" placeholder="Görsel URL">
+                        <button type="button" class="btn-icon btn-danger-icon" onclick="document.getElementById('popupConfig_image').value=''; document.getElementById('popupConfig_image_preview_wrap').innerHTML='<img id=\'popupConfig_image_preview\' src=\'\' alt=\'\' style=\'display:none;\'><small>Sürükle bırak veya seç</small>';" title="Görseli Temizle" style="flex-shrink:0;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
                     </div>
                 </div>
 

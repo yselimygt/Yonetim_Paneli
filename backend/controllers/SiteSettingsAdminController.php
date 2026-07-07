@@ -145,10 +145,13 @@ class SiteSettingsAdminController extends Controller
         Auth::requireSuperAdmin();
         $this->csrfCheck();
 
+        $imageUrl = $this->handleSiteImageUpload('popupConfig_image', trim($_POST['popupConfig_image_url'] ?? ''));
+
         $popupConfig = [
             'enabled' => isset($_POST['enabled']) && $_POST['enabled'] === 'on',
-            'storageKey' => 'innomis_announcement_seen_v2', // bump version to show to all users again
+            'storageKey' => 'innomis_announcement_seen_v3', // bump version to show to all users again
             'autoCloseSec' => (int)($_POST['autoCloseSec'] ?? 5),
+            'image' => $imageUrl,
             'badge' => trim($_POST['badge'] ?? ''),
             'title' => trim($_POST['title'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),

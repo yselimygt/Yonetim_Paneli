@@ -120,8 +120,19 @@ export default function AnnouncementPopup() {
             <X className="w-4 h-4" />
           </button>
 
+          {/* Top Banner Image (Optional) */}
+          {popupConfig.image && (
+            <div className="w-full relative bg-zinc-900 border-b border-zinc-800">
+              <img 
+                src={popupConfig.image} 
+                alt="Duyuru Görseli" 
+                className="w-full h-auto max-h-56 object-cover" 
+              />
+            </div>
+          )}
+
           {/* Content */}
-          <div className="p-7 pt-8">
+          <div className={`p-7 ${popupConfig.image ? 'pt-6' : 'pt-8'}`}>
             {/* Badge */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-5"
               style={{ background: 'rgba(244,159,32,0.15)', border: '1px solid rgba(244,159,32,0.3)', color: '#F49F20' }}>
