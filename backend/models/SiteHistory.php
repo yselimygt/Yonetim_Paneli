@@ -125,6 +125,8 @@ class SiteHistory extends Model
                     t.image_path,
                     t.institution_name,
                     t.institution_logo,
+                    t.pdf_url,
+                    t.link,
                     t.created_at,
                     d.name AS department_name
                 FROM app_trophies t
@@ -146,7 +148,8 @@ class SiteHistory extends Model
                 'description' => $trophy['description'],
                 'icon' => 'Trophy',
                 'type' => 'award',
-                'link' => '',
+                'link' => $trophy['link'] ?? '',
+                'pdf_url' => $trophy['pdf_url'] ?? '',
                 'source' => 'trophy',
                 'award_type' => $trophy['award_type'] ?: 'other',
                 'award_date' => $awardDate,

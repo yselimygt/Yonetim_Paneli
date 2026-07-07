@@ -72,6 +72,11 @@ try {
         tag VARCHAR(100),
         tag_color VARCHAR(100),
         organization VARCHAR(255),
+        icon VARCHAR(50),
+        link VARCHAR(255),
+        pdf_url VARCHAR(255),
+        image_url VARCHAR(500),
+        institution_logo_url VARCHAR(500),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
@@ -155,16 +160,17 @@ try {
 
     // --- SEED site_history ---
     $achievements = [
-        ['achievement', '2026', 'MIS CONNECT’26 Hazırlıkları', 'Teknoloji ve kariyer odaklı büyük zirve için ekipler, tasarımlar ve dijital altyapı hazırlıkları başlatıldı.', 'Zirve', 'text-primary border-primary/30', null],
-        ['achievement', '2025', 'Yılın Sosyal Medyayı En İyi Yöneten Topluluğu', 'Topluluğun dijital iletişim, içerik ve görsel kimlik başarısı ödüllendirildi.', 'Ödül', 'text-accent-green border-accent-green/30', null],
-        ['achievement', '2025', 'Kurumsal Kimlik Yenilendi', 'Renk paleti, görsel dil, maskot, sosyal medya tasarımları ve web kimliği yeniden tasarlandı.', 'Marka', 'text-accent-purple border-accent-purple/30', null],
-        ['achievement', '2024', 'Yeni Ekip Yapılanması', 'Etkinlik, sosyal medya, Ar-Ge, sponsorluk ve operasyon ekipleri daha sistemli hale getirildi.', 'Ekip', 'text-accent-cyan border-accent-cyan/30', null],
-        ['award', '2025', 'Yılın En İyi Topluluk İletişimi', 'Topluluğun dijital iletişim ve sosyal medya başarısı.', null, null, 'Tech Community Awards'],
-        ['award', '2024', 'Yılın İnovatif Teknoloji Topluluğu', 'Yıl boyunca üretilen projeler ve sağlanan ekosistem katkısı.', null, null, 'Genç Bilişimciler Zirvesi'],
-        ['award', '2023', 'En Aktif Öğrenci Topluluğu', 'Yıl boyunca düzenlenen yüksek katılımlı teknik eğitimler.', null, null, 'Üniversite Etkinlikleri Zirvesi']
+        ['achievement', '2026', 'MIS CONNECT’26 Hazırlıkları', 'Teknoloji ve kariyer odaklı büyük zirve için ekipler, tasarımlar ve dijital altyapı hazırlıkları başlatıldı.', 'Zirve', 'text-primary border-primary/30', null, null, null, null],
+        ['achievement', '2025', 'Yılın Sosyal Medyayı En İyi Yöneten Topluluğu', 'Topluluğun dijital iletişim, içerik ve görsel kimlik başarısı ödüllendirildi.', 'Ödül', 'text-accent-green border-accent-green/30', null, null, null, null],
+        ['achievement', '2025', 'Kurumsal Kimlik Yenilendi', 'Renk paleti, görsel dil, maskot, sosyal medya tasarımları ve web kimliği yeniden tasarlandı.', 'Marka', 'text-accent-purple border-accent-purple/30', null, null, null, null],
+        ['achievement', '2024', 'Yeni Ekip Yapılanması', 'Etkinlik, sosyal medya, Ar-Ge, sponsorluk ve operasyon ekipleri daha sistemli hale getirildi.', 'Ekip', 'text-accent-cyan border-accent-cyan/30', null, null, null, null],
+        ['award', '2026', 'Yılın Sosyal Medyayı En İyi Yöneten Topluluğu', 'Dijital iletişimi stratejik ve tutarlı biçimde kullanan, ürettiği içeriklerle gerçek etkileşim yaratan topluluk olarak değerlendirildik.', null, null, 'Konya Büyükşehir Belediyesi Gençlik Meclisi', 'Trophy', '/innomis/assets/award.png', '/innomis/assets/kbb-logo.png'],
+        ['award', '2025', 'Yılın En İyi Topluluk İletişimi', 'Topluluğun dijital iletişim ve sosyal medya başarısı.', null, null, 'Tech Community Awards', 'Star', null, null],
+        ['award', '2024', 'Yılın İnovatif Teknoloji Topluluğu', 'Yıl boyunca üretilen projeler ve sağlanan ekosistem katkısı.', null, null, 'Genç Bilişimciler Zirvesi', 'Target', null, null],
+        ['award', '2023', 'En Aktif Öğrenci Topluluğu', 'Yıl boyunca düzenlenen yüksek katılımlı teknik eğitimler.', null, null, 'Üniversite Etkinlikleri Zirvesi', 'Medal', null, null]
     ];
     $db->exec("TRUNCATE TABLE site_history");
-    $stmtHist = $db->prepare("INSERT INTO site_history (type, year, title, description, tag, tag_color, organization) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmtHist = $db->prepare("INSERT INTO site_history (type, year, title, description, tag, tag_color, organization, icon, image_url, institution_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     foreach ($achievements as $a) {
         $stmtHist->execute($a);
     }
