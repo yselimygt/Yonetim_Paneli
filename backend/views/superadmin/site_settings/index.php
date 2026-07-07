@@ -946,6 +946,7 @@ input:checked + .toggle-slider:before {
     width: 100%;
     height: 100%;
     min-height: 112px;
+    max-height: 160px;
     object-fit: contain;
     padding: 10px;
 }
