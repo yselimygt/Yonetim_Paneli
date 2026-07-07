@@ -71,11 +71,24 @@ const ScrollToTop = () => {
     }
   }, [pathname, hash]);
 
-  return null;
 };
 
 function App() {
   const { siteData, loading } = useSiteData();
+  
+  useEffect(() => {
+    const faviconUrl = siteData?.settings?.brand?.favicon;
+    if (faviconUrl) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = faviconUrl;
+    }
+  }, [siteData]);
+
   const location = useLocation();
   const isLinksPage = location.pathname === '/links';
   const isOyTakipPage = location.pathname.startsWith('/projects/oy-takip');

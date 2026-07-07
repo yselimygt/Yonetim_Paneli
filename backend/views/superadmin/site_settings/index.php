@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Site Ayarları';
 $brandImageFields = [
+    'favicon' => 'Favicon',
     'navbarLogo' => 'Navbar Logo',
     'footerLogo' => 'Footer Logo',
     'popupLogo' => 'Pop-up Logo',

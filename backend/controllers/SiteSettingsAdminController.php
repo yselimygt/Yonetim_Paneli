@@ -89,6 +89,7 @@ class SiteSettingsAdminController extends Controller
         $this->csrfCheck();
 
         $brand = [
+            'favicon' => $this->handleSiteImageUpload('favicon', trim($_POST['favicon'] ?? '')),
             'navbarLogo' => $this->handleSiteImageUpload('navbarLogo', trim($_POST['navbarLogo'] ?? '')),
             'footerLogo' => $this->handleSiteImageUpload('footerLogo', trim($_POST['footerLogo'] ?? '')),
             'popupLogo' => $this->handleSiteImageUpload('popupLogo', trim($_POST['popupLogo'] ?? '')),
