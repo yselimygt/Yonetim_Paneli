@@ -61,6 +61,13 @@ const normalizeSiteData = (data = {}) => {
   const hero = incomingSettings.hero || {};
   const brand = incomingSettings.brand || {};
   const contact = incomingSettings.contact || {};
+  const maintenanceMode = incomingSettings.maintenanceMode || {};
+
+  const defaultMaintenanceMode = {
+    enabled: false,
+    title: 'Bakım Molası / Servis Dışı',
+    description: 'Sistemlerimizi sizin için daha iyi hale getiriyoruz. Kısa bir bakım molasındayız, lütfen daha sonra tekrar deneyin.'
+  };
 
   const defaultSiteSettings = {
     popupConfig: {
@@ -74,6 +81,10 @@ const normalizeSiteData = (data = {}) => {
         ...defaultPopupConfig.secondaryCta,
         ...(popupConfig.secondaryCta || {})
       }
+    },
+    maintenanceMode: {
+      ...defaultMaintenanceMode,
+      ...maintenanceMode
     },
     stats: defaultStats,
     sponsors: defaultSponsors,
@@ -109,6 +120,7 @@ const normalizeSiteData = (data = {}) => {
       ...defaultSiteSettings,
       ...incomingSettings,
       popupConfig: defaultSiteSettings.popupConfig,
+      maintenanceMode: defaultSiteSettings.maintenanceMode,
       hero: defaultSiteSettings.hero,
       brand: defaultSiteSettings.brand,
       contact: defaultSiteSettings.contact

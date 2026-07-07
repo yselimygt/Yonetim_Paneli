@@ -62,6 +62,7 @@ $router->post('/superadmin/site-settings/stats',          ['SiteSettingsAdminCon
 $router->post('/superadmin/site-settings/sponsors',       ['SiteSettingsAdminController', 'updateSponsors']);
 $router->post('/superadmin/site-settings/faqs',           ['SiteSettingsAdminController', 'updateFaqs']);
 $router->post('/superadmin/site-settings/form-routing',   ['SiteSettingsAdminController', 'updateFormRouting']);
+$router->post('/superadmin/site-settings/maintenance',    ['SiteSettingsAdminController', 'updateMaintenanceMode']);
 
 $router->get('/superadmin/site-projects',                 ['SiteProjectAdminController', 'index']);
 $router->post('/superadmin/site-projects',                ['SiteProjectAdminController', 'store']);

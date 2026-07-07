@@ -49,10 +49,11 @@ class SiteSettingsAdminController extends Controller
         $sponsors = $allSettings['sponsors'] ?? [];
         $faqs = $allSettings['faqs'] ?? [];
         $formRouting = $allSettings['form_routing'] ?? [];
+        $maintenanceMode = $allSettings['maintenanceMode'] ?? [];
         $selectedSponsorIds = $this->normalizeSelectedSponsors($sponsors, $allSponsors);
         $driveMediaItems = $this->loadDriveMediaItems();
 
-        $this->view('superadmin/site_settings/index', compact('hero', 'brand', 'contact', 'popupConfig', 'stats', 'sponsors', 'allSponsors', 'selectedSponsorIds', 'driveMediaItems', 'faqs', 'formRouting', 'departments', 'inboxApps'), 'superadmin');
+        $this->view('superadmin/site_settings/index', compact('hero', 'brand', 'contact', 'popupConfig', 'stats', 'sponsors', 'allSponsors', 'selectedSponsorIds', 'driveMediaItems', 'faqs', 'formRouting', 'departments', 'inboxApps', 'maintenanceMode'), 'superadmin');
     }
 
     // POST /superadmin/site-settings/hero
@@ -248,6 +249,24 @@ class SiteSettingsAdminController extends Controller
         $this->settings->set('form_routing', $routing);
         Logger::log('UPDATE_SITE_SETTING', 'SiteSetting', null, ['key' => 'form_routing']);
         $this->flashSuccess('Form yönlendirme ayarları güncellendi.');
+        $this->redirect('/superadmin/site-settings');
+    }
+
+    // POST /superadmin/site-settings/maintenance
+    public function updateMaintenanceMode(): void
+    {
+        Auth::requireSuperAdmin();
+        $this->csrfCheck();
+
+        $maintenanceMode = [
+            'enabled' => isset($_POST['enabled']) && $_POST['enabled'] === 'on',
+            'title' => trim($_POST['title'] ?? ''),
+            'description' => trim($_POST['description'] ?? '')
+        ];
+
+        $this->settings->set('maintenanceMode', $maintenanceMode);
+        Logger::log('UPDATE_SITE_SETTING', 'SiteSetting', null, ['key' => 'maintenanceMode']);
+        $this->flashSuccess('Bakım modu ayarları güncellendi.');
         $this->redirect('/superadmin/site-settings');
     }
 
@@ -447,6 +466,11 @@ class SiteSettingsAdminController extends Controller
                 ['q' => 'Ekiplerde görev almak mümkün mü?', 'a' => 'Evet. Sosyal medya, etkinlik, Ar-Ge, sponsorluk, tasarım, yazılım ve operasyon ekiplerinde görev alınabilir.'],
                 ['q' => 'Sponsor veya partner olarak nasıl iletişime geçilir?', 'a' => 'İletişim formu, e-posta veya sosyal medya hesapları üzerinden toplulukla iletişime geçilebilir.'],
                 ['q' => 'Etkinlik duyurularını nereden takip edebilirim?', 'a' => 'Instagram, LinkedIn ve web sitesi üzerinden güncel duyurular takip edilebilir.']
+            ],
+            'maintenanceMode' => [
+                'enabled' => false,
+                'title' => 'Bakım Molası / Servis Dışı',
+                'description' => 'Sistemlerimizi sizin için daha iyi hale getiriyoruz. Kısa bir bakım molasındayız, lütfen daha sonra tekrar deneyin.'
             ]
         ];
     }

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { useSiteData } from './context/SiteDataContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SponsorMarquee from './components/SponsorMarquee';
@@ -18,6 +19,7 @@ import ContactPage from './components/ContactPage';
 import LinksPage from './components/LinksPage';
 import AnnouncementPopup from './components/AnnouncementPopup';
 import NotFound from './components/errors/NotFound';
+import ServiceUnavailable from './components/errors/ServiceUnavailable';
 import Footer from './components/Footer';
 import RegistrationForm from './components/RegistrationForm';
 import ApplicationHub from './components/ApplicationHub';
@@ -73,9 +75,15 @@ const ScrollToTop = () => {
 };
 
 function App() {
+  const { siteData, loading } = useSiteData();
   const location = useLocation();
   const isLinksPage = location.pathname === '/links';
   const isOyTakipPage = location.pathname.startsWith('/projects/oy-takip');
+
+  const maintenanceMode = siteData?.settings?.maintenanceMode || {};
+  if (maintenanceMode.enabled) {
+    return <ServiceUnavailable title={maintenanceMode.title} description={maintenanceMode.description} />;
+  }
 
   if (isLinksPage) {
     return (

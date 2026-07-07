@@ -1,12 +1,12 @@
 import React from 'react';
 import ErrorPage from './ErrorPage';
 
-const ServiceUnavailable = () => {
+const ServiceUnavailable = ({ title, description }) => {
   return (
     <ErrorPage 
       errorCode="503"
-      title="Bakım Molası / Servis Dışı"
-      description="Sistemlerimizi sizin için daha iyi hale getiriyoruz. Kısa bir bakım molasındayız, lütfen daha sonra tekrar deneyin."
+      title={title || "Bakım Molası / Servis Dışı"}
+      description={description || "Sistemlerimizi sizin için daha iyi hale getiriyoruz. Kısa bir bakım molasındayız, lütfen daha sonra tekrar deneyin."}
       actionButton={
         <button 
           onClick={() => window.location.reload()}

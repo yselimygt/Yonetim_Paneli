@@ -46,6 +46,10 @@ $brandImageFields = [
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         <span class="tab-label">Form Yönlendirme</span>
     </button>
+    <button class="tab-btn" onclick="switchTab(this, 'maintenance')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <span class="tab-label">Bakım Modu</span>
+    </button>
 </div>
 
 <!-- 0. HERO -->
@@ -555,6 +559,46 @@ $brandImageFields = [
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Yeni Kural Ekle
                     </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Ayarları Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 7. MAINTENANCE MODE -->
+<div id="tab-maintenance" class="tab-content" style="display:none;">
+    <div class="card">
+        <div class="card-header">
+            Bakım Modu
+        </div>
+        <div class="card-body">
+            <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Siteyi geçici olarak kullanıma kapatmak için bakım modunu aktifleştirebilirsiniz. Sadece yöneticiler panele erişmeye devam edebilir.</p>
+
+            <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/maintenance">
+                <?= csrf_field() ?>
+                
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <input type="checkbox" name="enabled" <?= !empty($maintenanceMode['enabled']) ? 'checked' : '' ?>>
+                        <span style="font-weight:500; color:var(--text);">Bakım Modu Aktif</span>
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label>Başlık</label>
+                    <input type="text" name="title" class="form-control" value="<?= View::escape($maintenanceMode['title'] ?? '') ?>" placeholder="Örn: Bakım Molası / Servis Dışı">
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="Örn: Sistemlerimizi güncelliyoruz..."><?= View::escape($maintenanceMode['description'] ?? '') ?></textarea>
+                </div>
+
+                <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:flex-end;">
                     <button type="submit" class="btn btn-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         Ayarları Kaydet
