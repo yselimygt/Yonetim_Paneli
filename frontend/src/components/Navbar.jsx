@@ -7,14 +7,16 @@ import { useSiteData } from '../context/SiteDataContext';
 const Navbar = () => {
   const { siteData } = useSiteData();
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const navbarLogo = siteData?.settings?.brand?.navbarLogo || '/innomis/assets/logo/Yatay-Beyaz.png';
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const progress = Math.min(window.scrollY / 250, 1);
+      setScrollProgress(progress);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -30,9 +32,18 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
+  const navStyle = {
+    backgroundColor: `rgba(12, 10, 9, ${scrollProgress * 0.75})`,
+    backdropFilter: `blur(${scrollProgress * 16}px)`,
+    WebkitBackdropFilter: `blur(${scrollProgress * 16}px)`,
+    borderBottom: `1px solid rgba(255, 255, 255, ${scrollProgress * 0.08})`,
+    paddingTop: `${1.25 - (scrollProgress * 0.5)}rem`,
+    paddingBottom: `${1.25 - (scrollProgress * 0.5)}rem`,
+  };
+
   return (
     <>
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass-nav py-3' : 'bg-transparent py-5'}`}>
+      <nav className="fixed top-0 w-full z-50" style={navStyle}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           
