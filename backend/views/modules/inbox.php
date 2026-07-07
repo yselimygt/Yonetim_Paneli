@@ -623,12 +623,14 @@ foreach ($messages as $messageItem) {
 
                     <div class="inbox-v2-actions">
                         <form method="POST" class="inbox-v2-delete-form" onsubmit="return confirm('Bu mesajı tamamen silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="message_id" id="deleteMessageId">
                             <button type="submit" class="btn btn-outline inbox-v2-action inbox-v2-delete">Mesajı Sil</button>
                         </form>
 
                         <form method="POST" class="inbox-v2-status-form">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" id="messageStatusAction" value="mark_read">
                             <input type="hidden" name="message_id" id="statusMessageId">
                             <button type="submit" class="btn btn-primary inbox-v2-action" id="messageStatusButton">Okundu İşaretle</button>
