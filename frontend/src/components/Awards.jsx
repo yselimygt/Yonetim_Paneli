@@ -27,11 +27,10 @@ const Awards = () => {
             <div key={idx} className="group relative flex flex-col h-full bg-[#0a0a0a] border border-white/10 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-2">
               
               <div className="flex flex-col h-full p-6 sm:p-8 relative z-10 pb-4">
-                {/* Top Section */}
-                <div className="flex justify-between items-start mb-8 gap-4">
-                  {/* Institution name and logo */}
+                {/* Top Section - Organization */}
+                <div className="mb-4">
                   {(item.institution_name || item.organization) ? (
-                    <div className="flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
+                    <div className="inline-flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
                       {item.institution_logo_url && (
                         <img src={item.institution_logo_url} alt="Kurum" className="w-5 h-5 object-contain" />
                       )}
@@ -40,12 +39,15 @@ const Awards = () => {
                       </span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
+                    <div className="inline-flex items-center gap-3 bg-white/5 border border-white/5 py-2 px-4 rounded-xl backdrop-blur-sm">
                        <span className="text-xs sm:text-sm font-medium text-white/90">InnoMIS Community</span>
                     </div>
                   )}
-                  
-                  <span className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium text-white shadow-sm shrink-0">
+                </div>
+
+                {/* Year Section */}
+                <div className="mb-6">
+                  <span className="inline-flex px-4 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-white/80 shadow-sm">
                     {item.year}
                   </span>
                 </div>
