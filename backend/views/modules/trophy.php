@@ -359,14 +359,14 @@ function getTrophyBadge($type) {
             </svg>
         </div>
         <div>
-            <h3 style="font-size: 28px; font-weight: 800; color: var(--text); margin: 0; background: linear-gradient(to right, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Şeref Kürsüsü</h3>
-            <p style="font-size: 15px; color: var(--muted); margin: 6px 0 0 0;">Takımımızın gurur tablosu; başarılar, kupalar ve ödüller galerisi.</p>
+            <h3 style="font-size: 28px; font-weight: 800; color: var(--text); margin: 0; background: linear-gradient(to right, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ödüller ve Derecelerimiz</h3>
+            <p style="font-size: 15px; color: var(--muted); margin: 6px 0 0 0;">Takımımızın gurur tablosu; başarılar, kupalar, dereceler ve ödüller galerisi.</p>
         </div>
     </div>
     
     <?php if ($canEdit): ?>
         <button class="btn btn-primary" style="padding: 12px 24px; border-radius: 12px; font-weight: 600; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; box-shadow: 0 4px 15px rgba(245,158,11,0.3);" onclick="document.getElementById('modal-add-trophy').style.display='flex'">
-            <span style="font-size: 16px; margin-right: 6px;">+</span> Kürsüye Yeni Ödül Ekle
+            <span style="font-size: 16px; margin-right: 6px;">+</span> Yeni Ödül / Derece Ekle
         </button>
     <?php endif; ?>
 </div>
@@ -468,10 +468,17 @@ function getTrophyBadge($type) {
                     </div>
                 </div>
 
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Kazanılan Derece (Opsiyonel)</label>
+                        <input type="text" name="ranking" class="form-control" placeholder="Örn: 1. lik, Finalist" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label class="form-label" style="font-weight: 600;">Vitrin Görseli (Kupa, Plaket, Belge vb.) <span style="color:var(--danger);">*</span></label>
+                    <label class="form-label" style="font-weight: 600;">Vitrin Görseli (Opsiyonel)</label>
                     <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,0,0,0.02);">
-                        <input type="file" name="image" accept="image/jpeg,image/png,image/webp" required style="width: 100%; cursor: pointer;">
+                        <input type="file" name="image" accept="image/jpeg,image/png,image/webp" style="width: 100%; cursor: pointer;">
                         <p style="font-size: 12px; color: var(--muted); margin: 8px 0 0 0;">Yalnızca JPG, PNG veya WEBP. İdeal oran 16:9 yatay görsellerdir.</p>
                     </div>
                 </div>
@@ -550,6 +557,13 @@ function getTrophyBadge($type) {
                     </div>
                 </div>
 
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Kazanılan Derece (Opsiyonel)</label>
+                        <input type="text" name="ranking" id="edit-trophy-ranking" class="form-control" placeholder="Örn: 1. lik, Finalist" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label class="form-label" style="font-weight: 600;">Vitrin Görseli (Değiştirmek istemiyorsanız boş bırakın)</label>
                     <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; background: rgba(0,0,0,0.02);">
@@ -602,6 +616,7 @@ function getTrophyBadge($type) {
         document.getElementById('edit-trophy-desc').value = trophy.description;
         document.getElementById('edit-institution-name').value = trophy.institution_name || '';
         document.getElementById('edit-trophy-link').value = trophy.link || '';
+        document.getElementById('edit-trophy-ranking').value = trophy.ranking || '';
         document.getElementById('modal-edit-trophy').style.display = 'flex';
     };
 

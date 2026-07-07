@@ -42,6 +42,7 @@ class TrophyModule extends BaseModule
             $awardType = $data['award_type'] ?? 'other';
             $awardDate = $data['award_date'] ?? date('Y-m-d');
             $institutionName = trim($data['institution_name'] ?? '');
+            $ranking = trim($data['ranking'] ?? '');
             
             // Handle File Upload
             $imagePath = '';
@@ -96,9 +97,9 @@ class TrophyModule extends BaseModule
 
             $link = trim($data['link'] ?? '');
 
-            if ($title && $imagePath) {
-                $stmt = $this->pdo->prepare("INSERT INTO app_trophies (app_id, department_id, title, description, award_type, award_date, image_path, institution_name, institution_logo, pdf_url, link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$this->app['id'], $this->department['id'], $title, $description, $awardType, $awardDate, $imagePath, $institutionName, $institutionLogo, $pdfUrl, $link]);
+            if ($title) {
+                $stmt = $this->pdo->prepare("INSERT INTO app_trophies (app_id, department_id, title, description, award_type, award_date, image_path, institution_name, institution_logo, pdf_url, link, ranking) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$this->app['id'], $this->department['id'], $title, $description, $awardType, $awardDate, $imagePath ?: null, $institutionName, $institutionLogo, $pdfUrl, $link, $ranking]);
             }
         }
         if ($action === 'edit_trophy') {
@@ -108,6 +109,7 @@ class TrophyModule extends BaseModule
             $awardType = $data['award_type'] ?? 'other';
             $awardDate = $data['award_date'] ?? date('Y-m-d');
             $institutionName = trim($data['institution_name'] ?? '');
+            $ranking = trim($data['ranking'] ?? '');
             
             // Handle File Upload
             $imagePath = '';
@@ -205,8 +207,8 @@ class TrophyModule extends BaseModule
             $link = trim($data['link'] ?? '');
 
             if ($title && $trophyId) {
-                $baseSql = "UPDATE app_trophies SET title=?, description=?, award_type=?, award_date=?, institution_name=?, link=?";
-                $params = [$title, $description, $awardType, $awardDate, $institutionName, $link];
+                $baseSql = "UPDATE app_trophies SET title=?, description=?, award_type=?, award_date=?, institution_name=?, link=?, ranking=?";
+                $params = [$title, $description, $awardType, $awardDate, $institutionName, $link, $ranking];
 
                 if ($imagePath) {
                     $baseSql .= ", image_path=?";

@@ -18,7 +18,7 @@ const Awards = () => {
               Gurur Tablomuz
             </div>
             <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Sınırları Aşan
+              Ödüller ve Derecelerimiz
             </h2>
           </div>
           <p className="text-text-secondary text-base lg:text-lg max-w-md md:text-right">
@@ -56,6 +56,12 @@ const Awards = () => {
 
                 {/* Content */}
                 <div className="flex-grow">
+                  {item.ranking && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-yellow/10 border border-accent-yellow/20 rounded-lg text-accent-yellow text-xs font-bold uppercase tracking-wider mb-3">
+                      <Trophy className="w-3.5 h-3.5" />
+                      {item.ranking}
+                    </div>
+                  )}
                   <h3 className="text-2xl font-display font-bold text-white mb-4 leading-tight">
                     {item.title}
                   </h3>
