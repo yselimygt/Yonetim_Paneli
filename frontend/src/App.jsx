@@ -17,6 +17,7 @@ import Contact from './components/Contact';
 import ContactPage from './components/ContactPage';
 import LinksPage from './components/LinksPage';
 import AnnouncementPopup from './components/AnnouncementPopup';
+import NotFound from './components/errors/NotFound';
 import Footer from './components/Footer';
 import RegistrationForm from './components/RegistrationForm';
 import ApplicationHub from './components/ApplicationHub';
@@ -116,6 +117,9 @@ function App() {
           <Route path="/gizlilik-politikasi" element={<Privacy />} />
           <Route path="/kullanim-sartlari" element={<Terms />} />
           <Route path="/kvkk" element={<KVKK />} />
+
+          {/* 404 Not Found Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
