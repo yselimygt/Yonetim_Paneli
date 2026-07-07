@@ -37,10 +37,10 @@ import {
   ];
   
   export const sponsors = [
-    '/innomis/assets/sponsor/kapsul.png',
-    '/innomis/assets/sponsor/redbull.png',
-    '/innomis/assets/sponsor/sorbil.webp',
-    '/innomis/assets/sponsor/techcareernet.png',
+    '/assets/sponsor/kapsul.png',
+    '/assets/sponsor/redbull.png',
+    '/assets/sponsor/sorbil.webp',
+    '/assets/sponsor/techcareernet.png',
     '/assets/uni/kgtuLogo.png',
     '/assets/uni/ktoLogo.png',
     '/assets/uni/ktunLogo.png',

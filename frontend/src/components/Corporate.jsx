@@ -123,13 +123,13 @@ const Corporate = () => {
               
               <div className="shrink-0 flex items-center justify-center bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 shadow-[0_0_30px_rgba(239,68,68,0.1)] group-hover:shadow-[0_0_50px_rgba(239,68,68,0.2)] transition-shadow">
                 <img 
-                  src="/innomis/assets/sponsor/tubitak-logo.png" 
+                  src="/assets/sponsor/tubitak-logo.png" 
                   alt="TÜBİTAK Logo" 
                   className="h-12 sm:h-16 w-auto object-contain rounded-xl"
                 />
                 <div className="w-px h-12 sm:h-16 bg-white/10 mx-4 sm:mx-6"></div>
                 <img 
-                  src="/innomis/assets/sponsor/tübitak_mtkb_logo.png" 
+                  src="/assets/sponsor/tubitak_mtkb_logo.png" 
                   alt="TÜBİTAK Milli Teknoloji Kulüpler Birliği Logo" 
                   className="h-12 sm:h-16 w-auto object-contain rounded-xl"
                 />
