@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowRight, MapPin, Users, PartyPopper, Mic, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteData } from '../context/SiteDataContext';
@@ -23,7 +23,10 @@ const Hero = () => {
   ];
 
   const configuredGallery = hero.heroGallery || [];
-  const galleryImages = configuredGallery.length > 0 ? configuredGallery : defaultGalleryImages;
+  const galleryImages = useMemo(() => {
+    const images = configuredGallery.length > 0 ? configuredGallery : defaultGalleryImages;
+    return [...images].sort(() => Math.random() - 0.5);
+  }, [hero.heroGallery]);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
