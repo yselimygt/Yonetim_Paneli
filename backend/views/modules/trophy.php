@@ -487,6 +487,17 @@ function getTrophyBadge($type) {
                     </div>
                 </div>
 
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Harici Link (Opsiyonel)</label>
+                        <input type="url" name="link" class="form-control" placeholder="https://..." style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">PDF Belgesi (Opsiyonel)</label>
+                        <input type="file" name="pdf_file" accept=".pdf,application/pdf" class="form-control" style="padding: 9px 16px; border-radius: 12px; font-size: 14px; cursor: pointer;">
+                    </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 24px;">
                     <label class="form-label" style="font-weight: 600;">Hikayesi / Açıklama <span style="color:var(--danger);">*</span></label>
                     <textarea name="description" class="form-control" rows="4" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;" required placeholder="Bu ödülü nasıl kazandınız? Projeniz neydi?"></textarea>
@@ -557,6 +568,17 @@ function getTrophyBadge($type) {
                     </div>
                 </div>
 
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">Harici Link (Opsiyonel)</label>
+                        <input type="url" name="link" id="edit-trophy-link" class="form-control" placeholder="https://..." style="padding: 12px 16px; border-radius: 12px; font-size: 14px;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">PDF Belgesi (Değiştirmek istemiyorsanız boş bırakın)</label>
+                        <input type="file" name="pdf_file" accept=".pdf,application/pdf" class="form-control" style="padding: 9px 16px; border-radius: 12px; font-size: 14px; cursor: pointer;">
+                    </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 24px;">
                     <label class="form-label" style="font-weight: 600;">Hikayesi / Açıklama <span style="color:var(--danger);">*</span></label>
                     <textarea name="description" id="edit-trophy-desc" class="form-control" rows="4" style="padding: 12px 16px; border-radius: 12px; font-size: 14px;" required></textarea>
@@ -579,6 +601,7 @@ function getTrophyBadge($type) {
         document.getElementById('edit-trophy-date').value = trophy.award_date;
         document.getElementById('edit-trophy-desc').value = trophy.description;
         document.getElementById('edit-institution-name').value = trophy.institution_name || '';
+        document.getElementById('edit-trophy-link').value = trophy.link || '';
         document.getElementById('modal-edit-trophy').style.display = 'flex';
     };
 

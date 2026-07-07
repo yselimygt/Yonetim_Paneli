@@ -77,9 +77,28 @@ class TrophyModule extends BaseModule
                 }
             }
 
+            // Handle PDF File Upload
+            $pdfUrl = '';
+            if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] === UPLOAD_ERR_OK) {
+                $fileTmp = $_FILES['pdf_file']['tmp_name'];
+                $fileName = basename($_FILES['pdf_file']['name']);
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $allowed = ['pdf'];
+                
+                if (in_array($ext, $allowed)) {
+                    $newName = uniqid('trophy_doc_') . '.' . $ext;
+                    $destPath = __DIR__ . '/../public/uploads/trophies/' . $newName;
+                    if (move_uploaded_file($fileTmp, $destPath)) {
+                        $pdfUrl = BASE_URL . '/public/uploads/trophies/' . $newName;
+                    }
+                }
+            }
+
+            $link = trim($data['link'] ?? '');
+
             if ($title && $imagePath) {
-                $stmt = $this->pdo->prepare("INSERT INTO app_trophies (app_id, department_id, title, description, award_type, award_date, image_path, institution_name, institution_logo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$this->app['id'], $this->department['id'], $title, $description, $awardType, $awardDate, $imagePath, $institutionName, $institutionLogo]);
+                $stmt = $this->pdo->prepare("INSERT INTO app_trophies (app_id, department_id, title, description, award_type, award_date, image_path, institution_name, institution_logo, pdf_url, link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$this->app['id'], $this->department['id'], $title, $description, $awardType, $awardDate, $imagePath, $institutionName, $institutionLogo, $pdfUrl, $link]);
             }
         }
         if ($action === 'edit_trophy') {
@@ -150,9 +169,44 @@ class TrophyModule extends BaseModule
                 }
             }
 
+            // Handle PDF File Upload
+            $pdfUrl = '';
+            $updatePdfSql = '';
+            $pdfParams = [];
+            if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] === UPLOAD_ERR_OK) {
+                $fileTmp = $_FILES['pdf_file']['tmp_name'];
+                $fileName = basename($_FILES['pdf_file']['name']);
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $allowed = ['pdf'];
+                
+                if (in_array($ext, $allowed)) {
+                    $newName = uniqid('trophy_doc_') . '.' . $ext;
+                    $destPath = __DIR__ . '/../public/uploads/trophies/' . $newName;
+                    if (move_uploaded_file($fileTmp, $destPath)) {
+                        $pdfUrl = BASE_URL . '/public/uploads/trophies/' . $newName;
+                        $updatePdfSql = ", pdf_url=?";
+                        $pdfParams[] = $pdfUrl;
+                        
+                        // Delete old PDF
+                        $stmt = $this->pdo->prepare("SELECT pdf_url FROM app_trophies WHERE id = ?");
+                        $stmt->execute([$trophyId]);
+                        $oldPdf = $stmt->fetchColumn();
+                        if ($oldPdf) {
+                            $oldFileName = basename($oldPdf);
+                            $oldFilePath = __DIR__ . '/../public/uploads/trophies/' . $oldFileName;
+                            if (file_exists($oldFilePath)) {
+                                @unlink($oldFilePath);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $link = trim($data['link'] ?? '');
+
             if ($title && $trophyId) {
-                $baseSql = "UPDATE app_trophies SET title=?, description=?, award_type=?, award_date=?, institution_name=?";
-                $params = [$title, $description, $awardType, $awardDate, $institutionName];
+                $baseSql = "UPDATE app_trophies SET title=?, description=?, award_type=?, award_date=?, institution_name=?, link=?";
+                $params = [$title, $description, $awardType, $awardDate, $institutionName, $link];
 
                 if ($imagePath) {
                     $baseSql .= ", image_path=?";
@@ -162,6 +216,11 @@ class TrophyModule extends BaseModule
                 if ($updateLogoSql) {
                     $baseSql .= $updateLogoSql;
                     $params = array_merge($params, $logoParams);
+                }
+                
+                if ($updatePdfSql) {
+                    $baseSql .= $updatePdfSql;
+                    $params = array_merge($params, $pdfParams);
                 }
 
                 $baseSql .= " WHERE id=?";
@@ -175,7 +234,7 @@ class TrophyModule extends BaseModule
             $trophyId = (int)($data['trophy_id'] ?? 0);
             if ($trophyId) {
                 // Get image path to delete file
-                $stmt = $this->pdo->prepare("SELECT image_path, institution_logo FROM app_trophies WHERE id = ? AND app_id = ?");
+                $stmt = $this->pdo->prepare("SELECT image_path, institution_logo, pdf_url FROM app_trophies WHERE id = ? AND app_id = ?");
                 $stmt->execute([$trophyId, $this->app['id']]);
                 $trophy = $stmt->fetch();
                 
@@ -188,6 +247,13 @@ class TrophyModule extends BaseModule
                         $logoPath = __DIR__ . '/../public/uploads/trophies/' . $trophy['institution_logo'];
                         if (file_exists($logoPath)) {
                             @unlink($logoPath);
+                        }
+                    }
+                    if (!empty($trophy['pdf_url'])) {
+                        $pdfFileName = basename($trophy['pdf_url']);
+                        $pdfPath = __DIR__ . '/../public/uploads/trophies/' . $pdfFileName;
+                        if (file_exists($pdfPath)) {
+                            @unlink($pdfPath);
                         }
                     }
                     $delStmt = $this->pdo->prepare("DELETE FROM app_trophies WHERE id = ?");
