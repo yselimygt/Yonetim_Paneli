@@ -37,6 +37,11 @@ class User extends Model
         return $this->update($id, ['password' => password_hash($newPassword, PASSWORD_BCRYPT)]);
     }
 
+    public function updateLastLogin(int $id): bool
+    {
+        return $this->update($id, ['last_login_at' => date('Y-m-d H:i:s')]);
+    }
+
     public function getAllActive(): array
     {
         return $this->findAll('is_active = 1', []);

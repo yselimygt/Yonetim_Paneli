@@ -28,6 +28,7 @@ $router->get('/',       ['AuthController', 'showLogin']);
 $router->get('/login',  ['AuthController', 'showLogin']);
 $router->post('/login', ['AuthController', 'processLogin']);
 $router->get('/logout', ['AuthController', 'logout']);
+$router->post('/first-login-password', ['AuthController', 'firstLoginPassword']);
 
 // Profil (Tüm kullanıcılar için)
 $router->get('/profile',  ['ProfileController', 'index']);

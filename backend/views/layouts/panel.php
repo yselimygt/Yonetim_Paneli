@@ -1770,6 +1770,190 @@ window.addEventListener('keydown', function(e) {
     }
 });
 </script>
+
+<?php if (!empty($_SESSION['first_login_prompt'])): ?>
+<!-- ╔════════════════════════════════════════════════╗ -->
+<!-- ║  İlk Giriş — Zorunlu Şifre Değiştirme Modalı  ║ -->
+<!-- ╚════════════════════════════════════════════════╝ -->
+<style>
+#first-login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: flFadeIn 0.35s ease;
+}
+@keyframes flFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+#first-login-modal {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    padding: 36px 32px 32px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: flPopIn 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes flPopIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+#first-login-modal .fl-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: rgba(var(--accent-rgb, 0,188,212), 0.12);
+    border: 1px solid rgba(var(--accent-rgb, 0,188,212), 0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+#first-login-modal h2 {
+    font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px;
+}
+#first-login-modal .fl-subtitle {
+    font-size: 13px; color: #666; margin-bottom: 28px; line-height: 1.5;
+}
+#first-login-modal .fl-field {
+    margin-bottom: 14px;
+}
+#first-login-modal .fl-field label {
+    display: block; font-size: 12px; color: #888; margin-bottom: 6px; font-weight: 500;
+}
+#first-login-modal .fl-field input {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #e8e8e8;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+#first-login-modal .fl-field input:focus {
+    border-color: var(--accent);
+}
+#fl-error {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    color: #f87171;
+    font-size: 12px;
+    padding: 9px 12px;
+    margin-bottom: 14px;
+    display: none;
+}
+#fl-success {
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 8px;
+    color: #4ade80;
+    font-size: 13px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    display: none;
+    text-align: center;
+}
+#fl-submit {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: opacity 0.2s;
+}
+#fl-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+
+<div id="first-login-overlay">
+    <div id="first-login-modal" role="dialog" aria-modal="true" aria-labelledby="fl-title">
+        <div class="fl-icon">🔐</div>
+        <h2 id="fl-title">Hoş geldiniz!</h2>
+        <p class="fl-subtitle">Hesabınıza ilk kez giriş yaptınız. Güvenliğiniz için lütfen şifrenizi şimdi değiştirin. Bu adımı tamamlamadan panele devam edemezsiniz.</p>
+
+        <form id="fl-form" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="<?= View::escape($_SESSION['csrf_token'] ?? '') ?>">
+
+            <div class="fl-field">
+                <label for="fl-new">Yeni Şifre</label>
+                <input type="password" id="fl-new" name="new_password" placeholder="En az 6 karakter" required>
+            </div>
+            <div class="fl-field">
+                <label for="fl-confirm">Yeni Şifre (Tekrar)</label>
+                <input type="password" id="fl-confirm" name="confirm_password" placeholder="Yeni şifrenizi tekrar girin" required>
+            </div>
+
+            <div id="fl-error"></div>
+            <div id="fl-success"></div>
+
+            <button type="submit" id="fl-submit">Şifremi Belirle</button>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    // Overlay ve ESC'yi tamamen blokla
+    const overlay = document.getElementById('first-login-overlay');
+    overlay.addEventListener('click', function(e) { e.stopPropagation(); });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') e.stopImmediatePropagation();
+    }, true);
+
+    document.getElementById('fl-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const btn   = document.getElementById('fl-submit');
+        const err   = document.getElementById('fl-error');
+        const succ  = document.getElementById('fl-success');
+        const form  = e.target;
+
+        err.style.display  = 'none';
+        succ.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Güncelleniyor…';
+
+        const data = new FormData(form);
+
+        try {
+            const res = await fetch('<?= BASE_URL ?>/first-login-password', { method: 'POST', body: data });
+            const json = await res.json();
+
+            if (json.success) {
+                succ.textContent  = json.message + ' Yönlendiriliyorsunuz…';
+                succ.style.display = 'block';
+                form.style.display = 'none';
+                setTimeout(() => overlay.remove(), 1800);
+            } else {
+                err.textContent   = json.message;
+                err.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Şifremi Güncelle';
+            }
+        } catch (_) {
+            err.textContent   = 'Bir hata oluştu, lütfen tekrar deneyin.';
+            err.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Şifremi Güncelle';
+        }
+    });
+})();
+</script>
+<?php endif; ?>
+
 </body>
 </html>
+
 

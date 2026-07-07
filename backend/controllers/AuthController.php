@@ -60,8 +60,17 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
+        // İlk giriş tespiti: last_login_at NULL ise henüz hiç giriş yapılmamış
+        $isFirstLogin = empty($user['last_login_at']);
+
         Auth::login($user, $remember);
         Logger::log('LOGIN_SUCCESS', 'User', $user['id'], ['email' => $user['email']]);
+
+        if ($isFirstLogin) {
+            $_SESSION['first_login_prompt'] = true;
+            $this->userModel->updateLastLogin($user['id']);
+        }
+
         $this->redirectAfterLogin();
     }
 
@@ -96,6 +105,48 @@ class AuthController extends Controller
         $failedAttempts = (int) $stmt->fetchColumn();
 
         return $failedAttempts >= MAX_LOGIN_ATTEMPTS;
+    }
+
+    // -------------------------------------------------------
+    // İlk giriş şifre değiştirme (POST /first-login-password)
+    // -------------------------------------------------------
+    public function firstLoginPassword(): void
+    {
+        if (!Auth::isLoggedIn()) {
+            $this->redirect('/login');
+        }
+
+        if (
+            empty($_POST['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])
+        ) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Güvenlik doğrulaması başarısız. Sayfayı yenileyip tekrar deneyin.']);
+            exit;
+        }
+
+        $new     = $_POST['new_password']     ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
+
+        header('Content-Type: application/json');
+
+        if (strlen($new) < 6) {
+            echo json_encode(['success' => false, 'message' => 'Yeni şifre en az 6 karakter olmalıdır.']);
+            exit;
+        }
+
+        if ($new !== $confirm) {
+            echo json_encode(['success' => false, 'message' => 'Şifreler eşleşmiyor.']);
+            exit;
+        }
+
+        $user = Auth::user();
+        $this->userModel->updatePassword($user['id'], $new);
+        unset($_SESSION['first_login_prompt']);
+        Logger::log('PASSWORD_CHANGED', 'User', $user['id']);
+
+        echo json_encode(['success' => true, 'message' => 'Şifreniz başarıyla güncellendi.']);
+        exit;
     }
 
     // -------------------------------------------------------
