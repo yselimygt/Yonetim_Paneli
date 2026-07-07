@@ -6,7 +6,6 @@ import {
   export const navLinks = [
     { name: 'Hakkımızda', href: '/#about' },
     { name: 'Etkinlikler', href: '/events' },
-    { name: 'Araçlar & Projeler', href: '/projects' },
     { name: 'Galeri', href: '/gallery' },
     { name: 'Ekip', href: '/team' },
     { name: 'İletişim', href: '/iletisim' },
@@ -571,7 +570,6 @@ import {
       { name: 'Hakkımızda', href: '/#about' },
       { name: 'Ekip', href: '/team' },
       { name: 'Mezunlar', href: '/alumni' },
-      { name: 'Araçlar & Projeler', href: '/projects' },
       { name: 'Kurumsal', href: '/corporate' }
     ],
     events: [

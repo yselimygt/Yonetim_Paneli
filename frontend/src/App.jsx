@@ -6,7 +6,6 @@ import SponsorMarquee from './components/SponsorMarquee';
 import About from './components/About';
 import Stats from './components/Stats';
 import Events from './components/Events';
-import Projects from './components/Projects';
 import Achievements from './components/Achievements';
 import Gallery from './components/Gallery';
 import Team from './components/Team';
@@ -105,7 +104,6 @@ function App() {
           <Route path="/alumni" element={<Alumni />} />
           <Route path="/alumni/:year/:slug" element={<Alumni />} />
           <Route path="/corporate" element={<Corporate />} />
-          <Route path="/projects" element={<Projects />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/events" element={<Events />} />
           <Route path="/iletisim" element={<ContactPage />} />
