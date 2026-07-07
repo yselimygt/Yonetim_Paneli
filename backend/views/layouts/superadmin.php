@@ -21,8 +21,8 @@
             --sidebar:  #0f0f0f;
             --card:     #111111;
             --border:   #1e1e1e;
-            --accent:   #00BCD4;
-            --accent-h: #00ACC1;
+            --accent:   <?= View::escape($_SESSION['user_theme_color'] ?? '#00BCD4') ?>;
+            --accent-h: <?= View::escape($_SESSION['user_theme_color'] ?? '#00ACC1') ?>;
             --text:     #e8e8e8;
             --muted:    #555;
             --danger:   #ef4444;

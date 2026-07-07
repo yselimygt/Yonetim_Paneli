@@ -176,6 +176,18 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
         </div>
 
         <div class="form-row">
+            <div class="form-group" style="width:100%;">
+                <label class="form-label">Kişisel Tema Rengi (Panel Görünümü)</label>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <input type="color" id="color_picker" class="form-control" style="width:60px; height:45px; padding:4px; cursor:pointer;" value="<?= View::escape($user['theme_color'] ?? '#00BCD4') ?>" onchange="document.getElementById('theme_color').value = this.value;">
+                    <input type="text" id="theme_color" name="theme_color" class="form-control" style="width:120px;" placeholder="Örn: #00BCD4" value="<?= View::escape($user['theme_color'] ?? '') ?>" oninput="document.getElementById('color_picker').value = this.value || '#00BCD4';">
+                    <button type="button" class="btn btn-outline btn-sm" style="height:45px;" onclick="document.getElementById('theme_color').value = ''; document.getElementById('color_picker').value='#00BCD4';">Varsayılana Dön</button>
+                    <small style="color:var(--text-muted)">Yönetim panelinin tüm görünümünü bu renge boyayın.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
                 <label class="form-label">Üniversite</label>
                 <select id="select_university" class="form-control" onchange="uniChanged()">

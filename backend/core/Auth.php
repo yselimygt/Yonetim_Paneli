@@ -89,6 +89,7 @@ class Auth
         $_SESSION['user_university_logo'] = $user['university_logo'] ?? null;
         $_SESSION['user_company_logo'] = $user['company_logo'] ?? null;
         $_SESSION['user_community_history_json'] = $user['community_history_json'] ?? null;
+        $_SESSION['user_theme_color'] = $user['theme_color'] ?? null;
         $_SESSION['is_super_admin'] = (bool) $user['is_super_admin'];
 
         // Departman atamalarını yükle

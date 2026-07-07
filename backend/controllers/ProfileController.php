@@ -49,6 +49,7 @@ class ProfileController extends Controller
         $companyLogo = trim($_POST['company_logo'] ?? '');
         $communityHistory = $this->historyFromPost();
         $birth_date = !empty($_POST['birth_date']) ? $_POST['birth_date'] : null;
+        $theme_color = !empty($_POST['theme_color']) ? trim($_POST['theme_color']) : null;
 
         if (empty($name) || empty($email)) {
             $this->flashError('Ad ve E-posta alanları zorunludur.');
@@ -113,26 +114,26 @@ class ProfileController extends Controller
                 UPDATE users
                 SET name = ?, email = ?, password = ?, phone = ?, university = ?, faculty = ?, school_department = ?, grade = ?,
                     linkedin = ?, github = ?, website = ?, bio = ?, university_logo = ?, company_logo = ?, community_history_json = ?,
-                    birth_date = ?, avatar = ?
+                    birth_date = ?, avatar = ?, theme_color = ?
                 WHERE id = ?
             ");
             $stmt->execute([
                 $name, $email, $hashed, $phone, $university, $faculty, $school_department, $grade,
                 $linkedin, $github, $website, $bio, $universityLogo, $companyLogo, json_encode($communityHistory, JSON_UNESCAPED_UNICODE),
-                $birth_date, $avatarPath, $user['id']
+                $birth_date, $avatarPath, $theme_color, $user['id']
             ]);
         } else {
             $stmt = $pdo->prepare("
                 UPDATE users
                 SET name = ?, email = ?, phone = ?, university = ?, faculty = ?, school_department = ?, grade = ?,
                     linkedin = ?, github = ?, website = ?, bio = ?, university_logo = ?, company_logo = ?, community_history_json = ?,
-                    birth_date = ?, avatar = ?
+                    birth_date = ?, avatar = ?, theme_color = ?
                 WHERE id = ?
             ");
             $stmt->execute([
                 $name, $email, $phone, $university, $faculty, $school_department, $grade,
                 $linkedin, $github, $website, $bio, $universityLogo, $companyLogo, json_encode($communityHistory, JSON_UNESCAPED_UNICODE),
-                $birth_date, $avatarPath, $user['id']
+                $birth_date, $avatarPath, $theme_color, $user['id']
             ]);
         }
 
@@ -153,6 +154,7 @@ class ProfileController extends Controller
         $_SESSION['user_university_logo'] = $universityLogo;
         $_SESSION['user_company_logo'] = $companyLogo;
         $_SESSION['user_community_history_json'] = json_encode($communityHistory, JSON_UNESCAPED_UNICODE);
+        $_SESSION['user_theme_color'] = $theme_color;
 
         // Mezun profili varsa senkronize et
         $stmt = $pdo->prepare("UPDATE alumni_profiles SET full_name = ?, email = ?, phone = ?, university = ?, major = ?, avatar_path = ? WHERE user_id = ?");
