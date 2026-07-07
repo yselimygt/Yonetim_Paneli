@@ -103,6 +103,52 @@ $brandImageFields = [
                     </div>
                 </div>
 
+                <div class="dynamic-item mt-4">
+                    <div class="item-header" style="margin-bottom:12px; padding-bottom:8px;">
+                        <strong style="display:flex; align-items:center; gap:8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            3D Galeri Görselleri
+                        </strong>
+                        <span style="font-size:12px; color:var(--muted); font-weight:normal;">Ana sayfa 3D dönen galeri (Minimum 4 görsel tavsiye edilir)</span>
+                    </div>
+                    <div id="hero-gallery-container" style="display:flex; flex-direction:column; gap:12px;">
+                        <?php 
+                        $heroGallery = $hero['heroGallery'] ?? [];
+                        if (empty($heroGallery)): $heroGallery = ['']; endif; 
+                        ?>
+                        <?php foreach ($heroGallery as $idx => $gImage): ?>
+                        <div class="hero-gallery-item" style="display:flex; gap:8px; align-items:center;">
+                            <input type="text" id="heroGallery_<?= $idx ?>" name="heroGallery[]" class="form-control" value="<?= View::escape($gImage) ?>" placeholder="Görsel URL">
+                            <button type="button" class="btn btn-outline" onclick="openImageLibrary('heroGallery_<?= $idx ?>')" style="flex-shrink:0; padding:8px 12px; font-size:12px;">Dosyadan Seç</button>
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.hero-gallery-item').remove()" title="Sil" style="flex-shrink:0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <button type="button" class="btn btn-outline" style="margin-top:12px; font-size:12px; padding:6px 12px;" onclick="addHeroGalleryItem()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Yeni Görsel Ekle
+                    </button>
+                </div>
+
+                <script>
+                function addHeroGalleryItem() {
+                    const container = document.getElementById('hero-gallery-container');
+                    const idx = Date.now();
+                    const html = `
+                        <div class="hero-gallery-item" style="display:flex; gap:8px; align-items:center;">
+                            <input type="text" id="heroGallery_${idx}" name="heroGallery[]" class="form-control" placeholder="Görsel URL">
+                            <button type="button" class="btn btn-outline" onclick="openImageLibrary('heroGallery_${idx}')" style="flex-shrink:0; padding:8px 12px; font-size:12px;">Dosyadan Seç</button>
+                            <button type="button" class="btn-icon btn-danger-icon" onclick="this.closest('.hero-gallery-item').remove()" title="Sil" style="flex-shrink:0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', html);
+                }
+                </script>
+
                 <div class="settings-save-bar" style="border-top:1px solid var(--border); margin-top:24px; padding-top:20px; display:flex; justify-content:flex-end;">
                     <button type="submit" class="btn btn-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>

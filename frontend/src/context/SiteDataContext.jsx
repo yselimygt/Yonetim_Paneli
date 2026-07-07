@@ -24,7 +24,13 @@ const defaultHero = {
   secondaryCta: {
     label: 'Etkinlikleri Keşfet',
     href: '/events'
-  }
+  },
+  heroGallery: [
+    '/innomis/assets/image/gallery/misconnect25-innomis.png',
+    '/innomis/assets/image/gallery/google-cloud-sonrasi.png',
+    '/innomis/assets/image/gallery/konya.png',
+    '/innomis/assets/image/gallery/misconnect25.jpg'
+  ]
 };
 
 const defaultBrand = {

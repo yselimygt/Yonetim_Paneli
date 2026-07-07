@@ -62,6 +62,8 @@ class SiteSettingsAdminController extends Controller
         Auth::requireSuperAdmin();
         $this->csrfCheck();
 
+        $heroGallery = array_values(array_filter(array_map('trim', $_POST['heroGallery'] ?? [])));
+
         $hero = [
             'titleLine1' => trim($_POST['titleLine1'] ?? ''),
             'titleLine2' => trim($_POST['titleLine2'] ?? ''),
@@ -73,7 +75,8 @@ class SiteSettingsAdminController extends Controller
             'secondaryCta' => [
                 'label' => trim($_POST['secondaryCta_label'] ?? ''),
                 'href' => trim($_POST['secondaryCta_href'] ?? '')
-            ]
+            ],
+            'heroGallery' => $heroGallery
         ];
 
         $this->settings->set('hero', $hero);
@@ -451,6 +454,12 @@ class SiteSettingsAdminController extends Controller
                 'secondaryCta' => [
                     'label' => 'Etkinlikleri Keşfet',
                     'href' => '/events'
+                ],
+                'heroGallery' => [
+                    '/innomis/assets/image/gallery/misconnect25-innomis.png',
+                    '/innomis/assets/image/gallery/google-cloud-sonrasi.png',
+                    '/innomis/assets/image/gallery/konya.png',
+                    '/innomis/assets/image/gallery/misconnect25.jpg'
                 ]
             ],
             'brand' => [

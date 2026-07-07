@@ -15,12 +15,15 @@ const Hero = () => {
     { icon: Mic, text: 'Seminerler, Konferanslar' }
   ];
 
-  const galleryImages = [
+  const defaultGalleryImages = [
     '/innomis/assets/image/gallery/misconnect25-innomis.png',
     '/innomis/assets/image/gallery/google-cloud-sonrasi.png',
     '/innomis/assets/image/gallery/konya.png',
     '/innomis/assets/image/gallery/misconnect25.jpg'
   ];
+
+  const configuredGallery = hero.heroGallery || [];
+  const galleryImages = configuredGallery.length > 0 ? configuredGallery : defaultGalleryImages;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
