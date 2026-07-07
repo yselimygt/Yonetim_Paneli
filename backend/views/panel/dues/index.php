@@ -702,8 +702,59 @@
         <div>
             <?php if ($userRole === 'member'): ?>
                 <!-- Normal Üye Görünümü -->
-                <div class="glass-card mb-4">
-                    <h5 class="fw-semibold mb-4" style="color:var(--text); font-size:18px;">Ödeme Geçmişim</h5>
+                <?php
+                    $currentPayment = null;
+                    if ($selectedPeriod) {
+                        foreach ($myPayments as $mp) {
+                            if ($mp['period_id'] == $selectedPeriod['id']) {
+                                $currentPayment = $mp;
+                                break;
+                            }
+                        }
+                    }
+                ?>
+                
+                <?php if ($selectedPeriod): ?>
+                    <div class="glass-card mb-4 p-4" style="background: var(--card); border: 1px solid var(--border); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; border-radius: 50%; background: <?= ($currentPayment && $currentPayment['status'] === 'paid') ? 'var(--success)' : 'var(--danger)' ?>; opacity: 0.1; filter: blur(30px);"></div>
+                        <h5 class="fw-semibold mb-3" style="color:var(--text); font-size:16px;">Ödeme Durumu</h5>
+                        <div class="flex-row align-center justify-between" style="flex-wrap: wrap; gap: 16px;">
+                            <div>
+                                <h3 style="margin:0 0 4px 0; font-size: 24px; font-weight: 800; color: var(--text);"><?= View::escape($selectedPeriod['name']) ?></h3>
+                                <p style="margin:0; font-size: 14px; color: var(--muted);">Aidat Tutarı: <strong style="color:var(--text);">₺<?= number_format($selectedPeriod['amount'], 2, ',', '.') ?></strong></p>
+                            </div>
+                            <div style="text-align: right;">
+                                <?php if ($currentPayment): ?>
+                                    <?php if ($currentPayment['status'] === 'paid'): ?>
+                                        <div style="display:inline-flex; align-items:center; gap:8px; padding: 10px 16px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; color: #22c55e;">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                            <span style="font-weight:800; font-size: 14px; letter-spacing: 0.5px;">ÖDENDİ</span>
+                                        </div>
+                                        <div style="font-size:12px; color:var(--muted); margin-top: 8px;">
+                                            Ödeme Tarihi: <strong style="color:var(--text);"><?= $currentPayment['payment_date'] ? date('d.m.Y', strtotime($currentPayment['payment_date'])) : '-' ?></strong>
+                                        </div>
+                                    <?php else: ?>
+                                        <div style="display:inline-flex; align-items:center; gap:8px; padding: 10px 16px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; color: #ef4444;">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                            <span style="font-weight:800; font-size: 14px; letter-spacing: 0.5px;">ÖDENMEDİ</span>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <div style="color:var(--muted); font-size:13px;">Bu dönem için ödeme kaydınız bulunmuyor.</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="glass-card mb-4 text-center p-5">
+                        <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" style="opacity:0.3; margin-bottom:16px; color:var(--primary);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <h5 style="color:var(--text); font-size:16px; margin-bottom:8px;">Bir Aidat Dönemi Seçin</h5>
+                        <p style="color:var(--muted); font-size:14px; margin:0;">Ödeme durumunuzu görmek için lütfen sol taraftaki listeden bir dönem seçin.</p>
+                    </div>
+                <?php endif; ?>
+
+                <div class="glass-card mb-4 p-4">
+                    <h5 class="fw-semibold mb-4" style="color:var(--text); font-size:16px;">Tüm Ödeme Geçmişim</h5>
                     <?php if (empty($myPayments)): ?>
                         <div class="p-5 text-center" style="color:var(--muted);">
                             Açılmış bir aidat dönemi bulunmuyor.
