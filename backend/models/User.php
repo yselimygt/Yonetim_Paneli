@@ -42,6 +42,11 @@ class User extends Model
         return $this->update($id, ['last_login_at' => date('Y-m-d H:i:s')]);
     }
 
+    public function markPasswordChanged(int $id): bool
+    {
+        return $this->update($id, ['password_changed' => 1]);
+    }
+
     public function getAllActive(): array
     {
         return $this->findAll('is_active = 1', []);

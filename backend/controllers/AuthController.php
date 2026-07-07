@@ -60,8 +60,8 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
-        // İlk giriş tespiti: last_login_at NULL ise henüz hiç giriş yapılmamış
-        $isFirstLogin = empty($user['last_login_at']);
+        // İlk giriş tespiti: hiç giriş yapmamış VE hiç şifre değiştirmemiş
+        $isFirstLogin = empty($user['last_login_at']) && empty($user['password_changed']);
 
         Auth::login($user, $remember);
         Logger::log('LOGIN_SUCCESS', 'User', $user['id'], ['email' => $user['email']]);
@@ -142,6 +142,7 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $this->userModel->updatePassword($user['id'], $new);
+        $this->userModel->markPasswordChanged($user['id']);
         unset($_SESSION['first_login_prompt']);
         Logger::log('PASSWORD_CHANGED', 'User', $user['id']);
 
@@ -161,8 +162,7 @@ class AuthController extends Controller
         $departments = Auth::getDepartments();
 
         if (count($departments) === 0) {
-            $this->flashWarning('Henüz bir departmana atanmadınız. Yönetici ile iletişime geçin.');
-            $this->redirect('/login');
+            $this->redirect('/pending');
         }
 
         if (count($departments) === 1) {
@@ -171,6 +171,24 @@ class AuthController extends Controller
 
         // 2+ departman → seçim ekranı
         $this->redirect('/panel');
+    }
+
+    // GET /pending — departmana atanmamış kullanıcı bekleme sayfası
+    public function showPending(): void
+    {
+        if (!Auth::isLoggedIn()) {
+            $this->redirect('/login');
+        }
+
+        // Departmanı olan kullanıcı yanlışlıkla gelirse panele yolla
+        $departments = Auth::getDepartments();
+        if (count($departments) > 0 || Auth::isSuperAdmin()) {
+            $this->redirectAfterLogin();
+        }
+
+        $user = Auth::user();
+        require_once __DIR__ . '/../views/auth/pending.php';
+        exit;
     }
 }
 
