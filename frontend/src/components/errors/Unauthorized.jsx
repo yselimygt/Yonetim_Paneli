@@ -7,7 +7,6 @@ const Unauthorized = () => {
       errorCode="401"
       title="Giriş Yapmanız Gerekiyor"
       description="Bu sayfayı görüntüleyebilmek için InnoMIS hesabınıza giriş yapmış olmalısınız."
-      mascotUrl="/innomis/assets/innox/merak-eden-innox.svg"
     />
   );
 };

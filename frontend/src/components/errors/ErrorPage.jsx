@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const ErrorPage = ({ errorCode, title, description, mascotUrl, actionButton }) => {
+const ErrorPage = ({ errorCode, title, description, actionButton }) => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center relative overflow-hidden py-20">
       {/* Background Blurs */}
@@ -9,15 +9,6 @@ const ErrorPage = ({ errorCode, title, description, mascotUrl, actionButton }) =
       <div className="absolute bottom-0 -left-1/4 w-[400px] h-[400px] bg-accent-purple/10 blur-[150px] rounded-full pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
-        {/* Mascot */}
-        <div className="relative w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-8 animate-[float_6s_ease-in-out_infinite]">
-          <div className="absolute inset-0 bg-gradient-primary opacity-20 blur-[40px] rounded-full"></div>
-          <img 
-            src={mascotUrl || '/innomis/assets/innox/merak-eden-innox.svg'} 
-            alt="Innox Mascot" 
-            className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_30px_rgba(244,159,32,0.3)]"
-          />
-        </div>
 
         {/* Error Code */}
         {errorCode && (

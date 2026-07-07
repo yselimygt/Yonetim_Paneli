@@ -24,8 +24,7 @@ class ErrorBoundary extends React.Component {
         <ErrorPage 
           errorCode="500"
           title="Bir Şeyler Ters Gitti"
-          description="Sistemde beklenmeyen bir arıza oluştu. Innox ve ekibimiz bunu çözmek için çalışıyor!"
-          mascotUrl="/innomis/assets/innox/merak-eden-innox.svg"
+          description="Sistemde beklenmeyen bir arıza oluştu. Ekibimiz bunu çözmek için çalışıyor!"
           actionButton={
             <button 
               onClick={() => window.location.reload()}

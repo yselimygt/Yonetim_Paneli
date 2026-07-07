@@ -6,8 +6,7 @@ const NotFound = () => {
     <ErrorPage 
       errorCode="404"
       title="Sayfa Bulunamadı"
-      description="Görünüşe göre Innox bile aradığınız sayfayı bulamadı. Belki de henüz keşfedilmemiş bir teknolojiye adım atmışsınızdır!"
-      mascotUrl="/innomis/assets/innox/merak-eden-innox.svg"
+      description="Görünüşe göre aradığınız sayfayı bulamadık. Belki de henüz keşfedilmemiş bir teknolojiye adım atmışsınızdır!"
     />
   );
 };

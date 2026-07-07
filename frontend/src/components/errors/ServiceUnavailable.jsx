@@ -6,8 +6,7 @@ const ServiceUnavailable = () => {
     <ErrorPage 
       errorCode="503"
       title="Bakım Molası / Servis Dışı"
-      description="Sistemlerimizi sizin için daha iyi hale getiriyoruz. Innox kısa bir bakım molasında, lütfen daha sonra tekrar deneyin."
-      mascotUrl="/innomis/assets/innox/innox-kararli.png"
+      description="Sistemlerimizi sizin için daha iyi hale getiriyoruz. Kısa bir bakım molasındayız, lütfen daha sonra tekrar deneyin."
       actionButton={
         <button 
           onClick={() => window.location.reload()}
