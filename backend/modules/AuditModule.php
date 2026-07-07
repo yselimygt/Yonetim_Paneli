@@ -82,9 +82,10 @@ class AuditModule extends BaseModule
             $isAnonymous = !empty($data['is_anonymous']);
 
             if ($subject && $description) {
-                $reporterId = $isAnonymous ? null : $this->user['id'];
-                $stmt = $this->pdo->prepare("INSERT INTO app_audit_reports (app_id, department_id, reporter_id, subject, description, category) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$this->app['id'], $this->department['id'], $reporterId, $subject, $description, $category]);
+                $reporterId = $this->user['id'];
+                $isAnonFlag = $isAnonymous ? 1 : 0;
+                $stmt = $this->pdo->prepare("INSERT INTO app_audit_reports (app_id, department_id, reporter_id, subject, description, category, is_anonymous) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$this->app['id'], $this->department['id'], $reporterId, $subject, $description, $category, $isAnonFlag]);
             }
             $this->redirectBack();
         }

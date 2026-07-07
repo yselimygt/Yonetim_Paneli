@@ -323,7 +323,7 @@ function getCategoryBadge($cat) {
                                 <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                 <?= date('d.m.Y H:i', strtotime($r['created_at'])) ?>
                             </span>
-                            <?php if ($r['reporter_id']): ?>
+                            <?php if (!$r['is_anonymous'] && $r['reporter_id']): ?>
                                 <span style="font-size: 11px; font-weight: 500; color: var(--text);"><?= View::escape(mb_substr($r['reporter_name'], 0, 10)) ?>...</span>
                             <?php else: ?>
                                 <span style="font-size: 11px; font-weight: 600; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 2px 6px; border-radius: 4px;">Anonim Üye</span>
@@ -343,12 +343,13 @@ function getCategoryBadge($cat) {
                             <h2 style="font-size: 22px; font-weight: 700; color: var(--text); margin: 0 0 8px 0;"><?= View::escape($activeReport['subject']) ?></h2>
                             <div style="display: flex; gap: 16px; font-size: 13px; color: var(--muted);">
                                 <span>Gönderim: <?= date('d.m.Y H:i', strtotime($activeReport['created_at'])) ?></span>
-                                <span>Gönderen: <?= $activeReport['reporter_id'] ? '<strong style="color:var(--text);">'.View::escape($activeReport['reporter_name']).'</strong>' : '<strong style="color:#f59e0b;">Anonim</strong>' ?></span>
+                                <span>Gönderen: <?= (!$activeReport['is_anonymous'] && $activeReport['reporter_id']) ? '<strong style="color:var(--text);">'.View::escape($activeReport['reporter_name']).'</strong>' : '<strong style="color:#f59e0b;">Anonim</strong>' ?></span>
                             </div>
                         </div>
 
                         <div style="display: flex; gap: 12px; align-items: center;">
                             <form action="<?= $appUrl ?>" method="POST" style="margin:0; display:flex; gap:8px;">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                 <input type="hidden" name="action" value="update_status">
                                 <input type="hidden" name="report_id" value="<?= $activeReport['id'] ?>">
                                 <select name="status" class="form-control" style="padding: 8px 12px; border-radius: 8px; font-size: 13px; width: 140px;" onchange="this.form.submit()">
@@ -360,6 +361,7 @@ function getCategoryBadge($cat) {
                             </form>
                             
                             <form action="<?= $appUrl ?>" method="POST" style="margin:0;" onsubmit="return confirm('Bu kaydı tamamen silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                                 <input type="hidden" name="action" value="delete_report">
                                 <input type="hidden" name="report_id" value="<?= $activeReport['id'] ?>">
                                 <button type="submit" class="btn btn-outline" style="padding: 8px; border-radius: 8px; color: var(--danger); border-color: transparent;">
@@ -412,6 +414,7 @@ function getCategoryBadge($cat) {
                         </div>
 
                         <form action="<?= $appUrl ?>" method="POST" style="margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <input type="hidden" name="action" value="add_note">
                             <input type="hidden" name="report_id" value="<?= $activeReport['id'] ?>">
                             <div style="display: flex; gap: 12px;">
@@ -454,7 +457,7 @@ function getCategoryBadge($cat) {
                                 </div>
                                 <div style="font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 12px; display: flex; justify-content: space-between;">
                                     <span><?= date('d.m.Y', strtotime($r['created_at'])) ?></span>
-                                    <?php if (!$r['reporter_id']): ?>
+                                    <?php if ($r['is_anonymous']): ?>
                                         <span style="color: #f59e0b; font-weight: 600;">Gizli Gönderim</span>
                                     <?php endif; ?>
                                 </div>
@@ -483,6 +486,7 @@ function getCategoryBadge($cat) {
             </div>
 
             <form action="<?= $appUrl ?>" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="action" value="submit_report">
                 
                 <div class="form-row" style="display: flex; gap: 16px; margin-bottom: 16px;">
