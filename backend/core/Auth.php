@@ -46,16 +46,9 @@ class Auth
     {
         $a = random_int(2, 12);
         $b = random_int(1, 9);
-        $ops = ['+', '-', 'x'];
-        $op  = $ops[array_rand($ops)];
+        $op  = '+';
 
-        $answer = match($op) {
-            '+'     => $a + $b,
-            '-'     => abs($a - $b),
-            'x'     => $a * $b,
-        };
-        // Çıkarma için küçüğü büyükten çıkar
-        if ($op === '-' && $a < $b) [$a, $b] = [$b, $a];
+        $answer = $a + $b;
 
         $_SESSION['captcha_question'] = "{$a} {$op} {$b} = ?";
         $_SESSION['captcha_answer']   = (string) $answer;
