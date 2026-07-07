@@ -403,6 +403,12 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                 <?php
                 $months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
                 $years = range(2024, 2035);
+                
+                $deptOptionsStr = '<option value="">Departman Seç</option>';
+                foreach ($allDepartments as $d) {
+                    $deptOptionsStr .= '<option value="' . View::escape($d['name']) . '">' . View::escape($d['name']) . '</option>';
+                }
+                $deptOptionsStr .= '<option value="Diğer">Diğer...</option>';
                 ?>
                 <div id="historyList" class="history-list">
                     <?php if (empty($communityHistory)): ?>
@@ -410,12 +416,33 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
                     <?php else: ?>
                         <?php foreach ($communityHistory as $item): 
                             $is_current = !empty($item['is_current']);
+                            $isOther = !empty($item['dept']) && !in_array($item['dept'], array_column($allDepartments, 'name'));
                         ?>
                             <div class="history-item" style="grid-template-columns: 1fr auto; align-items: stretch;">
                                 <div style="display: flex; flex-direction: column; gap: 12px;">
                                     <div class="form-row">
-                                        <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
-                                        <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="<?= View::escape($item['dept'] ?? '') ?>">
+                                        <div style="flex:1;">
+                                            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
+                                        </div>
+                                        <div style="flex:1;">
+                                            <select class="form-control" onchange="
+                                                const input = this.nextElementSibling;
+                                                if(this.value === 'Diğer') {
+                                                    input.style.display = 'block';
+                                                    if(input.value === 'Diğer') input.value = '';
+                                                } else {
+                                                    input.style.display = 'none';
+                                                    input.value = this.value;
+                                                }
+                                            ">
+                                                <option value="">Departman Seç</option>
+                                                <?php foreach($allDepartments as $d): ?>
+                                                    <option value="<?= View::escape($d['name']) ?>" <?= ($item['dept'] ?? '') === $d['name'] ? 'selected' : '' ?>><?= View::escape($d['name']) ?></option>
+                                                <?php endforeach; ?>
+                                                <option value="Diğer" <?= $isOther ? 'selected' : '' ?>>Diğer...</option>
+                                            </select>
+                                            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman Giriniz" value="<?= View::escape($item['dept'] ?? '') ?>" style="display: <?= $isOther ? 'block' : 'none' ?>; margin-top:8px;">
+                                        </div>
                                     </div>
                                     <div class="form-row" style="gap: 12px;">
                                         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
@@ -728,8 +755,24 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             <div class="history-item" style="grid-template-columns: 1fr auto; align-items: stretch;">
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <div class="form-row">
-                        <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
-                        <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="${escapeAttr(dept)}">
+                        <div style="flex:1;">
+                            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
+                        </div>
+                        <div style="flex:1;">
+                            <select class="form-control" onchange="
+                                const input = this.nextElementSibling;
+                                if(this.value === 'Diğer') {
+                                    input.style.display = 'block';
+                                    if(input.value === 'Diğer') input.value = '';
+                                } else {
+                                    input.style.display = 'none';
+                                    input.value = this.value;
+                                }
+                            ">
+                                <?= $deptOptionsStr ?>
+                            </select>
+                            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman Giriniz" value="${escapeAttr(dept)}" style="display: ${dept ? 'block' : 'none'}; margin-top:8px;">
+                        </div>
                     </div>
                     <div class="form-row" style="gap: 12px;">
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">

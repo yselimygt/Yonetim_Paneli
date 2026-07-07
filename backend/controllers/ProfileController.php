@@ -20,6 +20,11 @@ class ProfileController extends Controller
         // Departmanları al (header/navbar'da "Ana Sayfaya Dön" yönlendirmesi veya iptal için)
         $departments = Auth::getDepartments();
         
+        // Tüm departmanları çek (formdaki dropdownlar için)
+        require_once __DIR__ . '/../models/Department.php';
+        $deptModel = new Department();
+        $allDepartments = $deptModel->getActive();
+        
         // view çağrısı
         ob_start();
         require __DIR__ . '/../views/profile/index.php';
