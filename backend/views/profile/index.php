@@ -400,21 +400,63 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             <div class="bento-card card-history">
                 <div class="bento-title"><i class="ri-history-line"></i> Topluluk Kariyer Geçmişi</div>
                 
+                <?php
+                $months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+                $years = range(2024, 2035);
+                ?>
                 <div id="historyList" class="history-list">
                     <?php if (empty($communityHistory)): ?>
-                        <div class="history-item">
-                            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan">
-                            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman">
-                            <input type="text" name="history_period[]" class="form-control" placeholder="Dönem (örn: 2022-2023)">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
-                        </div>
+                        <!-- Boşken JS üzerinden tetikleyeceğiz, script'e bırakalım -->
                     <?php else: ?>
-                        <?php foreach ($communityHistory as $item): ?>
-                            <div class="history-item">
-                                <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
-                                <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="<?= View::escape($item['dept'] ?? '') ?>">
-                                <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="<?= View::escape($item['period'] ?? $item['year'] ?? '') ?>">
-                                <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+                        <?php foreach ($communityHistory as $item): 
+                            $is_current = !empty($item['is_current']);
+                        ?>
+                            <div class="history-item" style="grid-template-columns: 1fr auto; align-items: stretch;">
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <div class="form-row">
+                                        <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
+                                        <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="<?= View::escape($item['dept'] ?? '') ?>">
+                                    </div>
+                                    <div class="form-row" style="gap: 12px;">
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                            <span style="font-size: 13px; color: var(--muted); min-width: 65px;">Başlangıç:</span>
+                                            <select name="history_start_month[]" class="form-control" style="flex: 1; min-width: 90px; padding:8px 12px;">
+                                                <option value="">Ay Seç</option>
+                                                <?php foreach($months as $m): ?>
+                                                    <option value="<?= $m ?>" <?= ($item['start_month'] ?? '') === $m ? 'selected' : '' ?>><?= $m ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <select name="history_start_year[]" class="form-control" style="width: 80px; padding:8px 8px;">
+                                                <option value="">Yıl Seç</option>
+                                                <?php foreach($years as $y): ?>
+                                                    <option value="<?= $y ?>" <?= ($item['start_year'] ?? '') == $y ? 'selected' : '' ?>><?= $y ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                            <span style="font-size: 13px; color: var(--muted); min-width: 40px;">Bitiş:</span>
+                                            <select name="history_end_month[]" class="form-control end-month" style="flex: 1; min-width: 90px; padding:8px 12px;" <?= $is_current ? 'disabled' : '' ?>>
+                                                <option value="">Ay Seç</option>
+                                                <?php foreach($months as $m): ?>
+                                                    <option value="<?= $m ?>" <?= ($item['end_month'] ?? '') === $m ? 'selected' : '' ?>><?= $m ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <select name="history_end_year[]" class="form-control end-year" style="width: 80px; padding:8px 8px;" <?= $is_current ? 'disabled' : '' ?>>
+                                                <option value="">Yıl Seç</option>
+                                                <?php foreach($years as $y): ?>
+                                                    <option value="<?= $y ?>" <?= ($item['end_year'] ?? '') == $y ? 'selected' : '' ?>><?= $y ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            
+                                            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none;">
+                                                <input type="hidden" name="history_current[]" value="<?= $is_current ? '1' : '0' ?>">
+                                                <input type="checkbox" onchange="this.previousElementSibling.value = this.checked ? '1' : '0'; toggleEndDate(this)" <?= $is_current ? 'checked' : '' ?>> Devam
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="history_period[]" value="<?= View::escape($item['period'] ?? $item['year'] ?? '') ?>">
+                                </div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()" style="display: flex; align-items: center; justify-content: center;"><i class="ri-delete-bin-line"></i></button>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -657,16 +699,66 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
         return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function toggleEndDate(checkbox) {
+        const container = checkbox.closest('.form-row');
+        const endMonth = container.querySelector('.end-month');
+        const endYear = container.querySelector('.end-year');
+        if (checkbox.checked) {
+            endMonth.disabled = true;
+            endMonth.value = '';
+            endYear.disabled = true;
+            endYear.value = '';
+        } else {
+            endMonth.disabled = false;
+            endYear.disabled = false;
+        }
+    }
+
     function addHistoryItem(title = '', dept = '', period = '') {
+        const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+        let optionsHtml = '<option value="">Ay Seç</option>';
+        months.forEach(m => optionsHtml += `<option value="${m}">${m}</option>`);
+
+        let yearOptionsHtml = '<option value="">Yıl Seç</option>';
+        for(let y = 2024; y <= 2035; y++) {
+            yearOptionsHtml += `<option value="${y}">${y}</option>`;
+        }
+
         const html = `
-            <div class="history-item">
-                <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
-                <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="${escapeAttr(dept)}">
-                <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="${escapeAttr(period)}">
-                <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+            <div class="history-item" style="grid-template-columns: 1fr auto; align-items: stretch;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="form-row">
+                        <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
+                        <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="${escapeAttr(dept)}">
+                    </div>
+                    <div class="form-row" style="gap: 12px;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <span style="font-size: 13px; color: var(--muted); min-width: 65px;">Başlangıç:</span>
+                            <select name="history_start_month[]" class="form-control" style="flex: 1; min-width: 90px; padding:8px 12px;">${optionsHtml}</select>
+                            <select name="history_start_year[]" class="form-control" style="width: 80px; padding:8px 8px;">${yearOptionsHtml}</select>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <span style="font-size: 13px; color: var(--muted); min-width: 40px;">Bitiş:</span>
+                            <select name="history_end_month[]" class="form-control end-month" style="flex: 1; min-width: 90px; padding:8px 12px;">${optionsHtml}</select>
+                            <select name="history_end_year[]" class="form-control end-year" style="width: 80px; padding:8px 8px;">${yearOptionsHtml}</select>
+                            
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none;">
+                                <input type="hidden" name="history_current[]" value="0">
+                                <input type="checkbox" onchange="this.previousElementSibling.value = this.checked ? '1' : '0'; toggleEndDate(this)"> Devam
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="history_period[]" value="${escapeAttr(period)}">
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()" style="display: flex; align-items: center; justify-content: center;"><i class="ri-delete-bin-line"></i></button>
             </div>
         `;
         document.getElementById('historyList').insertAdjacentHTML('beforeend', html);
+    }
+    
+    // Sayfa yüklendiğinde boş geçmiş varsa 1 tane ekleyelim
+    if (document.getElementById('historyList').children.length === 0) {
+        addHistoryItem();
     }
 </script>
 </body>

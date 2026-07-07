@@ -169,13 +169,42 @@ class ProfileController extends Controller
     {
         $titles = $_POST['history_title'] ?? [];
         $departments = $_POST['history_dept'] ?? [];
+        $start_months = $_POST['history_start_month'] ?? [];
+        $start_years = $_POST['history_start_year'] ?? [];
+        $end_months = $_POST['history_end_month'] ?? [];
+        $end_years = $_POST['history_end_year'] ?? [];
+        $currents = $_POST['history_current'] ?? [];
+        // Mevcut period verisini de yakalayalım (eski form gönderimleri için uyumluluk)
         $periods = $_POST['history_period'] ?? [];
         $history = [];
 
         foreach ($titles as $i => $title) {
             $title = trim($title);
             $dept = trim($departments[$i] ?? '');
+            
+            // Eğer yeni tarih seçicilerden veri gelirse onları kullan
+            $start_month = trim($start_months[$i] ?? '');
+            $start_year = trim($start_years[$i] ?? '');
+            
+            // Checkbox kontrolü - html formlarında checkbox name="history_current[$i]" şeklinde gelirse dizi indislerini check et
+            $is_current = isset($currents[$i]) && $currents[$i] == '1';
+            
+            $end_month = $is_current ? '' : trim($end_months[$i] ?? '');
+            $end_year = $is_current ? '' : trim($end_years[$i] ?? '');
+
+            // Dönem (period) stringini oluştur (ör: Eylül 2022 - Devam Ediyor veya Eylül 2022 - Haziran 2023)
             $period = trim($periods[$i] ?? '');
+            if ($start_month || $start_year) {
+                $start_str = trim("$start_month $start_year");
+                if ($is_current) {
+                    $period = "$start_str - Devam Ediyor";
+                } else if ($end_month || $end_year) {
+                    $end_str = trim("$end_month $end_year");
+                    $period = "$start_str - $end_str";
+                } else {
+                    $period = $start_str;
+                }
+            }
 
             if ($title === '' && $dept === '' && $period === '') {
                 continue;
@@ -186,7 +215,12 @@ class ProfileController extends Controller
                 'role' => $title,
                 'dept' => $dept,
                 'period' => $period,
-                'year' => $period
+                'year' => $period,
+                'start_month' => $start_month,
+                'start_year' => $start_year,
+                'end_month' => $end_month,
+                'end_year' => $end_year,
+                'is_current' => $is_current
             ];
         }
 
