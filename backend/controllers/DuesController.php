@@ -111,8 +111,9 @@ class DuesController extends Controller
             'created_by' => Auth::user()['id']
         ]);
 
-        // Departmandaki herkesi bu döneme ekle
-        $users = $this->udModel->getByDepartment($currentDept['id']);
+        // Sistemdeki aktif olan herkesi bu döneme ekle
+        $usersStmt = Database::getInstance()->query("SELECT id as user_id FROM users");
+        $users = $usersStmt->fetchAll();
         foreach ($users as $u) {
             $this->paymentModel->create([
                 'period_id' => $periodId,
