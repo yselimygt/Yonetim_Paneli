@@ -52,6 +52,37 @@ class InventoryModule extends BaseModule
         $action = $postData['action'] ?? '';
         $canEdit = $this->isDirectorOrAdmin();
 
+        if ($action === 'take_over') {
+            $id = (int)($postData['item_id'] ?? 0);
+            if ($id > 0) {
+                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = ? WHERE id = ? AND department_id = ?");
+                $stmt->execute([$this->user['name'], $id, $this->department['id']]);
+                $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşyayı başarıyla devraldınız.'];
+            }
+            $this->redirectBack();
+        }
+
+        if ($action === 'leave_room') {
+            $id = (int)($postData['item_id'] ?? 0);
+            if ($id > 0) {
+                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = '' WHERE id = ? AND department_id = ?");
+                $stmt->execute([$id, $this->department['id']]);
+                $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşya odaya bırakıldı (zimmetten çıkarıldı).'];
+            }
+            $this->redirectBack();
+        }
+
+        if ($action === 'transfer_item') {
+            $id = (int)($postData['item_id'] ?? 0);
+            $newUser = trim($postData['new_user'] ?? '');
+            if ($id > 0 && $newUser !== '') {
+                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = ? WHERE id = ? AND department_id = ?");
+                $stmt->execute([$newUser, $id, $this->department['id']]);
+                $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşya başarıyla devredildi.'];
+            }
+            $this->redirectBack();
+        }
+
         if (!$canEdit) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Bu işlem için yetkiniz yok.'];
             $this->redirectBack();

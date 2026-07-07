@@ -541,8 +541,31 @@
                 <div class="inv-card-footer">
                     <div class="inv-price"><?= number_format($item['price'], 2, ',', '.') ?> ₺</div>
                     
-                    <?php if($canEdit): ?>
                     <div class="inv-actions">
+                        <?php if($item['assigned_to'] === $this->user['name']): ?>
+                        <form method="POST" style="margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                            <input type="hidden" name="action" value="leave_room">
+                            <input type="hidden" name="item_id" value="<?= $item['id'] ?>">
+                            <button type="submit" class="inv-action-btn" style="width: auto; padding: 0 10px; font-size: 11px; font-weight: 500; color: #ef4444; border-color: rgba(239,68,68,0.3);" title="Odaya Bırak (Zimmetten Çıkar)">
+                                Odaya Bırak
+                            </button>
+                        </form>
+                        <button class="inv-action-btn" style="width: auto; padding: 0 10px; font-size: 11px; font-weight: 500; color: #3b82f6; border-color: rgba(59,130,246,0.3);" onclick="openTransferModal(<?= $item['id'] ?>, '<?= htmlspecialchars(addslashes($item['item_name'])) ?>')" title="Başka Birine Zimmetle">
+                            Devret
+                        </button>
+                        <?php elseif($item['assigned_to'] !== $this->user['name']): ?>
+                        <form method="POST" style="margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                            <input type="hidden" name="action" value="take_over">
+                            <input type="hidden" name="item_id" value="<?= $item['id'] ?>">
+                            <button type="submit" class="inv-action-btn" style="width: auto; padding: 0 10px; font-size: 11px; font-weight: 500; color: #8b5cf6; border-color: rgba(139,92,246,0.3);" title="Bana Zimmetle">
+                                Devral
+                            </button>
+                        </form>
+                        <?php endif; ?>
+
+                        <?php if($canEdit): ?>
                         <button class="inv-action-btn" onclick="openInvModal(<?= htmlspecialchars(json_encode($item)) ?>)" title="Düzenle">
                             <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         </button>
@@ -554,8 +577,8 @@
                                 <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                             </button>
                         </form>
+                        <?php endif; ?>
                     </div>
-                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -688,6 +711,58 @@ function openInvModal(data = null) {
 
 function closeInvModal() {
     document.getElementById('invModalOverlay').classList.remove('active');
+}
+</script>
+
+<!-- Transfer Modal -->
+<div class="inv-modal-overlay" id="transferModalOverlay" onclick="if(event.target===this) closeTransferModal()">
+    <div class="inv-modal" style="max-width: 400px;">
+        <form method="POST" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+            <input type="hidden" name="action" value="transfer_item">
+            <input type="hidden" name="item_id" id="transferItemId" value="">
+            
+            <div class="inv-modal-header">
+                <h3 style="margin:0; font-size: 16px;">Eşyayı Devret</h3>
+                <button type="button" onclick="closeTransferModal()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;">
+                    <svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            
+            <div class="inv-modal-body">
+                <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">
+                    <strong id="transferItemName" style="color: var(--text);"></strong> adlı eşyayı kime devretmek istiyorsunuz?
+                </p>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Kullanıcı Seçin</label>
+                    <select name="new_user" class="form-control" required>
+                        <option value="">Seçiniz...</option>
+                        <?php foreach($allUsers as $u): ?>
+                            <?php if($u['name'] !== $this->user['name']): ?>
+                                <option value="<?= htmlspecialchars($u['name']) ?>"><?= htmlspecialchars($u['name']) ?></option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="inv-modal-footer">
+                <button type="button" class="inv-btn" style="background:var(--input-bg);color:var(--text);border:1px solid var(--border);" onclick="closeTransferModal()">İptal</button>
+                <button type="submit" class="inv-btn inv-btn-primary">Devret</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openTransferModal(itemId, itemName) {
+    document.getElementById('transferItemId').value = itemId;
+    document.getElementById('transferItemName').textContent = itemName;
+    document.getElementById('transferModalOverlay').classList.add('active');
+}
+
+function closeTransferModal() {
+    document.getElementById('transferModalOverlay').classList.remove('active');
 }
 </script>
 <?php endif; ?>
