@@ -9,6 +9,7 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
     <title><?= APP_NAME ?> — Profilim</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <script>
         const storedTheme = localStorage.getItem('theme');
         if (storedTheme === 'light') {
@@ -18,22 +19,31 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg:       #0a0a0a;
-            --card:     #111111;
-            --border:   #1e1e1e;
-            --text:     #e8e8e8;
-            --muted:    #555;
-            --accent:   #00BCD4;
-            --input-bg: #0d0d0d;
+            --bg:       #050505;
+            --card:     #0d0d0d;
+            --card-alt: #141414;
+            --border:   #222;
+            --text:     #ededed;
+            --muted:    #888;
+            --accent:   <?= View::escape($_SESSION['user_theme_color'] ?? '#00BCD4') ?>;
+            --accent-rgb: 0, 188, 212;
+            --input-bg: #111;
+            --input-border: #333;
+            --glass: rgba(255, 255, 255, 0.03);
+            --danger: #ef4444;
+            --success: #22c55e;
         }
 
         [data-theme="light"] {
             --bg:       #f3f4f6;
             --card:     #ffffff;
+            --card-alt: #f9fafb;
             --border:   #e5e7eb;
             --text:     #111827;
             --muted:    #6b7280;
-            --input-bg: #f9fafb;
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
+            --glass: rgba(0, 0, 0, 0.03);
         }
 
         body {
@@ -43,277 +53,428 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
+            padding: 40px 24px 100px 24px;
         }
 
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 18px; font-weight: 600; color: var(--text); }
-        .header p { font-size: 13px; color: var(--muted); margin-top: 6px; }
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
 
-        .card {
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 24px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 10px; }
+        .header p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Bento Grid */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
+        .bento-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px 36px;
-            width: 100%;
-            max-width: 760px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-            transition: box-shadow 0.3s ease;
+            border-radius: 20px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: border-color 0.3s;
         }
+        .bento-card:hover {
+            border-color: var(--accent);
+        }
+
+        .bento-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bento-title i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        /* Specific Cards */
+        .card-personal { grid-column: span 4; }
+        .card-contact { grid-column: span 8; }
+        .card-education { grid-column: span 6; }
+        .card-history { grid-column: span 6; }
+        .card-preferences { grid-column: span 12; }
+
+        @media (max-width: 1024px) {
+            .card-personal, .card-contact, .card-education, .card-history { grid-column: span 12; }
+        }
+
+        /* Avatar Uploader */
+        .avatar-uploader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--card);
+            box-shadow: 0 0 0 2px var(--accent);
+            cursor: pointer;
+        }
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .avatar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 12px;
+            font-weight: 500;
+            gap: 4px;
+        }
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+        .avatar-overlay i { font-size: 24px; }
+        #avatarInput { display: none; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; width: 100%; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
         
-        [data-theme="dark"] .card {
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
+        .form-control { 
+            width: 100%; 
+            background: var(--input-bg); 
+            border: 1px solid var(--input-border); 
+            border-radius: 12px; 
+            padding: 12px 16px; 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            font-size: 14px; 
+            outline: none; 
+            transition: all .2s ease; 
+        }
+        .form-control:focus { 
+            border-color: var(--accent); 
+            background: var(--card-alt);
+        }
+        .form-control::placeholder { color: var(--muted); opacity: 0.7; }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 20px; border-radius: 12px;
+            font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; text-decoration: none;
+            transition: all .2s ease;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { filter: brightness(1.1); box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.3); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-outline:hover { background: var(--glass); border-color: var(--accent); color: var(--accent); }
+        .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 8px; }
+
+        /* History List */
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+        .history-item { 
+            display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; 
+            align-items: center; padding: 16px; 
+            border: 1px solid var(--border); border-radius: 14px; 
+            background: var(--glass); 
+        }
+        @media (max-width: 600px) {
+            .history-item { grid-template-columns: 1fr; }
+            .history-item button { width: 100%; }
+        }
+
+        /* Sticky Footer Bar */
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+        .sticky-footer-inner {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
         }
 
         /* Flash */
-        .flash { border-radius: 10px; padding: 12px 16px; font-size: 13px; margin-bottom: 24px; }
+        .flash { border-radius: 12px; padding: 14px 20px; font-size: 14px; margin-bottom: 24px; display:flex; align-items:center; gap:10px; }
         .flash.error   { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:#fca5a5; }
         .flash.success { background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.3); color:#86efac; }
-        .flash.warning { background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fcd34d; }
-
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
-        .form-control { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: all .2s ease; }
-        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15); }
-        .form-control::file-selector-button { border: 1px solid var(--border); background: var(--card); color: var(--text); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: background 0.2s; margin-right: 12px; }
-        .form-control::file-selector-button:hover { background: rgba(255,255,255,0.05); }
         
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
-            cursor: pointer; border: none; text-decoration: none;
-            width: 100%;
-            transition: all .2s ease;
-        }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--accent); color: #0a0a0a; box-shadow: 0 4px 14px rgba(0, 188, 212, 0.3); }
-        .btn-primary:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4); }
-        
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto; }
-        .section-title { margin: 28px 0 16px; padding-top: 22px; border-top: 1px solid var(--border); }
-        .section-title h2 { font-size: 15px; font-weight: 700; color: var(--text); }
-        .section-title p { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
-        .history-list { display: grid; gap: 10px; }
-        .history-item { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: center; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,.02); }
-        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
-        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-sm { width: auto; padding: 8px 12px; font-size: 12px; }
-        
-        .footer-links {
-            display: flex;
-            gap: 20px;
-            margin-top: 32px;
-        }
-
-        .footer-links a {
-            font-size: 12px;
-            color: var(--muted);
-            text-decoration: none;
-            transition: color .15s;
-            cursor: pointer;
-        }
-        .footer-links a:hover { color: var(--text); }
-        .hint { font-size: 11px; color: var(--muted); margin-top: 4px; display: block; }
-        @media (max-width: 720px) {
-            .card { padding: 24px 20px; }
-            .form-row,
-            .history-item { grid-template-columns: 1fr; }
-            .btn-sm { width: 100%; }
-        }
+        .hint { font-size: 12px; color: var(--muted); margin-top: 6px; display: block; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>Profilim</h1>
-    <p>Hesap bilgilerinizi güncelleyin</p>
-</div>
+<form method="POST" action="<?= BASE_URL ?>/profile" enctype="multipart/form-data" id="profileForm">
+    <input type="hidden" name="csrf_token" value="<?= View::escape($_SESSION['csrf_token']) ?>">
+    <input type="file" name="avatar" id="avatarInput" accept="image/*">
 
-<div class="card">
-    <?php if (isset($_SESSION['flash'])): ?>
-        <div class="flash <?= View::escape($_SESSION['flash']['type']) ?>">
-            <?= View::escape($_SESSION['flash']['message']) ?>
-        </div>
-        <?php unset($_SESSION['flash']); ?>
-    <?php endif; ?>
-
-    <form method="POST" action="<?= BASE_URL ?>/profile" enctype="multipart/form-data">
-        <input type="hidden" name="csrf_token" value="<?= View::escape($_SESSION['csrf_token']) ?>">
+    <div class="container">
         
-        <div class="form-group">
-            <?php if (!empty($user['avatar'])): ?>
-                <img src="<?= BASE_URL ?>/public/<?= View::escape($user['avatar']) ?>" class="avatar-preview" alt="Avatar">
-            <?php endif; ?>
-            <label class="form-label">Profil Fotoğrafı</label>
-            <input type="file" name="avatar" class="form-control" accept="image/*">
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Ad Soyad</label>
-                <input type="text" name="name" class="form-control" value="<?= View::escape($user['name']) ?>" required>
+        <div class="header">
+            <div>
+                <h1><i class="ri-user-settings-line"></i> Profil Ayarları</h1>
+                <p>Hesap bilgilerinizi ve tercihlerinizi yönetin.</p>
             </div>
-            <div class="form-group">
-                <label class="form-label">E-posta</label>
-                <input type="email" name="email" class="form-control" value="<?= View::escape($user['email']) ?>" required>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Telefon Numarası</label>
-                <input type="text" name="phone" class="form-control" value="<?= View::escape($user['phone'] ?? '') ?>">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Doğum Tarihi</label>
-                <input type="date" name="birth_date" class="form-control" value="<?= View::escape($user['birth_date'] ?? '') ?>">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group" style="width:100%;">
-                <label class="form-label">Kişisel Tema Rengi (Panel Görünümü)</label>
-                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                    <input type="color" id="color_picker" class="form-control" style="width:60px; height:45px; padding:4px; cursor:pointer;" value="<?= View::escape($user['theme_color'] ?? '#00BCD4') ?>" onchange="document.getElementById('theme_color').value = this.value;">
-                    <input type="text" id="theme_color" name="theme_color" class="form-control" style="width:120px;" placeholder="Örn: #00BCD4" value="<?= View::escape($user['theme_color'] ?? '') ?>" oninput="document.getElementById('color_picker').value = this.value || '#00BCD4';">
-                    <button type="button" class="btn btn-outline btn-sm" style="height:45px;" onclick="document.getElementById('theme_color').value = ''; document.getElementById('color_picker').value='#00BCD4';">Varsayılana Dön</button>
-                    <small style="color:var(--text-muted)">Yönetim panelinin tüm görünümünü bu renge boyayın.</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Üniversite</label>
-                <select id="select_university" class="form-control" onchange="uniChanged()">
-                    <option value="">Seçiniz...</option>
-                </select>
-                <input type="text" name="university" id="profile_university" class="form-control" style="display:none; margin-top:8px;" placeholder="Üniversite adını giriniz" value="<?= View::escape($user['university'] ?? '') ?>">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Fakülte</label>
-                <select id="select_faculty" class="form-control" onchange="facChanged()">
-                    <option value="">Önce Üniversite Seçin</option>
-                </select>
-                <input type="text" name="faculty" id="profile_faculty" class="form-control" style="display:none; margin-top:8px;" placeholder="Fakülte/Yüksekokul adını giriniz" value="<?= View::escape($user['faculty'] ?? '') ?>">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Bölüm</label>
-                <select id="select_department" class="form-control" onchange="deptChanged()">
-                    <option value="">Önce Fakülte Seçin</option>
-                </select>
-                <input type="text" name="school_department" id="profile_school_department" class="form-control" style="display:none; margin-top:8px;" placeholder="Bölüm adını giriniz" value="<?= View::escape($user['school_department'] ?? '') ?>">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Sınıf</label>
-                <select id="select_grade" class="form-control" onchange="gradeChanged()">
-                    <option value="">Seçiniz...</option>
-                    <option value="Hazırlık">Hazırlık</option>
-                    <option value="1. Sınıf">1. Sınıf</option>
-                    <option value="2. Sınıf">2. Sınıf</option>
-                    <option value="3. Sınıf">3. Sınıf</option>
-                    <option value="4. Sınıf">4. Sınıf</option>
-                    <option value="Mezun">Mezun</option>
-                    <option value="Diğer">Diğer...</option>
-                </select>
-                <input type="text" name="grade" id="profile_grade" class="form-control" style="display:none; margin-top:8px;" placeholder="Sınıf bilgisi giriniz" value="<?= View::escape($user['grade'] ?? '') ?>">
-            </div>
-        </div>
-
-        <div class="section-title">
-            <h2>Web Sitesi Ekip Profili</h2>
-            <p>Bu bilgiler süper admin sizi ekip alanında görünür yaptığında web sitesindeki profil kartınızda kullanılır. Süper admin alanında girilen özel değerler varsa öncelik onlardadır.</p>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">LinkedIn URL</label>
-                <input type="url" name="linkedin" class="form-control" value="<?= View::escape($user['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/kullanici">
-            </div>
-            <div class="form-group">
-                <label class="form-label">GitHub URL</label>
-                <input type="url" name="github" class="form-control" value="<?= View::escape($user['github'] ?? '') ?>" placeholder="https://github.com/kullanici">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Web Sitesi</label>
-                <input type="text" name="website" class="form-control" value="<?= View::escape($user['website'] ?? '') ?>" placeholder="https://...">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Üniversite Logo URL</label>
-                <input type="text" name="university_logo" id="profile_university_logo" class="form-control" value="<?= View::escape($user['university_logo'] ?? '') ?>" placeholder="/innomis/assets/uni/..." readonly>
-                <span class="hint">Üniversite seçimine göre otomatik doldurulur.</span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Şirket / Kurum Logo URL</label>
-            <input type="text" name="company_logo" class="form-control" value="<?= View::escape($user['company_logo'] ?? '') ?>">
-            <span class="hint">Şirket logosu varsa ekip modalında üniversite logosunun yerine kullanılabilir.</span>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Kısa Biyografi</label>
-            <textarea name="bio" class="form-control" rows="3" placeholder="Kendinizi, ilgi alanlarınızı veya ekipteki odağınızı yazın."><?= View::escape($user['bio'] ?? '') ?></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Topluluk Kariyer Geçmişi</label>
-            <div id="historyList" class="history-list">
-                <?php if (empty($communityHistory)): ?>
-                    <div class="history-item">
-                        <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan">
-                        <input type="text" name="history_dept[]" class="form-control" placeholder="Departman / Topluluk">
-                        <input type="text" name="history_period[]" class="form-control" placeholder="Dönem">
-                        <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
-                    </div>
+            <div class="header-actions">
+                <button type="button" class="btn btn-outline" onclick="toggleTheme()"><i class="ri-moon-line"></i> Tema</button>
+                <?php if (Auth::isSuperAdmin()): ?>
+                    <a href="<?= BASE_URL ?>/superadmin" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
+                <?php elseif (count($departments) === 1): ?>
+                    <a href="<?= BASE_URL ?>/panel/<?= View::escape($departments[0]['slug']) ?>" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
                 <?php else: ?>
-                    <?php foreach ($communityHistory as $item): ?>
-                        <div class="history-item">
-                            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
-                            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman / Topluluk" value="<?= View::escape($item['dept'] ?? '') ?>">
-                            <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="<?= View::escape($item['period'] ?? $item['year'] ?? '') ?>">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
-                        </div>
-                    <?php endforeach; ?>
+                    <a href="<?= BASE_URL ?>/panel" class="btn btn-outline"><i class="ri-arrow-left-line"></i> Panele Dön</a>
                 <?php endif; ?>
             </div>
-            <button type="button" class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addHistoryItem()">+ Geçmiş Ekle</button>
         </div>
 
-        <div class="form-group">
-            <label class="form-label">Yeni Şifre</label>
-            <input type="password" name="password" class="form-control">
-            <span class="hint">Şifrenizi değiştirmek istemiyorsanız boş bırakın.</span>
+        <?php if (isset($_SESSION['flash'])): ?>
+            <div class="flash <?= View::escape($_SESSION['flash']['type']) ?>">
+                <i class="ri-information-line"></i> <?= View::escape($_SESSION['flash']['message']) ?>
+            </div>
+            <?php unset($_SESSION['flash']); ?>
+        <?php endif; ?>
+
+        <div class="profile-grid">
+            
+            <!-- Profil & Bio -->
+            <div class="bento-card card-personal">
+                <div class="bento-title"><i class="ri-id-card-line"></i> Temel Bilgiler</div>
+                
+                <div class="avatar-uploader" onclick="document.getElementById('avatarInput').click()">
+                    <div class="avatar-wrapper">
+                        <?php if (!empty($user['avatar'])): ?>
+                            <img src="<?= BASE_URL ?>/public/<?= View::escape($user['avatar']) ?>" id="avatarPreview" class="avatar-preview" alt="Avatar">
+                        <?php else: ?>
+                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($user['name']) ?>&background=random" id="avatarPreview" class="avatar-preview" alt="Avatar">
+                        <?php endif; ?>
+                        <div class="avatar-overlay">
+                            <i class="ri-camera-fill"></i>
+                            <span>Değiştir</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ad Soyad</label>
+                    <input type="text" name="name" class="form-control" value="<?= View::escape($user['name']) ?>" required>
+                </div>
+                
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Kısa Biyografi</label>
+                    <textarea name="bio" class="form-control" placeholder="Kendinizi veya ekibinizdeki rolünüzü kısaca anlatın..."><?= View::escape($user['bio'] ?? '') ?></textarea>
+                </div>
+            </div>
+
+            <!-- İletişim & Sosyal Medya -->
+            <div class="bento-card card-contact">
+                <div class="bento-title"><i class="ri-contacts-book-line"></i> İletişim ve Sosyal Medya</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">E-posta</label>
+                        <input type="email" name="email" class="form-control" value="<?= View::escape($user['email']) ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefon Numarası</label>
+                        <input type="text" name="phone" class="form-control" value="<?= View::escape($user['phone'] ?? '') ?>" placeholder="5XX XXX XX XX">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">LinkedIn Profil URL</label>
+                        <input type="url" name="linkedin" class="form-control" value="<?= View::escape($user['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GitHub Profil URL</label>
+                        <input type="url" name="github" class="form-control" value="<?= View::escape($user['github'] ?? '') ?>" placeholder="https://github.com/username">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Kişisel Web Sitesi</label>
+                    <input type="url" name="website" class="form-control" value="<?= View::escape($user['website'] ?? '') ?>" placeholder="https://yourwebsite.com">
+                </div>
+            </div>
+
+            <!-- Eğitim Bilgileri -->
+            <div class="bento-card card-education">
+                <div class="bento-title"><i class="ri-graduation-cap-line"></i> Eğitim Bilgileri</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Üniversite</label>
+                        <select id="select_university" class="form-control" onchange="uniChanged()"><option value="">Seçiniz...</option></select>
+                        <input type="text" name="university" id="profile_university" class="form-control" style="display:none; margin-top:8px;" placeholder="Üniversite adını giriniz" value="<?= View::escape($user['university'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fakülte</label>
+                        <select id="select_faculty" class="form-control" onchange="facChanged()"><option value="">Önce Üniversite Seçin</option></select>
+                        <input type="text" name="faculty" id="profile_faculty" class="form-control" style="display:none; margin-top:8px;" placeholder="Fakülte adını giriniz" value="<?= View::escape($user['faculty'] ?? '') ?>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Bölüm</label>
+                        <select id="select_department" class="form-control" onchange="deptChanged()"><option value="">Önce Fakülte Seçin</option></select>
+                        <input type="text" name="school_department" id="profile_school_department" class="form-control" style="display:none; margin-top:8px;" placeholder="Bölüm adını giriniz" value="<?= View::escape($user['school_department'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sınıf</label>
+                        <select id="select_grade" class="form-control" onchange="gradeChanged()">
+                            <option value="">Seçiniz...</option>
+                            <option value="Hazırlık">Hazırlık</option>
+                            <option value="1. Sınıf">1. Sınıf</option>
+                            <option value="2. Sınıf">2. Sınıf</option>
+                            <option value="3. Sınıf">3. Sınıf</option>
+                            <option value="4. Sınıf">4. Sınıf</option>
+                            <option value="Mezun">Mezun</option>
+                            <option value="Diğer">Diğer...</option>
+                        </select>
+                        <input type="text" name="grade" id="profile_grade" class="form-control" style="display:none; margin-top:8px;" placeholder="Sınıf bilgisi giriniz" value="<?= View::escape($user['grade'] ?? '') ?>">
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom:0;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Üni. Logo URL</label>
+                        <input type="text" name="university_logo" id="profile_university_logo" class="form-control" value="<?= View::escape($user['university_logo'] ?? '') ?>" readonly>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Şirket Logo URL</label>
+                        <input type="text" name="company_logo" class="form-control" value="<?= View::escape($user['company_logo'] ?? '') ?>">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topluluk Geçmişi -->
+            <div class="bento-card card-history">
+                <div class="bento-title"><i class="ri-history-line"></i> Topluluk Kariyer Geçmişi</div>
+                
+                <div id="historyList" class="history-list">
+                    <?php if (empty($communityHistory)): ?>
+                        <div class="history-item">
+                            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan">
+                            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman">
+                            <input type="text" name="history_period[]" class="form-control" placeholder="Dönem (örn: 2022-2023)">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($communityHistory as $item): ?>
+                            <div class="history-item">
+                                <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="<?= View::escape($item['title'] ?? $item['role'] ?? '') ?>">
+                                <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="<?= View::escape($item['dept'] ?? '') ?>">
+                                <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="<?= View::escape($item['period'] ?? $item['year'] ?? '') ?>">
+                                <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" style="margin-top:16px; align-self:flex-start;" onclick="addHistoryItem()"><i class="ri-add-line"></i> Yeni Geçmiş Ekle</button>
+            </div>
+
+            <!-- Tercihler ve Güvenlik -->
+            <div class="bento-card card-preferences">
+                <div class="bento-title"><i class="ri-settings-3-line"></i> Tercihler ve Güvenlik</div>
+                
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Kişisel Tema Rengi (Panel Vurgusu)</label>
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <input type="color" id="color_picker" class="form-control" style="width:60px; height:45px; padding:4px; cursor:pointer;" value="<?= View::escape($user['theme_color'] ?? '#00BCD4') ?>" onchange="document.getElementById('theme_color').value = this.value;">
+                            <input type="text" id="theme_color" name="theme_color" class="form-control" style="width:140px;" placeholder="Örn: #00BCD4" value="<?= View::escape($user['theme_color'] ?? '') ?>" oninput="document.getElementById('color_picker').value = this.value || '#00BCD4';">
+                            <button type="button" class="btn btn-outline btn-sm" style="height:45px;" onclick="document.getElementById('theme_color').value = ''; document.getElementById('color_picker').value='#00BCD4';"><i class="ri-refresh-line"></i> Sıfırla</button>
+                        </div>
+                        <span class="hint">Paneldeki ana renkleri kendi zevkinize göre ayarlayın.</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Doğum Tarihi</label>
+                        <input type="date" name="birth_date" class="form-control" value="<?= View::escape($user['birth_date'] ?? '') ?>">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Yeni Şifre Belirle</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••">
+                        <span class="hint">Şifrenizi değiştirmek istemiyorsanız boş bırakın.</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
 
-        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Kaydet</button>
-    </form>
-</div>
-
-<div class="footer-links">
-    <?php if (Auth::isSuperAdmin()): ?>
-        <a href="<?= BASE_URL ?>/superadmin">Geri Dön</a>
-    <?php elseif (count($departments) === 1): ?>
-        <a href="<?= BASE_URL ?>/panel/<?= View::escape($departments[0]['slug']) ?>">Geri Dön</a>
-    <?php else: ?>
-        <a href="<?= BASE_URL ?>/panel">Geri Dön</a>
-    <?php endif; ?>
-    <a onclick="toggleTheme()">Tema Değiştir</a>
-</div>
+    <!-- Sticky Footer -->
+    <div class="sticky-footer">
+        <div class="sticky-footer-inner">
+            <button type="reset" class="btn btn-outline"><i class="ri-close-line"></i> Formu Temizle</button>
+            <button type="submit" class="btn btn-primary"><i class="ri-save-3-line"></i> Değişiklikleri Kaydet</button>
+        </div>
+    </div>
+</form>
 
 <script src="<?= BASE_URL ?>/public/assets/admin/js/universities_data.js"></script>
 <script>
+    // Avatar Preview
+    document.getElementById('avatarInput').addEventListener('change', function(e) {
+        if(this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
     const initUni = <?= json_encode($user['university'] ?? '') ?>;
     const initFac = <?= json_encode($user['faculty'] ?? '') ?>;
     const initDept = <?= json_encode($user['school_department'] ?? '') ?>;
@@ -485,28 +646,28 @@ $communityHistory = json_decode($user['community_history_json'] ?? '[]', true) ?
         }
     }
 
-function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = current === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-}
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    }
 
-function escapeAttr(value) {
-    return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+    function escapeAttr(value) {
+        return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
 
-function addHistoryItem(title = '', dept = '', period = '') {
-    const html = `
-        <div class="history-item">
-            <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
-            <input type="text" name="history_dept[]" class="form-control" placeholder="Departman / Topluluk" value="${escapeAttr(dept)}">
-            <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="${escapeAttr(period)}">
-            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
-        </div>
-    `;
-    document.getElementById('historyList').insertAdjacentHTML('beforeend', html);
-}
+    function addHistoryItem(title = '', dept = '', period = '') {
+        const html = `
+            <div class="history-item">
+                <input type="text" name="history_title[]" class="form-control" placeholder="Görev / Ünvan" value="${escapeAttr(title)}">
+                <input type="text" name="history_dept[]" class="form-control" placeholder="Departman" value="${escapeAttr(dept)}">
+                <input type="text" name="history_period[]" class="form-control" placeholder="Dönem" value="${escapeAttr(period)}">
+                <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+            </div>
+        `;
+        document.getElementById('historyList').insertAdjacentHTML('beforeend', html);
+    }
 </script>
 </body>
 </html>
