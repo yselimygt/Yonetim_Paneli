@@ -7,7 +7,6 @@ import SponsorMarquee from './components/SponsorMarquee';
 import About from './components/About';
 import Stats from './components/Stats';
 import Events from './components/Events';
-import Achievements from './components/Achievements';
 import Gallery from './components/Gallery';
 import Team from './components/Team';
 import Alumni from './components/Alumni';
@@ -43,7 +42,6 @@ const Home = () => {
       <SponsorMarquee />
       <About />
       <Stats />
-      <Achievements />
       <Gallery previewMode={true} />
       <FAQ />
       <JoinCTA />

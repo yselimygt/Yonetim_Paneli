@@ -177,37 +177,7 @@ import {
     }
   ];
   
-  export const achievements = [
-    {
-      year: '2026',
-      title: 'MIS CONNECT’26 Hazırlıkları',
-      desc: 'Teknoloji ve kariyer odaklı büyük zirve için ekipler, tasarımlar ve dijital altyapı hazırlıkları başlatıldı.',
-      tag: 'Zirve',
-      tagColor: 'text-primary border-primary/30'
-    },
-    {
-      year: '2025',
-      title: 'Yılın Sosyal Medyayı En İyi Yöneten Topluluğu',
-      desc: 'Topluluğun dijital iletişim, içerik ve görsel kimlik başarısı ödüllendirildi.',
-      tag: 'Ödül',
-      tagColor: 'text-accent-green border-accent-green/30'
-    },
-    {
-      year: '2025',
-      title: 'Kurumsal Kimlik Yenilendi',
-      desc: 'Renk paleti, görsel dil, maskot, sosyal medya tasarımları ve web kimliği yeniden tasarlandı.',
-      tag: 'Marka',
-      tagColor: 'text-accent-purple border-accent-purple/30'
-    },
-    {
-      year: '2024',
-      title: 'Yeni Ekip Yapılanması',
-      desc: 'Etkinlik, sosyal medya, Ar-Ge, sponsorluk ve operasyon ekipleri daha sistemli hale getirildi.',
-      tag: 'Ekip',
-      tagColor: 'text-accent-cyan border-accent-cyan/30'
-    }
-  ];
-  
+
   export const awards = [
     {
       year: '2025',

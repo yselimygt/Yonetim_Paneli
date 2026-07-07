@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Briefcase, Handshake, Target, ArrowRight, Award } from 'lucide-react';
 import SponsorshipForm from './SponsorshipForm';
 import BrandIdentity from './BrandIdentity';
-import Achievements from './Achievements';
 import Awards from './Awards';
 import { useSiteData } from '../context/SiteDataContext';
 
@@ -30,7 +29,7 @@ const Corporate = () => {
 
       {/* Tab Switcher */}
       <div className="flex justify-center mb-12 relative z-10 px-4">
-        <div className="grid grid-cols-2 sm:flex sm:flex-nowrap bg-white/5 p-1.5 rounded-2xl sm:rounded-full border border-white/10 gap-1 sm:gap-2 w-full max-w-sm sm:max-w-none sm:w-auto mx-auto">
+        <div className="flex flex-col sm:flex-row bg-white/5 p-1.5 rounded-2xl sm:rounded-full border border-white/10 gap-1 sm:gap-2 w-full max-w-sm sm:max-w-none sm:w-auto mx-auto">
           <button 
             onClick={() => setActiveTab('sponsor')}
             className={`w-full px-2 sm:px-10 py-2.5 sm:py-3 text-xs sm:text-base font-semibold rounded-xl sm:rounded-full transition-all duration-300 ${activeTab === 'sponsor' ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg' : 'text-text-secondary hover:text-white hover:bg-white/5'}`}
@@ -42,12 +41,6 @@ const Corporate = () => {
             className={`w-full px-2 sm:px-10 py-2.5 sm:py-3 text-xs sm:text-base font-semibold rounded-xl sm:rounded-full transition-all duration-300 ${activeTab === 'brand' ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg' : 'text-text-secondary hover:text-white hover:bg-white/5'}`}
           >
             Kurumsal Kimlik
-          </button>
-          <button 
-            onClick={() => setActiveTab('achievements')}
-            className={`w-full px-2 sm:px-10 py-2.5 sm:py-3 text-xs sm:text-base font-semibold rounded-xl sm:rounded-full transition-all duration-300 ${activeTab === 'achievements' ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg' : 'text-text-secondary hover:text-white hover:bg-white/5'}`}
-          >
-            Başarılarımız
           </button>
           <button 
             onClick={() => setActiveTab('awards')}
@@ -194,13 +187,6 @@ const Corporate = () => {
         <div className="animate-fade-in-up pb-16">
           {/* Brand Identity Section */}
           <BrandIdentity />
-        </div>
-      )}
-
-      {activeTab === 'achievements' && (
-        <div className="animate-fade-in-up pb-16">
-          {/* Achievements Section */}
-          <Achievements />
         </div>
       )}
 

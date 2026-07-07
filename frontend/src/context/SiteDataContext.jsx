@@ -127,7 +127,6 @@ const normalizeSiteData = (data = {}) => {
     },
     projects: data.projects || [],
     gallery: data.gallery || [],
-    achievements: data.achievements || [],
     awards: data.awards || [],
   };
 
