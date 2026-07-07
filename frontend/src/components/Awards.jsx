@@ -38,19 +38,30 @@ const Awards = () => {
               {/* Inner Glow on Hover */}
               <div className="absolute inset-0 bg-gradient-to-b from-accent-yellow/0 to-accent-yellow/0 group-hover:from-accent-yellow/5 group-hover:to-transparent transition-all duration-500"></div>
 
-              <div className="flex flex-col h-full p-6 sm:p-8 relative z-10">
+              <div className="flex flex-col h-full p-6 sm:p-8 relative z-10 pb-4">
                 {/* Top Section */}
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-yellow/20 to-primary/10 border border-accent-yellow/20 flex items-center justify-center text-accent-yellow shadow-inner group-hover:scale-110 transition-transform duration-500">
-                    {item.icon === 'Trophy' ? <Trophy className="w-8 h-8" /> : 
-                     item.icon === 'Medal' ? <Medal className="w-8 h-8" /> : 
-                     item.icon === 'Target' ? <Target className="w-8 h-8" /> : 
-                     item.icon === 'Star' ? <Star className="w-8 h-8" /> : 
-                     item.icon === 'Crown' ? <Crown className="w-8 h-8" /> : 
-                     <Award className="w-8 h-8" />}
-                  </div>
+                <div className="flex justify-between items-start mb-6 gap-4">
+                  {/* Institution name and logo */}
+                  {(item.institution_name || item.organization) ? (
+                    <div className="flex items-center gap-3 bg-black/20 border border-white/5 py-2 px-3 rounded-xl backdrop-blur-sm">
+                      {item.institution_logo_url && (
+                        <img src={item.institution_logo_url} alt="Kurum" className="w-6 h-6 object-contain" />
+                      )}
+                      <span className="text-sm font-medium text-white/90">
+                        {item.institution_name || item.organization}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-yellow/20 to-primary/10 border border-accent-yellow/20 flex items-center justify-center text-accent-yellow shadow-inner group-hover:scale-110 transition-transform duration-500 shrink-0">
+                      {item.icon === 'Medal' ? <Medal className="w-6 h-6" /> : 
+                       item.icon === 'Target' ? <Target className="w-6 h-6" /> : 
+                       item.icon === 'Star' ? <Star className="w-6 h-6" /> : 
+                       item.icon === 'Crown' ? <Crown className="w-6 h-6" /> : 
+                       <Trophy className="w-6 h-6" />}
+                    </div>
+                  )}
                   
-                  <span className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-sm font-bold text-white shadow-sm">
+                  <span className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-sm font-bold text-white shadow-sm shrink-0">
                     {item.year}
                   </span>
                 </div>
@@ -65,19 +76,8 @@ const Awards = () => {
                   </p>
                 </div>
 
-                {/* Institution & Actions */}
+                {/* Actions */}
                 <div className="mt-auto space-y-4">
-                  {(item.institution_name || item.organization) && (
-                    <div className="flex items-center gap-3 bg-black/20 border border-white/5 py-2.5 px-4 rounded-xl backdrop-blur-sm">
-                      {item.institution_logo_url && (
-                        <img src={item.institution_logo_url} alt="Kurum" className="w-6 h-6 object-contain" />
-                      )}
-                      <span className="text-sm font-medium text-white/90">
-                        {item.institution_name || item.organization}
-                      </span>
-                    </div>
-                  )}
-
                   {/* Buttons Row */}
                   {(item.link || item.pdf_url) && (
                     <div className="flex flex-wrap gap-3 pt-2">
@@ -100,7 +100,7 @@ const Awards = () => {
               
               {/* Image Section - if it exists */}
               {item.image_url && (
-                <div className="relative mt-2 mx-2 mb-2 h-64 rounded-2xl overflow-hidden bg-gradient-to-b from-transparent to-black/40 border border-white/5">
+                <div className="relative mt-auto mx-2 mb-2 h-64 sm:h-72 lg:h-80 rounded-2xl overflow-hidden bg-gradient-to-b from-transparent to-black/40 border border-white/5 shrink-0">
                   <div className="absolute inset-0 bg-accent-yellow/10 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
                   <img 
                     src={item.image_url} 
