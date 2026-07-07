@@ -579,7 +579,7 @@ $brandImageFields = [
             <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Siteyi geçici olarak kullanıma kapatmak için bakım modunu aktifleştirebilirsiniz. Sadece yöneticiler panele erişmeye devam edebilir.</p>
 
             <form method="POST" action="<?= BASE_URL ?>/superadmin/site-settings/maintenance">
-                <?= csrf_field() ?>
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 
                 <div class="form-group" style="margin-bottom:20px;">
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
