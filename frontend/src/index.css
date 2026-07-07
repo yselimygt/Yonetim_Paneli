@@ -23,3 +23,170 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
 }
+
+/* --- Hero Custom Aesthetics --- */
+.hero-glow-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.hero-blob {
+    position: absolute;
+    filter: blur(80px);
+    border-radius: 50%;
+    animation: hero-drift 20s infinite alternate ease-in-out;
+}
+
+.hero-blob-1 {
+    width: 60vw; height: 60vw;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.4), transparent 70%);
+    top: -20%; left: -10%;
+}
+
+.hero-blob-2 {
+    width: 50vw; height: 50vw;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent 70%);
+    bottom: -10%; right: -10%;
+    animation-delay: -5s;
+}
+
+.hero-blob-3 {
+    width: 40vw; height: 40vw;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent 70%);
+    top: 40%; left: 40%;
+    animation-delay: -10s;
+}
+
+@keyframes hero-drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(5%, 10%) scale(1.1); }
+}
+
+.hero-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 32px 32px;
+    z-index: 1;
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+}
+
+.hero-perspective-container {
+    perspective: 1200px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-glass-frame {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 4/5;
+    background: rgba(25, 25, 25, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 32px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 
+        0 40px 80px rgba(0,0,0,0.8), 
+        inset 0 2px 2px rgba(255,255,255,0.1),
+        0 0 0 1px rgba(255,255,255,0.05);
+    transform: rotateY(-10deg) rotateX(5deg) scale(0.95);
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hero-perspective-container:hover .hero-glass-frame {
+    transform: rotateY(0) rotateX(0) scale(1);
+}
+
+.hero-slider-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    transform: scale(1.1);
+}
+
+.hero-slide.active {
+    opacity: 0.6;
+    transform: scale(1);
+    animation: hero-kenburns 10s ease-out forwards;
+}
+
+@keyframes hero-kenburns {
+    0% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.hero-floating-mascot {
+    position: absolute;
+    bottom: -15%;
+    right: 0%;
+    width: 450px;
+    z-index: 50;
+    filter: drop-shadow(-10px 10px 30px rgba(0,0,0,0.8));
+    animation: hero-float-large 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes hero-float-large {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(-2deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+@media (max-width: 900px) {
+    .hero-perspective-container { 
+        perspective: none; 
+        height: 60vh;
+        max-width: 600px;
+    }
+    
+    .hero-glass-frame { 
+        transform: none; 
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+    }
+    
+    .hero-perspective-container:hover .hero-glass-frame { transform: none; }
+    
+    .hero-floating-mascot {
+        right: 50%;
+        transform: translateX(50%);
+        bottom: -20%;
+        width: 350px;
+        animation: hero-float-mobile 8s ease-in-out infinite;
+    }
+}
+
+@keyframes hero-float-mobile {
+    0% { transform: translateX(50%) translateY(0) rotate(0deg); }
+    50% { transform: translateX(50%) translateY(-20px) rotate(-2deg); }
+    100% { transform: translateX(50%) translateY(0) rotate(0deg); }
+}
+
+@media (max-width: 600px) {
+    .hero-perspective-container {
+        height: 45vh;
+        margin-top: 1.5rem;
+    }
+    .hero-floating-mascot {
+        width: 250px;
+        bottom: -15%;
+    }
+}
