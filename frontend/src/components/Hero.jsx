@@ -38,7 +38,7 @@ const Hero = () => {
   }, [galleryImages.length]);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-10 pb-24 lg:pb-32 overflow-hidden" id="hero">
+    <section className="relative min-h-[90vh] flex items-center pt-10 pb-16 lg:pb-32 overflow-hidden" id="hero">
       {/* Advanced Fluid Background Layer */}
       <div className="hero-glow-bg pointer-events-none">
         <div className="hero-blob hero-blob-1"></div>
@@ -57,7 +57,7 @@ const Hero = () => {
             
             {/* Headline */}
             <div className="space-y-4">
-              <h1 className="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1.1] tracking-tight text-white drop-shadow-md">
+              <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-7xl leading-[1.1] tracking-tight text-white drop-shadow-md">
                 <span className="block">{hero.titleLine1 || 'Bilişimde Yeniliğe,'}</span>
                 <span className="block text-gradient">{hero.titleLine2 || 'İnovasyonda Zirveye!'}</span>
               </h1>
@@ -83,7 +83,7 @@ const Hero = () => {
 
             {/* CTA Box (No QR Code as requested) */}
             <div className="pt-4 flex justify-center lg:justify-start">
-              <div className="glass-card p-6 flex flex-col sm:flex-row items-center justify-between gap-6 w-full max-w-md bg-white/5 border-white/10 relative overflow-hidden">
+              <div className="glass-card p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 w-full max-w-md bg-white/5 border-white/10 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
                 <div className="text-center sm:text-left relative z-10 w-full">
                   <h3 className="text-2xl font-bold text-white mb-1">Aramıza Katıl</h3>

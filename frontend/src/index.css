@@ -166,11 +166,11 @@
     .hero-perspective-container:hover .hero-glass-frame { transform: none; }
     
     .hero-floating-mascot {
-        right: 50%;
-        transform: translateX(50%);
-        bottom: -20%;
-        width: 350px;
-        animation: hero-float-mobile 8s ease-in-out infinite;
+        right: -5%;
+        transform: none;
+        bottom: -15%;
+        width: 280px;
+        animation: hero-float-large 8s ease-in-out infinite;
     }
 }
 
@@ -182,11 +182,13 @@
 
 @media (max-width: 600px) {
     .hero-perspective-container {
-        height: 45vh;
+        height: 35vh;
+        min-height: 250px;
         margin-top: 1.5rem;
     }
     .hero-floating-mascot {
-        width: 250px;
+        width: 180px;
+        right: -5%;
         bottom: -15%;
     }
 }
