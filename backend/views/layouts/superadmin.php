@@ -510,6 +510,111 @@
         }
         .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
 
+        .panel-dept-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 12px;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .panel-dept-modal.show {
+            display: flex;
+        }
+
+        .panel-dept-sheet {
+            width: min(100%, 460px);
+            max-height: min(78dvh, 620px);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 12px 12px;
+            background: var(--card);
+            box-shadow: 0 18px 44px rgba(0,0,0,.34);
+        }
+
+        .panel-dept-sheet-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-dept-sheet-head strong {
+            font-size: 14px;
+        }
+
+        .panel-dept-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .panel-dept-list {
+            display: grid;
+            gap: 8px;
+            max-height: calc(min(78dvh, 620px) - 64px);
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .panel-dept-option {
+            display: grid;
+            grid-template-columns: 10px minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+            min-height: 48px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            text-decoration: none;
+            background: rgba(255,255,255,.018);
+        }
+
+        .panel-dept-option.active {
+            border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+            background: color-mix(in srgb, var(--accent) 12%, transparent);
+        }
+
+        .panel-dept-dot {
+            width: 10px;
+            height: 30px;
+            border-radius: 999px;
+            background: var(--dept-color, var(--accent));
+        }
+
+        .panel-dept-name {
+            min-width: 0;
+            overflow: hidden;
+            font-size: 12px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .panel-dept-role {
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.04);
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 800;
+        }
+
         @media (max-width: 900px) {
             body {
                 display: block;
@@ -814,6 +919,42 @@
 
             .topbar .breadcrumb {
                 display: none;
+            }
+
+            .panel-mobile-dept-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                max-width: 46%;
+                min-height: 38px;
+                padding: 7px 10px;
+                border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border));
+                border-radius: 11px;
+                background: color-mix(in srgb, var(--accent) 11%, var(--card));
+                color: var(--text);
+                cursor: pointer;
+                font-family: inherit;
+            }
+
+            .panel-mobile-dept-btn span {
+                min-width: 0;
+                overflow: hidden;
+                font-size: 11px;
+                font-weight: 800;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .panel-mobile-dept-btn i {
+                flex: 0 0 auto;
+                width: 8px;
+                height: 24px;
+                border-radius: 999px;
+                background: var(--accent);
+            }
+
+            .panel-dept-sheet {
+                box-shadow: none;
             }
 
             .btn-theme {
@@ -1355,6 +1496,13 @@
                 <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
         </button>
+        <?php $allDepts = Auth::getDepartments(); ?>
+        <?php if (count($allDepts) > 0): ?>
+        <button type="button" class="panel-mobile-dept-btn" aria-label="Departman değiştir" onclick="openPanelDeptModal()">
+            <span>Departman Seç</span>
+            <i></i>
+        </button>
+        <?php endif; ?>
         <h1><?= $pageTitle ?? 'Dashboard' ?></h1>
         <span class="breadcrumb">Süper Admin</span>
         <button onclick="toggleTheme()" class="btn-theme" title="Tema Değiştir">
@@ -1376,7 +1524,68 @@
     </div>
 </div>
 
+<?php if (isset($allDepts) && count($allDepts) > 0): ?>
+<div class="panel-dept-modal" id="panelDeptModal" aria-hidden="true">
+    <div class="panel-dept-sheet" role="dialog" aria-modal="true" aria-label="Departman değiştir">
+        <div class="panel-dept-sheet-head">
+            <strong>Departman Seç</strong>
+            <button type="button" class="panel-dept-close" onclick="closePanelDeptModal()" aria-label="Kapat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="panel-dept-list">
+            <?php foreach ($allDepts as $dept): ?>
+                <?php
+                $deptSlug = $dept['slug'] ?? '';
+                $deptColor = $dept['color'] ?? '#00BCD4';
+                $dr = $dept['role'] ?? 'member';
+                if ($dr === 'director') {
+                    $roleLabel = 'Direktör';
+                } elseif ($dr === 'president') {
+                    $roleLabel = 'Başkan';
+                } elseif ($dr === 'vice_president') {
+                    $roleLabel = 'Başkan Yardımcısı';
+                } else {
+                    $roleLabel = 'Üye';
+                }
+                ?>
+                <a href="<?= BASE_URL ?>/panel/<?= View::escape($deptSlug) ?>"
+                   class="panel-dept-option"
+                   style="--dept-color: <?= View::escape($deptColor) ?>">
+                    <span class="panel-dept-dot" aria-hidden="true"></span>
+                    <span class="panel-dept-name"><?= View::escape($dept['name'] ?? 'Departman') ?></span>
+                    <span class="panel-dept-role"><?= View::escape($roleLabel) ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <script>
+function openPanelDeptModal() {
+    closeSidebar();
+    const modal = document.getElementById('panelDeptModal');
+    if(modal) {
+        modal.style.display = 'flex';
+        modal.offsetHeight; // trigger reflow
+        modal.classList.add('show');
+    }
+}
+
+function closePanelDeptModal() {
+    const modal = document.getElementById('panelDeptModal');
+    if(modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+}
+
 function openSidebar() {
     document.getElementById('superadminSidebar')?.classList.add('is-open');
     document.getElementById('sidebarOverlay')?.classList.add('is-open');
