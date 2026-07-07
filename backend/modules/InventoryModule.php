@@ -8,8 +8,8 @@ class InventoryModule extends BaseModule
         $statusFilter = $_GET['status'] ?? '';
         $catFilter = $_GET['category'] ?? '';
 
-        $query = "SELECT * FROM app_inventory WHERE app_id = ? AND department_id = ?";
-        $params = [$this->app['id'], $this->department['id']];
+        $query = "SELECT * FROM app_inventory WHERE app_id = ?";
+        $params = [$this->app['id']];
 
         if ($search) {
             $query .= " AND (item_name LIKE ? OR serial_number LIKE ? OR assigned_to LIKE ?)";
@@ -35,8 +35,8 @@ class InventoryModule extends BaseModule
         $items = $stmt->fetchAll();
 
         // Benzersiz kategorileri çek (filtreleme için)
-        $catStmt = $this->pdo->prepare("SELECT DISTINCT category FROM app_inventory WHERE app_id = ? AND department_id = ? AND category != ''");
-        $catStmt->execute([$this->app['id'], $this->department['id']]);
+        $catStmt = $this->pdo->prepare("SELECT DISTINCT category FROM app_inventory WHERE app_id = ? AND category != ''");
+        $catStmt->execute([$this->app['id']]);
         $categories = $catStmt->fetchAll(PDO::FETCH_COLUMN);
 
         $allUsersStmt = $this->pdo->query("SELECT id, name FROM users ORDER BY name ASC");
@@ -55,8 +55,8 @@ class InventoryModule extends BaseModule
         if ($action === 'take_over') {
             $id = (int)($postData['item_id'] ?? 0);
             if ($id > 0) {
-                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = ? WHERE id = ? AND department_id = ?");
-                $stmt->execute([$this->user['name'], $id, $this->department['id']]);
+                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = ? WHERE id = ?");
+                $stmt->execute([$this->user['name'], $id]);
                 $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşyayı başarıyla devraldınız.'];
             }
             $this->redirectBack();
@@ -65,8 +65,8 @@ class InventoryModule extends BaseModule
         if ($action === 'leave_room') {
             $id = (int)($postData['item_id'] ?? 0);
             if ($id > 0) {
-                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = '' WHERE id = ? AND department_id = ?");
-                $stmt->execute([$id, $this->department['id']]);
+                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = '' WHERE id = ?");
+                $stmt->execute([$id]);
                 $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşya odaya bırakıldı (zimmetten çıkarıldı).'];
             }
             $this->redirectBack();
@@ -76,8 +76,8 @@ class InventoryModule extends BaseModule
             $id = (int)($postData['item_id'] ?? 0);
             $newUser = trim($postData['new_user'] ?? '');
             if ($id > 0 && $newUser !== '') {
-                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = ? WHERE id = ? AND department_id = ?");
-                $stmt->execute([$newUser, $id, $this->department['id']]);
+                $stmt = $this->pdo->prepare("UPDATE app_inventory SET assigned_to = ? WHERE id = ?");
+                $stmt->execute([$newUser, $id]);
                 $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşya başarıyla devredildi.'];
             }
             $this->redirectBack();
@@ -134,12 +134,12 @@ class InventoryModule extends BaseModule
                     UPDATE app_inventory SET 
                         item_name=?, category=?, serial_number=?, price=?, location=?, 
                         assigned_to=?, status=?, purchase_date=?, notes=?, image_url=?
-                    WHERE id=? AND department_id=?
+                    WHERE id=?
                 ");
                 $stmt->execute([
                     $itemName, $category, $serialNumber, $price, $location, 
                     $assignedTo, $status, $purchaseDate, $notes, $imageUrl,
-                    $id, $this->department['id']
+                    $id
                 ]);
                 $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşya başarıyla güncellendi.'];
             } else {
@@ -159,16 +159,16 @@ class InventoryModule extends BaseModule
             $id = (int)($postData['item_id'] ?? 0);
             
             // Görseli silmek için veritabanından yolu çek
-            $stmt = $this->pdo->prepare("SELECT image_url FROM app_inventory WHERE id=? AND department_id=?");
-            $stmt->execute([$id, $this->department['id']]);
+            $stmt = $this->pdo->prepare("SELECT image_url FROM app_inventory WHERE id=?");
+            $stmt->execute([$id]);
             $item = $stmt->fetch();
             
             if ($item && $item['image_url'] && file_exists(__DIR__ . '/../public/' . $item['image_url'])) {
                 unlink(__DIR__ . '/../public/' . $item['image_url']);
             }
 
-            $del = $this->pdo->prepare("DELETE FROM app_inventory WHERE id=? AND department_id=?");
-            $del->execute([$id, $this->department['id']]);
+            $del = $this->pdo->prepare("DELETE FROM app_inventory WHERE id=?");
+            $del->execute([$id]);
             $_SESSION['flash'] = ['type' => 'success', 'message' => 'Eşya başarıyla silindi.'];
         }
 

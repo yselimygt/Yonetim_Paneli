@@ -713,6 +713,7 @@ function closeInvModal() {
     document.getElementById('invModalOverlay').classList.remove('active');
 }
 </script>
+<?php endif; ?>
 
 <!-- Transfer Modal -->
 <div class="inv-modal-overlay" id="transferModalOverlay" onclick="if(event.target===this) closeTransferModal()">
@@ -765,4 +766,3 @@ function closeTransferModal() {
     document.getElementById('transferModalOverlay').classList.remove('active');
 }
 </script>
-<?php endif; ?>
