@@ -38,7 +38,7 @@ const Hero = () => {
   }, [galleryImages.length]);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-10 overflow-hidden" id="hero">
+    <section className="relative min-h-[90vh] flex items-center pt-10 pb-24 lg:pb-32 overflow-hidden" id="hero">
       {/* Advanced Fluid Background Layer */}
       <div className="hero-glow-bg pointer-events-none">
         <div className="hero-blob hero-blob-1"></div>
