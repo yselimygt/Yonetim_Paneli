@@ -24,7 +24,7 @@ const Awards = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {awards.map((item, idx) => (
-            <div key={idx} className="group relative flex flex-col h-full bg-[#0a0a0a] border border-white/10 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-2">
+            <div key={idx} className="group relative flex flex-col h-full bg-[#0a0a0a] border border-white/10 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:border-yellow-500/50 hover:shadow-[0_0_40px_-10px_rgba(234,179,8,0.4)] active:border-yellow-500/70 active:shadow-[0_0_40px_-5px_rgba(234,179,8,0.6)] cursor-pointer">
               
               <div className="flex flex-col h-full p-6 sm:p-8 relative z-10 pb-4">
                 {/* Top Section - Organization & Year */}
