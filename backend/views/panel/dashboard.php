@@ -567,6 +567,8 @@ if (isset($members) && is_array($members)) {
                 $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/finance";
             } elseif ($app['module_type'] === 'dues') {
                 $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/dues";
+            } elseif ($app['module_type'] === 'social_links') {
+                $href = BASE_URL . "/panel/" . View::escape($currentDept['slug']) . "/social-links";
             }
 
             // Colors based on module type

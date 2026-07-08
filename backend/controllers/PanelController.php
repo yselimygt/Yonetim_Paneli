@@ -630,6 +630,9 @@ class PanelController extends Controller
         Auth::requireDepartment($slug);
         
         $currentDept = $this->deptModel->getBySlug($slug);
+        $userRole    = $this->getUserRoleInDept($slug);
+        $allDepts    = $this->deptModel->getAll();
+        $deptApps    = $this->appModel->getByDepartment($currentDept['id']);
         
         require_once __DIR__ . '/../models/SiteSetting.php';
         $siteSettingModel = new SiteSetting();
@@ -639,6 +642,9 @@ class PanelController extends Controller
 
         $this->view('panel/social_links/index', [
             'currentDept' => $currentDept,
+            'userRole'    => $userRole,
+            'allDepts'    => $allDepts,
+            'deptApps'    => $deptApps,
             'socialLinks' => $socialLinks
         ], 'panel');
     }
