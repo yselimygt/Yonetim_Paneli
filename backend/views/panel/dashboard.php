@@ -805,10 +805,10 @@ if (isset($members) && is_array($members)) {
         
         let startDay = firstDay === 0 ? 6 : firstDay - 1; 
         
-        const emptyCellHtml = '<div style="background:var(--bg); border-radius:10px; aspect-ratio: 1/1; opacity:0.3;"></div>';
-        
         for (let i = 0; i < startDay; i++) {
-            daysGrid.innerHTML += emptyCellHtml;
+            const emptyCell = document.createElement('div');
+            emptyCell.style.cssText = 'background:var(--bg); border-radius:10px; aspect-ratio: 1/1; opacity:0.3;';
+            daysGrid.appendChild(emptyCell);
         }
         
         for (let day = 1; day <= daysInMonth; day++) {
@@ -955,16 +955,10 @@ if (isset($members) && is_array($members)) {
             
             // Visual bridges
             if (connectRight && day < daysInMonth && baseColor) {
-                bridgeHtml += `<div style="position:absolute; top:-1px; right:-6px; bottom:-1px; width:6px; background:${bridgeColor}; border-top:1px solid ${border.split('solid ')[1]}; border-bottom:1px solid ${border.split('solid ')[1]}; z-index:1;"></div>`;
+                bridgeHtml += `<div style="position:absolute; top:-1px; right:-6px; bottom:-1px; width:6px; background:${bridgeColor}; border-top:1px solid ${border.split('solid ')[1] || 'transparent'}; border-bottom:1px solid ${border.split('solid ')[1] || 'transparent'}; z-index:1;"></div>`;
             }
             
-            if (connectLeft && day > 1) {
-                border = border.replace('solid ', 'solid transparent'); // don't draw left border
-                // We'll fix the border via inline style specifically if needed
-            }
-            if (connectRight && day < daysInMonth) {
-                // don't draw right border natively
-            }
+            // We'll fix the border via inline style specifically instead of breaking the border string
             
             const fontWeight = (hasBirthdays.length > 0 || hasEvents.length > 0 || hasHolidays.length > 0 || hasExams.length > 0) ? '700' : '500';
             const cursor = 'pointer';
@@ -986,8 +980,10 @@ if (isset($members) && is_array($members)) {
             
             cell.onclick = () => {
                 selectedDate = new Date(currentYear, currentMonth, day);
-                renderCalendar();
-                renderDayDetails();
+                setTimeout(() => {
+                    renderCalendar();
+                    renderDayDetails();
+                }, 0);
             };
             
             daysGrid.appendChild(cell);
@@ -996,7 +992,9 @@ if (isset($members) && is_array($members)) {
         const totalCells = startDay + daysInMonth;
         const targetCells = 42; // Sabit 6 satır (6x7 = 42 kutucuk)
         for (let i = totalCells; i < targetCells; i++) {
-            daysGrid.innerHTML += emptyCellHtml;
+            const emptyCell = document.createElement('div');
+            emptyCell.style.cssText = 'background:var(--bg); border-radius:10px; aspect-ratio: 1/1; opacity:0.3;';
+            daysGrid.appendChild(emptyCell);
         }
         
         renderMonthSummary();
