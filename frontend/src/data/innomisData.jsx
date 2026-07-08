@@ -8,6 +8,7 @@ import {
     { name: 'Etkinlikler', href: '/events' },
     { name: 'Galeri', href: '/gallery' },
     { name: 'Ekip', href: '/team' },
+    { name: 'Kurumsal', href: '/corporate' },
     { name: 'İletişim', href: '/iletisim' },
   ];
 

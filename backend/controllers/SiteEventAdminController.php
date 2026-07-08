@@ -38,7 +38,7 @@ class SiteEventAdminController extends Controller
             return strtotime($b['event_date']) - strtotime($a['event_date']);
         });
         
-        $stmtForms = $pdo->query("SELECT id, name, slug FROM apps WHERE module_type = 'form' AND status = 1 ORDER BY name ASC");
+        $stmtForms = $pdo->query("SELECT id, name, slug FROM apps WHERE module_type = 'form' AND is_active = 1 ORDER BY name ASC");
         $forms = $stmtForms->fetchAll(PDO::FETCH_ASSOC);
         
         $this->view('superadmin/site_events/index', compact('events', 'forms'), 'superadmin');
