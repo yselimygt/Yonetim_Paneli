@@ -1412,6 +1412,15 @@ $globalFaviconUrl = $globalBrandSettings['favicon'] ?? '';
             Tarihçe & Başarılar
         </a>
 
+        <a href="<?= BASE_URL ?>/superadmin/social-links"
+           class="nav-link <?= str_contains($_SERVER['REQUEST_URI'], '/social-links') ? 'active' : '' ?>">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Sosyal Medya
+        </a>
+
         <a href="<?= BASE_URL ?>/superadmin/site-settings"
            class="nav-link <?= str_contains($_SERVER['REQUEST_URI'], '/site-settings') ? 'active' : '' ?>">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">

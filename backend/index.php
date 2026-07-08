@@ -66,6 +66,9 @@ $router->post('/superadmin/site-settings/faqs',           ['SiteSettingsAdminCon
 $router->post('/superadmin/site-settings/form-routing',   ['SiteSettingsAdminController', 'updateFormRouting']);
 $router->post('/superadmin/site-settings/maintenance',    ['SiteSettingsAdminController', 'updateMaintenanceMode']);
 
+$router->get('/superadmin/social-links',                  ['SocialLinksAdminController', 'index']);
+$router->post('/superadmin/social-links',                 ['SocialLinksAdminController', 'update']);
+
 $router->get('/superadmin/site-projects',                 ['SiteProjectAdminController', 'index']);
 $router->post('/superadmin/site-projects',                ['SiteProjectAdminController', 'store']);
 $router->post('/superadmin/site-projects/{id}',           ['SiteProjectAdminController', 'update']);
