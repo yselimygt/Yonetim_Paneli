@@ -902,17 +902,23 @@ function saveConfigData(fields, settings) {
         method: 'POST',
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            alert('Form başarıyla kaydedildi!');
-            document.getElementById('public-status-badge').innerText = settings.is_public ? 'Kamuya Açık Form' : 'Sadece Üyelere Açık';
-        } else {
-            alert('Kaydetme hatası!');
+    .then(async res => {
+        const text = await res.text();
+        try {
+            const data = JSON.parse(text);
+            if(data.success) {
+                alert('Form başarıyla kaydedildi!');
+                document.getElementById('public-status-badge').innerText = settings.is_public ? 'Kamuya Açık Form' : 'Sadece Üyelere Açık';
+            } else {
+                alert(data.message || 'Kaydetme hatası!');
+            }
+        } catch (e) {
+            console.error('Raw response:', text);
+            alert('Sunucu ile iletişim hatası. Detaylar: ' + text.substring(0, 100));
         }
     })
     .catch(err => {
-        alert('Sunucu ile iletişim hatası.');
+        alert('Sunucu ile iletişim hatası. ' + err.message);
     });
 }
 

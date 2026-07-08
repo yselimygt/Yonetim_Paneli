@@ -8,35 +8,24 @@ class FormModule extends BaseModule
         $fields = $config['fields'] ?? [];
 
         // Handle CSV Export
-        if (isset($_GET['action']) && $_GET['action'] === 'export' && $this->isDirectorOrAdmin()) {
+        if (isset($_GET['action']) && $_GET['action'] === 'export') {
             $this->exportCsv($fields);
         }
 
         // Handle Excel Export
-        if (isset($_GET['action']) && $_GET['action'] === 'export_excel' && $this->isDirectorOrAdmin()) {
+        if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
             $this->exportExcel($fields);
         }
 
         // Fetch entries
-        if ($this->isDirectorOrAdmin()) {
-            $stmt = $this->pdo->prepare("
-                SELECT fe.*, u.name AS user_name, u.email AS user_email 
-                FROM form_entries fe 
-                LEFT JOIN users u ON u.id = fe.user_id 
-                WHERE fe.app_id = ? 
-                ORDER BY fe.created_at DESC
-            ");
-            $stmt->execute([$this->app['id']]);
-        } else {
-            $stmt = $this->pdo->prepare("
-                SELECT fe.*, u.name AS user_name, u.email AS user_email 
-                FROM form_entries fe 
-                JOIN users u ON u.id = fe.user_id 
-                WHERE fe.app_id = ? AND fe.user_id = ? 
-                ORDER BY fe.created_at DESC
-            ");
-            $stmt->execute([$this->app['id'], $this->user['id'] ?? 0]);
-        }
+        $stmt = $this->pdo->prepare("
+            SELECT fe.*, u.name AS user_name, u.email AS user_email 
+            FROM form_entries fe 
+            LEFT JOIN users u ON u.id = fe.user_id 
+            WHERE fe.app_id = ? 
+            ORDER BY fe.created_at DESC
+        ");
+        $stmt->execute([$this->app['id']]);
         $entries = $stmt->fetchAll();
 
         $settings = $config['settings'] ?? ['is_public' => false];
@@ -74,25 +63,30 @@ class FormModule extends BaseModule
         $action = $postData['action'] ?? '';
 
         // Form Ayarlarını (Builder) Kaydetme İşlemi (Phase 3'te frontend yapacak, backend şimdilik desteklesin)
-        if ($action === 'save_config' && $this->isDirectorOrAdmin()) {
+        if ($action === 'save_config') {
             $newConfig = $postData['config'] ?? '';
             $newName = $postData['name'] ?? null;
             $newDesc = $postData['description'] ?? null;
             
-            if ($newName !== null) {
-                $stmt = $this->pdo->prepare("UPDATE apps SET config = ?, name = ?, description = ? WHERE id = ?");
-                $stmt->execute([$newConfig, $newName, $newDesc, $this->app['id']]);
-            } else {
-                $stmt = $this->pdo->prepare("UPDATE apps SET config = ? WHERE id = ?");
-                $stmt->execute([$newConfig, $this->app['id']]);
+            try {
+                if ($newName !== null) {
+                    $stmt = $this->pdo->prepare("UPDATE apps SET config = ?, name = ?, description = ? WHERE id = ?");
+                    $stmt->execute([$newConfig, $newName, $newDesc, $this->app['id']]);
+                } else {
+                    $stmt = $this->pdo->prepare("UPDATE apps SET config = ? WHERE id = ?");
+                    $stmt->execute([$newConfig, $this->app['id']]);
+                }
+                
+                echo json_encode(['success' => true]);
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
             }
-            
-            echo json_encode(['success' => true]);
             exit;
         }
 
         // Başlık Görseli Yükleme ve Optimizasyonu
-        if ($action === 'upload_banner' && $this->isDirectorOrAdmin()) {
+        if ($action === 'upload_banner') {
             if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES['banner'];
                 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -118,8 +112,8 @@ class FormModule extends BaseModule
             $this->processFormSubmission($postData, false);
         }
 
-        // Silme yetkisi (Sadece direktör)
-        if ($action === 'delete' && $this->isDirectorOrAdmin()) {
+        // Silme yetkisi
+        if ($action === 'delete') {
             $entryId = (int) ($postData['entry_id'] ?? 0);
             
             // Delete associated files first (if any)
