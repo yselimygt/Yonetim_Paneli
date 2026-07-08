@@ -24,7 +24,6 @@ import RegistrationForm from './components/RegistrationForm';
 import ApplicationHub from './components/ApplicationHub';
 import ManagementForm from './components/ManagementForm';
 import RepresentativeForm from './components/RepresentativeForm';
-import SocialLinksModule from './components/SocialLinksModule';
 
 // Projects
 import OyTakipApp from './projects/oy-takip/OyTakipApp';
@@ -116,7 +115,6 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden">
       <ScrollToTop />
-      <SocialLinksModule />
       <Navbar />
       <main className="flex-grow pt-20">
         <Routes>
