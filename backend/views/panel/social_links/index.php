@@ -10,10 +10,20 @@ $pageTitle = 'Sosyal Medya Linkleri';
         <p style="color:var(--muted); font-size:13px; margin-top:4px;">Web sitesinde ve tüm departmanlarda görünecek olan genel sosyal medya butonlarını buradan yönetebilirsiniz.</p>
         <p style="color:var(--warning); font-size:13px; margin-top:4px;"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Uyarı:</strong> Burada yaptığınız değişiklikler tüm siteyi etkiler.</p>
     </div>
-    <button type="button" class="btn btn-primary" onclick="addSocialLink()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Yeni Hesap Ekle
-    </button>
+    <div style="display:flex; gap: 12px; align-items: center;">
+        <a href="<?= BASE_URL ?>/l/sosyal" target="_blank" class="btn" style="background:var(--card-alt); border:1px solid var(--border); color:var(--text); text-decoration:none; display:inline-flex; align-items:center; gap:8px; padding: 10px 18px; border-radius: 8px; font-weight: 500; font-size: 14px; transition: all 0.2s;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            Siteyi Görüntüle
+        </a>
+        <button type="button" class="btn btn-primary" onclick="addSocialLink()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yeni Hesap Ekle
+        </button>
+    </div>
 </div>
 
 <?php if (isset($_SESSION['flash'])): ?>

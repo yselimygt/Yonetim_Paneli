@@ -155,6 +155,9 @@ $router->post('/f/{app}',        ['AppRunnerController', 'handlePublicGlobal']);
 // Link Kısaltıcı Rotaları
 $router->get('/go/{code}',       ['ShortenerController', 'redirect']);
 
+// Sosyal Medya Linktree (Public)
+$router->get('/l/sosyal',        ['PublicSocialController', 'index']);
+
 // Sertifika Doğrulama (Public)
 $router->get('/sertifika/{no}',  ['CertificateVerifyController', 'verify']);
 
