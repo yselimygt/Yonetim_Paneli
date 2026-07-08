@@ -620,4 +620,66 @@ class PanelController extends Controller
 
         $this->redirect("/panel/{$slug}/forms");
     }
+    
+    // -------------------------------------------------------
+    // GET /panel/{slug}/social-links
+    // -------------------------------------------------------
+    public function socialLinks(string $slug): void
+    {
+        Auth::requireLogin();
+        Auth::requireDepartment($slug);
+        
+        $currentDept = $this->deptModel->getBySlug($slug);
+        
+        require_once __DIR__ . '/../models/SiteSetting.php';
+        $siteSettingModel = new SiteSetting();
+        $allSettings = $siteSettingModel->getAllSettings();
+        
+        $socialLinks = $allSettings['social_links'] ?? [];
+
+        $this->view('panel/social_links/index', [
+            'currentDept' => $currentDept,
+            'socialLinks' => $socialLinks
+        ], 'panel');
+    }
+
+    // -------------------------------------------------------
+    // POST /panel/{slug}/social-links
+    // -------------------------------------------------------
+    public function updateSocialLinks(string $slug): void
+    {
+        Auth::requireLogin();
+        Auth::requireDepartment($slug);
+        $this->csrfCheck();
+
+        $currentDept = $this->deptModel->getBySlug($slug);
+        
+        require_once __DIR__ . '/../models/SiteSetting.php';
+        $siteSettingModel = new SiteSetting();
+
+        $platforms = $_POST['platform'] ?? [];
+        $urls = $_POST['url'] ?? [];
+        $icons = $_POST['icon'] ?? [];
+        $colors = $_POST['color'] ?? [];
+
+        $socialLinks = [];
+        foreach ($platforms as $i => $platform) {
+            $platform = trim($platform);
+            $url = trim($urls[$i] ?? '');
+            if (!empty($platform) && !empty($url)) {
+                $socialLinks[] = [
+                    'platform' => $platform,
+                    'url' => $url,
+                    'icon' => trim($icons[$i] ?? ''),
+                    'color' => trim($colors[$i] ?? '#ffffff')
+                ];
+            }
+        }
+
+        $siteSettingModel->set('social_links', $socialLinks);
+        Logger::log('UPDATE_SITE_SETTING', 'SiteSetting', null, ['key' => 'social_links', 'department_id' => $currentDept['id']]);
+        
+        $this->flashSuccess('Sosyal medya linkleri başarıyla güncellendi.');
+        $this->redirect("/panel/{$slug}/social-links");
+    }
 }

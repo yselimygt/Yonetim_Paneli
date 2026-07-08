@@ -38,6 +38,7 @@ class AppAdminController extends Controller
         'certificate'  => ['name' => 'Sertifika',       'icon' => 'award'],
         'inventory'    => ['name' => 'Envanter',        'icon' => 'archive'],
         'links'        => ['name' => 'Hızlı Bağlantılar', 'icon' => 'link'],
+        'social_links' => ['name' => 'Sosyal Medya (Global)', 'icon' => 'share-2'],
         'qr'           => ['name' => 'Karekod',         'icon' => 'qr'],
         'shortener'    => ['name' => 'Link Kısaltıcı',  'icon' => 'scissors'],
         'agile'        => ['name' => 'Agile',           'icon' => 'layout'],

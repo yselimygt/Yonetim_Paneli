@@ -1240,6 +1240,7 @@ $globalFaviconUrl = $globalBrandSettings['favicon'] ?? '';
             'sponsor' => 'communication',
             'partner' => 'communication',
             'social' => 'communication',
+            'social_links' => 'communication',
             'trophy' => 'events',
         ];
 
@@ -1318,6 +1319,9 @@ $globalFaviconUrl = $globalBrandSettings['favicon'] ?? '';
             } elseif ($app['module_type'] === 'dues') {
                 $href = BASE_URL . "/panel/" . View::escape($currentDeptSlug) . "/dues";
                 $isActive = ($activeSection ?? '') === 'dues';
+            } elseif ($app['module_type'] === 'social_links') {
+                $href = BASE_URL . "/panel/" . View::escape($currentDeptSlug) . "/social-links";
+                $isActive = strpos($_SERVER['REQUEST_URI'], '/social-links') !== false;
             }
 
             $dbCategoryKey = trim((string)($app['sidebar_category_key'] ?? ''));

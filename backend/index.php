@@ -111,6 +111,10 @@ $router->get('/panel/{slug}/management/announce',  ['PanelController', 'manageme
 $router->post('/panel/{slug}/management/announce', ['PanelController', 'managementAnnounce']);
 $router->get('/panel/{slug}/management/directory', ['PanelController', 'managementDirectory']);
 
+// Sosyal Medya Yönetimi (Global)
+$router->get('/panel/{slug}/social-links',         ['PanelController', 'socialLinks']);
+$router->post('/panel/{slug}/social-links',        ['PanelController', 'updateSocialLinks']);
+
 // Form Yönetimi
 $router->get('/panel/{slug}/forms',                 ['PanelController', 'formManagement']);
 $router->post('/panel/{slug}/forms/create',         ['PanelController', 'createFormApp']);
