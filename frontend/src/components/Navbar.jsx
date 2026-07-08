@@ -151,9 +151,14 @@ const Navbar = () => {
               <span>Powered by</span>
               <a href="https://viperadev.com" target="_blank" rel="noopener noreferrer" className="group flex items-center">
                 <img 
+                  src="https://viperadev.com/ViperaDev-aydinlik.png" 
+                  alt="ViperaDev" 
+                  className="h-6 w-auto opacity-70 group-hover:opacity-100 transition-all duration-300 dark:hidden" 
+                />
+                <img 
                   src="https://viperadev.com/ViperaDev-Logo.png" 
                   alt="ViperaDev" 
-                  className="h-6 w-auto opacity-70 brightness-0 invert group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                  className="h-6 w-auto opacity-70 brightness-0 invert group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-300 hidden dark:block" 
                 />
               </a>
             </div>

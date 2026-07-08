@@ -96,7 +96,8 @@ export default function PanelSelectPage({ boot }) {
         <span className="psel-footer__sep">·</span>
         <a href={`${baseUrl}/profile`} className="psel-footer__link">Profilim</a>
         <span className="psel-footer__vipera">
-          <img src={assets?.viperaDev} alt="ViperaDev" />
+          <img src="https://viperadev.com/ViperaDev-aydinlik.png" alt="ViperaDev" className="dark:hidden inline-block" />
+          <img src={assets?.viperaDev || 'https://viperadev.com/ViperaDev-Logo.png'} alt="ViperaDev" className="hidden dark:inline-block" />
         </span>
       </footer>
     </div>

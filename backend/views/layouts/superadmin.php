@@ -1296,18 +1296,19 @@ $globalFaviconUrl = $globalBrandSettings['favicon'] ?? '';
         .vipera-logo {
             height: 18px;
             opacity: 0.7;
-            
             transition: all 0.3s;
         }
         .vipera-link:hover .vipera-logo {
             opacity: 1;
-            filter: brightness(1) invert(0);
         }
-        [data-theme="light"] .vipera-logo {
-            filter: brightness(0);
+        .vipera-logo-light {
+            display: none;
         }
-        [data-theme="light"] .vipera-link:hover .vipera-logo {
-            filter: brightness(1);
+        [data-theme="light"] .vipera-logo-dark {
+            display: none;
+        }
+        [data-theme="light"] .vipera-logo-light {
+            display: inline-block;
         }
     </style>
 </head>
@@ -1474,7 +1475,8 @@ $globalFaviconUrl = $globalBrandSettings['favicon'] ?? '';
         <div style="font-size: 11px; text-align: center; color: var(--muted); margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 4px;">
             <span>Powered by</span>
             <a href="https://viperadev.com" target="_blank" class="vipera-link">
-                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" class="vipera-logo">
+                <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" class="vipera-logo vipera-logo-dark">
+                <img src="https://viperadev.com/ViperaDev-aydinlik.png" alt="ViperaDev" class="vipera-logo vipera-logo-light">
             </a>
         </div>
     </div>
@@ -1499,7 +1501,8 @@ $globalFaviconUrl = $globalBrandSettings['favicon'] ?? '';
     <div class="mobile-bottom-powered">
         <span>Powered by</span>
         <a href="https://viperadev.com" target="_blank" class="vipera-link">
-            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" class="vipera-logo">
+            <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" class="vipera-logo vipera-logo-dark">
+            <img src="https://viperadev.com/ViperaDev-aydinlik.png" alt="ViperaDev" class="vipera-logo vipera-logo-light">
         </a>
     </div>
 </div>

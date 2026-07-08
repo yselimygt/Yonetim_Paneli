@@ -4,7 +4,7 @@
     "name": "x"
   },
   "index.html": {
-    "file": "assets/main-zDqLorP0.js",
+    "file": "assets/main-UulaQ8gQ.js",
     "name": "main",
     "src": "index.html",
     "isEntry": true,
@@ -12,11 +12,11 @@
       "_x-CaJZL-yJ.js"
     ],
     "css": [
-      "assets/main-Dzank_UP.css"
+      "assets/main-8D3Ga5P8.css"
     ]
   },
   "src/admin/main.jsx": {
-    "file": "assets/admin-CkbF0-Qd.js",
+    "file": "assets/admin-CxizoYBV.js",
     "name": "admin",
     "src": "src/admin/main.jsx",
     "isEntry": true,
