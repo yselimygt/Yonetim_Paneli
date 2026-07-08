@@ -256,9 +256,10 @@ if (empty($faviconUrl)) {
 
         <div class="footer">
             &copy; <?= date('Y') ?> <?= htmlspecialchars($siteTitle, ENT_QUOTES, 'UTF-8') ?>. Tüm hakları saklıdır.
-            <div style="margin-top: 16px;">
-                <a href="https://viperadev.com" target="_blank" style="display:inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 20px; filter: grayscale(100%) opacity(0.6); transition: all 0.3s;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.6)'">
+            <div style="margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">
+                <span>Powered by</span>
+                <a href="https://viperadev.com" target="_blank" style="display:flex; align-items: center; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="https://viperadev.com/ViperaDev-Logo.png" alt="ViperaDev" style="height: 18px; filter: grayscale(100%) opacity(0.6); transition: all 0.3s;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.6)'">
                 </a>
             </div>
         </div>
