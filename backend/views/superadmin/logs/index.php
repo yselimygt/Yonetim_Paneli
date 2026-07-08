@@ -1,298 +1,186 @@
 <style>
-@media (max-width: 700px) {
-    .flex.justify-between.items-center.mb-6 {
-        margin-bottom: 10px !important;
+@media (max-width: 900px) {
+    .logs-table thead { display: none; }
+    .logs-table tbody { display: grid; gap: 12px; padding: 12px; background: transparent !important; }
+    .logs-table tr { 
+        display: flex; flex-direction: column; gap: 8px; 
+        background: var(--card-alt); border: 1px solid var(--border); 
+        border-radius: 14px; padding: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .logs-table td { 
+        display: flex; align-items: flex-start; justify-content: space-between; 
+        gap: 10px; padding: 8px 0; border-bottom: 1px dashed rgba(128,128,128,0.15); 
+        text-align: right; color: var(--text); font-size: 13px;
+    }
+    .logs-table td::before { 
+        content: attr(data-label); flex-shrink: 0; 
+        color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    .logs-page-title {
-        color: var(--text) !important;
-        font-size: 18px !important;
-        line-height: 1.25;
-    }
-
-    .logs-card {
-        background: transparent !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        overflow: visible !important;
-    }
-
-    .logs-table-wrap {
-        overflow: visible !important;
-    }
-
-    .logs-table {
-        display: table;
-        min-width: 0 !important;
-        overflow: visible;
-    }
-
-    .logs-table thead {
-        display: none;
-    }
-
-    .logs-table,
-    .logs-table tbody,
-    .logs-table tr,
-    .logs-table td {
-        width: 100%;
-    }
-
-    .logs-table tbody {
-        display: grid;
-        gap: 8px;
-        background: transparent !important;
-    }
-
-    .logs-table tr {
-        display: grid;
-        gap: 7px;
-        border: 1px solid rgba(255,255,255,0.055);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.018);
-        padding: 10px;
-        box-shadow: none;
-    }
-
-    .logs-table td {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 10px;
-        max-width: none;
-        border-bottom: 1px solid rgba(255,255,255,.035);
-        padding: 0 0 7px !important;
-        white-space: normal !important;
-        overflow: visible;
-        text-align: right;
-        color: var(--text) !important;
-        font-size: 11px !important;
-    }
-
-    .logs-table td::before {
-        content: attr(data-label);
-        flex: 0 0 74px;
-        color: var(--muted);
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: .05em;
-        text-align: left;
-        text-transform: uppercase;
-    }
-
-    .logs-table td:last-child {
-        display: block;
-        border-bottom: 0;
-        padding-bottom: 0 !important;
-        text-align: left;
-    }
-
+    /* Hiding non-essential columns on mobile to keep the cards compact */
     .logs-table td:not([data-label="Kullanıcı"]):not([data-label="Tarih"]):not([data-label="İşlem"]) {
         display: none;
     }
 
-    .logs-table td[data-label="Kullanıcı"] {
-        order: 1;
+    /* Reordering the visible columns */
+    .logs-table td[data-label="Kullanıcı"] { order: 1; }
+    .logs-table td[data-label="Tarih"] { order: 2; }
+    .logs-table td[data-label="İşlem"] { 
+        order: 3; 
+        border-bottom: none; 
+        padding-bottom: 0; 
     }
-
-    .logs-table td[data-label="Tarih"] {
-        order: 2;
-    }
-
-    .logs-table td[data-label="İşlem"] {
-        order: 3;
-        border-bottom: 0;
-        padding-bottom: 0 !important;
-    }
-
-    .logs-table td[data-label="İşlem"]::before {
-        align-self: center;
-    }
-
-    .log-user-cell,
-    .log-entity-cell,
-    .log-details-cell {
-        min-width: 0;
-        overflow-wrap: anywhere;
-    }
-
-    .log-user-cell .font-medium,
-    .log-user-cell .text-xs,
-    .log-entity-cell,
-    .log-details-cell,
-    .log-details-cell span,
-    .logs-table .text-gray-500,
-    .logs-table .text-gray-700,
-    .logs-table .text-gray-900 {
-        color: var(--text) !important;
-    }
-
-    .log-user-cell .text-xs {
-        display: none;
-    }
-
-    .logs-table td[data-label="İşlem"] span {
-        padding: 3px 7px !important;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 999px !important;
-        background: rgba(0,188,212,0.12) !important;
-        color: var(--accent) !important;
-        font-size: 10px !important;
-        line-height: 1.2 !important;
-        white-space: normal;
-    }
-
-    .log-details-cell ul {
-        display: grid;
-        gap: 5px;
-        padding-left: 0;
-        list-style: none;
-    }
-
-    .log-details-cell li {
-        display: grid;
-        grid-template-columns: 86px minmax(0, 1fr);
-        gap: 8px;
-        padding: 5px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.03);
-        overflow-wrap: anywhere;
-    }
-
-    .log-details-cell li:last-child {
-        border-bottom: 0;
-    }
-
-    .log-details-cell li span:first-child {
-        color: var(--muted) !important;
-        font-weight: 700 !important;
-    }
-
-    .logs-pagination {
-        display: flex !important;
-        align-items: center !important;
-        flex-direction: column;
-        gap: 8px;
-        padding: 10px 0 !important;
-        border-top: 0 !important;
-    }
-
-    .logs-pagination .hidden {
-        display: flex !important;
-        flex-direction: column;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .logs-page-count {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: max-content;
-        min-height: 28px;
-        margin: 0 auto;
-        padding: 5px 10px;
-        border: 1px solid rgba(255,255,255,0.055);
-        border-radius: 999px;
-        background: rgba(255,255,255,0.025);
-        color: var(--muted) !important;
-        font-size: 11px !important;
-        line-height: 1;
-    }
-
-    .logs-page-count .desktop-count {
-        display: none !important;
-    }
-
-    .logs-page-count .mobile-count {
-        display: inline !important;
-    }
-
-    .logs-pagination nav {
-        display: flex !important;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5px;
-        width: 100%;
-        box-shadow: none !important;
-    }
-
-    .logs-pagination nav a {
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-        min-width: 30px;
-        min-height: 30px;
-        padding: 0 8px !important;
-        border-radius: 8px !important;
-        background: rgba(255,255,255,0.035) !important;
-        border-color: rgba(255,255,255,0.06) !important;
-        color: var(--text) !important;
-        font-size: 11px !important;
-        line-height: 1 !important;
-    }
-
-    .logs-pagination nav a.bg-indigo-50 {
-        background: rgba(0,188,212,0.18) !important;
-        border-color: rgba(0,188,212,0.32) !important;
-        color: var(--accent) !important;
+    .logs-table td[data-label="İşlem"]::before { 
+        align-self: center; 
     }
 }
 
-.logs-page-count .mobile-count {
+.log-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.log-details-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 12px;
+    background: rgba(128, 128, 128, 0.04);
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(128, 128, 128, 0.08);
+}
+.log-details-label {
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 90px;
+    flex-shrink: 0;
+}
+.log-details-value {
+    color: var(--text);
+    word-break: break-word;
+}
+.badge-action {
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.mobile-details-btn {
     display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    background: rgba(128, 128, 128, 0.08);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.mobile-details-btn:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+@media (max-width: 900px) {
+    .mobile-details-btn {
+        display: inline-flex;
+    }
+}
+.table-row-hover {
+    transition: background 0.2s ease;
+}
+.table-row-hover:hover {
+    background: rgba(128, 128, 128, 0.03);
+}
+.pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background: var(--card-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.pagination-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.pagination-link.active {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    color: var(--accent);
+    font-weight: 600;
 }
 </style>
 
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800 logs-page-title">Sistem Logları</h1>
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+    <div>
+        <h1 class="text-2xl font-bold logs-page-title" style="color: var(--text);">Sistem Logları</h1>
+        <p class="text-sm mt-1" style="color: var(--muted);">Tüm kullanıcı ve sistem hareketlerini detaylı olarak inceleyin.</p>
+    </div>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden logs-card">
+<div class="card overflow-hidden logs-card" style="background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);">
     <div class="overflow-x-auto logs-table-wrap">
-        <table class="min-w-full divide-y divide-gray-200 logs-table">
-            <thead class="bg-gray-50">
+        <table class="w-full logs-table" style="border-collapse: separate; border-spacing: 0;">
+            <thead>
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kullanıcı</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlem</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Varlık</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Adresi</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detaylar</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 6%;">ID</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 14%;">Tarih</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 15%;">Kullanıcı</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 16%;">İşlem</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 14%;">Varlık</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 10%;">IP Adresi</th>
+                    <th style="padding: 16px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card-alt); text-align: left; width: 25%;">Detaylar</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody>
                 <?php if (!empty($logs)): ?>
                     <?php foreach ($logs as $log): 
                         $actionLabel = $log['action'];
-                        $actionClass = 'bg-gray-100 text-gray-800';
+                        $actionBadge = '';
+                        $actionIcon = 'fas fa-circle-dot';
                         switch ($log['action']) {
-                            case 'LOGIN_SUCCESS': $actionLabel = 'Giriş Başarılı'; $actionClass = 'bg-green-100 text-green-800'; break;
-                            case 'LOGIN_FAILED': $actionLabel = 'Giriş Başarısız'; $actionClass = 'bg-red-100 text-red-800'; break;
-                            case 'LOGOUT': $actionLabel = 'Çıkış Yapıldı'; $actionClass = 'bg-gray-100 text-gray-600'; break;
-                            case 'CREATE_USER': $actionLabel = 'Kullanıcı Eklendi'; $actionClass = 'bg-blue-100 text-blue-800'; break;
-                            case 'UPDATE_USER': $actionLabel = 'Kullanıcı Güncellendi'; $actionClass = 'bg-yellow-100 text-yellow-800'; break;
-                            case 'DELETE_USER': $actionLabel = 'Kullanıcı Silindi'; $actionClass = 'bg-red-100 text-red-800'; break;
-                            case 'CREATE_DEPARTMENT': $actionLabel = 'Departman Eklendi'; $actionClass = 'bg-blue-100 text-blue-800'; break;
-                            case 'UPDATE_DEPARTMENT': $actionLabel = 'Departman Güncellendi'; $actionClass = 'bg-yellow-100 text-yellow-800'; break;
-                            case 'DELETE_DEPARTMENT': $actionLabel = 'Departman Silindi'; $actionClass = 'bg-red-100 text-red-800'; break;
-                            case 'ASSIGN_DEPARTMENT_TO_USER': $actionLabel = 'Departman Atandı'; $actionClass = 'bg-purple-100 text-purple-800'; break;
-                            case 'REMOVE_DEPARTMENT_FROM_USER': $actionLabel = 'Departman Çıkarıldı'; $actionClass = 'bg-orange-100 text-orange-800'; break;
-                            case 'ASSIGN_APPS_TO_DEPARTMENT': $actionLabel = 'Uygulama Atandı'; $actionClass = 'bg-indigo-100 text-indigo-800'; break;
-                            case 'APP_INTERACTION': $actionLabel = 'Uygulama İçi İşlem'; $actionClass = 'bg-teal-100 text-teal-800'; break;
+                            case 'LOGIN_SUCCESS': $actionLabel = 'Giriş Başarılı'; $actionIcon = 'fas fa-check-circle'; $actionBadge = 'color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);'; break;
+                            case 'LOGIN_FAILED': $actionLabel = 'Giriş Başarısız'; $actionIcon = 'fas fa-times-circle'; $actionBadge = 'color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25);'; break;
+                            case 'LOGOUT': $actionLabel = 'Çıkış Yapıldı'; $actionIcon = 'fas fa-sign-out-alt'; $actionBadge = 'color: #6b7280; background: rgba(107, 114, 128, 0.12); border: 1px solid rgba(107, 114, 128, 0.25);'; break;
+                            case 'CREATE_USER': $actionLabel = 'Kullanıcı Eklendi'; $actionIcon = 'fas fa-user-plus'; $actionBadge = 'color: #3b82f6; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25);'; break;
+                            case 'UPDATE_USER': $actionLabel = 'Kullanıcı Güncellendi'; $actionIcon = 'fas fa-user-edit'; $actionBadge = 'color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);'; break;
+                            case 'DELETE_USER': $actionLabel = 'Kullanıcı Silindi'; $actionIcon = 'fas fa-user-minus'; $actionBadge = 'color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25);'; break;
+                            case 'CREATE_DEPARTMENT': $actionLabel = 'Departman Eklendi'; $actionIcon = 'fas fa-building'; $actionBadge = 'color: #3b82f6; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25);'; break;
+                            case 'UPDATE_DEPARTMENT': $actionLabel = 'Departman Güncellendi'; $actionIcon = 'fas fa-building'; $actionBadge = 'color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);'; break;
+                            case 'DELETE_DEPARTMENT': $actionLabel = 'Departman Silindi'; $actionIcon = 'fas fa-building'; $actionBadge = 'color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25);'; break;
+                            case 'ASSIGN_DEPARTMENT_TO_USER': $actionLabel = 'Departman Atandı'; $actionIcon = 'fas fa-id-badge'; $actionBadge = 'color: #8b5cf6; background: rgba(139, 92, 246, 0.12); border: 1px solid rgba(139, 92, 246, 0.25);'; break;
+                            case 'REMOVE_DEPARTMENT_FROM_USER': $actionLabel = 'Departman Çıkarıldı'; $actionIcon = 'fas fa-id-badge'; $actionBadge = 'color: #f97316; background: rgba(249, 115, 22, 0.12); border: 1px solid rgba(249, 115, 22, 0.25);'; break;
+                            case 'ASSIGN_APPS_TO_DEPARTMENT': $actionLabel = 'Uygulama Atandı'; $actionIcon = 'fas fa-cubes'; $actionBadge = 'color: #6366f1; background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.25);'; break;
+                            case 'APP_INTERACTION': $actionLabel = 'Uygulama İçi İşlem'; $actionIcon = 'fas fa-bolt'; $actionBadge = 'color: #14b8a6; background: rgba(20, 184, 166, 0.12); border: 1px solid rgba(20, 184, 166, 0.25);'; break;
                             case 'PUBLIC_APP_INTERACTION':
-                            case 'PUBLIC_GLOBAL_APP_INTERACTION': $actionLabel = 'Açık Form/App İşlemi'; $actionClass = 'bg-teal-50 text-teal-600 border border-teal-200'; break;
-                            case 'UPDATE_PROFILE': $actionLabel = 'Profil Güncellendi'; $actionClass = 'bg-blue-100 text-blue-800'; break;
-                            case 'CREATE_GLOBAL_ANNOUNCEMENT': $actionLabel = 'Küresel Duyuru'; $actionClass = 'bg-fuchsia-100 text-fuchsia-800'; break;
-                            case 'CREATE_FORM': $actionLabel = 'Form Oluşturuldu'; $actionClass = 'bg-pink-100 text-pink-800'; break;
-                            case 'TOGGLE_FORM_TEMPLATE': $actionLabel = 'Şablon Durumu Değişti'; $actionClass = 'bg-gray-100 text-gray-800'; break;
-                            case 'CREATE_DUES_PERIOD': $actionLabel = 'Aidat Dönemi Açıldı'; $actionClass = 'bg-emerald-100 text-emerald-800'; break;
-                            case 'DELETE_DUES_PERIOD': $actionLabel = 'Aidat Dönemi Silindi'; $actionClass = 'bg-red-100 text-red-800'; break;
-                            case 'TOGGLE_DUES_PAYMENT': $actionLabel = 'Aidat Ödemesi Güncellendi'; $actionClass = 'bg-yellow-100 text-yellow-800'; break;
-                            case 'CREATE_FINANCE_TX': $actionLabel = 'Finans İşlemi Eklendi'; $actionClass = 'bg-emerald-100 text-emerald-800'; break;
-                            case 'UPDATE_FINANCE_TX': $actionLabel = 'Finans İşlemi Düzenlendi'; $actionClass = 'bg-yellow-100 text-yellow-800'; break;
-                            case 'DELETE_FINANCE_TX': $actionLabel = 'Finans İşlemi Silindi'; $actionClass = 'bg-red-100 text-red-800'; break;
-                            case 'RECEIVE_FINANCE_PROXY': $actionLabel = 'Elden Ödeme Alındı'; $actionClass = 'bg-blue-100 text-blue-800'; break;
+                            case 'PUBLIC_GLOBAL_APP_INTERACTION': $actionLabel = 'Açık Form İşlemi'; $actionIcon = 'fas fa-globe'; $actionBadge = 'color: #0d9488; background: rgba(13, 148, 136, 0.12); border: 1px solid rgba(13, 148, 136, 0.25);'; break;
+                            case 'UPDATE_PROFILE': $actionLabel = 'Profil Güncellendi'; $actionIcon = 'fas fa-id-card'; $actionBadge = 'color: #3b82f6; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25);'; break;
+                            case 'CREATE_GLOBAL_ANNOUNCEMENT': $actionLabel = 'Küresel Duyuru'; $actionIcon = 'fas fa-bullhorn'; $actionBadge = 'color: #d946ef; background: rgba(217, 70, 239, 0.12); border: 1px solid rgba(217, 70, 239, 0.25);'; break;
+                            case 'CREATE_FORM': $actionLabel = 'Form Oluşturuldu'; $actionIcon = 'fas fa-file-alt'; $actionBadge = 'color: #ec4899; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.25);'; break;
+                            case 'TOGGLE_FORM_TEMPLATE': $actionLabel = 'Şablon Değişti'; $actionIcon = 'fas fa-copy'; $actionBadge = 'color: #6b7280; background: rgba(107, 114, 128, 0.12); border: 1px solid rgba(107, 114, 128, 0.25);'; break;
+                            case 'CREATE_DUES_PERIOD': $actionLabel = 'Aidat Dönemi Açıldı'; $actionIcon = 'fas fa-calendar-plus'; $actionBadge = 'color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);'; break;
+                            case 'DELETE_DUES_PERIOD': $actionLabel = 'Aidat Dönemi Silindi'; $actionIcon = 'fas fa-calendar-minus'; $actionBadge = 'color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25);'; break;
+                            case 'TOGGLE_DUES_PAYMENT': $actionLabel = 'Aidat Ödemesi'; $actionIcon = 'fas fa-money-check-alt'; $actionBadge = 'color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);'; break;
+                            case 'CREATE_FINANCE_TX': $actionLabel = 'Finans İşlemi Eklendi'; $actionIcon = 'fas fa-coins'; $actionBadge = 'color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);'; break;
+                            case 'UPDATE_FINANCE_TX': $actionLabel = 'Finans İşlemi Düzenlendi'; $actionIcon = 'fas fa-coins'; $actionBadge = 'color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);'; break;
+                            case 'DELETE_FINANCE_TX': $actionLabel = 'Finans İşlemi Silindi'; $actionIcon = 'fas fa-coins'; $actionBadge = 'color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25);'; break;
+                            case 'RECEIVE_FINANCE_PROXY': $actionLabel = 'Elden Ödeme Alındı'; $actionIcon = 'fas fa-hand-holding-usd'; $actionBadge = 'color: #3b82f6; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25);'; break;
+                            default: $actionBadge = 'color: var(--text); background: rgba(128, 128, 128, 0.1); border: 1px solid rgba(128, 128, 128, 0.2);'; break;
                         }
 
                         $entityTypeMap = ['User' => 'Kullanıcı', 'Department' => 'Departman', 'App' => 'Uygulama', 'Announcement' => 'Duyuru', 'DuesPeriod' => 'Aidat Dönemi', 'DuesPayment' => 'Aidat Ödemesi', 'FinanceTransaction' => 'Finans İşlemi'];
@@ -301,12 +189,12 @@
                             $eId = $log['entity_id'];
                             if ($log['entity_type'] === 'User') {
                                 $uName = htmlspecialchars($usersMap[$eId] ?? "Silinmiş Üye (#$eId)");
-                                $entityName .= " ({$uName})";
+                                $entityName .= " <span style='color: var(--muted); font-size: 11px; font-weight: 500; display: block; margin-top: 2px;'>{$uName}</span>";
                             } elseif ($log['entity_type'] === 'Department') {
                                 $dName = htmlspecialchars($deptsMap[$eId] ?? "Silinmiş Departman (#$eId)");
-                                $entityName .= " ({$dName})";
+                                $entityName .= " <span style='color: var(--muted); font-size: 11px; font-weight: 500; display: block; margin-top: 2px;'>{$dName}</span>";
                             } else {
-                                $entityName .= " (#{$eId})";
+                                $entityName .= " <span style='color: var(--muted); font-size: 11px; font-weight: 500; display: block; margin-top: 2px;'>(#{$eId})</span>";
                             }
                         }
 
@@ -318,7 +206,7 @@
                                 $roleMap = ['director' => 'Yönetici', 'member' => 'Üye'];
                                 $statusMap = ['paid' => 'Ödendi', 'unpaid' => 'Ödenmedi', 'pending' => 'Bekliyor', 'delivered' => 'Teslim Alındı'];
 
-                                $detailsHtml = '<ul class="text-xs space-y-1">';
+                                $detailsHtml = '<div class="log-details-list">';
                                 foreach ($decoded as $k => $v) {
                                     $valStr = htmlspecialchars((string)(is_array($v) ? json_encode($v) : $v));
                                     
@@ -339,57 +227,74 @@
                                     $keyMap = [
                                         'email' => 'E-posta', 'name' => 'Ad', 'slug' => 'Kısa Ad', 
                                         'department_id' => 'Departman', 'role' => 'Rol', 
-                                        'modules' => 'Atanan Uygulamalar', 'status' => 'Durum', 
+                                        'modules' => 'Atanan Uyg.', 'status' => 'Durum', 
                                         'type' => 'Tür', 'amount' => 'Tutar', 'title' => 'Başlık',
-                                        'app_slug' => 'Uygulama Slug', 'is_template' => 'Şablon Mu?',
-                                        'is_active' => 'Aktif', 'is_super_admin' => 'Süper Admin',
-                                        'can_manage_passwords' => 'Şifre Yönetimi', 'is_management' => 'Yönetim Dept.',
+                                        'app_slug' => 'Uyg. Slug', 'is_template' => 'Şablon?',
+                                        'is_active' => 'Aktif', 'is_super_admin' => 'S. Admin',
+                                        'can_manage_passwords' => 'Şifre Yön.', 'is_management' => 'Yön. Dept.',
                                         'description' => 'Açıklama', 'category' => 'Kategori'
                                     ];
                                     $key = $keyMap[$k] ?? htmlspecialchars($k);
-                                    $detailsHtml .= "<li><span class='font-medium text-gray-700'>{$key}:</span> <span class='text-gray-500'>{$valStr}</span></li>";
+                                    $detailsHtml .= "<div class='log-details-item'><span class='log-details-label'>{$key}:</span> <span class='log-details-value'>{$valStr}</span></div>";
                                 }
-                                $detailsHtml .= '</ul>';
+                                $detailsHtml .= '</div>';
                             } else {
                                 $detailsHtml = htmlspecialchars($log['details']);
                             }
                         }
                     ?>
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td data-label="ID" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?= $log['id'] ?>
+                        <tr class="table-row-hover">
+                            <td data-label="ID" style="padding: 16px 20px; font-size: 13px; color: var(--muted); border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
+                                #<?= $log['id'] ?>
                             </td>
-                            <td data-label="Tarih" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?= htmlspecialchars(date('d.m.Y H:i:s', strtotime($log['created_at']))) ?>
+                            <td data-label="Tarih" style="padding: 16px 20px; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
+                                <div style="font-weight: 500;"><?= htmlspecialchars(date('d.m.Y', strtotime($log['created_at']))) ?></div>
+                                <div style="font-size: 11px; color: var(--muted); margin-top: 2px;"><?= htmlspecialchars(date('H:i:s', strtotime($log['created_at']))) ?></div>
                             </td>
-                            <td data-label="Kullanıcı" class="px-6 py-4 whitespace-nowrap text-sm log-user-cell">
+                            <td data-label="Kullanıcı" style="padding: 16px 20px; border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
                                 <?php if($log['user_id']): ?>
-                                    <div class="font-medium text-gray-900"><?= htmlspecialchars($log['user_name']) ?></div>
-                                    <div class="text-xs text-gray-500">ID: <?= $log['user_id'] ?></div>
+                                    <div style="font-size: 13px; font-weight: 600; color: var(--text);"><?= htmlspecialchars($log['user_name']) ?></div>
+                                    <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">ID: <?= $log['user_id'] ?></div>
                                 <?php else: ?>
-                                    <span class="text-gray-400 italic">Sistem/Anonim</span>
+                                    <span style="color: var(--muted); font-style: italic; font-size: 13px;">Sistem / Anonim</span>
                                 <?php endif; ?>
                             </td>
-                            <td data-label="İşlem" class="px-6 py-4 whitespace-nowrap text-sm">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?= $actionClass ?>">
-                                    <?= htmlspecialchars($actionLabel) ?>
-                                </span>
+                            <td data-label="İşlem" style="padding: 16px 20px; border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                                    <span class="badge-action" style="<?= $actionBadge ?>">
+                                        <i class="<?= $actionIcon ?>" style="font-size: 10px;"></i>
+                                        <?= htmlspecialchars($actionLabel) ?>
+                                    </span>
+                                    <button type="button" class="mobile-details-btn" 
+                                        data-log-id="<?= $log['id'] ?>"
+                                        data-log-date="<?= htmlspecialchars(date('d.m.Y H:i:s', strtotime($log['created_at']))) ?>"
+                                        data-log-user="<?= htmlspecialchars($log['user_id'] ? $log['user_name'] . ' (ID: ' . $log['user_id'] . ')' : 'Sistem / Anonim') ?>"
+                                        data-log-entity="<?= htmlspecialchars(strip_tags($entityName)) ?>"
+                                        data-log-ip="<?= htmlspecialchars($log['ip_address'] ?? '-') ?>"
+                                        data-log-details="<?= htmlspecialchars($detailsHtml) ?>"
+                                        onclick="openLogDetailsModal(this)">
+                                        <i class="fas fa-eye"></i> Detay
+                                    </button>
+                                </div>
                             </td>
-                            <td data-label="Varlık" class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 log-entity-cell">
-                                <?= htmlspecialchars($entityName) ?>
+                            <td data-label="Varlık" style="padding: 16px 20px; font-size: 13px; color: var(--text); font-weight: 500; border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
+                                <?= $entityName ?>
                             </td>
-                            <td data-label="IP Adresi" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td data-label="IP Adresi" style="padding: 16px 20px; font-size: 12px; font-family: monospace; color: var(--muted); border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
                                 <?= htmlspecialchars($log['ip_address'] ?? '-') ?>
                             </td>
-                            <td data-label="Detaylar" class="px-6 py-4 text-sm text-gray-700 log-details-cell">
+                            <td data-label="Detaylar" style="padding: 16px 20px; border-bottom: 1px solid rgba(128,128,128,0.1); vertical-align: top;">
                                 <?= $detailsHtml ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="7" data-label="" class="px-6 py-4 text-center text-gray-500">
-                            Henüz kayıtlı log bulunmamaktadır.
+                        <td colspan="7" data-label="" style="padding: 40px 20px; text-align: center; color: var(--muted); font-size: 14px;">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                                <i class="fas fa-inbox" style="font-size: 32px; opacity: 0.5;"></i>
+                                <span>Henüz kayıtlı log bulunmamaktadır.</span>
+                            </div>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -399,43 +304,78 @@
 
     <!-- Pagination -->
     <?php if (isset($totalPages) && $totalPages > 1): ?>
-        <div class="px-6 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 logs-pagination">
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                    <p class="text-sm text-gray-700 logs-page-count">
-                        <span class="desktop-count">Toplam <span class="font-medium"><?= $totalPages ?></span> sayfadan <span class="font-medium"><?= $page ?></span>. sayfa gösteriliyor</span>
-                        <span class="mobile-count"><?= $page ?> / <?= $totalPages ?></span>
-                    </p>
-                </div>
-                <div>
-                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <?php if ($page > 1): ?>
-                            <a href="?page=<?= $page - 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Önceki</span>
-                                &laquo;
-                            </a>
-                        <?php endif; ?>
-
-                        <?php
-                        $start = max(1, $page - 2);
-                        $end = min($totalPages, $page + 2);
-
-                        for ($i = $start; $i <= $end; $i++):
-                        ?>
-                            <a href="?page=<?= $i ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <?= $i === $page ? 'text-indigo-600 bg-indigo-50' : 'text-gray-700 hover:bg-gray-50' ?>">
-                                <?= $i ?>
-                            </a>
-                        <?php endfor; ?>
-
-                        <?php if ($page < $totalPages): ?>
-                            <a href="?page=<?= $page + 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Sonraki</span>
-                                &raquo;
-                            </a>
-                        <?php endif; ?>
-                    </nav>
-                </div>
+        <div style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+            <div style="font-size: 13px; color: var(--muted);">
+                Toplam <span style="font-weight: 600; color: var(--text);"><?= $totalPages ?></span> sayfadan <span style="font-weight: 600; color: var(--text);"><?= $page ?></span>. sayfa
             </div>
+            
+            <nav style="display: flex; gap: 6px;">
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?= $page - 1 ?>" class="pagination-link" title="Önceki Sayfa">
+                        <i class="fas fa-chevron-left" style="font-size: 10px;"></i>
+                    </a>
+                <?php endif; ?>
+
+                <?php
+                $start = max(1, $page - 2);
+                $end = min($totalPages, $page + 2);
+
+                for ($i = $start; $i <= $end; $i++):
+                ?>
+                    <a href="?page=<?= $i ?>" class="pagination-link <?= $i === $page ? 'active' : '' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="?page=<?= $page + 1 ?>" class="pagination-link" title="Sonraki Sayfa">
+                        <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+                    </a>
+                <?php endif; ?>
+            </nav>
         </div>
     <?php endif; ?>
 </div>
+
+<!-- Mobile Log Details Modal -->
+<div id="mobileLogModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Log Detayları</h3>
+            <button type="button" class="modal-close" onclick="closeLogDetailsModal()">&times;</button>
+        </div>
+        <div id="mobileLogModalBody">
+            <!-- Modal Content Injected Here -->
+        </div>
+    </div>
+</div>
+
+<script>
+function openLogDetailsModal(btn) {
+    const id = btn.getAttribute('data-log-id');
+    const date = btn.getAttribute('data-log-date');
+    const user = btn.getAttribute('data-log-user');
+    const entity = btn.getAttribute('data-log-entity');
+    const ip = btn.getAttribute('data-log-ip');
+    const details = btn.getAttribute('data-log-details');
+
+    let html = `
+        <div class="log-details-list" style="margin-bottom: 20px;">
+            <div class="log-details-item"><span class="log-details-label">ID:</span> <span class="log-details-value">#${id}</span></div>
+            <div class="log-details-item"><span class="log-details-label">Tarih:</span> <span class="log-details-value">${date}</span></div>
+            <div class="log-details-item"><span class="log-details-label">Kullanıcı:</span> <span class="log-details-value">${user}</span></div>
+            <div class="log-details-item"><span class="log-details-label">Varlık:</span> <span class="log-details-value">${entity}</span></div>
+            <div class="log-details-item"><span class="log-details-label">IP Adresi:</span> <span class="log-details-value">${ip}</span></div>
+        </div>
+        <h4 style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">İşlem Detayları</h4>
+        ${details !== '-' ? details : '<div style="color: var(--muted); font-size: 12px; font-style: italic;">Ek detay bulunmuyor.</div>'}
+    `;
+
+    document.getElementById('mobileLogModalBody').innerHTML = html;
+    document.getElementById('mobileLogModal').classList.add('show');
+}
+
+function closeLogDetailsModal() {
+    document.getElementById('mobileLogModal').classList.remove('show');
+}
+</script>
