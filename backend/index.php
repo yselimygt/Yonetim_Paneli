@@ -101,6 +101,12 @@ $router->post('/superadmin/applications/delete',    ['ApplicationController', 'd
 
 $router->get('/superadmin/logs',              ['LogController', 'index']);
 
+$router->get('/superadmin/database',              ['DatabaseAdminController', 'index']);
+$router->post('/superadmin/database/backup',      ['DatabaseAdminController', 'backup']);
+$router->get('/superadmin/database/download',     ['DatabaseAdminController', 'download']);
+$router->post('/superadmin/database/delete',      ['DatabaseAdminController', 'delete']);
+$router->post('/superadmin/database/settings',    ['DatabaseAdminController', 'updateSettings']);
+
 // Panel (Phase 3)
 $router->get('/panel',         ['PanelController', 'select']);
 $router->get('/panel/{slug}',  ['PanelController', 'dashboard']);
@@ -143,6 +149,7 @@ $router->get('/api/site-data', ['PublicApiController', 'getSiteData']);
 $router->post('/api/submit-message', ['PublicApiController', 'submitMessage']);
 $router->post('/api/submit-application', ['PublicApiController', 'submitApplication']);
 $router->post('/api/submit-membership', ['PublicApiController', 'submitMembership']);
+$router->get('/api/cron/auto-backup', ['DatabaseAdminController', 'cronBackup']);
 
 // Kamuya Açık (Public) Rotalar
 $router->get('/f/{slug}/{app}',  ['AppRunnerController', 'runPublic']);
